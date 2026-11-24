@@ -33,6 +33,8 @@
     }));
   }
   const q = new URLSearchParams(location.search);
+  const expCapRequested = q.get('system') === 'nds' && q.get('core') === 'desmume' && q.has('ndsCap');
+  let expCap = Number(q.get('ndsCap')), patchExp = null, expCapActive = false;
 
   // ---- frame pacing (lib/pacer.mjs) -------------------------------------------------------------------
   // RetroArch's own timing sleeps on setTimeout, which a coarse system timer (Windows) stretches – fast-forward capped
@@ -44,7 +46,10 @@
   let pacer = null;
   let fallback = false;
   const early = { step: null };
-  const toPacer = (cb) => (pacer ? pacer.request(cb) : fallback ? nativeRaf(cb) : (early.step = cb));
+  const toPacer = (cb) => {
+    const step = patchExp ? (now) => { expCapActive = applyExpCap(expCap) && expCap < 100; cb(now); } : cb;
+    return pacer ? pacer.request(step) : fallback ? nativeRaf(step) : (early.step = step);
+  };
   const nativeRaf = window.requestAnimationFrame.bind(window);
   window.requestAnimationFrame = function (cb) {
     if (cb?.name !== RUNNER) return nativeRaf(cb);
@@ -119,7 +124,7 @@
   // Multi-threaded cores whenever the page may use threads (the server sends cross-origin isolation headers):
   // they don't make the DS cores faster, though (HeartGold in town with DeSmuME: ~10 ms per frame on an M1 with and
   // without – the emulated CPUs run on one thread either way, lib/reach.mjs). ?threads=0 forces the single-threaded core.
-  window.EJS_threads = q.get('threads') !== '0' && !!self.crossOriginIsolated;
+  window.EJS_threads = !expCapRequested && q.get('threads') !== '0' && !!self.crossOriginIsolated;
   window.EJS_language = 'en-US';
   window.EJS_disableAutoLang = true;
   window.EJS_volume = Number(q.get('volume') || 0.6);
@@ -131,6 +136,7 @@
     quickLoad: false, screenshot: false, cacheManager: false, exitEmulation: false, netplay: false, diskButton: false,
   };
   window.EJS_defaultOptions = {
+    ...(expCapRequested ? { desmume_cpu_mode: 'interpreter' } : {}),
     melonds_screen_layout: q.get('layout') || 'Top/Bottom',
     melonds_touch_mode: 'Touch', // click = tap at that spot (default "Mouse" moves a relative cursor)
     desmume_screens_layout: q.get('dlayout') || 'top/bottom',
@@ -455,6 +461,21 @@
     if (o < 0 || o + bytes.length > ram.size) return false;
     heap().set(bytes, ram.base + o);
     return true;
+  }
+
+  function applyExpCap(cap) {
+    if (!patchExp || !window.__emu?.ready || ram.system !== 'nds' || !ndsHeader ||
+        !/^IR[AB]O$/.test(String.fromCharCode(...ndsHeader.subarray(12, 16)))) return false;
+    return patchExp(heap().subarray(ram.base, ram.base + ram.size), cap);
+  }
+
+  function withStockExpGuard(action) {
+    const restored = expCapActive && applyExpCap(100);
+    try {
+      return action();
+    } finally {
+      if (restored) expCapActive = applyExpCap(expCap);
+    }
   }
 
   // ---- picture for the partner's mini view ("partner screen") -----------------------------
@@ -1132,6 +1153,10 @@
     ramInfo: () => ({ ...ram }),
     read,
     write,
+    setLevelCap: (cap) => {
+      if (expCapRequested && Number.isInteger(cap) && cap >= 1 && cap <= 100) expCap = cap;
+    },
+    levelCapActive: () => expCapActive,
     paused: () => !!E()?.paused,
     pause: () => E().pause(),
     resume: () => E().play(),
@@ -1181,12 +1206,12 @@
     /** Actual fast-forward state (may also be switched by EmulatorJS itself) and the ratio it runs at. */
     fastForward: () => !!E()?.isFastForward,
     ffRatio: () => ffRatio,
-    quickSave: (slot = 1) => GM().quickSave(slot),
+    quickSave: (slot = 1) => withStockExpGuard(() => GM().quickSave(slot)),
     quickLoad: (slot = 1) => {
       cutAudio();
       return GM().quickLoad(slot);
     },
-    getState: () => GM().getState(),
+    getState: () => withStockExpGuard(() => GM().getState()),
     loadState: (u8) => {
       cutAudio();
       return GM().loadState(u8);
@@ -1545,6 +1570,13 @@
       startPads(c);
     })
     .catch((e) => console.warn('controls not applied', e))
+    .then(async () => {
+      if (expCapRequested) {
+        const { bwExpCap } = await import('/lib/bw-exp-cap.mjs');
+        patchExp = bwExpCap();
+      }
+    })
+    .catch((e) => console.warn('battle XP cap not loaded', e))
     .then(() => pacerReady)
     .catch((e) => {
       // (can't happen short of a broken install) – the display's frames drive the core directly then

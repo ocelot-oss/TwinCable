@@ -1589,10 +1589,12 @@ export function GameSession({ session, mode }) {
 
   // The fast player's page: the host opens the ROM itself; the battery save comes from the same place as for player.html
   // (a link session: the server started the link host already – the page attaches to it, docs/MULTIPLAYER.md)
+  const capConfigured = isRun && doc && manifest && getRules(doc, manifest).levelCaps;
+  const bwCap = capConfigured && /^IR[AB]O$/.test(target.code || '');
   const [nativeSrc] = useState(() => {
     const q = new URLSearchParams({ system: target.system, rom: target.rom, key: target.soloKey || target.key, name: target.name, save: target.saveUrl });
-    if (isRun && /^IP[KG]E$/.test(target.code || '') && doc && manifest && getRules(doc, manifest).levelCaps) {
-      q.set('hgssCap', String(levelCap(doc, manifest, me).cap || 100));
+    if (capConfigured && /^(?:IP[KG]E|CPU[DEFIJKPS]|IR[AB]O)$/.test(target.code || '')) {
+      q.set('ndsCap', String(levelCap(doc, manifest, me).cap || 100));
     }
     if (layout === 'lr') q.set('layout', 'left');
     if (wholePixels) q.set('px', 'whole');
@@ -1614,7 +1616,8 @@ export function GameSession({ session, mode }) {
     const romUrl = `/rom/g${romKey}.${target.system}?src=${encodeURIComponent(target.rom)}`;
     const lay = layout === 'lr' ? '&layout=Left%2FRight&dlayout=left%2Fright' : '';
     const wcore = isDs && /^(IPK|IPG|IRB|IRA|IRE|IRD)/.test(target.code || '') ? 'desmume' : '';
-    return `/player.html?system=${target.system}${wcore ? `&core=${wcore}` : ''}${lay}${fullTurbo ? '' : '&fullturbo=0'}${wholePixels ? '&px=whole' : ''}&rom=${encodeURIComponent(romUrl)}&name=${encodeURIComponent(target.name)}&save=${encodeURIComponent(target.saveUrl)}&tap=${encodeURIComponent(t('play.tapToStart', 'Click to start'))}`;
+    const cap = bwCap ? `&ndsCap=${levelCap(doc, manifest, me).cap || 100}` : '';
+    return `/player.html?system=${target.system}${wcore ? `&core=${wcore}` : ''}${cap}${lay}${fullTurbo ? '' : '&fullturbo=0'}${wholePixels ? '&px=whole' : ''}&rom=${encodeURIComponent(romUrl)}&name=${encodeURIComponent(target.name)}&save=${encodeURIComponent(target.saveUrl)}&tap=${encodeURIComponent(t('play.tapToStart', 'Click to start'))}`;
   });
   const src = nativeOn && target.system !== '3ds' ? nativeSrc : wasmSrc;
   const arn = target.system === '3ds' ? ctrLayoutAspect(layout3ds) : isDs ? (layout === 'lr' ? 512 / 192 : 256 / 384) : target.system === 'gba' ? 3 / 2 : 10 / 9;
@@ -1865,7 +1868,7 @@ export function GameSession({ session, mode }) {
   })();
   const capValue = capNow?.cap || 100;
   useEffect(() => {
-    if (phase === 'running' && nativeOn) emu()?.setLevelCap?.(capValue);
+    if (phase === 'running') emu()?.setLevelCap?.(capValue);
   }, [capValue, phase, nativeOn, target.link]);
   const screenEl = html`<div class="session-screen" onClick=${focusGame}>
           <div class="console-screen" style=${`--arn:${arn}`}>

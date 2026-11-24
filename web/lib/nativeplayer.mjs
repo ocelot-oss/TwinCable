@@ -809,8 +809,8 @@ window.__emu = {
   write,
   writeChecked,
   setLevelCap(cap) {
-    if (!q.has('hgssCap')) return;
-    q.set('hgssCap', String(cap));
+    if (!q.has('ndsCap')) return;
+    q.set('ndsCap', String(cap));
     if (!LINK_SESSION) cmd(CMD.LEVEL_CAP, Uint8Array.of(cap));
   },
   levelCapActive: () => st.hardCap === true,
@@ -1190,7 +1190,7 @@ async function startSolo({ state, save }) {
   const res = await fetch('/api/native/start', {
     method: 'POST', headers: { 'content-type': 'application/json', 'x-soullink': '1' },
     body: JSON.stringify({ rom: q.get('rom'), key: q.get('key'), system: SYSTEM, save: save?.length ? b64(save) : null, saveUrl: q.get('save'), state: b64(state), model: st.model,
-      ...(q.has('hgssCap') ? { hgssCap: Number(q.get('hgssCap')) } : {}) }),
+      ...(q.has('ndsCap') ? { ndsCap: Number(q.get('ndsCap')) } : {}) }),
   }).catch(() => null);
   const j = await res?.json().catch(() => ({}));
   if (!res?.ok) {
@@ -1236,7 +1236,7 @@ async function start() {
     // (saveUrl: where the server keeps a last battery save that comes after this page has gone – never when the save on
     // disk couldn't be read: the game started without it, and its save must not replace the real one)
     body: JSON.stringify({ rom: q.get('rom'), key: q.get('key'), system: SYSTEM, save: save.bytes ? b64(save.bytes) : null, saveUrl: save.state === 'failed' ? null : q.get('save'),
-      ...(q.has('hgssCap') ? { hgssCap: Number(q.get('hgssCap')) } : {}) }),
+      ...(q.has('ndsCap') ? { ndsCap: Number(q.get('ndsCap')) } : {}) }),
   });
   const j = await res.json().catch(() => ({}));
   if (!res.ok) return fail(serverErrorText(j, res.status));

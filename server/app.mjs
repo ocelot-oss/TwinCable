@@ -1939,22 +1939,23 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   // ---- DS / GBA / GB in the fast native player (server/lib/native.mjs) -------------------------------------------
   route('GET', /^\/api\/native\/status$/, () => ({ tools: nativeStatus(), session: native.status() }));
   route('POST', /^\/api\/native\/start$/, async (req) => {
-    const { rom, key, system, save, saveUrl, state, model: asked, hgssCap } = await readBody(req);
+    const { rom, key, system, save, saveUrl, state, model: asked, ndsCap: requestedCap, hgssCap } = await readBody(req);
     if (typeof key !== 'string' || !key || key.length > 600) throw httpError(400, 'Invalid save key', 'badKey');
     if (!Object.hasOwn(NATIVE_CORES, system)) throw httpError(400, 'The fast player doesn’t play this system', 'nativeSystem');
-    if (hgssCap != null && (system !== 'nds' || !Number.isInteger(hgssCap) || hgssCap < 1 || hgssCap > 100)) throw httpError(400, 'Invalid level cap', 'badCommand');
+    const ndsCap = requestedCap ?? hgssCap;
+    if (ndsCap != null && (system !== 'nds' || !Number.isInteger(ndsCap) || ndsCap < 1 || ndsCap > 100)) throw httpError(400, 'Invalid level cap', 'badCommand');
     const b64ok = (v, maxBytes) => typeof v === 'string' && v.length <= Math.ceil(maxBytes / 3) * 4 && /^[A-Za-z0-9+/]*={0,2}$/.test(v);
     if (save != null && !b64ok(save, MAX_SAVE)) throw httpError(400, 'Invalid save file', 'badSave');
     // (state: the save state to go on from – the player's own console as a link session left it, docs/MULTIPLAYER.md)
     if (state != null && !b64ok(state, MAX_STATE)) throw httpError(400, 'Invalid save state', 'badSave');
     const tools = nativeTools();
     // the twicable engine (beta): the link host plays the game (the same states and protocol); else retrohost and its core
-    const engine = !hgssCap && loadConfig().nativeEngine === true && ENGINE_SYSTEMS.includes(system) ? linkTool() : null;
+    const engine = !ndsCap && loadConfig().nativeEngine === true && ENGINE_SYSTEMS.includes(system) ? linkTool() : null;
     if (!engine && !tools.cores?.[system]) throw httpError(409, 'The fast player is missing for this system', 'nativeMissing');
     // a Game Boy game's console: Settings › "Game Boy look" – or the one a state to go on from was made on
     const model = system === 'gb' && (asked === 'dmg' || asked === 'cgb') ? asked : gbModel(system, loadConfig().gbLook);
     const id = await native.startNative({ rom: nativeRomPath(rom), key, system, tools, save: save ? Buffer.from(save, 'base64') : null, saveFile: saveTargetFromUrl(saveUrl),
-      state: state ? Buffer.from(state, 'base64') : null, model, engine, hgssCap });
+      state: state ? Buffer.from(state, 'base64') : null, model, engine, ndsCap });
     return { id, core: nativeCoreId(system, model), model, engine: !!engine };
   });
   // the engine's link session is over: its game goes on alone in the same process (no state travels, no new player)

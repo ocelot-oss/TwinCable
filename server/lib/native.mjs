@@ -221,15 +221,15 @@ export function engineArgs({ system, rom, sram = null, state = null, model = nul
 }
 
 /** The host's arguments for `system` (the paths are the server's own – nothing here comes from the page). */
-export function hostArgs({ system, core, rom, saveDir, systemDir, sram = null, state = null, model = null, hgssCap = null }) {
+export function hostArgs({ system, core, rom, saveDir, systemDir, sram = null, state = null, model = null, ndsCap = null }) {
   const c = NATIVE_CORES[system];
   if (!c) throw httpError(400, 'The fast player doesn’t play this system', 'nativeSystem');
   const args = ['--core', core, '--rom', rom, '--system', systemDir, '--save', saveDir];
   if (sram) args.push('--sram', sram);
   if (state) args.push('--state', state);
   for (const [addr, len] of c.ram) args.push('--ram', `0x${addr.toString(16)}:0x${len.toString(16)}`);
-  for (const [k, v] of Object.entries(c.options)) args.push('--option', `${k}=${hgssCap && k === 'melonds_jit_enable' ? 'disabled' : v}`);
-  if (hgssCap) args.push('--hgss-cap', String(hgssCap));
+  for (const [k, v] of Object.entries(c.options)) args.push('--option', `${k}=${ndsCap && k === 'melonds_jit_enable' ? 'disabled' : v}`);
+  if (ndsCap) args.push('--nds-cap', String(ndsCap));
   if (system === 'gb' || system === 'gbc') args.push('--option', `sameboy_model=${SAMEBOY_MODEL[model === 'dmg' && system === 'gb' ? 'dmg' : 'cgb']}`);
   return args;
 }
@@ -316,7 +316,7 @@ export class NativeSessions extends CtrSessions {
    * with the system's libretro core). Coming back from a link session the engine already runs (`state` given, the same
    * game): the game goes on alone in that process (CMD_SOLO) – no new player; then a promise of the id.
    */
-  startNative({ rom, key, system, tools, save = null, saveFile = null, state = null, model = null, engine = null, hgssCap = null }) {
+  startNative({ rom, key, system, tools, save = null, saveFile = null, state = null, model = null, engine = null, ndsCap = null }) {
     if (engine && state?.length && this.engineLinked(rom)) return this.soloInPlace({ key, system, save, saveFile, state, model });
     const core = engine ? engine : tools.cores?.[system];
     if (!core) throw httpError(409, 'The fast player is missing for this system', 'nativeMissing');
@@ -327,7 +327,7 @@ export class NativeSessions extends CtrSessions {
     mkdirSync(saveDir, { recursive: true });
     mkdirSync(systemDir, { recursive: true });
     const { sram, stateFile } = this.startFiles(saveDir, save, state);
-    const args = engine ? engineArgs({ system, rom, sram, state: stateFile, model }) : hostArgs({ system, core, rom, saveDir, systemDir, sram, state: stateFile, model, hgssCap });
+    const args = engine ? engineArgs({ system, rom, sram, state: stateFile, model }) : hostArgs({ system, core, rom, saveDir, systemDir, sram, state: stateFile, model, ndsCap });
     const id = this.launch(engine || tools.host, args, saveDir);
     Object.assign(this.current, { saveFile, rom, engine: !!engine, system, model, key });
     return id;

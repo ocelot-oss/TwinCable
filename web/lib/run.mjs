@@ -958,14 +958,16 @@ export function levelCap(doc, manifest, slot) {
     const l = live(doc, slot);
     const bossName = (b) => (b.badge !== undefined ? (b.leader ? t('cap.gymLeader', '{name} (gym {n})', { name: prettyTrainer(b.leader), n: b.badge + 1 }) : t('cap.gym', 'Gym {n}', { n: b.badge + 1 }))
       : { champion: t('cap.champion', 'Champion'), 'elite four': t('cap.eliteFour', 'Elite Four') }[b.key] || b.name);
-    // Gen 1/2 and 5: the curated gym aces by live badge count – not for a ROM hack, whose trainers have other levels
+    const family = gymCapsFamily(manifest?.game?.id || manifest?.base?.gameId);
+    const r = romCapFor(doc.get(`romcaps:${slot}`, null), l?.badgesRead ? l.badges : undefined);
+    if (family === 'bw' && r) return { cap: r.cap, boss: { ...r.boss, name: bossName(r.boss) }, rom: true };
+    // Curated gym aces by live badge count for retail games.
     if (!manifest?.game?.hackId && !manifest?.game?.hackName && !manifest?.patch) {
-      const v = vanillaCapFor(gymCapsFamily(manifest?.game?.id || manifest?.base?.gameId), l?.badges);
+      const v = vanillaCapFor(family, l?.badges);
       if (v) return { cap: v.cap, boss: { ...v.boss, name: bossName(v.boss) }, vanilla: true };
     }
     // any other game: the caps read from its own trainers (shared/live/romcaps.mjs – the play view files them), with
     // badges read from the game itself; nothing (no cap shown) when either is unknown
-    const r = romCapFor(doc.get(`romcaps:${slot}`, null), l?.badgesRead ? l.badges : undefined);
     return r ? { cap: r.cap, boss: { ...r.boss, name: bossName(r.boss) }, rom: true } : { cap: null, boss: null };
   }
   const badges = live(doc, slot)?.badges ?? 0;

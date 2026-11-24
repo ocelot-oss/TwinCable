@@ -46,8 +46,8 @@ test('the host\'s arguments: the core, the RAM the live reader needs, twicable\'
   assert.deepEqual(pairs.filter(([k]) => k === '--ram').map(([, v]) => v), ['0x2000000:0x400000']);
   const opts = Object.fromEntries(pairs.filter(([k]) => k === '--option').map(([, v]) => v.split('=')));
   assert.equal(opts.melonds_jit_enable, 'enabled');
-  const capped = hostArgs({ system: 'nds', core: 'c', rom: 'r', saveDir: 's', systemDir: 'y', hgssCap: 13 });
-  assert.deepEqual(capped.slice(-2), ['--hgss-cap', '13']);
+  const capped = hostArgs({ system: 'nds', core: 'c', rom: 'r', saveDir: 's', systemDir: 'y', ndsCap: 13 });
+  assert.deepEqual(capped.slice(-2), ['--nds-cap', '13']);
   assert.ok(capped.includes('melonds_jit_enable=disabled'));
   assert.ok(!capped.includes('melonds_jit_enable=enabled'));
   assert.equal(opts.melonds_network_mode, 'disabled'); // never online through the core

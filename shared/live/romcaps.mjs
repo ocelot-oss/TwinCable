@@ -290,6 +290,32 @@ export function gen3Caps(rom, opts = {}) {
 
 // ---------------------------------------------------------------- Gen 4 / 5 (DS)
 
+// Black/White trainer IDs, in badge order (Universal Pokémon Randomizer ZX,
+// Gen5Constants.tagTrainersBW). The first gym has three possible opponents.
+export function bwCaps(data, parties, black) {
+  const gyms = [[0x0b, 0x0c, 0x0d], [0x15], [0x16], [0x17], [0x18], [0x19], [0x83], [black ? 0x84 : 0x85]];
+  const ace = (ids) => {
+    let max = 0;
+    for (const id of ids) {
+      const d = data[id], p = parties[id], count = d?.[3];
+      if (d?.length !== 20 || !count || count > 6 || !p) return null;
+      const size = 8 + (d[0] & 2 ? 2 : 0) + (d[0] & 1 ? 8 : 0);
+      if (p.length < count * size || p.length >= count * size + 4) return null;
+      for (let i = 0; i < count; i++) {
+        const level = u16(p, i * size + 2);
+        if (level < 1 || level > 100) return null;
+        max = Math.max(max, level);
+      }
+    }
+    return max;
+  };
+  const caps = gyms.map(ace);
+  const cap = ace([0xe4, 0xe5, 0xe6, 0xe7]);
+  return caps.every(Number.isInteger) && cap
+    ? { caps, leaders: null, final: { name: 'Elite Four', cap }, badgeFlags: null, source: { trainers: 'a/0/9/2' } }
+    : { why: 'invalid Black/White boss party' };
+}
+
 /**
  * Level caps of a DS game from its trainer files (one file per trainer: class at +1, party size at +3; its party
  * file holds the members, the level at +2 – a u16 in Gen 4, a byte in Gen 5) and the trainer and class names in
@@ -317,9 +343,11 @@ export function dsCaps(rom, opts = {}) {
     trp = ndsFile(rom, 'poketool/trainer/trpoke.narc', files);
     texts = ndsFile(rom, has('msgdata/pl_msg.narc') ? 'msgdata/pl_msg.narc' : 'msgdata/msg.narc', files);
   }
-  if (!trd || !trp || !texts) return { why: 'no trainer files' };
+  if (!trd || !trp) return { why: 'no trainer files' };
   const data = parseNarc(trd);
   const parties = parseNarc(trp);
+  if (/^IR[AB]$/.test(code)) return bwCaps(data, parties, code === 'IRB');
+  if (!texts) return { why: 'no trainer messages' };
   const msgs = parseNarc(texts);
   const read = (b) => {
     try {

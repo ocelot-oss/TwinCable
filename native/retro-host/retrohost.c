@@ -310,15 +310,28 @@ static void send_ram(void) {
   ram_send(&rs);
 }
 
-#include "hgss-level-cap.h"
-static unsigned hgss_cap;
-static bool hgss_cap_active;
+#include "nds-level-cap.h"
+static const struct nds_cap_layout *level_cap_layout;
+static struct nds_cap_layout relocated_platinum;
+static unsigned level_cap, level_cap_offset;
+static uint32_t bw_exp_guard;
+static unsigned bw_previous_cap;
+static bool level_cap_active, bw_level_cap;
+
+static bool set_level_cap(unsigned cap) {
+  uint8_t *ram = locate(0, NDS_RAM, 0x400000, NULL);
+  if (bw_level_cap) return nds_apply_bw_cap(ram, cap, &bw_exp_guard, &bw_previous_cap);
+  if (!level_cap_layout) return false;
+  if (level_cap_layout == &relocated_platinum && !relocated_platinum.gate &&
+      (cap == 100 || !nds_find_platinum(ram, &relocated_platinum))) return false;
+  return nds_apply_cap(ram, level_cap_layout, cap, &level_cap_offset);
+}
 
 static void apply_level_cap(void) {
-  if (!hgss_cap) return;
-  const bool active = hgss_apply_cap(locate(0, HGSS_RAM, 0x400000, NULL), hgss_cap) && hgss_cap < 100;
-  if (active != hgss_cap_active) {
-    hgss_cap_active = active;
+  if (!level_cap_layout && !bw_level_cap) return;
+  const bool active = set_level_cap(level_cap) && level_cap < 100;
+  if (active != level_cap_active) {
+    level_cap_active = active;
     host_event("{\"event\":\"levelCap\",\"active\":%s}", active ? "true" : "false");
   }
 }
@@ -441,7 +454,7 @@ int main(int argc, char **argv) {
     else if (!strcmp(k, "--bench")) opt_bench = atoi(v);
     else if (!strcmp(k, "--speed")) opt_bench_speed = atof(v);
     else if (!strcmp(k, "--dump")) opt_dump = v;
-    else if (!strcmp(k, "--hgss-cap")) hgss_cap = (unsigned)atoi(v);
+    else if (!strcmp(k, "--nds-cap") || !strcmp(k, "--hgss-cap")) level_cap = (unsigned)atoi(v);
     else if (!strcmp(k, "--ram")) ram_add_arg(&rs, v);
     else if (!strcmp(k, "--option") && options_n < MAX_OPTIONS) {
       const char *eq = strchr(v, '=');
@@ -484,6 +497,16 @@ int main(int argc, char **argv) {
   memset(&sys, 0, sizeof sys);
   core.get_system_info(&sys);
   struct retro_game_info info = {opt_rom, NULL, 0, NULL};
+  if (level_cap >= 1 && level_cap <= 100) {
+    FILE *rom = host_fopen(opt_rom, "rb");
+    char game_code[4];
+    if (rom && !fseek(rom, 12, SEEK_SET) && fread(game_code, 1, sizeof game_code, rom) == sizeof game_code) {
+      level_cap_layout = nds_cap_layout(game_code);
+      if (!level_cap_layout && nds_localized_platinum(game_code)) level_cap_layout = &relocated_platinum;
+      bw_level_cap = nds_bw_exp_cap(game_code);
+    }
+    if (rom) fclose(rom);
+  }
   void *rom_data = NULL;
   if (sys.need_fullpath == false) { // the core wants the bytes (mGBA, SameBoy)
     rom_data = host_read_file(opt_rom, &info.size);
@@ -594,7 +617,7 @@ int main(int argc, char **argv) {
           break;
         case CMD_SAVE: {
           // Save states can also be opened without this run rule or by a link host.
-          if (hgss_cap) hgss_apply_cap(locate(0, HGSS_RAM, 0x400000, NULL), 100);
+          set_level_cap(100);
           const size_t n = core.serialize_size();
           uint8_t *b = n ? malloc(n) : NULL;
           if (b && core.serialize(b, n)) host_send(MSG_STATE, b, (uint32_t)n);
@@ -651,7 +674,7 @@ int main(int argc, char **argv) {
         case CMD_WATCH: ram_set_watch(&rs, c->p, c->len); break;
         case CMD_DEPTH: depth_set(&depth, c->p, c->len, retro_depth, NULL); break;
         case CMD_LEVEL_CAP:
-          if (hgss_cap && c->len == 1 && c->p[0] >= 1 && c->p[0] <= 100) hgss_cap = c->p[0];
+          if ((level_cap_layout || bw_level_cap) && c->len == 1 && c->p[0] >= 1 && c->p[0] <= 100) level_cap = c->p[0];
           break;
         }
         free(c->p);

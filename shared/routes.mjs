@@ -189,13 +189,16 @@ const GYM_CAPS = {
   // Ghetsis follow right after them, Black 2/White 2: Iris)
   bw: { caps: [14, 20, 23, 27, 31, 35, 39, 43], after: [{ name: 'Elite Four', cap: 50 }] },
   b2w2: { caps: [13, 18, 24, 30, 33, 39, 48, 51], after: [{ name: 'Elite Four', cap: 58 }] },
+  xy: { caps: [12, 25, 32, 34, 37, 42, 48, 59], after: [{ name: 'Champion', cap: 68 }] },
+  oras: { caps: [14, 16, 21, 28, 30, 35, 45, 46], after: [{ name: 'Champion', cap: 59 }] },
 };
 
 export function gymCapsFamily(gameId = '') {
-  const id = String(gameId).replace(/-(de|jp|fr|es|it)$/, '');
+  const id = String(gameId).replace(/-(de|jp|fr|es|it|ko)$/, '');
   return {
     'pokemon-red': 'rb', 'pokemon-blue': 'rb', 'pokemon-green': 'rb', 'pokemon-yellow': 'yellow', 'pokemon-gold': 'gs', 'pokemon-silver': 'gs', 'pokemon-crystal': 'crystal',
     'pokemon-black': 'bw', 'pokemon-white': 'bw', 'pokemon-black-2': 'b2w2', 'pokemon-white-2': 'b2w2',
+    'pokemon-x': 'xy', 'pokemon-y': 'xy', 'pokemon-omega-ruby': 'oras', 'pokemon-alpha-sapphire': 'oras',
   }[id] || null;
 }
 

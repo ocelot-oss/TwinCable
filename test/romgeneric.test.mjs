@@ -14,7 +14,7 @@ registerHooks({
 });
 
 const { romTypes, TYPES34 } = await import('../shared/live/romtypes.mjs');
-const { gen3Caps, capsFrom, bossKind } = await import('../shared/live/romcaps.mjs');
+const { gen3Caps, capsFrom, bossKind, bwCaps } = await import('../shared/live/romcaps.mjs');
 const { romFeatures, FeatureCheck } = await import('../shared/live/features.mjs');
 const { gen4Messages, gen5Messages } = await import('../shared/live/romloc.mjs');
 const { readLiveParty, readLiveBattle, findEntry, LiveTables } = await import('../shared/live/parse.mjs');
@@ -569,6 +569,30 @@ test('Gen 3 battle: the battlers\' current types from gBattleMons (FireRed\'s la
 });
 
 // ---------------------------------------------------------------- caps in the run, features
+
+test('Black and White caps follow ROM teams in badge order and override retail values', () => {
+  const data = [], parties = [];
+  const levels = { 11: 18, 12: 16, 13: 15, 21: 26, 22: 24, 23: 32, 24: 33, 25: 37, 131: 42, 132: 47, 133: 48, 228: 55, 229: 51, 230: 52, 231: 53 };
+  for (const [id, level] of Object.entries(levels)) {
+    data[id] = new Uint8Array(20);
+    data[id][0] = 3;
+    data[id][3] = 2;
+    parties[id] = new Uint8Array(36);
+    parties[id][2] = level - 1;
+    parties[id][20] = level;
+  }
+  const black = bwCaps(data, parties, true);
+  const white = bwCaps(data, parties, false);
+  assert.deepEqual(black.caps, [18, 26, 24, 32, 33, 37, 42, 47]);
+  assert.equal(white.caps[7], 48);
+  assert.deepEqual(black.final, { name: 'Elite Four', cap: 55 });
+  const manifest = { game: { id: 'pokemon-black-fr', code: 'IRBF', system: 'nds' } };
+  const raw = { 'romcaps:p1': { v: black }, 'live:p1': { v: { badges: 1, badgesRead: true } } };
+  assert.equal(levelCapOf(manifest, { levelCaps: 'strict' }, raw, 1, 'p1').cap, 26);
+  assert.equal(levelCapOf(manifest, { levelCaps: 'strict' }, {}, 1, 'p1').cap, 20);
+  parties[21][21] = 1;
+  assert.equal(bwCaps(data, parties, true).caps, undefined);
+});
 
 test('level caps read from the ROM: the cap with n badges, the champion\'s after the last, the leader\'s name; the stream API needs badges read from the game', () => {
   const rc = { caps: [14, 21, 24, 29, 43, 43, 47, 50], leaders: ['BROCK', 'MISTY'], final: { name: 'Champion', cap: 63 } };
