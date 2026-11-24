@@ -31,9 +31,9 @@ export function useVisibleSkin() {
 const swatchBg = (sw) => (sw?.length ? `linear-gradient(90deg, ${sw.map((c, i) => `${c} ${(i / sw.length) * 100}% ${((i + 1) / sw.length) * 100}%`).join(', ')})` : '');
 const findItem = (kind, id) => (kind === 'nameplates' ? CATALOG.banners : CATALOG[kind] || []).find((x) => x.id === id);
 
-/** The quiet twicable+ mark (one fixed gold on every skin, so a light skin's dark accent can't hide it). */
+/** The quiet twincable+ mark (one fixed gold on every skin, so a light skin's dark accent can't hide it). */
 export function PlusMark({ title }) {
-  return html`<span class="plus-mark" title=${title ?? t('cos.plus', 'twicable+')} aria-label=${title ?? t('cos.plus', 'twicable+')}><${Icon} name="plus" size=${10} /></span>`;
+  return html`<span class="plus-mark" title=${title ?? t('cos.plus', 'twincable+')} aria-label=${title ?? t('cos.plus', 'twincable+')}><${Icon} name="plus" size=${10} /></span>`;
 }
 
 /**
@@ -137,7 +137,7 @@ function PickCard({ kind, item, on, skin, onPick, reducedMotion }) {
   const matches = skin && item.pairsWith?.includes(skin);
   const twin = kind === 'frames' && item.pair ? CATALOG.banners.find((b) => b.id === item.pair)?.name : null;
   const locked = !item.owned;
-  const label = [item.name, rarity, locked ? t('cos.locked', 'twicable+') : '', matches ? t('cos.matchesTheme', 'Matches your theme') : ''].filter(Boolean).join(' · ');
+  const label = [item.name, rarity, locked ? t('cos.locked', 'twincable+') : '', matches ? t('cos.matchesTheme', 'Matches your theme') : ''].filter(Boolean).join(' · ');
   return html`<button ref=${ref} type="button" role="radio" aria-checked=${on} aria-label=${label} data-cos-id=${item.id}
     class=${`cos-pick cos-pick--${kind}${on ? ' on' : ''}${locked ? ' locked' : ''}`} onClick=${() => onPick?.(item.id, item)}
     onPointerEnter=${() => setHot(true)} onPointerLeave=${() => setHot(false)} onFocus=${() => setHot(true)} onBlur=${() => setHot(false)}>
@@ -156,7 +156,7 @@ function PickCard({ kind, item, on, skin, onPick, reducedMotion }) {
 
 /**
  * The profile editor's picker. kind: 'banners' | 'frames' | 'nameplates'. value: the chosen id (null = none).
- * onPick(id, item): item.owned tells whether it can be kept (locked ones are offered by the caller's twicable+ flow).
+ * onPick(id, item): item.owned tells whether it can be kept (locked ones are offered by the caller's twincable+ flow).
  * none: show a "None" choice (default true). Grouped by collection; filter: all / owned.
  */
 export function CosmeticPicker({ kind = 'banners', value = null, onPick, none = true, reducedMotion }) {
@@ -183,7 +183,7 @@ export function CosmeticPicker({ kind = 'banners', value = null, onPick, none = 
         <button type="button" role="radio" aria-checked=${filter === 'all'} class=${filter === 'all' ? 'on' : ''} onClick=${() => setFilter('all')}>${t('cos.all', 'All')}</button>
         <button type="button" role="radio" aria-checked=${filter === 'owned'} class=${filter === 'owned' ? 'on' : ''} onClick=${() => setFilter('owned')}>${t('cos.owned', 'Yours')}</button>
       </div>
-      ${!state.entitled && html`<span class="small faint cos-picker-note"><${PlusMark} /> ${t('cos.lockedNote', 'Marked ones come with twicable+.')}</span>`}
+      ${!state.entitled && html`<span class="small faint cos-picker-note"><${PlusMark} /> ${t('cos.lockedNote', 'Marked ones come with twincable+.')}</span>`}
     </div>
     ${none && html`<div class="cos-group"><div class="cos-grid" role="radiogroup" aria-label=${title}>
       <button type="button" role="radio" aria-checked=${!value} class=${`cos-pick cos-pick--none${!value ? ' on' : ''}`} onClick=${() => onPick?.(null, null)}>

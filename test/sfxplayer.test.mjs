@@ -1,4 +1,4 @@
-// Sound effects while a 3DS game fast-forwards: the core leaves the music voices out (native/azahar-patch/twicable-sfx.patch
+// Sound effects while a 3DS game fast-forwards: the core leaves the music voices out (native/azahar-patch/twincable-sfx.patch
 // – its voice bookkeeping is compiled and run here on its own), the page plays each new sound at 1× when it happens
 // (web/lib/sfxplayer.mjs) over the ROM track (TurboMixer).
 import { test } from 'node:test';
@@ -239,7 +239,7 @@ test('the mixer: sound effects over the ROM track only while fast-forwarding –
 });
 
 // ---- the core's voice bookkeeping (C++, from the Azahar patch) -------------------------------------------------------
-const patch = readFileSync(new URL('../native/azahar-patch/twicable-sfx.patch', import.meta.url), 'utf8');
+const patch = readFileSync(new URL('../native/azahar-patch/twincable-sfx.patch', import.meta.url), 'utf8');
 function addedFile(name) {
   const at = patch.indexOf(`+++ b/${name}`);
   assert.ok(at >= 0, name);
@@ -252,12 +252,12 @@ const cxx = ['c++', 'g++', 'clang++'].find((c) => spawnSync(c, ['--version']).st
 test('the core: music voices recognised by the stream bytes they play (ADPCM and AAC), muted only when asked and sure', { skip: !cxx && 'no C++ compiler' }, () => {
   const dir = mkdtempSync(join(tmpdir(), 'sls-sfx-'));
   try {
-    writeFileSync(join(dir, 'twicable_music.h'), addedFile('src/common/twicable_music.h'));
+    writeFileSync(join(dir, 'twincable_music.h'), addedFile('src/common/twincable_music.h'));
     writeFileSync(join(dir, 't.cpp'), `
-#include "twicable_music.h"
+#include "twincable_music.h"
 #include <cstdio>
 #include <vector>
-using namespace TwicableMusic;
+using namespace TwinCableMusic;
 static uint32_t rnd = 12345;
 static uint8_t r8() { rnd = rnd * 1103515245u + 12345u; return (uint8_t)(rnd >> 16); }
 #define CHECK(c) do { if (!(c)) { printf("fail line %d: %s\\n", __LINE__, #c); return 1; } } while (0)
@@ -360,18 +360,18 @@ int main() {
 test('the patch: the game hears everything as before – only the copy for the frontend leaves the music out; the exports', () => {
   // the final mix the game reads back (shared memory) is the full one, written before the music is taken off the
   // outgoing copy (the hunk comes after it)
-  assert.match(patch, /\+ {4}TwicableMusic::EndFrame\(asked, muted, music, onset\);\n\+ {4}if \(muted\) \{/);
-  assert.match(patch, /return mixers\.TwicableDownmix\(music_mixes\);/);
+  assert.match(patch, /\+ {4}TwinCableMusic::EndFrame\(asked, muted, music, onset\);\n\+ {4}if \(muted\) \{/);
+  assert.match(patch, /return mixers\.TwinCableDownmix\(music_mixes\);/);
   // source statuses and the aux sends are made from the same mixes as always (the music voices are summed in too)
   assert.match(patch, /\+ {24}intermediate_mixes\[mix\]\[k\]\[c\] \+= own\[k\]\[c\];/);
-  assert.match(patch, /^\+ {4}Twicable::Fingerprint\(romfs_file, offset, buffer, std::min\(got, length\)\);/m);
-  assert.match(patch, /^\+ {4}TwicableMusic::NoteDecoded\(/m);
-  for (const f of ['twicable_audio_music_ranges', 'twicable_audio_mute_music', 'twicable_audio_frame_flags', 'twicable_audio_music_state']) {
+  assert.match(patch, /^\+ {4}TwinCable::Fingerprint\(romfs_file, offset, buffer, std::min\(got, length\)\);/m);
+  assert.match(patch, /^\+ {4}TwinCableMusic::NoteDecoded\(/m);
+  for (const f of ['twincable_audio_music_ranges', 'twincable_audio_mute_music', 'twincable_audio_frame_flags', 'twincable_audio_music_state']) {
     assert.match(patch, new RegExp(`^\\+RETRO_API \\w+ ${f}\\(`, 'm'), f);
     assert.match(patch, new RegExp(`^\\+_${f}$`, 'm'), `${f} in libretro.osx.def`);
   }
   const yml = readFileSync(new URL('../.github/workflows/ctr.yml', import.meta.url), 'utf8');
-  assert.equal(yml.match(/twicable_audio_frame_flags/g)?.length, 2, 'CI checks the exports on Linux and Windows');
+  assert.equal(yml.match(/twincable_audio_frame_flags/g)?.length, 2, 'CI checks the exports on Linux and Windows');
 });
 
 test('the server passes MUSIC and SFX on only with their exact sizes', async () => {

@@ -1,4 +1,4 @@
-// twicable+ skins: apply, preview and revert; a wish waits for the pack and gives way when the membership ends; the
+// twincable+ skins: apply, preview and revert; a wish waits for the pack and gives way when the membership ends; the
 // pack's assets are inlined so the CSP (font-src / img-src data:) holds. A minimal document stands in for the page.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -86,7 +86,7 @@ test('the membership ends: back to classic, the choice is remembered for when it
   assert.equal(html.dataset.skin, 'sakura');
 });
 
-test('listSkins: the catalog with groups, the twicable+ flag, owned / available', () => {
+test('listSkins: the catalog with groups, the twincable+ flag, owned / available', () => {
   packWith(true, ['moss']);
   const list = K.listSkins();
   assert.equal(list.length, 17, 'classic and the 16 colour skins – no editions');
@@ -96,7 +96,7 @@ test('listSkins: the catalog with groups, the twicable+ flag, owned / available'
   const moss = list.find((s) => s.id === 'moss');
   assert.deepEqual([moss.plus, moss.owned, moss.available, moss.launch], [true, true, true, undefined], 'no paired 2D launch animation any more');
   assert.equal(list.find((s) => s.id === 'glacier').owned, false);
-  for (const gone of ['fieldbook', 'clearshell', 'woodgrain', 'enamel']) assert.equal(list.some((s) => s.id === gone), false, `${gone} is not a twicable+ theme any more`);
+  for (const gone of ['fieldbook', 'clearshell', 'woodgrain', 'enamel']) assert.equal(list.some((s) => s.id === gone), false, `${gone} is not a twincable+ theme any more`);
   for (const s of list) assert.ok(s.name && s.sw.length >= 5 && ['dark', 'light'].includes(s.group), s.id);
 });
 

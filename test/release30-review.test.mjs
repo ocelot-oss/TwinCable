@@ -5,7 +5,7 @@ import { mkdtempSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-process.env.SLS_DATA_DIR = mkdtempSync(join(tmpdir(), 'twicable-review30-'));
+process.env.SLS_DATA_DIR = mkdtempSync(join(tmpdir(), 'twincable-review30-'));
 // a service address on this computer nobody answers at: nothing leaves the machine
 process.env.SLS_ACCOUNTS_URL = 'http://127.0.0.1:9';
 const { startServer } = await import('../server/app.mjs');
@@ -15,7 +15,7 @@ after(() => {
   for (const s of servers) s.close();
 });
 
-test('a twicable+ preview that can\'t be had is a 404 answer, never an unhandled rejection that leaves the request hanging', async () => {
+test('a twincable+ preview that can\'t be had is a 404 answer, never an unhandled rejection that leaves the request hanging', async () => {
   const unhandled = [];
   const onRejection = (e) => unhandled.push(e);
   process.on('unhandledRejection', onRejection);
@@ -63,7 +63,7 @@ test('signing out while a token refresh is on its way: the late answer doesn\'t 
 test('upgrade backup: a file that vanishes between the plan and the copy is skipped, the rest is still backed up', async () => {
   const { makeBackup, backupPlan } = await import('../server/lib/upgrade.mjs');
   const { mkdirSync, writeFileSync, readFileSync, existsSync } = await import('node:fs');
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-review30-backup-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-review30-backup-'));
   mkdirSync(join(dir, 'runs', 'abcd1234'), { recursive: true });
   writeFileSync(join(dir, 'runs', 'abcd1234', 'p1.sav'), Buffer.alloc(1024, 7));
   writeFileSync(join(dir, 'Cookies-journal'), 'x');

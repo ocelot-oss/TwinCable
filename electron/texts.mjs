@@ -6,7 +6,7 @@ import { join } from 'node:path';
 
 const LANGS = ['en', 'de', 'fr', 'es', 'it'];
 
-/** The app language: the one picked in Settings (config.json `lang`), else the system's when twicable has it, else English. */
+/** The app language: the one picked in Settings (config.json `lang`), else the system's when twincable has it, else English. */
 export function appLang(configLang, locale) {
   if (LANGS.includes(configLang)) return configLang;
   const sys = String(locale || '').slice(0, 2).toLowerCase();

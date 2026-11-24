@@ -1,9 +1,9 @@
 // Runs first in every pack worker (sandbox.mjs workerSource). The worker lives in a sandboxed iframe of its own origin,
 // in another process than the page – an OffscreenCanvas can't be handed across that line. So the page keeps its canvases
-// and sends { __twicableCanvas: id } instead; here that becomes a stand-in with exactly what the hosts use (width,
+// and sends { __twincableCanvas: id } instead; here that becomes a stand-in with exactly what the hosts use (width,
 // height, getContext('2d') → createImageData, putImageData, clearRect), and every picture goes back to the page as
 // ImageData, which draws it into the real canvas (sandbox.mjs SandboxedWorker).
-const send = (m) => self.postMessage({ op: '__twicable_canvas', ...m });
+const send = (m) => self.postMessage({ op: '__twincable_canvas', ...m });
 
 class ProxyContext {
   constructor(canvas) {
@@ -34,8 +34,8 @@ export class ProxyCanvas {
 
 const canvases = new Map();
 const revive = (d) => {
-  if (!d || typeof d !== 'object' || !d.canvas || typeof d.canvas.__twicableCanvas !== 'number') return d;
-  const id = d.canvas.__twicableCanvas;
+  if (!d || typeof d !== 'object' || !d.canvas || typeof d.canvas.__twincableCanvas !== 'number') return d;
+  const id = d.canvas.__twincableCanvas;
   if (!canvases.has(id)) canvases.set(id, new ProxyCanvas(id));
   return { ...d, canvas: canvases.get(id) };
 };

@@ -1,4 +1,4 @@
-// Too Many Types 1 and 2 (pokeemerald-expansion builds, checked in the running games for 2.3.1): what twicable reads
+// Too Many Types 1 and 2 (pokeemerald-expansion builds, checked in the running games for 2.3.1): what twincable reads
 // from their ROMs and RAM where they differ from Run & Bun – the species names inside gSpeciesInfo (TMT2), a party
 // with its count elsewhere and gEnemyParty in front (TMT2), gMain moved (TMT2), the Tera type in the species field
 // (TMT2), 0x60-byte battlers (both) and a type table of their own (both). Synthetic data shaped like what was

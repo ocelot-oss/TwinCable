@@ -59,11 +59,11 @@ const REJOIN_MAX_MS = 30 * 60 * 1000;
 export { linkDelay };
 const INVITE_TIMEOUT_MS = 60 * 1000; // an invite nobody answers ends by itself
 const MAX_SAVE_BYTES = 4 * 1024 * 1024; // (server/lib/native.mjs MAX_SAVE: a partner's save can't be bigger)
-// A link that stands still never does so silently (twicable 3.0.0: a DS console stood still, its player saw black and
+// A link that stands still never does so silently (twincable 3.0.0: a DS console stood still, its player saw black and
 // nothing was said): our link host waiting this long at one frame for a partner's buttons ends the link with a message
 // (both sides – the other one waits for ours by then too), and each game goes on alone. A rejoin under way restarts it.
 export const STALL_MS = 60 * 1000;
-// What this build's DS link host does differently from twicable 3.0.0 (the consoles' session clock, docs/MULTIPLAYER-DS.md):
+// What this build's DS link host does differently from twincable 3.0.0 (the consoles' session clock, docs/MULTIPLAYER-DS.md):
 // a 3.0.0 computer would compute other consoles – a DS link only starts when every seat says it has this.
 export const DS_CLOCK_CAP = 'dsclock1';
 const hasDsClock = (caps) => Array.isArray(caps) && caps.includes(DS_CLOCK_CAP);

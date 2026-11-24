@@ -1,4 +1,4 @@
-// Pokélink bridge: twicable's teams in the shape Pokélink themes read, and the socket.io handshake those themes
+// Pokélink bridge: twincable's teams in the shape Pokélink themes read, and the socket.io handshake those themes
 // make (socket.io-client 2.x → Engine.IO 3) – the list arrives on connect, changes are pushed, other sites get nothing.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -26,7 +26,7 @@ const doc = (o = {}) => ({
   ...o,
 });
 
-test('players: every twicable player as a Pokélink user (by name and by slot), six slots, trainer with badges', () => {
+test('players: every twincable player as a Pokélink user (by name and by slot), six slots, trainer with badges', () => {
   const list = pokelinkPlayers(manifest, doc(), data);
   assert.deepEqual(list.map((p) => p.username), ['Ana', 'p1', 'Ben', 'p2']);
   const ana = list[0];
@@ -76,7 +76,7 @@ test('game ids: catalog ids → Pokélink’s cartridge titles; deaths between t
   assert.deepEqual(newDeaths(after, after), []);
 });
 
-test('origins: themes from disk, twicable’s own pages and Pokélink’s hosting – other local servers only when switched on (#25)', () => {
+test('origins: themes from disk, twincable’s own pages and Pokélink’s hosting – other local servers only when switched on (#25)', () => {
   const own = { ports: [47390, 3000] };
   for (const o of [undefined, 'null', 'http://absolute', 'http://localhost:47390', 'http://127.0.0.1:3000', 'http://[::1]:47390', 'https://themes.pokelink.xyz', 'https://pokelink.app', 'https://pokelinkapp.github.io']) {
     assert.ok(originAllowed(o, own), o);
@@ -195,7 +195,7 @@ test('bridge: a page of another local web server only gets in once the Stream pa
   const dev = await poll('http://localhost:5173');
   assert.notEqual(dev.status, 200);
   assert.ok(!dev.headers['access-control-allow-origin']);
-  assert.equal((await poll('http://localhost:47390')).status, 200, 'twicable’s own page');
+  assert.equal((await poll('http://localhost:47390')).status, 200, 'twincable’s own page');
   assert.equal((await poll(`http://127.0.0.1:${bridge.port}`)).status, 200, 'the bridge’s own address');
   assert.equal((await poll('null')).status, 200, 'a theme opened from disk');
   localPages = true;
@@ -227,7 +227,7 @@ test('app API: the Stream page switches the bridge on and off; it serves the run
   assert.equal(on.run, 'c0ffee01');
   const open = await get(port, '/socket.io/?EIO=3&transport=polling&t=1', { Origin: 'null' });
   assert.equal(open.status, 200);
-  // twicable's own page may read; another local server only after the switch, which takes effect at once
+  // twincable's own page may read; another local server only after the switch, which takes effect at once
   const appPort = new URL(url).port;
   assert.equal((await get(port, '/socket.io/?EIO=3&transport=polling&t=2', { Origin: `http://localhost:${appPort}` })).status, 200);
   assert.equal(on.localPages, false);

@@ -29,7 +29,7 @@ test('backend → switches: --use-angle on Windows, --use-gl=angle plus --use-an
   assert.deepEqual(backendSwitches('vulkan', 'darwin'), []);
 });
 
-test('TWICABLE_CHROMIUM_FLAGS: names with or without dashes and values, underscores normalized, junk skipped', () => {
+test('TWINCABLE_CHROMIUM_FLAGS: names with or without dashes and values, underscores normalized, junk skipped', () => {
   assert.deepEqual(parseChromiumFlags('use_angle=vulkan'), [['use-angle', 'vulkan']]);
   assert.deepEqual(parseChromiumFlags('  --use-angle=gl   --ignore-gpu-blocklist\tenable-features=Vulkan,VulkanFromANGLE '),
     [['use-angle', 'gl'], ['ignore-gpu-blocklist', null], ['enable-features', 'Vulkan,VulkanFromANGLE']]);
@@ -115,13 +115,13 @@ test('electron/main.mjs reads the graphics backend from the config.json the serv
   assert.match(main, /CONFIG_FILE = join\(app\.getPath\('userData'\), 'config\.json'\)/);
   // the switches go in before the app is ready (appendSwitch after ready has no effect on the GPU process)
   assert.ok(main.indexOf('app.commandLine.appendSwitch(name') < main.indexOf('app.whenReady()'));
-  assert.ok(main.includes('process.env.TWICABLE_CHROMIUM_FLAGS'));
+  assert.ok(main.includes('process.env.TWINCABLE_CHROMIUM_FLAGS'));
 });
 
-test('safe graphics: asked for with --safe-graphics or TWICABLE_SAFE_GRAPHICS=1, no GPU switches, a normal restart after', () => {
-  assert.equal(safeGraphicsRequested(['twicable.exe', '--safe-graphics'], {}), true);
-  assert.equal(safeGraphicsRequested(['twicable.exe'], { TWICABLE_SAFE_GRAPHICS: '1' }), true);
-  assert.equal(safeGraphicsRequested(['twicable.exe', '--safe-graphics=no', 'safe-graphics'], { TWICABLE_SAFE_GRAPHICS: '0' }), false);
+test('safe graphics: asked for with --safe-graphics or TWINCABLE_SAFE_GRAPHICS=1, no GPU switches, a normal restart after', () => {
+  assert.equal(safeGraphicsRequested(['twincable.exe', '--safe-graphics'], {}), true);
+  assert.equal(safeGraphicsRequested(['twincable.exe'], { TWINCABLE_SAFE_GRAPHICS: '1' }), true);
+  assert.equal(safeGraphicsRequested(['twincable.exe', '--safe-graphics=no', 'safe-graphics'], { TWINCABLE_SAFE_GRAPHICS: '0' }), false);
   assert.equal(safeGraphicsRequested(undefined, undefined), false);
   // the chosen backend and the environment's GPU switches don't apply; other power-user flags stay
   const safe = chromiumSwitches({ backend: 'vulkan', platform: 'win32', envFlags: '--use-angle=d3d11 --ignore-gpu-blocklist --force-device-scale-factor=1 --disable-gpu', safe: true });
@@ -130,7 +130,7 @@ test('safe graphics: asked for with --safe-graphics or TWICABLE_SAFE_GRAPHICS=1,
   assert.deepEqual(chromiumSwitches({ backend: 'gl', platform: 'linux', safe: true }), SAFE_SWITCHES);
   // without it nothing changes
   assert.deepEqual(chromiumSwitches({ backend: 'vulkan', platform: 'win32' }), [['use-angle', 'vulkan']]);
-  assert.deepEqual(withoutSafeGraphics(['twicable.exe', '--safe-graphics', '--user-data-dir=x']), ['twicable.exe', '--user-data-dir=x']);
+  assert.deepEqual(withoutSafeGraphics(['twincable.exe', '--safe-graphics', '--user-data-dir=x']), ['twincable.exe', '--user-data-dir=x']);
 });
 
 test('safe graphics in the app: main.mjs skips the start count, tells the page, restarts without the flag; the Start menu entry', () => {

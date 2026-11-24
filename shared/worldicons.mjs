@@ -1,7 +1,7 @@
 // The Pokémon that follows a player in the Shared World overlay (shared/world.mjs Follower, docs/MULTIPLAYER.md › 9).
 // Gen 3 retail games have no overworld sprites of Pokémon, so the follower is the Pokémon's party-menu icon: 32×32,
 // two frames, 4bpp, one of six shared palettes – taken from the local game's own ROM at run time, like the partners'
-// sprites (shared/worldsprites.mjs). twicable ships no Pokémon graphics.
+// sprites (shared/worldsprites.mjs). twincable ships no Pokémon graphics.
 //
 // The tables (pokeemerald src/pokemon_icon.c, the same in Ruby/Sapphire and FireRed/LeafGreen, every language) lie
 // one after the other in the ROM: gMonIconTable (440 pointers: the species by their internal index, the Egg at 412,

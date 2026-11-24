@@ -97,7 +97,7 @@ test('whatsnew: the app wires it – shown once after the update, opened again f
   assert.match(app, /addEventListener\(WHATS_NEW_EVENT, open\)/);
   // the joke license window never takes that first start
   assert.match(app, /!whatsNewPending\(status\.config\) && shouldNag/);
-  assert.equal(WHATS_NEW_EVENT, 'twicable:whatsnew');
+  assert.equal(WHATS_NEW_EVENT, 'twincable:whatsnew');
   for (const f of ['web/views/guide.mjs', 'web/views/settings/general.mjs']) assert.match(src(f), /dispatchEvent\(new Event\(WHATS_NEW_EVENT\)\)/, f);
   assert.match(src('web/views/update.mjs'), /skipUpdatedToast\(status\?\.config\)/);
   assert.match(src('web/index.html'), /href="\/whatsnew\.css"/);

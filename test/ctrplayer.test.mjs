@@ -224,7 +224,7 @@ test('a 3DS host that crashes: its graphics card, exit and last stderr stay for 
     assert.equal(ctr.last.gpu.name, 'AMD Radeon RX 9070 XT');
     assert.match(ctr.last.stderr, /amdvlk64\.dll/);
     assert.match(ctr.last.stderrStart, /using device 0 of 2/);
-    // also in the players' log file, which outlives a restart of twicable
+    // also in the players' log file, which outlives a restart of twincable
     assert.equal(ctr.diagnostics().log.at(-1).gpu.name, 'AMD Radeon RX 9070 XT');
     assert.equal(ctr.status().gpu.driver, '2.0.341 AMD proprietary driver 25.10.2');
     assert.ok(warned.some((w) => /the host ended: exit code 5 – GPU AMD Radeon RX 9070 XT/.test(w)), warned.join('\n'));
@@ -234,7 +234,7 @@ test('a 3DS host that crashes: its graphics card, exit and last stderr stay for 
     await until(() => ctr.last?.error);
     assert.equal(ctr.last.exit, 'exit code 1');
     assert.match(ctr.last.error, /Vulkan device/);
-    // twicable stops a game: nothing to report – the last failure stays
+    // twincable stops a game: nothing to report – the last failure stays
     const before = ctr.last;
     ctr.start({ rom: 'ok', key: 'k-ok', tools });
     const ok = ctr.current;

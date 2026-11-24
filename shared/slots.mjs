@@ -24,7 +24,7 @@ export const isTogether = (manifest) => runMode(manifest) === 'together';
 export const isChallenge = (manifest) => runMode(manifest) !== 'together';
 
 /**
- * A run's mode as the twicable accounts service takes it (friend presence, friend invites, recent runs):
+ * A run's mode as the twincable accounts service takes it (friend presence, friend invites, recent runs):
  * 'soullink' | 'nuzlocke' | 'together' (the service takes 'together' since 19 Nov 2026).
  */
 export const wireMode = (manifest) => runMode(manifest);

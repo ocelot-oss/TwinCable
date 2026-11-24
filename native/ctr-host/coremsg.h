@@ -3,12 +3,12 @@
 //
 // melonDS DS 1.4.0 sends its on-screen display every frame (OnScreenDisplayTask: the text buffer gets its terminating zero
 // before the "anything to show?" check, so an empty display is never empty): 60 to 250 "[core message] " lines a second
-// in the host's stderr, each also a LOG message to the page. A DS player's diagnostics (Linux, twicable 2.8.3, Pokémon
+// in the host's stderr, each also a LOG message to the page. A DS player's diagnostics (Linux, twincable 2.8.3, Pokémon
 // White 2 Redux) held nothing but those – the end of stderr and the page's log, where the useful lines are, were gone.
 // Now a message with no text in it is left out, and the same text again within CORE_MSG_QUIET seconds too (its repeats
 // are counted and said with the next one that is logged).
-#ifndef TWICABLE_COREMSG_H
-#define TWICABLE_COREMSG_H
+#ifndef TWINCABLE_COREMSG_H
+#define TWINCABLE_COREMSG_H
 #include <string.h>
 
 #ifndef CORE_MSG_QUIET

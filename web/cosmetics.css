@@ -1,7 +1,7 @@
-/* twicable+ cosmetics: the theme and launch pickers in Settings, the twicable+ mark, and the banner / frame / nameplate
+/* twincable+ cosmetics: the theme and launch pickers in Settings, the twincable+ mark, and the banner / frame / nameplate
    components (web/lib/cosmetics/components.mjs). Every rule here is app UI; the skins themselves come from the pack. */
 
-/* the quiet twicable+ mark – one fixed gold on every skin (a light skin's dark --warn would hide the plus) */
+/* the quiet twincable+ mark – one fixed gold on every skin (a light skin's dark --warn would hide the plus) */
 .plus-mark { display: inline-grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 5px; color: #1b1a1f; background: #e1b05a;
   box-shadow: inset 0 -1px 0 #0003, 0 0 0 1px #0000001a; line-height: 0; }
 .plus-mark svg { display: block; }
@@ -102,10 +102,10 @@
 .plus-note { display: inline-flex; align-items: center; gap: 6px; }
 .launch-title { font-size: 13px; color: var(--ink-2); }
 
-/* ---- the play view: a twicable+ launch animation over the game box (views/launch.mjs) ---- */
+/* ---- the play view: a twincable+ launch animation over the game box (views/launch.mjs) ---- */
 .console-screen .launch-host { position: absolute; inset: 0; z-index: 4; border-radius: inherit; overflow: hidden; }
 
-/* ---- live theme preview (a non-member trying a twicable+ theme for 15 minutes) ---- */
+/* ---- live theme preview (a non-member trying a twincable+ theme for 15 minutes) ---- */
 .skin-preview-bar.live { background: color-mix(in srgb, var(--crs) 10%, var(--shell-3)); border-color: color-mix(in srgb, var(--crs) 40%, var(--edge)); }
 .skin-live-badge { flex: none; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: .02em;
   color: var(--shell); background: var(--crs); }
@@ -124,7 +124,7 @@
 .skin-shot { margin: 10px 0 0; display: grid; gap: 6px; max-width: 560px; }
 .skin-shot .cos-preview { width: 100%; height: auto; aspect-ratio: 16 / 10; border-radius: var(--r-m); border: 1px solid var(--sk-line, #0d0c10); image-rendering: auto; }
 
-/* "What twicable+ holds" */
+/* "What twincable+ holds" */
 .plus-show { margin-top: 6px; }
 .plus-show-head { align-items: baseline; gap: 10px; }
 .plus-show-head h3 { margin: 0; font-size: 14px; }
@@ -160,11 +160,11 @@
 .fav-glyph { display: block; flex: none; }
 .fav-star.pop .fav-glyph { animation: fav-pop .34s cubic-bezier(.2, .8, .2, 1.3); }
 @keyframes fav-pop { 0% { transform: scale(.55); } 60% { transform: scale(1.28); } 100% { transform: scale(1); } }
-/* a tiny badge for small swatches (the twicable+ page's theme strip) */
+/* a tiny badge for small swatches (the twincable+ page's theme strip) */
 .fav-star.mini { top: -6px; right: -6px; left: auto; width: 16px; height: 16px; }
 .fav-star.mini .fav-glyph { width: 10px; height: 10px; }
 
-/* where the star sits per picker – never on the twicable+ mark, never on the name */
+/* where the star sits per picker – never on the twincable+ mark, never on the name */
 .pe-fav .fav-star { top: 10px; left: 10px; }
 .pe-fav.k-nameplates .fav-star { top: auto; bottom: 34px; left: auto; right: 10px; }
 .skin-fav .fav-star { top: 5px; left: auto; right: 5px; width: 20px; height: 20px; }

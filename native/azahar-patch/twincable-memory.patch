@@ -7,7 +7,7 @@ index 8a65f9d..a070477 100644
  
  void retro_cheat_set(unsigned index, bool enabled, const char* code) {}
 +
-+// ---- twicable: reading (and for cheats writing) the running game's memory --------------------------------------
++// ---- twincable: reading (and for cheats writing) the running game's memory --------------------------------------
 +// The memory map (RETRO_ENVIRONMENT_SET_MEMORY_MAPS) is set once, when the game loads – before the game allocates
 +// its heaps, so the regions frontends need for live data (the party in the application / linear heap) aren't in it.
 +// These calls go through the process's page table instead: any mapped address, whatever VMAs it is split into.
@@ -18,7 +18,7 @@ index 8a65f9d..a070477 100644
 +
 +/// Copies `size` bytes at the game process's virtual address `addr` to `out`. false when any byte isn't mapped
 +/// (nothing is copied then) or no game runs.
-+RETRO_API bool twicable_read_memory(uint32_t addr, void* out, uint32_t size) {
++RETRO_API bool twincable_read_memory(uint32_t addr, void* out, uint32_t size) {
 +    if (!emu_instance || !emu_instance->game_loaded || !out || size == 0)
 +        return false;
 +    auto& system = Core::System::GetInstance();
@@ -37,12 +37,12 @@ index 8a65f9d..a070477 100644
 +    return true;
 +}
 +
-+/// Writes `size` bytes from `data` to the game process's virtual address `addr` (twicable's cheats: a few bytes of the
++/// Writes `size` bytes from `data` to the game process's virtual address `addr` (twincable's cheats: a few bytes of the
 +/// bag). Through the core's own memory system – the process's page table and Memory::WriteBlock – so the bytes land in
 +/// the emulated memory on every OS, whatever the heap, and whatever the renderer cached there is invalidated. Only
 +/// inside the game's heaps (application heap, linear heap, New 3DS linear heap), only within one 4 KB page, and only
 +/// when that page is mapped: false otherwise, or when no game runs (nothing is written then).
-+RETRO_API bool twicable_write_memory(uint32_t addr, const void* data, uint32_t size) {
++RETRO_API bool twincable_write_memory(uint32_t addr, const void* data, uint32_t size) {
 +    if (!emu_instance || !emu_instance->game_loaded || !data || size == 0)
 +        return false;
 +    const uint64_t end = static_cast<uint64_t>(addr) + size;
@@ -67,7 +67,7 @@ index 8a65f9d..a070477 100644
 +}
 +
 +/// The program (title) ID of the running process, 0 when none runs.
-+RETRO_API uint64_t twicable_title_id(void) {
++RETRO_API uint64_t twincable_title_id(void) {
 +    if (!emu_instance || !emu_instance->game_loaded)
 +        return 0;
 +    auto& system = Core::System::GetInstance();
@@ -86,6 +86,6 @@ index 53a556a..0d43acd 100644
  _retro_get_region
  _retro_get_memory_data
  _retro_get_memory_size
-+_twicable_read_memory
-+_twicable_title_id
-+_twicable_write_memory
++_twincable_read_memory
++_twincable_title_id
++_twincable_write_memory

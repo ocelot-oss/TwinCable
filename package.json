@@ -1,8 +1,8 @@
 {
-  "name": "twicable",
+  "name": "twincable",
   "version": "1.0.0",
   "private": true,
-  "description": "twicable – Pokémon SoulLinks (2–4 players) and Nuzlockes with a built-in emulator, live sync and a game library",
+  "description": "twincable – Pokémon SoulLinks (2–4 players) and Nuzlockes with a built-in emulator, live sync and a game library",
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/souldewapp/souldew",
   "repository": {
@@ -54,12 +54,12 @@
     "globals": "14.0.0"
   },
   "main": "electron/main.mjs",
-  "desktopName": "twicable.desktop",
-  "author": "twicable",
+  "desktopName": "twincable.desktop",
+  "author": "twincable",
   "build": {
     "appId": "studio.soullink.app",
-    "productName": "twicable",
-    "copyright": "twicable",
+    "productName": "twincable",
+    "copyright": "twincable",
     "asar": false,
     "directories": {
       "output": "dist",
@@ -109,9 +109,9 @@
       "hardenedRuntime": false,
       "darkModeSupport": true,
       "extendInfo": {
-        "NSDownloadsFolderUsageDescription": "twicable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac.",
-        "NSDesktopFolderUsageDescription": "twicable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac.",
-        "NSDocumentsFolderUsageDescription": "twicable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac."
+        "NSDownloadsFolderUsageDescription": "twincable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac.",
+        "NSDesktopFolderUsageDescription": "twincable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac.",
+        "NSDocumentsFolderUsageDescription": "twincable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac."
       },
       "extraResources": [
         {
@@ -136,7 +136,7 @@
       ]
     },
     "dmg": {
-      "title": "twicable",
+      "title": "twincable",
       "background": "build/background.png",
       "iconSize": 96,
       "window": {
@@ -167,7 +167,7 @@
           ]
         }
       ],
-      "artifactName": "twicable-${version}-win-${arch}-setup.${ext}",
+      "artifactName": "twincable-${version}-win-${arch}-setup.${ext}",
       "extraResources": [
         {
           "from": "tools/jre/win32-x64",
@@ -197,9 +197,9 @@
       "runAfterFinish": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "twicable",
+      "shortcutName": "twincable",
       "include": "build/installer.nsh",
-      "uninstallDisplayName": "twicable",
+      "uninstallDisplayName": "twincable",
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico"
@@ -209,9 +209,9 @@
       "category": "Game",
       "synopsis": "Pokémon SoulLinks and Nuzlockes with a built-in emulator",
       "description": "Pokémon SoulLinks for 2–4 players and solo Nuzlockes: built-in emulator, live tracking from game memory, randomizer, real-time sync and OBS overlays.",
-      "maintainer": "twicable <https://github.com/souldewapp/souldew>",
-      "vendor": "twicable",
-      "executableName": "twicable",
+      "maintainer": "twincable <https://github.com/souldewapp/souldew>",
+      "vendor": "twincable",
+      "executableName": "twincable",
       "syncDesktopName": true,
       "target": [
         {
@@ -227,7 +227,7 @@
           ]
         }
       ],
-      "artifactName": "twicable-${version}-linux-${arch}.${ext}",
+      "artifactName": "twincable-${version}-linux-${arch}.${ext}",
       "desktop": {
         "entry": {
           "Keywords": "Pokemon;Pokémon;SoulLink;Nuzlocke;Emulator;Randomizer;"

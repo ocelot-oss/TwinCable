@@ -1,8 +1,8 @@
-// The game's memory for twicable's live tracking, shared by both native hosts: the --ram regions mirrored in the page
+// The game's memory for twincable's live tracking, shared by both native hosts: the --ram regions mirrored in the page
 // (RAM: what changed, in whole 1 KB blocks, between two frames – never torn), cheats written into them (WRITE), and a
 // few bytes the page needs with every single picture (WATCH → WATCHED: the Shared World overlay's camera).
-#ifndef TWICABLE_RAMSTREAM_H
-#define TWICABLE_RAMSTREAM_H
+#ifndef TWINCABLE_RAMSTREAM_H
+#define TWINCABLE_RAMSTREAM_H
 
 #include <stdbool.h>
 #include <stddef.h>

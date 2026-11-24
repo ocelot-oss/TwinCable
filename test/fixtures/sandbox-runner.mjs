@@ -1,5 +1,5 @@
 // Electron main for test/cosmetics-sandbox.test.mjs: the app's own server with the window secret (like
-// electron/main.mjs), the real page in a hidden window, and twicable+ pack code started the way the frames runtime starts
+// electron/main.mjs), the real page in a hidden window, and twincable+ pack code started the way the frames runtime starts
 // it (web/lib/cosmetics/sandbox.mjs startWorker). The pack code probes what it can reach; the frames host must still work.
 // Writes one JSON result to the path given as the last argument.
 import { app, BrowserWindow, session } from 'electron';

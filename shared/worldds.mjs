@@ -1,10 +1,10 @@
 // Shared World on the DS (docs/MULTIPLAYER.md › 9, "Gen 4"): the partners drawn into the 3D field of Platinum,
-// Diamond/Pearl and HeartGold/SoulSilver. As on the GBA nothing is written into the game – twicable reads where the
+// Diamond/Pearl and HeartGold/SoulSilver. As on the GBA nothing is written into the game – twincable reads where the
 // player stands and how the game's own 3D camera looks at the field, and draws the partners on top of the picture.
 //
 // The camera is not modelled per map: every map type (the perspective camera outdoors, the orthographic one in most
 // houses, HGSS's per-map tilts, the camera easing after the player) ends up in the same two matrices the game hands
-// to NitroSystem's 3D engine – NNS_G3dGlb's projection and camera (view) matrices. twicable reads those and projects a
+// to NitroSystem's 3D engine – NNS_G3dGlb's projection and camera (view) matrices. twincable reads those and projects a
 // world point exactly the way the geometry engine does: row vector × camera (4×3) × projection (4×4), then the
 // viewport of the top screen.
 //

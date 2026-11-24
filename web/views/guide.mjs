@@ -98,11 +98,11 @@ export function ControlsTable() {
 /** group: a run of 3–4 players – "the others' computers" instead of the partner's. */
 export function ConnectionFlow({ group = false } = {}) {
   return html`<div class="flow" aria-label=${t('conn.flowAria', 'How the connection works')}>
-    <div class="box"><b>${t('conn.yourComputer', 'Your computer')}</b><span>${t('conn.local', 'twicable, local')}</span></div>
+    <div class="box"><b>${t('conn.yourComputer', 'Your computer')}</b><span>${t('conn.local', 'twincable, local')}</span></div>
     <span class="arrow" aria-hidden="true">⇄</span>
     <div class="box"><b>${t('conn.relays', 'Public relays')}</b><span>${t('conn.relaysSub', 'only see encrypted data')}</span></div>
     <span class="arrow" aria-hidden="true">⇄</span>
-    <div class="box"><b>${group ? t('conn.friendGroup', 'The others’ computers') : t('conn.friend', 'Your partner’s computer')}</b><span>${t('conn.local', 'twicable, local')}</span></div>
+    <div class="box"><b>${group ? t('conn.friendGroup', 'The others’ computers') : t('conn.friend', 'Your partner’s computer')}</b><span>${t('conn.local', 'twincable, local')}</span></div>
   </div>`;
 }
 
@@ -155,12 +155,12 @@ export function GuideView() {
       <details><summary>${t('faq.q6', 'What if one of us is offline?')}</summary><div class="prose small muted" style="margin-top:8px"><p>${t('faq.a6', 'Nothing gets lost. Each app keeps its own copy and both merge automatically when you’re connected again.')}</p></div></details>
       <details><summary>${t('faq.q9', 'Can I bring an old save file, or take mine elsewhere?')}</summary><div class="prose small muted" style="margin-top:8px">
         <p>${t('faq.a9a', 'Yes. In the library, open the game › “Import a save file …” (in a run: the board’s Files menu). It takes .sav, .srm and DeSmuME’s .dsv from other emulators, flash carts and cartridge dumps, checks the size and – for the Pokémon games – whether it is a save of that game, and backs up the save it replaces first, with Undo.')}</p>
-        <p>${t('faq.a9b', '“Save game file” gives you a plain .sav that other emulators and flash carts read. In a run, an imported save is logged for everyone, a SoulLink needs the host to allow it, and what it brings along doesn’t count for the run or your trophies. 3DS: a Checkpoint or JKSM backup goes into twicable’s own 3DS player once the game has saved there.')}</p></div></details>
+        <p>${t('faq.a9b', '“Save game file” gives you a plain .sav that other emulators and flash carts read. In a run, an imported save is logged for everyone, a SoulLink needs the host to allow it, and what it brings along doesn’t count for the run or your trophies. 3DS: a Checkpoint or JKSM backup goes into twincable’s own 3DS player once the game has saved there.')}</p></div></details>
       <details><summary>${t('faq.q7', 'Something doesn’t work right (music, live tracking)?')}</summary><div class="stack" style="margin-top:8px">
-        <p class="prose small muted">${t('faq.a7', 'Right after it happens, save the diagnostics and send the file along with what you did. It holds what twicable read from the game and decided this session (song numbers, levels, what the turbo sound played) – no ROM, save file or invite.')}</p>
+        <p class="prose small muted">${t('faq.a7', 'Right after it happens, save the diagnostics and send the file along with what you did. It holds what twincable read from the game and decided this session (song numbers, levels, what the turbo sound played) – no ROM, save file or invite.')}</p>
         <div class="row"><button class="btn small" onClick=${() => saveDiagnostics()}><${Icon} name="save" size=${14} />${t('play.diag', 'Save diagnostics')}</button></div></div></details>
-      <details><summary>${t('faq.q8', 'Does twicable send anything about me?')}</summary><div class="stack" style="margin-top:8px">
-        <div class="prose small muted"><p>${t('faq.a8a', 'No analytics, and an account only if you want one. By itself twicable sends an anonymous “playing now” heartbeat for the player count on the twicable Discord: while a game runs, once a minute, the system (GB, GBA, DS, 3DS), the mode (solo, Nuzlocke, SoulLink or Play together), the app version and a random id that is new for every game. No name, no game title, no run, no ROM – and the IP address isn’t stored. Besides that it only checks for updates. Signed in with a twicable account, your friends see that you’re online and what you play – Settings › Account › Privacy decides how much, and “Appear offline” shares none of it.')}</p>
+      <details><summary>${t('faq.q8', 'Does twincable send anything about me?')}</summary><div class="stack" style="margin-top:8px">
+        <div class="prose small muted"><p>${t('faq.a8a', 'No analytics, and an account only if you want one. By itself twincable sends an anonymous “playing now” heartbeat for the player count on the twincable Discord: while a game runs, once a minute, the system (GB, GBA, DS, 3DS), the mode (solo, Nuzlocke, SoulLink or Play together), the app version and a random id that is new for every game. No name, no game title, no run, no ROM – and the IP address isn’t stored. Besides that it only checks for updates. Signed in with a twincable account, your friends see that you’re online and what you play – Settings › Account › Privacy decides how much, and “Appear offline” shares none of it.')}</p>
           <p>${t('faq.a8b', 'Don’t want to be counted? Switch off “Count me in ‘playing now’” in Settings › Online – it stops right away.')}</p></div>
         <div class="row"><button class="btn small" onClick=${() => openExternal(currentLang() === 'de' ? LINKS.privacy : LINKS.privacyDocs)}><${Icon} name="external" size=${14} />${t('set.presenceMore', 'What exactly is sent')}</button></div></div></details>
     </section>`}

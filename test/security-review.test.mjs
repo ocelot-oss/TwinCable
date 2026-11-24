@@ -1,4 +1,4 @@
-// Regression tests for the independent security review of the twicable 3.0 accounts / twicable+ integration (commit
+// Regression tests for the independent security review of the twincable 3.0 accounts / twincable+ integration (commit
 // d39a98f): each test is one of the review's exploit scripts, asserting the FIXED behaviour. #2 (pack code in the
 // renderer) needs Chromium – test/cosmetics-sandbox.test.mjs.
 import { test, after } from 'node:test';
@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createServer } from 'node:http';
 
-process.env.SLS_DATA_DIR = mkdtempSync(join(tmpdir(), 'twicable-secrev-'));
+process.env.SLS_DATA_DIR = mkdtempSync(join(tmpdir(), 'twincable-secrev-'));
 const { startFakeAccounts, rawGet } = await import('./fixtures/fakeaccounts.mjs');
 const fake = await startFakeAccounts();
 process.env.SLS_ACCOUNTS_URL = fake.base;
@@ -55,7 +55,7 @@ async function start(opts = {}) {
   return { ...s, base, call };
 }
 
-test('#1 another local program: the account and twicable+ routes need the app window’s secret; no sign-in on top; no URL handed out', async () => {
+test('#1 another local program: the account and twincable+ routes need the app window’s secret; no sign-in on top; no URL handed out', async () => {
   const victim = fake.addUser({ handle: 'victim1', display_name: 'Victim', entitlement: { tier: 'plus', until: null, badges: ['plus'] } });
   let opened = null;
   const app = await start({ rendererSecret: SECRET, openExternal: (u) => { opened = u; } });
@@ -105,7 +105,7 @@ test('#2 (env) an installed app ignores SLS_ACCOUNTS_URL / dev packs / dev keys;
   servers.push(evil);
   const before = process.env.SLS_ACCOUNTS_URL;
   process.env.SLS_ACCOUNTS_URL = `http://127.0.0.1:${evil.address().port}`;
-  const dev = mkdtempSync(join(tmpdir(), 'twicable-devpack-'));
+  const dev = mkdtempSync(join(tmpdir(), 'twincable-devpack-'));
   writeFileSync(join(dev, 'access.json'), JSON.stringify({ publicKey: 'A'.repeat(43) }));
   process.env.SLS_PLUS_DEV_PACK = dev;
   try {
@@ -242,7 +242,7 @@ test('#7 signed out, not even the public catalog is fetched – the app’s own 
 });
 
 test('#8 an unsigned pack is never downloaded or stored; pack URLs only on the accounts service', async () => {
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-'));
   let fetched = 0;
   const manifest = Buffer.from(JSON.stringify({ id: 'evil-pack', version: '1.0.0', files: [{ path: 'x.css', sha256: 'a'.repeat(64) }] })).toString('base64url');
   const pack = createPlusPack({ dir, devDir: '', env: { SLS_ACCOUNTS_URL: fake.base }, fetchImpl: async () => { fetched++; return new Response(Buffer.concat([Buffer.from('SDP1'), Buffer.alloc(4096, 0x41)])); } });
@@ -250,11 +250,11 @@ test('#8 an unsigned pack is never downloaded or stored; pack URLs only on the a
   assert.equal(fetched, 0);
   assert.ok(!existsSync(join(dir, 'files')) || readdirSync(join(dir, 'files')).length === 0);
   assert.ok(!existsSync(join(dir, 'pack.json')));
-  const prod = createPlusPack({ dir: mkdtempSync(join(tmpdir(), 'twicable-plus-')), devDir: '', env: {} });
-  await assert.rejects(prod.fetchOne({ url: 'https://cdn.souldew.app/x' }), { code: 'plusUrl' }, 'another twicable.app host');
+  const prod = createPlusPack({ dir: mkdtempSync(join(tmpdir(), 'twincable-plus-')), devDir: '', env: {} });
+  await assert.rejects(prod.fetchOne({ url: 'https://cdn.souldew.app/x' }), { code: 'plusUrl' }, 'another twincable.app host');
 });
 
-test('#9 the release gate: a packaged build stops while a pinned twicable+ key is a placeholder', async () => {
+test('#9 the release gate: a packaged build stops while a pinned twincable+ key is a placeholder', async () => {
   const { pinnedKeyProblems } = await import('../scripts/check-pinned-keys.mjs');
   assert.deepEqual(pinnedKeyProblems(), [], 'the owner’s pack and entitlement keys are pinned');
   const real = 'O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik';

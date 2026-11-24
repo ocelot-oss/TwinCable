@@ -5,7 +5,7 @@
 // "Fast player" off gives the browser emulator; with --broken (Game Boy core replaced by junk) that a core which can't
 // start falls back to the browser emulator by itself.
 //
-// With --engine the fast player is the twicable engine (Settings › "twicable engine (beta)") – each result says which ran
+// With --engine the fast player is the twincable engine (Settings › "twincable engine (beta)") – each result says which ran
 // ("engine") – and every turbo-sound mode is probed while fast-forwarding (what the mixer plays and how loud: silent,
 // the app is muted).
 //
@@ -31,9 +31,9 @@ if (!process.versions.electron) {
 } else {
   const { app, BrowserWindow } = await import('electron');
   const romDir = resolve(args.find((a, i) => !a.startsWith('--') && !['--out', '--only'].includes(args[i - 1])) || '.');
-  const out = resolve(opt('out', join(tmpdir(), 'twicable-native-e2e')));
+  const out = resolve(opt('out', join(tmpdir(), 'twincable-native-e2e')));
   mkdirSync(out, { recursive: true });
-  const data = mkdtempSync(join(tmpdir(), 'twicable-e2e-'));
+  const data = mkdtempSync(join(tmpdir(), 'twincable-e2e-'));
   writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'de', playerName: 'E2E', libraryFolders: [romDir], bootAnimation: false, sounds: false, nativeCore: !flag('off'), nativeEngine: flag('engine') }));
   process.env.SLS_DATA_DIR = data;
   process.env.NO_OPEN = '1';

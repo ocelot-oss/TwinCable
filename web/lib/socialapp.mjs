@@ -1,4 +1,4 @@
-// The twicable account's part of the app shell (app.mjs): reports what the player does (presence), turns new friend
+// The twincable account's part of the app shell (app.mjs): reports what the player does (presence), turns new friend
 // requests, invites and join requests into toasts, asks the host about friends who want in, and gives the sidebar
 // its Friends entry (online count, things to answer) and the profile chip. Signed out it does nothing at all.
 import { useEffect, useRef } from '/vendor/htm-preact.mjs';
@@ -32,9 +32,9 @@ export function useSocial({ ready, route, session, manifest, doc, me, linkStatus
   const on = ready && !!acct.session?.signedIn;
   const online = useOnlineFriends(on);
 
-  // twicable+ cosmetics: the pack comes through this account (app.mjs sets the provider at boot – it waits until the
-  // account is known); every "Get twicable+" (theme picker, locked items in the profile editor, a friend's twicable+
-  // banner) leads to the twicable+ page – signed in or not, never a pop-up
+  // twincable+ cosmetics: the pack comes through this account (app.mjs sets the provider at boot – it waits until the
+  // account is known); every "Get twincable+" (theme picker, locked items in the profile editor, a friend's twincable+
+  // banner) leads to the twincable+ page – signed in or not, never a pop-up
   const wasOn = useRef(false);
   useEffect(() => {
     if (!ready) return;

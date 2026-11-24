@@ -1,4 +1,4 @@
-// twicable – embeddable local server. Serves the UI and does the heavy lifting:
+// twincable – embeddable local server. Serves the UI and does the heavy lifting:
 // library scanning, patching, randomizing (bundled Java), save files, emulator management,
 // and the live bridge for external emulators. Used by the Electron app and by `npm start`.
 import { createServer } from 'node:http';
@@ -125,7 +125,7 @@ function discordWebhookFor(runId) {
   return typeof hook === 'string' && isDiscordWebhook(hook) ? hook : '';
 }
 
-/** A twicable+ skin / launch animation id as the catalog writes them – anything else is no choice at all. */
+/** A twincable+ skin / launch animation id as the catalog writes them – anything else is no choice at all. */
 const validSkinId = (v) => (typeof v === 'string' && /^[a-z0-9][a-z0-9-]{0,39}$/.test(v) ? v : null);
 
 function send(res, status, body, headers = {}) {
@@ -478,7 +478,7 @@ export function errorBody(e) {
 /**
  * Start the server.
  * @param {{port?: number, host?: string, onReady?: (url:string)=>void}} opts
- * The desktop app also passes the twicable account's helpers (server/lib/accounts/index.mjs): secureStore (Electron's
+ * The desktop app also passes the twincable account's helpers (server/lib/accounts/index.mjs): secureStore (Electron's
  * safeStorage – without it a session is kept in memory only), openExternal (the system browser for "Sign in with
  * Discord") and focus (bring the window forward when the browser hands the sign-in back).
  * The saved sign-in is read only after the server is up and never awaited by it (it may mean the keychain, and the
@@ -495,7 +495,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   // project folder there) – the version is still noted. A config that can't be read is left alone.
   try {
     const config = existsSync(CONFIG_PATH) ? JSON.parse(readFileSync(CONFIG_PATH, 'utf8')) : {};
-    upgradeStep({ dataDir: DATA_DIR, config, current: liveRuns.twicableVersion(), save: saveConfig, backups: !DEV });
+    upgradeStep({ dataDir: DATA_DIR, config, current: liveRuns.twincableVersion(), save: saveConfig, backups: !DEV });
   } catch (e) {
     console.warn('[upgrade] skipped:', e.message);
   }
@@ -524,7 +524,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     }
     return addressTable;
   };
-  /** How the battery save of a run's game is read, or null: twicable can't (shared/live/parse.mjs readSaveFile). */
+  /** How the battery save of a run's game is read, or null: twincable can't (shared/live/parse.mjs readSaveFile). */
   const parserOfRun = (manifest) => (manifest ? saveParser(manifest.game, { gen4: GEN4, addresses: addresses() }) : null);
   const watchKey = (runId, slot) => slot ? `${runId}:${slot}` : runId;
   const melonSessions = new Map();
@@ -550,7 +550,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   });
   /**
    * Watch a run's battery save – where the built-in players keep it and, for an external emulator, wherever else it
-   * may write it (`more`: melonDS's own save folder) – for every game whose saves twicable reads (it used to be
+   * may write it (`more`: melonDS's own save folder) – for every game whose saves twincable reads (it used to be
    * HeartGold/SoulSilver only). A save the built-in players write starts a watch only where there is none yet;
    * launching an emulator from the play view (`replace`) watches the places it writes to now – a watch kept from an
    * earlier session may name a file the run doesn't use anymore.
@@ -564,7 +564,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     watcher.watch(runId, want);
     saveConfig({ watches: { ...(loadConfig().watches || {}), [runId]: want.length > 1 ? want : path } });
   };
-  /** The save watch of a run as the page gets it – with whether twicable can read and edit (the graveyard) its saves. */
+  /** The save watch of a run as the page gets it – with whether twincable can read and edit (the graveyard) its saves. */
   const watchStatus = (runId, manifest) => ({ ...watcher.status(runId), readable: !!parserOfRun(manifest), graveyard: isHgssRun(manifest) });
   const watchedSlot = (runId, slot) => ALL_SLOTS.includes(slot) && watcher.paths(watchKey(runId, slot)) ? watchKey(runId, slot) : runId;
   const stopMelon = (key) => {
@@ -574,11 +574,11 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   // the anonymous "playing now" heartbeat – it reads the setting on every call, so "off" applies at once
   const playingNow = presenceCounter({ enabled: () => loadConfig().presence !== false });
   // the anonymous daily usage ping (server/lib/usage.mjs) – same switch; only a packaged app (or a test's mock bot) sends
-  const usagePing = createUsage({ enabled: () => loadConfig().presence !== false, allowed: packaged || !!env.TWICABLE_LIVE_URL, env,
+  const usagePing = createUsage({ enabled: () => loadConfig().presence !== false, allowed: packaged || !!env.TWINCABLE_LIVE_URL, env,
     file: join(dirname(CONFIG_PATH), 'usage.json'), configPath: CONFIG_PATH });
   usagePing.start();
   const live = new LiveBridge(emit);
-  // 3DS in twicable's own player (server/lib/ctr.mjs): one game at a time
+  // 3DS in twincable's own player (server/lib/ctr.mjs): one game at a time
   const ctr = new CtrSessions();
   // the 3DS renderer "auto" (server/lib/ctrrenderer.mjs): which graphics card the last game ran on, and the step down
   // a card / driver needed – the next start takes it right away
@@ -789,7 +789,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   const nativeStatus = () => {
     const tl = nativeTools();
     const look = loadConfig().gbLook;
-    // engine: the twicable engine (the link host as the fast player) is in this build – Settings › "twicable engine (beta)"
+    // engine: the twincable engine (the link host as the fast player) is in this build – Settings › "twincable engine (beta)"
     return { ok: tl.ok, cores: Object.fromEntries(Object.entries(tl.cores || {}).map(([k, v]) => [k, !!v])), ids: Object.fromEntries(Object.keys(NATIVE_CORES).map((k) => [k, nativeCoreId(k, gbModel(k, look))])),
       engine: !!linkTool() };
   };
@@ -1021,13 +1021,13 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   const routes = [];
   const route = (method, pattern, handler) => routes.push({ method, pattern, handler });
 
-  // ---- twicable+ premium pack: the encrypted cache (server/lib/pluspack.mjs – never decrypted or run here) ----
+  // ---- twincable+ premium pack: the encrypted cache (server/lib/pluspack.mjs – never decrypted or run here) ----
   const plusPack = createPlusPack({ dir: join(DATA_DIR, DEV ? 'runs/.plus' : 'plus'), packaged, env, devDir: packaged ? '' : env.SLS_PLUS_DEV_PACK || '' });
   plusRoutes(route, plusPack, readBody);
-  // twicable+ preview media: signed pictures of every premium item – for everyone, signed in or not
+  // twincable+ preview media: signed pictures of every premium item – for everyone, signed in or not
   const plusPreviews = createPlusPreviews({ dir: join(DATA_DIR, DEV ? 'runs/.plus' : 'plus'), packaged, env, devDir: packaged ? '' : env.SLS_PLUS_DEV_PACK || '' });
   route('GET', /^\/api\/plus\/previews$/, () => plusPreviews.state());
-  // ---- twicable account (sign-in, profile, friends, presence, invites): server/lib/accounts/index.mjs ----------------
+  // ---- twincable account (sign-in, profile, friends, presence, invites): server/lib/accounts/index.mjs ----------------
   // a pack key that changed or went away (tier dropped, key rotated, signed out) takes the encrypted pack cache with it
   const accounts = createAccounts({ secure: secureStore, port: () => server.address()?.port, emit, openExternal, focus, lang: () => loadConfig().lang || 'en', packaged, env,
     onPackKeyChange: () => { if (!plusPack.dev) plusPack.wipe(); } });
@@ -1049,7 +1049,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
       ctr: (() => {
         const tl = ctrToolsNow();
         // renderer: what the next 3DS game starts with ("auto" may have stepped down for this graphics card)
-        return { ok: tl.ok, missing: tl.missing || null, liveMemory: !!tl.twicableCore, renderer: ctrRendererNow(config).mode, scale: validScale(config.ctrScale) };
+        return { ok: tl.ok, missing: tl.missing || null, liveMemory: !!tl.twincableCore, renderer: ctrRendererNow(config).mode, scale: validScale(config.ctrScale) };
       })(),
       native: nativeStatus(),
       config: {
@@ -1095,7 +1095,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
         uiScaleHint: config.uiScaleHint === true,
       },
       // the backup made before the first start of this major version (Settings › About) – or why there is none
-      upgradeBackup: backupInfo(config.upgradeBackups?.[majorOf(liveRuns.twicableVersion())]),
+      upgradeBackup: backupInfo(config.upgradeBackups?.[majorOf(liveRuns.twincableVersion())]),
       plusDev: plusPack.dev,
     };
   });
@@ -1125,10 +1125,10 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     // the joke license window (web/lib/nag.mjs): launch count + when it last showed, and its off switch
     if ('nagOff' in allowed) allowed.nagOff = allowed.nagOff === true;
     if ('wholePixels' in allowed) allowed.wholePixels = allowed.wholePixels === true;
-    // twicable+ look (web/lib/cosmetics): an id from the catalog – whether the account owns it is the page's business
+    // twincable+ look (web/lib/cosmetics): an id from the catalog – whether the account owns it is the page's business
     // (the pack is only there when it does); the config just must not hold anything but an id
     if ('skin' in allowed) allowed.skin = validSkinId(allowed.skin);
-    // the launch animation (shared/handheld.mjs): a family id (an older id – the 2.x cartridge, an earlier twicable+
+    // the launch animation (shared/handheld.mjs): a family id (an older id – the 2.x cartridge, an earlier twincable+
     // animation – becomes "Your colours"), Full / Quick / Off, the Clear shell's colour
     if ('launchAnimation' in allowed) allowed.launchAnimation = cleanLaunchLook(allowed.launchAnimation);
     if ('launchPace' in allowed) allowed.launchPace = cleanLaunchPace(allowed.launchPace);
@@ -1154,7 +1154,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     if ('turboMax' in allowed) allowed.turboMax = allowed.turboMax === true;
     if ('fullTurbo' in allowed) allowed.fullTurbo = allowed.fullTurbo !== false; // on unless switched off
     if ('nativeCore' in allowed) allowed.nativeCore = allowed.nativeCore !== false; // the fast player: on unless switched off
-    if ('nativeEngine' in allowed) allowed.nativeEngine = allowed.nativeEngine === true; // the twicable engine (beta): off unless switched on
+    if ('nativeEngine' in allowed) allowed.nativeEngine = allowed.nativeEngine === true; // the twincable engine (beta): off unless switched on
     if ('gbLook' in allowed && !GB_LOOKS.includes(allowed.gbLook)) delete allowed.gbLook; // Game Boy games: original / GBC colours
     if ('padNav' in allowed) allowed.padNav = allowed.padNav !== false; // controller navigation (web/lib/padnav.mjs): on unless switched off
     if ('presence' in allowed) allowed.presence = allowed.presence !== false; // the anonymous "playing now" count: on unless switched off
@@ -1210,7 +1210,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   const onUnpack = (p) => emit('unpack', p);
   route('POST', /^\/api\/library\/import$/, async (req) => {
     const { paths } = await readBody(req);
-    // (skipped: files twicable can't take – a .7z / .rar archive – the page says so instead of "0 files added")
+    // (skipped: files twincable can't take – a .7z / .rar archive – the page says so instead of "0 files added")
     const skipped = [];
     return { added: await importFiles(paths || [], loadConfig(), { onUnpack, skipped }), skipped };
   });
@@ -1226,7 +1226,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     saveConfig({ romHacks });
     return { romHacks };
   });
-  // a 3DS game's update taken off it (library.mjs removeCtrUpdate): twicable's copy deleted, or the player's own file marked
+  // a 3DS game's update taken off it (library.mjs removeCtrUpdate): twincable's copy deleted, or the player's own file marked
   route('POST', /^\/api\/library\/ctr-update\/remove$/, async (req) => {
     const { id } = await readBody(req);
     const { deleted, ctrUpdatesDetached } = removeCtrUpdate(id, loadConfig());
@@ -1409,8 +1409,8 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     const format = packFormatState(pack);
     if (format === 'newer') {
       const version = packMinVersion(pack);
-      if (version) throw httpError(400, `This run needs twicable ${version} or newer – update twicable to join it`, 'packNewer', { version });
-      throw httpError(400, 'This run needs a newer twicable – update twicable to join it', 'packNewerAny');
+      if (version) throw httpError(400, `This run needs twincable ${version} or newer – update twincable to join it`, 'packNewer', { version });
+      throw httpError(400, 'This run needs a newer twincable – update twincable to join it', 'packNewerAny');
     }
     if (format !== 'ok') throw httpError(400, 'Not a valid run pack', 'packInvalid');
     if (typeof pack.id !== 'string' || !/^[a-f0-9]{8}$/.test(pack.id)) throw httpError(400, 'The run pack is damaged (id)', 'packBroken', { what: 'id' });
@@ -1734,7 +1734,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     saveConfig({ watches });
     return watcher.watch(m[1], abs);
   });
-  // what is watched for the run's save, for the play view of an external emulator ("twicable reads p1.sav – 14:32")
+  // what is watched for the run's save, for the play view of an external emulator ("twincable reads p1.sav – 14:32")
   route('GET', /^\/api\/runs\/([a-f0-9]{8})\/watch$/, (req, m, url) => {
     const manifest = readManifest(m[1]);
     if (!manifest) throw httpError(404, 'Run not found', 'runNotFound');
@@ -1799,8 +1799,8 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
       const out = manifest?.outputs?.[slot];
       if (!out) throw httpError(409, 'The ROM for this player hasn’t been built yet', 'romNotBuilt');
       // Play together plays the library game's own save (shared/playtogether.mjs): an outside emulator would write a
-      // second one next to the run's copy of the ROM – play it in twicable, or from the library
-      if (runMode(manifest) === 'together') throw httpError(409, 'Play together runs in twicable’s own player – your game’s save stays one', 'togetherBuiltIn');
+      // second one next to the run's copy of the ROM – play it in twincable, or from the library
+      if (runMode(manifest) === 'together') throw httpError(409, 'Play together runs in twincable’s own player – your game’s save stays one', 'togetherBuiltIn');
       romPath = typeof out.rom === 'string' && out.rom ? runPath(runId, out.rom) : null;
       if (!romPath) throw httpError(409, 'The ROM for this player hasn’t been built yet', 'romNotBuilt');
       // melonDS writes "<ROM name>.sav" next to the ROM – or into the save folder set in its own settings
@@ -1884,7 +1884,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   route('POST', /^\/api\/ctr\/start$/, async (req) => {
     const { rom, key, scale } = await readBody(req);
     const tools = ctrToolsNow();
-    if (!tools.ok) throw httpError(409, 'The 3DS part of twicable is missing', 'ctrMissing');
+    if (!tools.ok) throw httpError(409, 'The 3DS part of twincable is missing', 'ctrMissing');
     if (typeof key !== 'string' || !key || key.length > 600) throw httpError(400, 'Invalid save key', 'badKey');
     const romPath = romPathFromUrl(rom);
     // what the file is (size, header, its own hashes – server/lib/ctrcheck.mjs): checked before the game starts, and
@@ -1892,7 +1892,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     const file = ctrFileReport(romPath);
     // an encrypted cartridge dump: Azahar's core plays decrypted games only – say so instead of "couldn't load the game"
     if (file.encrypted || (file.encrypted == null && ctrEncrypted(romPath))) throw httpError(409, 'This 3DS game file is encrypted', 'ctrEncrypted');
-    // a copy that was cut off (twicable closed while copying, a download that stopped): the header is there, the game
+    // a copy that was cut off (twincable closed while copying, a download that stopped): the header is there, the game
     // isn't – it would start to a black screen (ticket #19)
     if (file.integrity?.state === 'damaged') {
       ctr.last = { at: new Date().toISOString(), error: 'game file incomplete', file };
@@ -1907,7 +1907,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     ctr.stop(); // (the game that runs now may play from the same save folder)
     const update = file.kind === 'game' ? await ctrUpdateFor(rom, file.titleId, key) : null;
     const id = ctr.start({ rom: romPath, key, tools, scale: sc, renderer: mode, auto, file: update ? { ...file, update } : file });
-    return { id, liveMemory: tools.twicableCore, renderer: mode, auto, scale: sc, update };
+    return { id, liveMemory: tools.twincableCore, renderer: mode, auto, scale: sc, update };
   });
   /** The update a 3DS game starts with (prepareUpdate): from the library – none for a randomized run's game. */
   const ctrUpdateFor = async (rom, titleId, key) => {
@@ -1949,7 +1949,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     // (state: the save state to go on from – the player's own console as a link session left it, docs/MULTIPLAYER.md)
     if (state != null && !b64ok(state, MAX_STATE)) throw httpError(400, 'Invalid save state', 'badSave');
     const tools = nativeTools();
-    // the twicable engine (beta): the link host plays the game (the same states and protocol); else retrohost and its core
+    // the twincable engine (beta): the link host plays the game (the same states and protocol); else retrohost and its core
     const engine = !ndsCap && loadConfig().nativeEngine === true && ENGINE_SYSTEMS.includes(system) ? linkTool() : null;
     if (!engine && !tools.cores?.[system]) throw httpError(409, 'The fast player is missing for this system', 'nativeMissing');
     // a Game Boy game's console: Settings › "Game Boy look" – or the one a state to go on from was made on
@@ -1988,7 +1988,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     if (!manifest) throw httpError(404, 'Run not found', 'runNotFound');
     return manifest;
   };
-  // the run's peer connections: STUN + short-lived TURN credentials from twicable's bot (server/lib/linkice.mjs)
+  // the run's peer connections: STUN + short-lived TURN credentials from twincable's bot (server/lib/linkice.mjs)
   route('GET', /^\/api\/link\/ice$/, () => linkIceServers());
   route('GET', /^\/api\/link\/check$/, (req, m, url) => {
     const manifest = linkManifest(url.searchParams.get('runId'));
@@ -2149,7 +2149,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   // The mGBA script lives in a hidden folder on Windows (%APPDATA%) – show it instead of making people type the path.
   // the backup from before this major version (Settings › About): its folder, as the config names it – no path from the page
   route('POST', /^\/api\/backup\/reveal$/, () => {
-    const b = loadConfig().upgradeBackups?.[majorOf(liveRuns.twicableVersion())];
+    const b = loadConfig().upgradeBackups?.[majorOf(liveRuns.twincableVersion())];
     const dir = b?.name && /^pre-[\w.-]+$/.test(b.name) ? join(DATA_DIR, 'backups', b.name) : null;
     if (!dir || !existsSync(dir)) throw httpError(404, 'The backup folder is gone', 'backupGone');
     revealInFileManager(dir);
@@ -2186,7 +2186,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
       signal: AbortSignal.timeout(15000),
       headers: { 'Content-Type': 'application/json' },
       // allowed_mentions: names come from the partner – no @everyone / role / user pings
-      body: JSON.stringify({ content: String(content || '').slice(0, 2000), username: 'twicable', allowed_mentions: { parse: [] } }),
+      body: JSON.stringify({ content: String(content || '').slice(0, 2000), username: 'twincable', allowed_mentions: { parse: [] } }),
     });
     if (!r.ok) throw httpError(502, `Discord answered ${r.status}`, 'discordFailed', { status: r.status });
     return { ok: true };
@@ -2296,7 +2296,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
       if ((path === '/api/v1' || path.startsWith('/api/v1/')) && await streamHub.handle(req, res, path, url)) return;
       if (path.startsWith('/api/')) {
         // Origin / Sec-Fetch-Site / x-soullink checks (server/lib/guard.mjs) – before any API route, SSE included – and,
-        // in the desktop app, the window's per-launch secret for the account and twicable+ routes.
+        // in the desktop app, the window's per-launch secret for the account and twincable+ routes.
         const denied = apiRequestError(req, server.address()?.port) || privateRequestError(req, path) || rendererSecretError(req, path, rendererSecret);
         if (denied) return send(res, 403, { error: denied });
       }
@@ -2496,7 +2496,7 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
         pokelinkApply().catch(() => {});
         live.start().catch((e) => console.warn('live bridge unavailable:', e.message));
         prefetchSprites().catch(() => {});
-        // what an interrupted copy / unpack / upload left in the library folder (twicable closed meanwhile)
+        // what an interrupted copy / unpack / upload left in the library folder (twincable closed meanwhile)
         setTimeout(() => removeStaleParts(), 2000).unref?.();
       }
       if (!deferAccount) setTimeout(() => accounts.loadSession(), 0).unref?.();

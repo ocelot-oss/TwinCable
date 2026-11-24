@@ -1,4 +1,4 @@
-// Streamer mode: twicable on a stream. It covers what nobody watching should see – invite codes, the run's keys
+// Streamer mode: twincable on a stream. It covers what nobody watching should see – invite codes, the run's keys
 // and webhook, file paths, the randomizer's spoilers – and shows a small LIVE mark (styles.css html.streamer).
 // One switch on the Stream page, kept per computer (every window follows it).
 import { useEffect, useState } from '/vendor/htm-preact.mjs';

@@ -7,7 +7,7 @@ import { api } from '../../lib/api.mjs';
 import { Item, Group } from './parts.mjs';
 
 const SYSTEMS = [['gb', 'Game Boy'], ['gbc', 'Game Boy Color'], ['gba', 'Game Boy Advance'], ['nds', 'Nintendo DS'], ['3ds', 'Nintendo 3DS']];
-/** Systems the built-in player runs only with an extra part: 3DS needs twicable's 3DS host (status.ctr). */
+/** Systems the built-in player runs only with an extra part: 3DS needs twincable's 3DS host (status.ctr). */
 const externalOnly = (sys, status) => sys === '3ds' && !status?.ctr?.ok;
 
 export function GamesSection({ cfg, status, save, library, folders, install, busy, toast }) {

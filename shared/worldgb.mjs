@@ -428,7 +428,7 @@ export function gbRomTables(rom, t) {
 export const sheetFrames = (rom, off) => Array.from({ length: 6 }, (_, i) => frame16(rom, off + i * 64));
 
 // ---- colours -------------------------------------------------------------------------------------------------------
-// SameBoy (the fast player's and the link host's emulator) with the settings twicable gives it: the original Game Boy
+// SameBoy (the fast player's and the link host's emulator) with the settings twincable gives it: the original Game Boy
 // with its "lime" palette (GB_PALETTE_DMG), Game Boy Color colours "emulate hardware" (GB_COLOR_CORRECTION_MODERN_BALANCED)
 // – Core/display.c GB_convert_rgb15 – so a partner's colours are the ones the game's own sprites have on screen.
 /** The four shades of the original Game Boy (0 = lightest) as SameBoy shows them. */

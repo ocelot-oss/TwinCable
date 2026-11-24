@@ -1,6 +1,6 @@
 // The link host's backend interface: one implementation per system family; the engine around it (seats.c, session.c,
 // avout.c, linkhost.c – seat management, input-delay lockstep, picture and sound, the frame loop) is shared. See
-// docs/MULTIPLAYER.md › "Backends" and "The twicable engine".
+// docs/MULTIPLAYER.md › "Backends" and "The twincable engine".
 //
 // A backend runs ALL seats of a link session in this process, joined by the system's link (GB/GBC serial cable,
 // GBA SIO, DS local wireless, …), and must be deterministic: the same ROMs, saves, start time and per-frame inputs give
@@ -41,7 +41,7 @@ typedef uint32_t link_input;
 #define LINK_TOUCH (1u << 12)
 
 struct link_seat_config {
-  const char *rom;         // path of this seat's game (the partner's rebuilt locally, checked by SHA-1 by twicable)
+  const char *rom;         // path of this seat's game (the partner's rebuilt locally, checked by SHA-1 by twincable)
   const uint8_t *save;     // battery save bytes or NULL (a new cartridge)
   size_t save_len;
   const uint8_t *state;    // the player's running game as the fast player's core saves it (export_state's format), or NULL
@@ -55,7 +55,7 @@ struct link_open {
   const struct link_seat_config *seats;
   int64_t rtc_ms;                       // link session: the shared start of every cartridge / console clock (Unix ms)
   /**
-   * One player's game alone (the twicable engine's solo mode): set up as the fast player has it – the clocks follow the
+   * One player's game alone (the twincable engine's solo mode): set up as the fast player has it – the clocks follow the
    * computer's, the DS runs its JIT, the GBC boots with the fast boot ROM – and save states in the fast player's format.
    * Nothing there must match another computer; a link session opens the seats again (solo false) from their states.
    */
@@ -98,12 +98,12 @@ struct link_backend {
   /**
    * Sound: the output rate (stereo frames per second; 0 = silent) and the seat's sound since the last call – up to
    * `max` interleaved stereo s16 frames into `out`, returns how many. Every seat makes its sound the same way on every
-   * peer (it must not change what the consoles compute); twicable plays only the local seat's.
+   * peer (it must not change what the consoles compute); twincable plays only the local seat's.
    */
   double (*sample_rate)(void);
   size_t (*audio)(int seat, int16_t *out, size_t max);
   /**
-   * Optional: the battery save as twicable keeps it on disk, when that is more than `sram` (a Game Boy clock cartridge:
+   * Optional: the battery save as twincable keeps it on disk, when that is more than `sram` (a Game Boy clock cartridge:
    * the save memory + the 48-byte clock footer). `sram` stays what tells whether the game saved.
    */
   size_t (*battery)(int seat, void **out);

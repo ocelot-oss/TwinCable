@@ -1,5 +1,5 @@
 // The pixel art of the Shared World bubbles (docs/MULTIPLAYER.md › 9): emotes and the rock-paper-scissors hands.
-// Original art, drawn for twicable (no game graphics): small masks (emotes 9×8, hands up to 10×10), '#' = the player's colour.
+// Original art, drawn for twincable (no game graphics): small masks (emotes 9×8, hands up to 10×10), '#' = the player's colour.
 // The overlay (web/lib/worldoverlay.mjs) draws them into its 240×160 canvas; the rock-paper-scissors card (web/views/rps.mjs) and
 // the menus draw the same masks into small canvases.
 

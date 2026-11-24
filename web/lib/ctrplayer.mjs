@@ -1,4 +1,4 @@
-// The 3DS player (player3ds.html): the game runs in twicable's native host (server/lib/ctr.mjs, native/ctr-host) and
+// The 3DS player (player3ds.html): the game runs in twincable's native host (server/lib/ctr.mjs, native/ctr-host) and
 // arrives here as a stream of pictures, sound and memory; input, speed, save states and cheats go back. It offers the Play
 // view the same window.__emu as player.html (EmulatorJS) – save states, speed, screenshots, the partner's mini view
 // and the live reader work the same way. 3DS saves aren't one battery file: they live in the host's save folder of the
@@ -278,7 +278,7 @@ new ResizeObserver(layout).observe(document.body);
 })();
 layout();
 
-// ---- sound: the host's samples through twicable's turbo mixer (lib/native-audio-worklet.mjs, as the fast player) -----
+// ---- sound: the host's samples through twincable's turbo mixer (lib/native-audio-worklet.mjs, as the fast player) -----
 // While fast-forwarding the host sends the sound sped up by the real speed, resampled to real time (ctrhost.c
 // ff_frame), and says by how much ("ffrate", right before that sound – the worklet hands the ratio to the mixer when the
 // sound plays); the mixer then plays what Settings › "Turbo audio" asks for: the music recorded at 1× going on
@@ -376,7 +376,7 @@ async function startAudio(rate) {
   }
 }
 /**
- * Music from the ROM (lib/rommusic.mjs): a core with twicable's RomFS patch says which music stream the game reads – from
+ * Music from the ROM (lib/rommusic.mjs): a core with twincable's RomFS patch says which music stream the game reads – from
  * the first frames on (the reads that start the title music come before the sound worklet is up: what it should get
  * waits here until it is).
  */
@@ -442,7 +442,7 @@ function onAudio(p) {
 }
 /**
  * Sound effects in fast-forward: with "Music continues" and a music track from the ROM, the host leaves the voices that
- * play the game's music out of its fast-forward sound (ctrhost.c SFX, native/azahar-patch/twicable-sfx.patch) – asked
+ * play the game's music out of its fast-forward sound (ctrhost.c SFX, native/azahar-patch/twincable-sfx.patch) – asked
  * for at 1× already, the host only does it while it fast-forwards. Message 11 then brings the rest (the sound effects)
  * with the places new sounds began; the mixer plays each one at its normal speed over the track (lib/sfxplayer.mjs).
  */
@@ -536,8 +536,8 @@ function read(addr, len) {
   return null;
 }
 
-// A cheat: a few bytes inside the memory twicable watches (never anywhere else), written by the host between two frames
-// – and only while the game still holds what twicable read there (the host compares). Resolves true once written (the
+// A cheat: a few bytes inside the memory twincable watches (never anywhere else), written by the host between two frames
+// – and only while the game still holds what twincable read there (the host compares). Resolves true once written (the
 // copy here has it too); { ok: false, why } when the host refused (its reason: ctrhost.c mem_write); false when it
 // never reached the host or no answer came.
 let writeId = 0;
@@ -925,7 +925,7 @@ window.__emu = {
   /** The internal resolution this game runs with (1–3): the play view's hint when it holds back fast-forward (lib/ffhint.mjs). */
   scale: () => st.scale,
   /**
-   * A save state. The host copies it between two frames (a 3DS core with twicable-state.patch packs it on a thread
+   * A save state. The host copies it between two frames (a 3DS core with twincable-state.patch packs it on a thread
    * meanwhile; an older one packs it right there – 0.4 s without sound on a Windows PC): the sound may run dry for that
    * moment, so the worklet takes it as a break, not as a gap that grows its buffer.
    */
@@ -1073,7 +1073,7 @@ window.__emu = {
     sendInput();
   },
   title: () => st.title,
-  /** The game's update in twicable's player (server/lib/ctrupdate.mjs prepareUpdate): null, or { versionText, gameVersion, installed, why, tracking … }. */
+  /** The game's update in twincable's player (server/lib/ctrupdate.mjs prepareUpdate): null, or { versionText, gameVersion, installed, why, tracking … }. */
   update: () => st.update || null,
   /** The screen layout (shared/ctrlayout.mjs CTR_LAYOUTS) or the smooth filter: applied right away, no restart. */
   setOption(k, v) {

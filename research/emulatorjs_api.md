@@ -230,7 +230,7 @@ Measured in headless Chrome on this Mac (arm64) with the HG (USA) ROM, non-threa
   - #615: on Mac, mouse/stylus only moves while the button is held. That is mouse mode; use `melonds_touch_mode = Touch`.
 - Screen layout: set `melonds_screen_layout` (values above). `Hybrid Top` and `Left/Right` work for wide windows.
 
-**3D overworld, measured 11/2026** (twicable 2.2.1 in Electron on an M1, 75 Hz, HeartGold in Azalea Town – the same
+**3D overworld, measured 11/2026** (twincable 2.2.1 in Electron on an M1, 75 Hz, HeartGold in Azalea Town – the same
 in-game save booted on each core; "ms" = core time per emulated frame while fast-forwarding at "Max"):
 
 | Core / setting | ms per frame | Max speed |

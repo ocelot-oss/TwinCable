@@ -4,7 +4,7 @@
 //
 // Safe by default: the server only listens on 127.0.0.1 (server/app.mjs), nothing here writes, and the data is the
 // same stream-safe subset the overlays get (shared/streamapi.mjs). Without the optional token: OBS (its browser
-// sources and local-file sources), scripts and twicable's own pages may read it; pages opened in a browser from disk and
+// sources and local-file sources), scripts and twincable's own pages may read it; pages opened in a browser from disk and
 // pages of other local web servers only when the Stream page allows them (`stream.localPages`); other websites never.
 
 import { timingSafeEqual } from 'node:crypto';
@@ -42,11 +42,11 @@ export function streamMigration(config) {
   return { stream: { ...s, localPages: !!config?.onboarded } };
 }
 
-// The API's errors – for other people's layouts, not shown in twicable's UI: { error, code } with this status.
+// The API's errors – for other people's layouts, not shown in twincable's UI: { error, code } with this status.
 export const API_ERRORS = {
   tokenRequired: [401, 'This stream API needs its token (?token=… or Authorization: Bearer …)'],
-  foreignOrigin: [403, 'Only pages from this computer may read the stream API – or set a token in twicable'],
-  localPage: [403, 'Pages opened from disk or served by another local web server need the token – or switch on "Pages on this computer without a token" on twicable’s Stream page'],
+  foreignOrigin: [403, 'Only pages from this computer may read the stream API – or set a token in twincable'],
+  localPage: [403, 'Pages opened from disk or served by another local web server need the token – or switch on "Pages on this computer without a token" on twincable’s Stream page'],
   readOnly: [405, 'The stream API is read-only'],
   noSprite: [404, 'No such sprite'],
   noSpecies: [404, 'Unknown species'],
@@ -62,7 +62,7 @@ export const localOrigin = (origin) => origin === undefined || origin === 'null'
 
 /**
  * Who reads without the token no matter what: requests without an Origin (OBS's browser sources, curl, scripts,
- * <img>), OBS's "Local file" sources (OBS serves them from http://absolute/<path>) and twicable's own pages (the
+ * <img>), OBS's "Local file" sources (OBS serves them from http://absolute/<path>) and twincable's own pages (the
  * port in the request's Host). `null` – a file opened in a browser, but also a sandboxed frame on any website – and
  * other localhost ports are left to the localPages switch.
  */
@@ -72,13 +72,13 @@ export function trustedOrigin(origin, hostHeader) {
   return appOrigins(port).includes(String(origin).toLowerCase());
 }
 
-/** The token a request carries: ?token=, `Authorization: Bearer …` or `X-Twicable-Token`. */
+/** The token a request carries: ?token=, `Authorization: Bearer …` or `X-TwinCable-Token`. */
 export function requestToken(req, url) {
   const q = url?.searchParams?.get('token');
   if (q) return q;
   const auth = String(req.headers?.authorization || '');
   if (/^bearer\s+/i.test(auth)) return auth.replace(/^bearer\s+/i, '').trim();
-  return String(req.headers?.['x-twicable-token'] || '');
+  return String(req.headers?.['x-twincable-token'] || req.headers?.['x-twicable-token'] || '');
 }
 
 const sameToken = (a, b) => {
@@ -89,7 +89,7 @@ const sameToken = (a, b) => {
 
 /**
  * May this request read the API's data? `public` assets (sprites, the QR code, the legendary list) are open to any
- * page. Data: with a token set, the token is required (from anywhere); without one, OBS, scripts and twicable's own
+ * page. Data: with a token set, the token is required (from anywhere); without one, OBS, scripts and twincable's own
  * pages (trustedOrigin), plus – with localPages – pages opened from disk and other localhost pages; never websites.
  * → null (fine) or { status, error, code }.
  */
@@ -118,7 +118,7 @@ export function corsHeaders(req) {
   return {
     'Access-Control-Allow-Origin': origin && origin !== 'null' ? origin : '*',
     'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
-    'Access-Control-Allow-Headers': 'Authorization, X-Twicable-Token, Last-Event-ID, Cache-Control',
+    'Access-Control-Allow-Headers': 'Authorization, X-TwinCable-Token, X-Twicable-Token, Last-Event-ID, Cache-Control',
     'Access-Control-Max-Age': '600',
     Vary: 'Origin',
   };
@@ -351,7 +351,7 @@ export function createStreamHub(deps) {
       if (sub === '/') {
         let current = null;
         try { current = deps.activeRun() || null; } catch { /* no run */ }
-        return json(req, res, 200, { api: API_VERSION, name: 'twicable stream API', docs: deps.docs, currentRun: current, auth: { token: !!s.token, localPages: !s.token && s.localPages }, languages: ['en', 'de', 'fr', 'es', 'it'], endpoints: ENDPOINTS, events: EVENT_TYPES });
+        return json(req, res, 200, { api: API_VERSION, name: 'twincable stream API', docs: deps.docs, currentRun: current, auth: { token: !!s.token, localPages: !s.token && s.localPages }, languages: ['en', 'de', 'fr', 'es', 'it'], endpoints: ENDPOINTS, events: EVENT_TYPES });
       }
       if (sub === '/runs') {
         const current = deps.activeRun();

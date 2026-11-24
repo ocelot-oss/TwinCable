@@ -68,7 +68,7 @@ export function IntroSaveOption({ intro, forget, on, onChange, disabled = false 
           ? t('intro.fromRun', 'Saved {when} in “{run}” – you skip the intro and start where you saved.', { when: ago(Date.parse(intro.savedAt)), run: intro.from.name })
           : t('intro.saved', 'Saved {when} – you skip the intro and start where you saved.', { when: ago(Date.parse(intro.savedAt)) })}</span>
         ${note && html`<span class="hint warn">${note}</span>`}
-        ${azahar && html`<span class="hint">${t('intro.ctrOwn', 'Only in twicable’s own 3DS player – Azahar keeps its saves in its own folder.')}</span>`}</span></label>
+        ${azahar && html`<span class="hint">${t('intro.ctrOwn', 'Only in twincable’s own 3DS player – Azahar keeps its saves in its own folder.')}</span>`}</span></label>
     <button class=${armed ? 'btn small danger' : 'btn small ghost'} disabled=${disabled || busy} onClick=${remove} onBlur=${() => setArmed(false)}
       title=${t('intro.removeHint', 'Forget this intro save – your runs keep their saves.')}>${armed ? t('intro.removeSure', 'Really remove?') : t('common.remove', 'Remove')}</button>
   </div>`;

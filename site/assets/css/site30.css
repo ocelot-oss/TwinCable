@@ -1,6 +1,6 @@
-/* twicable 3.0 website – "the link": two players, one world, no cable. A dark stage, twicable's own 3D handheld as the
-   object, twicable's real interface as the proof, the two player colours only where two players are meant, gold only
-   for twicable+. One pinned moment: the 3D launch (desktop, motion allowed). */
+/* twincable 3.0 website – "the link": two players, one world, no cable. A dark stage, twincable's own 3D handheld as the
+   object, twincable's real interface as the proof, the two player colours only where two players are meant, gold only
+   for twincable+. One pinned moment: the 3D launch (desktop, motion allowed). */
 
 @font-face { font-family: 'Pixelify Sans'; font-weight: 400 700; font-display: swap; src: url('../fonts/PixelifySans-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD; }
 @font-face { font-family: 'Pixelify Sans'; font-weight: 400 700; font-display: swap; src: url('../fonts/PixelifySans-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+2C60-2C7F, U+A720-A7FF; }
@@ -63,7 +63,7 @@ p, li, dd { text-wrap: pretty; }
 .wrap { width: 100%; max-width: calc(var(--max) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
 .center { text-align: center; margin-inline: auto; }
 
-/* ---------- type: one family in two weights does the talking; the pixel face only marks twicable itself ---------- */
+/* ---------- type: one family in two weights does the talking; the pixel face only marks twincable itself ---------- */
 .d1 { font: 600 clamp(48px, min(9vw, 12.8vh), 134px)/.9 var(--sans); letter-spacing: -.056em; }
 .d1 .l { display: block; }
 .d1 .l2, .dim { color: var(--dim); }
@@ -172,7 +172,7 @@ p, li, dd { text-wrap: pretty; }
 .dl-tile:hover .ic { color: var(--ink); }
 .hero-meta { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; font-size: 14px; color: var(--muted); }
 
-/* ---------- twicable's interface, built in HTML (the same colours, type and shapes as the app) ---------- */
+/* ---------- twincable's interface, built in HTML (the same colours, type and shapes as the app) ---------- */
 .ui { position: relative; padding: 20px 22px; border-radius: 18px; background: #1b1a1f; box-shadow: inset 0 0 0 1px var(--line), 0 24px 60px rgba(0, 0, 0, .42); font-size: 15px; line-height: 1.45; text-align: left; }
 .ui-row { display: flex; align-items: center; gap: 10px; font-size: 16px; }
 .ui-row b { font-weight: 600; }
@@ -294,7 +294,7 @@ p, li, dd { text-wrap: pretty; }
 .fu-kim { grid-column: 2 / 13; }
 .fu-run { grid-column: 1 / 12; }
 
-/* ---------- 6 · twicable+ ---------- */
+/* ---------- 6 · twincable+ ---------- */
 .plus { position: relative; background: #08070b; }
 .plus .sec { background: transparent; }
 .plus::before { content: ''; position: absolute; inset: 0 0 auto; height: 220vh; pointer-events: none; background: radial-gradient(50% 40% at 64% 30vh, rgba(242, 193, 78, .07), transparent 70%); }
@@ -318,7 +318,7 @@ p, li, dd { text-wrap: pretty; }
   .js.motion .launch.pinned .launch-dev { width: auto; height: 100%; max-width: 100%; margin-top: 0; }
 }
 
-/* 6b · your handheld: the app's own 3D model for the free looks, pictures for the twicable+ skins */
+/* 6b · your handheld: the app's own 3D model for the free looks, pictures for the twincable+ skins */
 .hh-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 48px 56px; align-items: center; }
 .hh-copy .lead { margin-top: 22px; }
 .hh-more { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
@@ -468,7 +468,7 @@ p, li, dd { text-wrap: pretty; }
 /* ---------- footer ---------- */
 .foot { padding: clamp(56px, 10vh, 96px) 0 36px; box-shadow: inset 0 1px 0 var(--line); }
 .foot-mark { font: 700 clamp(64px, 17vw, 250px)/.8 var(--pixel); color: #18171d; letter-spacing: -.01em; user-select: none; }
-.foot-mark::before { content: 'twicable'; }
+.foot-mark::before { content: 'twincable'; }
 .foot-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px 64px; margin-top: 36px; }
 .foot-links { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 15px; }
 .foot-links a { color: var(--muted); text-decoration: none; transition: color .2s; }

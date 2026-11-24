@@ -446,7 +446,7 @@ test('X/Y and ORAS: { u16 id, u16 count } slots, the update the party was found 
   assert.equal(m3.writes, 0);
 });
 
-// ---- 3DS: an empty bag, and a bag that isn't where twicable knows it (2.8.4) ------------------------------------
+// ---- 3DS: an empty bag, and a bag that isn't where twincable knows it (2.8.4) ------------------------------------
 // Ultra Moon 1.0 (checked live, US cartridge): the bag at 0x33011934 – the same as 1.2 –, all zeros until the game puts
 // a first item in (no key item with the starter: the bag stays empty for a while), the game's pocket table right
 // behind it from the intro on, in the order Medicine, Items, TMs, Berries, Key Items, Z-Crystals, Rotom Powers.

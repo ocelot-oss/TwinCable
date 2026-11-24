@@ -1,11 +1,11 @@
-// twicable+ pack client (renderer). Gets the pack access from the account client, has the local server download and cache
+// twincable+ pack client (renderer). Gets the pack access from the account client, has the local server download and cache
 // the ENCRYPTED files (one envelope per file, API.md §10), verifies the signed manifest and decrypts + checks every file
 // here in the page, and loads the CSS / data / signed modules into memory only when ALL of them passed. Nothing premium
 // is ever stored in plain form, and nothing from a pack runs in the Node or main process.
 //
 // The account client plugs in with setPackAccessProvider(fn). fn({ purpose: 'pack' | 'preview' }) resolves to
 //   { packId, version, manifest, signature, keyId, watermark, key, files: [{ path, url }], until }
-//                                     – purpose 'pack': the account owns twicable+ (the service's download answer + key)
+//                                     – purpose 'pack': the account owns twincable+ (the service's download answer + key)
 //   { …same…, expiresAt, preview: true } – purpose 'preview': a 15-minute live theme preview (key for this preview only)
 //   { key, keyId, until, offline: true } – the service is unreachable; the last entitlement kept in safeStorage
 //   null                               – signed out / no membership (the cache is wiped)
@@ -53,7 +53,7 @@ export const devPackAccess = devProvider;
 let provider = devProvider;
 /**
  * The account client's hook (see the top of this file). Passing null restores the dev / signed-out default.
- * A provider answers null only when the player is REALLY signed out or without twicable+ – that wipes the cache. While
+ * A provider answers null only when the player is REALLY signed out or without twincable+ – that wipes the cache. While
  * the account isn't known yet (the saved sign-in is still being read) it waits instead (the app's does).
  */
 export function setPackAccessProvider(fn) {
@@ -106,9 +106,9 @@ export function contentFrom(files, { skinsByPath = false } = {}) {
 }
 
 /**
- * "Your handheld"'s twicable+ part (web/lib/handheld): the wraps' compositions (data, run by the public banner engine
- * with the pack's banner recipes), the twicable+ stickers' pre-built atlas – its layout and two PNGs (bytes, decoded
- * by the page when the handheld is first drawn) – and the twicable+ looks (Gold, Clear shell, Holo label, the Rare start,
+ * "Your handheld"'s twincable+ part (web/lib/handheld): the wraps' compositions (data, run by the public banner engine
+ * with the pack's banner recipes), the twincable+ stickers' pre-built atlas – its layout and two PNGs (bytes, decoded
+ * by the page when the handheld is first drawn) – and the twincable+ looks (Gold, Clear shell, Holo label, the Rare start,
  * the holo / glitter finishes: handheld/looks.json, checked by looks.mjs cleanLooks). A pack without them (an older
  * one) simply has none.
  */
@@ -145,7 +145,7 @@ async function run() {
     }
     if (access?.offline) offline = true;
     let meta = await call('GET', '/api/plus/pack/meta').catch(() => ({ none: true }));
-    if (!access && !offline) return wipe(null); // signed out or no twicable+
+    if (!access && !offline) return wipe(null); // signed out or no twincable+
     let pack;
     if (offline) {
       // the server has already dropped a cache older than the grace period
@@ -208,7 +208,7 @@ export function refreshPack() {
   return inflight;
 }
 
-/** Signed out / "remove twicable+ from this computer": forget everything now (a running preview too). */
+/** Signed out / "remove twincable+ from this computer": forget everything now (a running preview too). */
 export async function forgetPack() {
   clearTimeout(timer);
   endPackPreview();

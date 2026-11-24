@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Builds shared/live/catch3ds.mjs – the species' catch rates of the 3DS games (X/Y, Omega Ruby/Alpha Sapphire,
-// Sun/Moon, Ultra Sun/Ultra Moon), which twicable can't read from their ROM like the GB/GBA/DS ones
+// Sun/Moon, Ultra Sun/Ultra Moon), which twincable can't read from their ROM like the GB/GBA/DS ones
 // (shared/live/romtypes.mjs). Input: PKHeX's personal tables (https://github.com/kwsch/PKHeX, GPL-3.0,
 // PKHeX.Core/Resources/byte/personal/personal_xy|ao|sm|uu): one entry per species in National Dex order (the forms
 // after them), PersonalInfo6XY 0x40 bytes, PersonalInfo6AO 0x50, PersonalInfo7 0x54, CatchRate at 0x08 in each.

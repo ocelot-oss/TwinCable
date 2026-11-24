@@ -7,7 +7,7 @@
 //
 // When is it shown? None of the readers sees the HP the game *displays* (the healthbox's animated value – Gen 3 keeps it
 // in gBattleSpritesDataPtr->battleBars[].currValue on the heap, the DS and 3DS games in their battle UI's own structs,
-// at addresses twicable doesn't know for every release), so it goes by:
+// at addresses twincable doesn't know for every release), so it goes by:
 //  - the Pokémon has left the field: the battle is over (two readings without one – a whiteout ends it after the
 //    message), or the player's next Pokémon is out in its place;
 //  - else the time the game takes from that 0 HP to the end of its "… fainted!" message, per generation, at the

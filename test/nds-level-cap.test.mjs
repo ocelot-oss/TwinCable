@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-const cc = [process.env.TWICABLE_TEST_CC, 'cc', 'clang', 'gcc'].filter(Boolean)
+const cc = [process.env.TWINCABLE_TEST_CC, 'cc', 'clang', 'gcc'].filter(Boolean)
   .find((command) => spawnSync(command, ['-v']).status === 0);
 
 const driver = String.raw`
@@ -135,7 +135,7 @@ int main(void) {
 `;
 
 test('native DS XP caps validate both instructions, survive an overlay reload and restore stock behavior', { skip: !cc && 'no C compiler' }, (t) => {
-  const scratch = mkdtempSync(join(tmpdir(), 'twicable-nds-cap-'));
+  const scratch = mkdtempSync(join(tmpdir(), 'twincable-nds-cap-'));
   t.after(() => rmSync(scratch, { recursive: true, force: true }));
   const source = join(scratch, 'probe.c');
   const exe = join(scratch, process.platform === 'win32' ? 'probe.exe' : 'probe');

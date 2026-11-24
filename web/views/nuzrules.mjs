@@ -20,7 +20,7 @@ const areaOptions = () => [['area', t('nzr.optArea', 'Count as the area')], ['fr
 
 // the dupes clause's switch – one text for the SoulLink rules (MissedDupesRule) and the solo ones (ruleDefs)
 const missedDupesLabel = () => t('rules.missedDupes', 'Fled or knocked-out encounters count as dupes');
-const missedDupesHint = () => t('rules.missedDupesHint', 'Like a catch, once it’s known which Pokémon it was – twicable notes it when it sees the battle.');
+const missedDupesHint = () => t('rules.missedDupesHint', 'Like a catch, once it’s known which Pokémon it was – twincable notes it when it sees the battle.');
 
 /**
  * Every rule once: `check` = on/off, `choice` = one of `options`. `section` groups them on the board; `honour`
@@ -98,7 +98,7 @@ export function CheatSetRule({ value: r, onChange, disabled = false, partners = 
   return html`<div class="cheat-set" role="group" aria-label=${t('rules.cheatSet', 'Allowed cheats')}>
     ${CHEAT_GROUPS.map((g) => html`<label class=${`check small ${disabled ? 'locked' : ''}`} key=${g}><input type="checkbox" checked=${on.includes(g)} disabled=${disabled}
       onChange=${(e) => set(g, e.target.checked)} /><span>${cheatGroupLabel(g)}</span></label>`)}
-    ${partners && on.length < CHEAT_GROUPS.length && html`<span class="tiny faint cheat-set-note">${t('rules.cheatSetOld', 'A partner on twicable 2.x can’t see this choice: their app offers its own cheats (Rare Candies) whenever cheats are on – each use still shows up in the log.')}</span>`}
+    ${partners && on.length < CHEAT_GROUPS.length && html`<span class="tiny faint cheat-set-note">${t('rules.cheatSetOld', 'A partner on twincable 2.x can’t see this choice: their app offers its own cheats (Rare Candies) whenever cheats are on – each use still shows up in the log.')}</span>`}
   </div>`;
 }
 
@@ -221,10 +221,10 @@ export function TypeHelpRule({ value, onChange, locked, hostName, solo, note = t
  */
 export function BallsRule({ value, onChange, players: n = 1, disabled = false }) {
   const hint = n < 2
-    ? t('rules.ballsHintSolo', 'Until you have Poké Balls in your bag, a Pokémon that faints doesn’t die, a blackout doesn’t end the run and no area is used up – reset or play on. The rules start the moment twicable sees your first Poké Balls (or your first catch).')
+    ? t('rules.ballsHintSolo', 'Until you have Poké Balls in your bag, a Pokémon that faints doesn’t die, a blackout doesn’t end the run and no area is used up – reset or play on. The rules start the moment twincable sees your first Poké Balls (or your first catch).')
     : n > 2
-      ? t('rules.ballsHintGroup', 'Each of you starts with your own first Poké Balls: until then your Pokémon don’t die, a blackout doesn’t end the run and no area is used up. When someone whose rules have started loses a Pokémon, the linked ones still die with it. Everyone needs twicable 2.8.3 or newer.')
-      : t('rules.ballsHint', 'Each of you starts with your own first Poké Balls: until then your Pokémon don’t die, a blackout doesn’t end the run and no area is used up. When your partner’s rules have started and they lose a Pokémon, yours still dies with it. Both of you need twicable 2.8.3 or newer.');
+      ? t('rules.ballsHintGroup', 'Each of you starts with your own first Poké Balls: until then your Pokémon don’t die, a blackout doesn’t end the run and no area is used up. When someone whose rules have started loses a Pokémon, the linked ones still die with it. Everyone needs twincable 2.8.3 or newer.')
+      : t('rules.ballsHint', 'Each of you starts with your own first Poké Balls: until then your Pokémon don’t die, a blackout doesn’t end the run and no area is used up. When your partner’s rules have started and they lose a Pokémon, yours still dies with it. Both of you need twincable 2.8.3 or newer.');
   return html`<${RuleCheck} checked=${!!value} onChange=${(v) => !disabled && onChange(v)} disabled=${disabled}
     label=${t('rules.balls', 'Nothing counts before your first Poké Balls')} hint=${hint} />`;
 }

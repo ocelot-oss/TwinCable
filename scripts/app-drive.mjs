@@ -1,4 +1,4 @@
-// A remote control for ONE player in the real app (dev tool, like scripts/link-drive.mjs for the link host): a twicable
+// A remote control for ONE player in the real app (dev tool, like scripts/link-drive.mjs for the link host): a twincable
 // server with a scratch data folder, a run of one game with a battery save in it, its play view in Electron (muted) –
 // and a tiny HTTP API on 127.0.0.1 to press buttons, tap the DS touch screen with a real mouse click, take screenshots
 // and read the run's save. For checking by hand what a player does in a game (an in-game save, a menu) in the fast
@@ -54,7 +54,7 @@ async function main() {
   mkdirSync(lib, { recursive: true });
   copyFileSync(rom, join(lib, basename(rom)), fsConstants.COPYFILE_FICLONE);
   writeFileSync(join(dir, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'Sam', libraryFolders: [lib], bootAnimation: false, sounds: false, nativeCore: true, nativeEngine: flag('engine') }));
-  const env = { ...process.env, ELECTRON_RUN_AS_NODE: '1', SLS_DATA_DIR: dir, PORT: String(port), NO_OPEN: '1', SLS_E2E: '1', TWICABLE_LINK_ICE: 'off' };
+  const env = { ...process.env, ELECTRON_RUN_AS_NODE: '1', SLS_DATA_DIR: dir, PORT: String(port), NO_OPEN: '1', SLS_E2E: '1', TWINCABLE_LINK_ICE: 'off' };
   const server = spawn(process.execPath, [join(root, 'server', 'index.mjs')], { env, stdio: ['ignore', 'pipe', 'pipe'] });
   server.stderr.on('data', (d) => process.stderr.write(`[server] ${d}`));
   const base = `http://127.0.0.1:${port}`;

@@ -25,7 +25,7 @@ const u16le = (b, o) => b[o] | (b[o + 1] << 8);
 const u16be = (b, o) => (b[o] << 8) | b[o + 1];
 const u32le = (b, o) => (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24)) >>> 0;
 
-/** The capability a twicable build announces in its link messages when it knows wagers (older 3.0 builds: none). */
+/** The capability a twincable build announces in its link messages when it knows wagers (older 3.0 builds: none). */
 export const WAGER_CAP = 'wager1';
 /** The most money any of these games holds. */
 export const MONEY_MAX = 999999;
@@ -42,7 +42,7 @@ export function headerRange(system) {
 const ascii = (b, from, to) => String.fromCharCode(...b.subarray(from, to)).replace(/\0+$/, '').trim();
 
 /**
- * The game of a seat from its header bytes (headerRange): a key of GAMES, or null for a game twicable can't read link
+ * The game of a seat from its header bytes (headerRange): a key of GAMES, or null for a game twincable can't read link
  * battles in (another language, a hack that moved its memory – as the live tracker, by game code and title; a
  * randomized game keeps both).
  */

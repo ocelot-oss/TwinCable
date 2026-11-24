@@ -1,5 +1,5 @@
 /* "Your handheld" (web/views/handheld.mjs, the editor under Settings › Play › Launch animation), its tile in the library
-   and on the twicable+ page, and the launch animation's stage in the play view (web/views/launchstage.mjs). Only the app's
+   and on the twincable+ page, and the launch animation's stage in the play view (web/views/launchstage.mjs). Only the app's
    tokens, with classic's colours as fallback. */
 
 /* ---- the launch: one canvas over the play view's screen area, and the DOM light layers round it. Transform / opacity /
@@ -181,7 +181,7 @@
 .hh-selbox { margin-top: 2px; }
 .hh-finb:disabled { opacity: .35; cursor: not-allowed; }
 
-/* the stars (lib/favourites.mjs FavScope) on the editor's cards: top right, the twicable+ mark moves left */
+/* the stars (lib/favourites.mjs FavScope) on the editor's cards: top right, the twincable+ mark moves left */
 .hh .hh-cell > .fav-star, .hh .hhd > .fav-star { top: 3px; left: auto; right: 3px; }
 .hh .hh-skins .hh-cell > .fav-star { top: 8px; right: 8px; }
 .hh-filters .fav-filter { margin: 0; }
@@ -227,7 +227,7 @@
 .hh-tile-k .plus-mark { transform: scale(.85); }
 .hh-tile b { font-size: 13px; font-weight: 600; max-width: 160px; }
 
-/* ---- the twicable+ page: "Your handheld", featured ---- */
+/* ---- the twincable+ page: "Your handheld", featured ---- */
 .hh-show { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; align-items: center; }
 @media (max-width: 900px) { .hh-show { grid-template-columns: minmax(0, 1fr); } }
 .hh-show-stage { position: relative; aspect-ratio: 16 / 10; border-radius: var(--r-l, 14px); overflow: hidden;
@@ -236,7 +236,7 @@
 .hh-show-devs { position: absolute; left: 12px; bottom: 12px; width: 220px; background: color-mix(in srgb, var(--shell-2) 82%, transparent); backdrop-filter: blur(6px); }
 .hh-show-text h2 { margin: 0; }
 .hh-show-skins { display: flex; gap: 6px; flex-wrap: wrap; }
-/* the skins are a radio group: a click puts the skin on the device above (a twicable+ one as a preview) */
+/* the skins are a radio group: a click puts the skin on the device above (a twincable+ one as a preview) */
 .hh-show-skin { position: relative; width: 56px; height: 37px; padding: 0; border: 0; border-radius: 7px; background: var(--shell-4) center / cover; image-rendering: pixelated;
   overflow: hidden; cursor: pointer; box-shadow: 0 0 0 1px var(--edge, #2f2e36); transition: box-shadow .12s, transform .12s; }
 .hh-show-skin:hover { transform: translateY(-1px); }
@@ -249,16 +249,16 @@
 .hh-show-skin-m .plus-mark { width: 14px; height: 14px; border-radius: 4px; }
 .hh-show-skin-m .plus-mark svg { width: 8px; height: 8px; }
 @media (prefers-reduced-motion: reduce) { .hh-show-skin { transition: none; } .hh-show-skin:hover { transform: none; } }
-/* what the device wears: its name, what it is for you, and "Put it on" / "Get twicable+" */
+/* what the device wears: its name, what it is for you, and "Put it on" / "Get twincable+" */
 .hh-show-cur { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 10px; row-gap: 6px; min-height: 30px; }
 .hh-show-cur b { font-size: 14px; }
 .hh-show-cur .btn { align-self: center; }
-/* a twicable+ skin shown without twicable+: marked on the stage itself */
+/* a twincable+ skin shown without twincable+: marked on the stage itself */
 .hh-show-badge { position: absolute; top: 12px; right: 12px; display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px 4px 5px; border-radius: 999px;
   font-size: 12px; font-weight: 600; color: var(--ink); background: color-mix(in srgb, var(--shell-2) 82%, transparent); border: 1px solid color-mix(in srgb, #e1b05a 55%, var(--edge, #2f2e36));
   backdrop-filter: blur(6px); }
 .hh-show-btns { align-items: center; gap: 16px; flex-wrap: wrap; }
-/* the launch animation, by tier (views/launchtiers.mjs): the twicable+ page and "What twicable+ holds" */
+/* the launch animation, by tier (views/launchtiers.mjs): the twincable+ page and "What twincable+ holds" */
 .launch-tiers-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 @media (max-width: 900px) { .launch-tiers-list { grid-template-columns: minmax(0, 1fr); } }
 .launch-tier { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: var(--r-l, 14px); background: var(--shell-3); border: 1px solid var(--edge, #2f2e36); }

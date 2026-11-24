@@ -1,4 +1,4 @@
-// twicable 3.0 community + twicable+ end to end, against the REAL accounts service (souldew-accounts) running locally in
+// twincable 3.0 community + twincable+ end to end, against the REAL accounts service (souldew-accounts) running locally in
 // `wrangler dev` – never the production one. Re-runnable; everything lives in a scratch folder and is stopped at the end.
 //
 //   node scripts/plus-e2e.mjs --accounts <souldew-accounts checkout> --design <design/plus> --out <screens dir> [--show] [--keep]
@@ -10,22 +10,22 @@
 //   2. local D1 migrations, the signed packs into local R2, `wrangler dev` on a free port with DEV_FAKE_DISCORD=1 (the
 //      dev-only fake Discord – the Worker refuses it unless PUBLIC_URL is this computer)
 //   3. admin: tier map, catalog, register both packs (the Worker re-verifies the signatures)
-//   4. two twicable servers (Robin, Kim) with SLS_ACCOUNTS_URL at the Worker; both sign in through the real loopback flow
-//      in a "system browser" window: fake authorize page → callback → "Sign in to twicable on this computer as …?" → app
+//   4. two twincable servers (Robin, Kim) with SLS_ACCOUNTS_URL at the Worker; both sign in through the real loopback flow
+//      in a "system browser" window: fake authorize page → callback → "Sign in to twincable on this computer as …?" → app
 //   5. friends, an invite to a run, the join
-//   6. a signed BMC webhook (live_mode) for Robin's payer email, Robin links it in Settings › Account → twicable+
+//   6. a signed BMC webhook (live_mode) for Robin's payer email, Robin links it in Settings › Account → twincable+
 //   7. the pack: downloaded per file, verified, decrypted in the page; a skin applied, banner + frame on the profile,
 //      a launch animation previewed
-//   8. Kim (no membership) tries a twicable+ theme for 15 minutes (POST …/preview) – the "Preview" state
+//   8. Kim (no membership) tries a twincable+ theme for 15 minutes (POST …/preview) – the "Preview" state
 //   4b. the public preview media (a signed "previews" pack, registered free): Kim, signed OUT, sees the real pictures of
-//      twicable+ items in Settings › Account – no account needed
+//      twincable+ items in Settings › Account – no account needed
 //   9. Robin unlinks the membership → pack key rotated, tier gone → the encrypted cache is wiped, the theme goes back
 //
 // Also the launch tiers (shared/handheld.mjs launchRights): the member's launch plays the pick (Gold) – the card and the
 // Preview both; Kim without a membership gets the 2D cartridge (no 3D launch, no handheld tile in the library); Kim as a
-// Supporter (a supporter-level BMC membership at the end) gets the 3D "Your colours", the tile, and no twicable+ look.
-// "Your handheld" wears a twicable+ skin and stickers only while twicable+ is active, and the ways around it don't work –
-// Robin's encrypted cache copied to Kim's computer, twicable+ picks written into Kim's config.json by hand. No page may
+// Supporter (a supporter-level BMC membership at the end) gets the 3D "Your colours", the tile, and no twincable+ look.
+// "Your handheld" wears a twincable+ skin and stickers only while twincable+ is active, and the ways around it don't work –
+// Robin's encrypted cache copied to Kim's computer, twincable+ picks written into Kim's config.json by hand. No page may
 // crash or log an error on the way (the pages' console errors are collected).
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, writeFileSync, mkdtempSync, rmSync, readFileSync, existsSync, readdirSync, cpSync } from 'node:fs';
@@ -46,7 +46,7 @@ if (!process.versions.electron) {
 } else {
   const { app } = await import('electron');
   app.commandLine.appendSwitch('mute-audio');
-  const scratch = mkdtempSync(join(tmpdir(), 'twicable-plus-e2e-'));
+  const scratch = mkdtempSync(join(tmpdir(), 'twincable-plus-e2e-'));
   app.setPath('userData', join(scratch, 'electron'));
   app.on('window-all-closed', () => {});
   app.whenReady().then(() => main(scratch));
@@ -139,22 +139,22 @@ async function main(scratch) {
     node([join(root, 'scripts', 'plus-dev-pack.mjs'), '--design', DESIGN, '--source', srcDir, '--preview-source', pvDir], { timeout: 180000 });
     const dist = join(scratch, 'dist');
     const VERSION = '1.0.0';
-    node([join(ACC, 'tools', 'pack-build.mjs'), srcDir, '--id', 'twicable-plus', '--version', VERSION, '--kind', 'mixed', '--title', 'twicable+', '--key', join(keysDir, 'pack-signing.jwk'), '--out', dist]);
+    node([join(ACC, 'tools', 'pack-build.mjs'), srcDir, '--id', 'twincable-plus', '--version', VERSION, '--kind', 'mixed', '--title', 'twincable+', '--key', join(keysDir, 'pack-signing.jwk'), '--out', dist]);
     node([join(ACC, 'tools', 'pack-build.mjs'), pvDir, '--id', 'skins-preview', '--version', VERSION, '--kind', 'preview', '--title', 'Skin preview', '--key', join(keysDir, 'pack-signing.jwk'), '--out', dist]);
-    check('owner pack tool signed both packs', existsSync(join(dist, 'twicable-plus', VERSION, 'manifest.sig')) && existsSync(join(dist, 'skins-preview', VERSION, 'manifest.sig')));
+    check('owner pack tool signed both packs', existsSync(join(dist, 'twincable-plus', VERSION, 'manifest.sig')) && existsSync(join(dist, 'skins-preview', VERSION, 'manifest.sig')));
     // the public preview media: rendered from the design sources, a few of each kind (uploading all ~700 to local R2
     // one wrangler call at a time would take long), signed by the owner's tool as kind "previews"
     const mediaAll = join(scratch, 'previews-all');
     node([join(root, 'scripts', 'plus-dev-pack.mjs'), '--design', DESIGN, '--previews-source', mediaAll], { timeout: 900000 });
     const mediaDir = join(scratch, 'previews-src');
-    // (no 'launch' kind since 3.0 dropped the 2D twicable+ launch animations – plus-dev-pack.mjs renders none)
+    // (no 'launch' kind since 3.0 dropped the 2D twincable+ launch animations – plus-dev-pack.mjs renders none)
     for (const kind of ['banners', 'nameplates', 'frames', 'skins', 'handheld'].filter((k) => existsSync(join(mediaAll, k)))) {
       mkdirSync(join(mediaDir, kind), { recursive: true });
       const names = readdirSync(join(mediaAll, kind)).sort();
       const ids = [...new Set(names.map((n) => n.replace(/\.(png|webp)$/, '')))].slice(0, 3);
       for (const n of names.filter((x) => ids.includes(x.replace(/\.(png|webp)$/, '')))) writeFileSync(join(mediaDir, kind, n), readFileSync(join(mediaAll, kind, n)));
     }
-    node([join(ACC, 'tools', 'pack-build.mjs'), mediaDir, '--id', 'twicable-previews', '--version', VERSION, '--kind', 'previews', '--title', 'twicable+ previews', '--key', join(keysDir, 'pack-signing.jwk'), '--out', dist]);
+    node([join(ACC, 'tools', 'pack-build.mjs'), mediaDir, '--id', 'twincable-previews', '--version', VERSION, '--kind', 'previews', '--title', 'twincable+ previews', '--key', join(keysDir, 'pack-signing.jwk'), '--out', dist]);
     const seedDir = join(scratch, 'seed');
     node([join(ACC, 'tools', 'catalog-seed.mjs'), '--app', root, '--out', seedDir]);
 
@@ -163,13 +163,13 @@ async function main(scratch) {
     wrangler(['d1', 'migrations', 'apply', 'souldew-accounts', '--local', '--persist-to', state]);
     const listFiles = (dir, base = dir) => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? listFiles(join(dir, d.name), base) : [join(dir, d.name).slice(base.length + 1)]));
     let uploaded = 0;
-    for (const id of ['twicable-plus', 'skins-preview', 'twicable-previews']) {
+    for (const id of ['twincable-plus', 'skins-preview', 'twincable-previews']) {
       const dir = join(dist, id, VERSION);
       for (const rel of listFiles(join(dir, 'files'))) {
-        wrangler(['r2', 'object', 'put', `twicable-packs/packs/${id}/${VERSION}/files/${rel}`, '--file', join(dir, 'files', rel), '--local', '--persist-to', state]);
+        wrangler(['r2', 'object', 'put', `twincable-packs/packs/${id}/${VERSION}/files/${rel}`, '--file', join(dir, 'files', rel), '--local', '--persist-to', state]);
         uploaded++;
       }
-      for (const f of ['manifest.json', 'manifest.sig']) wrangler(['r2', 'object', 'put', `twicable-packs/packs/${id}/${VERSION}/${f}`, '--file', join(dir, f), '--local', '--persist-to', state]);
+      for (const f of ['manifest.json', 'manifest.sig']) wrangler(['r2', 'object', 'put', `twincable-packs/packs/${id}/${VERSION}/${f}`, '--file', join(dir, f), '--local', '--persist-to', state]);
     }
     log(`local R2: ${uploaded} pack files`);
     const inspector = await freePort();
@@ -213,12 +213,12 @@ async function main(scratch) {
     check('tier map', (await admin('PUT', '/v1/admin/tier-map', { map: { 'lvl-supporter': 'supporter', 'lvl-plus': 'plus', 'lvl-patron': 'patron' }, default: 'supporter', one_time: 'supporter' })).status === 200);
     const cat = await admin('PUT', '/v1/admin/cosmetics', JSON.parse(readFileSync(join(seedDir, 'admin-cosmetics.json'), 'utf8')));
     check('catalog seeded from the app', cat.status === 200, JSON.stringify(cat.body).slice(0, 80));
-    for (const [id, kind, title] of [['twicable-plus', 'mixed', 'twicable+'], ['skins-preview', 'preview', 'Skin preview']]) {
+    for (const [id, kind, title] of [['twincable-plus', 'mixed', 'twincable+'], ['skins-preview', 'preview', 'Skin preview']]) {
       const r = await admin('PUT', `/v1/admin/packs/${id}`, { version: VERSION, title, kind, required_tier: 'plus', published: true });
       check(`pack ${id} registered (Worker verified the signature${kind === 'preview' ? ' and the ≤512 px images' : ''})`, r.status === 200, JSON.stringify(r.body).slice(0, 200));
     }
     {
-      const r = await admin('PUT', '/v1/admin/packs/twicable-previews', { version: VERSION, title: 'twicable+ previews', kind: 'previews', required_tier: 'free', published: true });
+      const r = await admin('PUT', '/v1/admin/packs/twincable-previews', { version: VERSION, title: 'twincable+ previews', kind: 'previews', required_tier: 'free', published: true });
       check('preview media registered (pictures only, checked in R2)', r.status === 200, JSON.stringify(r.body).slice(0, 200));
       const pub = await svc('GET', '/v1/previews');
       check('GET /v1/previews answers without an account', pub.status === 200 && pub.body.version === VERSION && pub.body.files.length > 20, `${pub.status}`);
@@ -313,7 +313,7 @@ async function main(scratch) {
       await bev(`(() => { const f = document.querySelector('form'); f.id.value = ${JSON.stringify(who.discordId)}; f.username.value = ${JSON.stringify(who.username)}; f.global_name.value = ${JSON.stringify(who.name)}; f.querySelector('button[value=authorize]').click(); return true; })()`);
       await until('confirmation page', async () => page().includes('/auth/discord/callback') && (await bev('!!document.querySelector("button[value=continue]")')), 30000);
       const confirmText = await bev('document.body.innerText');
-      check(`${pr.name}: confirmation page asks "Sign in to twicable on this computer as ${who.name}?"`, confirmText.includes('Sign in to twicable on this computer as') && confirmText.includes(who.name));
+      check(`${pr.name}: confirmation page asks "Sign in to twincable on this computer as ${who.name}?"`, confirmText.includes('Sign in to twincable on this computer as') && confirmText.includes(who.name));
       if (n === 0) await capture(browser, '02b-browser-confirmation-page');
       await bev(`document.querySelector('button[value=continue]').click(); true`);
       await until('loopback page', async () => page().startsWith(`${pr.base}/auth/done?r=`), 30000)
@@ -340,7 +340,7 @@ async function main(scratch) {
       check('Kim: Cancel on the sign-in ends as "cancelled" in the app', page().startsWith(`${GUEST.base}/auth/done?r=denied&n=`), page());
       await capture(browser, '02d-browser-cancelled');
     }
-    // ------------------------------------------------------------------ 4b · Kim, signed OUT, sees what twicable+ holds
+    // ------------------------------------------------------------------ 4b · Kim, signed OUT, sees what twincable+ holds
     {
       const st = await api(GUEST, '/api/plus/previews');
       check('signed out: the app has the verified preview list', st.version === VERSION && Object.keys(st.files || {}).length > 20, JSON.stringify(st).slice(0, 120));
@@ -410,11 +410,11 @@ async function main(scratch) {
       log('the P2P relay did not connect (needs internet) – the service part is done');
     }
 
-    // ------------------------------------------------------------------ 6 · twicable+ via a signed BMC webhook + link in the app
+    // ------------------------------------------------------------------ 6 · twincable+ via a signed BMC webhook + link in the app
     const email = 'robin.payer@example.test';
     const created = Math.floor(Date.now() / 1000);
     const hook = JSON.stringify({ type: 'membership.started', live_mode: true, attempt: 1, created, event_id: Date.now(),
-      data: { id: 4242, object: 'membership', status: 'active', supporter_email: email, supporter_name: 'Robin', membership_level_id: 'lvl-plus', membership_level_name: 'twicable+', current_period_end: created + 30 * 86400 } });
+      data: { id: 4242, object: 'membership', status: 'active', supporter_email: email, supporter_name: 'Robin', membership_level_id: 'lvl-plus', membership_level_name: 'twincable+', current_period_end: created + 30 * 86400 } });
     const sig = createHmac('sha256', secrets.BMC_WEBHOOK_SECRET).update(hook).digest('hex');
     const wh = await svc('POST', '/webhooks/bmc', hook, { 'X-Signature-Sha256': sig });
     check('signed BMC webhook (live_mode) accepted', wh.status === 200 && wh.body.ok === true && !wh.body.bmc_test_ok, JSON.stringify(wh.body));
@@ -437,7 +437,7 @@ async function main(scratch) {
     await sleep(600);
     await shot(0, '11-link-email-linked');
     const ent = await api(HOST, '/api/account/entitlements');
-    check('Robin is twicable+ (tier plus, badge, pack key)', ent.tier === 'plus' && ent.badges.includes('plus') && /^[A-Za-z0-9_-]{43}$/.test(ent.packKey || ''), `${ent.tier} ${ent.badges}`);
+    check('Robin is twincable+ (tier plus, badge, pack key)', ent.tier === 'plus' && ent.badges.includes('plus') && /^[A-Za-z0-9_-]{43}$/.test(ent.packKey || ''), `${ent.tier} ${ent.badges}`);
     const keyId1 = ent.packKeyId;
 
     // ------------------------------------------------------------------ 7 · the pack in the app
@@ -464,8 +464,8 @@ async function main(scratch) {
     const catalog = await cos(0, '({ b: C.catalog().banners.filter((x) => x.plus && x.owned).map((x) => x.id), f: C.catalog().frames.filter((x) => x.plus && x.owned).map((x) => x.id) })');
     const banner = catalog.b.includes('night-marsh') ? 'night-marsh' : catalog.b[0];
     const frame = catalog.f[0];
-    // the profile editor itself (the parts drawer): pick a twicable+ banner, frame and nameplate and press Save – a
-    // member's picks are kept (no "comes with twicable+" line) → PATCH /v1/me, the service checks the tier
+    // the profile editor itself (the parts drawer): pick a twincable+ banner, frame and nameplate and press Save – a
+    // member's picks are kept (no "comes with twincable+" line) → PATCH /v1/me, the service checks the tier
     await go(0, '#/profile', '.pf-mast');
     await click(0, '.pf-actions .btn', 'Edit profile');
     await until('editor', () => ev(0, '!!document.querySelector(".pe-drawer .pe-pcard")'));
@@ -478,7 +478,7 @@ async function main(scratch) {
       await click(0, '.pe-back');
       await sleep(200);
     }
-    check('editor: no "comes with twicable+" line for a member, three changes', await ev(0, `!document.querySelector('.pe-lock') && document.querySelector('.pe-bar-hint').textContent.startsWith('3')`));
+    check('editor: no "comes with twincable+" line for a member, three changes', await ev(0, `!document.querySelector('.pe-lock') && document.querySelector('.pe-bar-hint').textContent.startsWith('3')`));
     await shot(0, '13b-editor-nameplate-picked');
     await click(0, '.pe-bar .btn.primary', 'Save');
     await until('editor closed', () => ev(0, '!document.querySelector(".pe")'), 20000);
@@ -492,11 +492,11 @@ async function main(scratch) {
       const p = document.createElement('canvas'); p.width = c.width || 1; p.height = c.height || 1; const x = p.getContext('2d'); x.drawImage(c, 0, 0);
       const d = x.getImageData(0, 0, p.width, p.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) n++; return n; })()`), 20000).catch(() => 0);
     check('the frame is painted by the sandboxed pack worker', framePixels > 100, `${framePixels} px`);
-    check('own profile shows the twicable+ badge', await ev(0, `!!document.querySelector('.pf-mast .acct-badge.plus')`));
+    check('own profile shows the twincable+ badge', await ev(0, `!!document.querySelector('.pf-mast .acct-badge.plus')`));
     await sleep(2500);
     await shot(0, '14-profile-banner-frame');
     const kimSees = await api(GUEST, `/api/account/users/${robin.id}`);
-    check(`Kim sees Robin's banner ${banner}, frame ${frame}, nameplate ${nameplate} and the twicable+ badge`, kimSees.banner === banner && kimSees.frame === frame && kimSees.nameplate === nameplate && kimSees.badges.includes('plus'), JSON.stringify({ b: kimSees.banner, f: kimSees.frame, n: kimSees.nameplate, badges: kimSees.badges }));
+    check(`Kim sees Robin's banner ${banner}, frame ${frame}, nameplate ${nameplate} and the twincable+ badge`, kimSees.banner === banner && kimSees.frame === frame && kimSees.nameplate === nameplate && kimSees.badges.includes('plus'), JSON.stringify({ b: kimSees.banner, f: kimSees.frame, n: kimSees.nameplate, badges: kimSees.badges }));
     await go(1, '#/friends', '.fr-list');
     await click(1, '.fr-pick', 'Robin');
     await sleep(2000);
@@ -505,17 +505,17 @@ async function main(scratch) {
     await go(0, '#/settings?s=play', '.launch-setting');
     await ev(0, `document.querySelector('.launch-setting').scrollIntoView({ block: 'start' }); true`);
     const anims = await ev(0, `[...document.querySelectorAll('.launch-card')].map((b) => b.querySelector('b').textContent)`);
-    check('the launch looks: Your colours and the three twicable+ ones, no lock for a member', anims.length === 4 && !(await ev(0, `!!document.querySelector('.launch-card .plus-mark, .launch-card [class*=plus]')`)), anims.join(' | '));
+    check('the launch looks: Your colours and the three twincable+ ones, no lock for a member', anims.length === 4 && !(await ev(0, `!!document.querySelector('.launch-card .plus-mark, .launch-card [class*=plus]')`)), anims.join(' | '));
     const gold = await launchPlays(0, () => click(0, '.launch-card', 'Gold'));
     check('member: Gold picked and saved', (await api(HOST, '/api/status')).config.launchAnimation === 'gold');
     check('member: the launch plays Gold', gold?.look === 'gold', JSON.stringify(gold && { look: gold.look, pace: gold.pace, T: gold.T }));
     await sleep(300);
     await shot(0, '16-launch-gold-member');
-    // "Your handheld": a twicable+ skin and sticker (and a holo finish) – what the launch would play now
+    // "Your handheld": a twincable+ skin and sticker (and a holo finish) – what the launch would play now
     await ev(0, `Promise.all([import('/lib/handheld/look.mjs'), import('/shared/handheld.mjs')]).then(([L, H]) => { L.setHandheld({ ...L.handheld(), skin: 'night-train',
       stickers: { nds: [{ id: 'crescent', finish: 'holo', region: 'lid:top', U: [0.1, 0.1], rot: 0 }, { id: 'heart', finish: 'vinyl', region: 'lid:top', U: [-0.2, 0], rot: 0 }] } }); return L.handheldSaved(); }).then(() => true)`);
     const lookM = await hh(0, 'L.lookNow()');
-    check('member: "Your handheld" wears the twicable+ skin, sticker and holo finish', lookM.skin === 'night-train' && lookM.stickers.nds?.some((x) => x.id === 'crescent' && x.finish === 'holo'), JSON.stringify(lookM));
+    check('member: "Your handheld" wears the twincable+ skin, sticker and holo finish', lookM.skin === 'night-train' && lookM.stickers.nds?.some((x) => x.id === 'crescent' && x.finish === 'holo'), JSON.stringify(lookM));
     check('member: Holo label plays Holo label', await hh(0, `L.playableLook('holo')`) === 'holo');
     await go(0, '#/settings?s=play', '.launch-setting');
     const goldPrev = await launchPlays(0, () => click(0, '.hhs-btns .btn.ghost'));
@@ -524,8 +524,8 @@ async function main(scratch) {
     await sleep(2500);
     await shot(0, '16b-your-handheld-member');
 
-    // ------------------------------------------------------------------ 7c · Kim (no twicable+): the default, nothing paid
-    // free (no membership): the 2D cartridge – On / Off and a preview, no 3D launch, no twicable+ look, no tile
+    // ------------------------------------------------------------------ 7c · Kim (no twincable+): the default, nothing paid
+    // free (no membership): the 2D cartridge – On / Off and a preview, no 3D launch, no twincable+ look, no tile
     const free2d = async (i, who) => {
       await go(i, '#/settings?s=play', '.launch-setting');
       await ev(i, `document.querySelector('.launch-setting').scrollIntoView({ block: 'start' }); true`);
@@ -540,15 +540,15 @@ async function main(scratch) {
     await free2d(1, 'non-member');
     await go(1, '#/settings?s=play', '.launch-setting');
     await shot(1, '17a-launch-free-2d');
-    // exploit 1: twicable+ picks written into config.json by hand (the same as a local edit): nothing paid plays
+    // exploit 1: twincable+ picks written into config.json by hand (the same as a local edit): nothing paid plays
     await api(GUEST, '/api/config', { launchAnimation: 'gold', launchClear: 'jungle', skin: 'dusk',
       handheld: { skin: 'night-train', stickers: { nds: [{ id: 'crescent', finish: 'glitter', region: 'lid:top', U: [0, 0], rot: 0 }, { id: 'heart', finish: 'holo', region: 'lid:top', U: [0.2, 0], rot: 0 }] } } });
     await wins[1].webContents.reload();
     await until('Kim reloaded', () => ev(1, '!!document.querySelector(".nav")'), 60000);
     await sleep(1500);
     const lookK = await hh(1, 'L.lookNow()');
-    check('config edit: a twicable+ handheld skin, sticker and finish are not played', lookK.skin === null && !lookK.stickers.nds?.some((x) => x.id === 'crescent') && lookK.stickers.nds?.every((x) => x.finish === 'vinyl'), JSON.stringify(lookK));
-    check('config edit: the twicable+ theme is not applied', await ev(1, `!document.documentElement.dataset.skin`));
+    check('config edit: a twincable+ handheld skin, sticker and finish are not played', lookK.skin === null && !lookK.stickers.nds?.some((x) => x.id === 'crescent') && lookK.stickers.nds?.every((x) => x.finish === 'vinyl'), JSON.stringify(lookK));
+    check('config edit: the twincable+ theme is not applied', await ev(1, `!document.documentElement.dataset.skin`));
     check('config edit: launchAnimation "gold" still plays Your colours, and the 2D one for a free account', await hh(1, `L.playableLook('gold') === 'your-colours' && !L.launchRightsNow().three`));
     await go(1, '#/settings?s=play', '.launch-setting');
     await sleep(300);
@@ -557,17 +557,17 @@ async function main(scratch) {
     cpSync(join(HOST.dir, 'plus'), join(GUEST.dir, 'plus'), { recursive: true });
     await cos(1, 'C.refreshPack()');
     const kimPack = await cos(1, 'C.packState()');
-    check('a copied cache unlocks nothing (not entitled, no twicable+ skin CSS in memory)', !kimPack.entitled && !(await cos(1, `C.catalog().skins.some((x) => x.plus && x.available)`)), JSON.stringify(kimPack));
+    check('a copied cache unlocks nothing (not entitled, no twincable+ skin CSS in memory)', !kimPack.entitled && !(await cos(1, `C.catalog().skins.some((x) => x.plus && x.available)`)), JSON.stringify(kimPack));
     check('… and the copied cache is wiped', !existsSync(join(GUEST.dir, 'plus', 'pack.json')) && !existsSync(join(GUEST.dir, 'plus', 'files')));
     // exploit 3: the cached envelopes are served to the page, but they are only ciphertext
     const env = await fetch(`${HOST.base}/api/plus/pack/file?path=${encodeURIComponent(meta.paths.find((x) => x.endsWith('.css')) || meta.paths[0])}`, { headers: { 'x-soullink': '1' } });
     const envBytes = Buffer.from(await env.arrayBuffer());
     check('a cached file is an encrypted envelope (no stylesheet text in it)', env.ok && !envBytes.includes(Buffer.from('html[data-skin')) && !envBytes.includes(Buffer.from('--sk-')), `${env.status} ${envBytes.length} B`);
-    // exploit 4: a twicable+ banner / frame / nameplate sent to the service straight from the API (past the editor)
+    // exploit 4: a twincable+ banner / frame / nameplate sent to the service straight from the API (past the editor)
     {
       const r = await fetch(`${GUEST.base}/api/account/me`, { method: 'PATCH', headers: { 'x-soullink': '1', 'content-type': 'application/json' }, body: JSON.stringify({ banner: banner, frame, nameplate }) });
       const mine = (await api(GUEST, '/api/account')).me;
-      check('non-member: the service refuses a twicable+ banner, frame and nameplate sent past the editor', !r.ok && mine.banner !== banner && mine.frame !== frame && mine.nameplate !== nameplate, `${r.status} ${JSON.stringify({ b: mine.banner, f: mine.frame, n: mine.nameplate })}`);
+      check('non-member: the service refuses a twincable+ banner, frame and nameplate sent past the editor', !r.ok && mine.banner !== banner && mine.frame !== frame && mine.nameplate !== nameplate, `${r.status} ${JSON.stringify({ b: mine.banner, f: mine.frame, n: mine.nameplate })}`);
     }
     // back to a plain profile for the preview below
     await api(GUEST, '/api/config', { launchAnimation: 'your-colours', skin: null, handheld: { skin: null, stickers: {} } });
@@ -610,11 +610,11 @@ async function main(scratch) {
     await until('skin back to classic', () => ev(0, `!document.documentElement.dataset.skin`));
     await sleep(600);
     await shot(0, '20-after-unlink-theme-back');
-    check('the theme waits for twicable+ (pending), the app looks like itself', await ev(0, `document.body.innerText.includes('is back as soon as twicable+ is active')`));
+    check('the theme waits for twincable+ (pending), the app looks like itself', await ev(0, `document.body.innerText.includes('is back as soon as twincable+ is active')`));
     // the launch and "Your handheld" after the membership ended: the choices are kept, nothing paid plays
     check('ended: the Gold pick is kept in the settings', (await api(HOST, '/api/status')).config.launchAnimation === 'gold');
     const lookE = await hh(0, 'L.lookNow()');
-    check('ended: "Your handheld" plays without the twicable+ skin, sticker and finish (free sticker kept)', lookE.skin === null && lookE.stickers.nds?.length === 1 && lookE.stickers.nds[0].id === 'heart', JSON.stringify(lookE));
+    check('ended: "Your handheld" plays without the twincable+ skin, sticker and finish (free sticker kept)', lookE.skin === null && lookE.stickers.nds?.length === 1 && lookE.stickers.nds[0].id === 'heart', JSON.stringify(lookE));
     check('ended: a kept Gold plays Your colours', await hh(0, `L.playableLook('gold')`) === 'your-colours');
     await free2d(0, 'ended (no membership left)');
     await go(0, '#/settings?s=play', '.launch-setting');
@@ -624,11 +624,11 @@ async function main(scratch) {
     await go(0, '#/profile', '.pf-mast');
     await sleep(1500);
     await shot(0, '22-after-unlink-profile');
-    check('ended: no twicable+ badge on the own profile', !(await ev(0, `!!document.querySelector('.pf-mast .acct-badge.plus')`)));
+    check('ended: no twincable+ badge on the own profile', !(await ev(0, `!!document.querySelector('.pf-mast .acct-badge.plus')`)));
     const kimSees2 = await api(GUEST, `/api/account/users/${robin.id}`);
-    check('ended: friends no longer see the twicable+ badge', !(kimSees2.badges || []).includes('plus'), JSON.stringify({ b: kimSees2.banner, f: kimSees2.frame, badges: kimSees2.badges }));
+    check('ended: friends no longer see the twincable+ badge', !(kimSees2.badges || []).includes('plus'), JSON.stringify({ b: kimSees2.banner, f: kimSees2.frame, badges: kimSees2.badges }));
 
-    // ------------------------------------------------------------------ 10 · Kim as a Supporter: the 3D "Your colours", nothing twicable+
+    // ------------------------------------------------------------------ 10 · Kim as a Supporter: the 3D "Your colours", nothing twincable+
     {
       const kimEmail = 'kim.payer@example.test';
       const at = Math.floor(Date.now() / 1000);
@@ -639,21 +639,21 @@ async function main(scratch) {
       await ev(1, `import('/lib/account.mjs').then((A) => A.linkEmail(${JSON.stringify(kimEmail)})).then(() => true)`);
       const kEnt = await api(GUEST, '/api/account/entitlements');
       check('Kim is a Supporter', kEnt.tier === 'supporter', `${kEnt.tier}`);
-      await api(GUEST, '/api/config', { launchAnimation: 'gold', launchPace: 'quick' }); // a twicable+ pick written by hand
+      await api(GUEST, '/api/config', { launchAnimation: 'gold', launchPace: 'quick' }); // a twincable+ pick written by hand
       await wins[1].webContents.reload();
       await until('Kim reloaded (3)', () => ev(1, '!!document.querySelector(".nav")'), 60000);
       await until('Kim: supporter rights in the page', () => hh(1, `L.launchRightsNow().tier === 'supporter'`), 30000);
       const R = await hh(1, 'L.launchRightsNow()');
-      check('supporter: the 3D launch, no twicable+ items, no Rare start, no Surprise me', R.three && !R.plus && !R.rare && !R.surprise && R.designMax === 1, JSON.stringify(R));
+      check('supporter: the 3D launch, no twincable+ items, no Rare start, no Surprise me', R.three && !R.plus && !R.rare && !R.surprise && R.designMax === 1, JSON.stringify(R));
       await go(1, '#/settings?s=play', '.launch-setting');
       await ev(1, `document.querySelector('.launch-setting').scrollIntoView({ block: 'start' }); true`);
-      check('supporter: the 3D setting with the twicable+ looks marked, Your colours on', await ev(1, `!document.querySelector('.launch-2d') && document.querySelectorAll('.launch-card').length === 4
+      check('supporter: the 3D setting with the twincable+ looks marked, Your colours on', await ev(1, `!document.querySelector('.launch-2d') && document.querySelectorAll('.launch-card').length === 4
         && document.querySelector('.launch-card.on b').textContent === 'Your colours' && document.querySelectorAll('.launch-card .plus-mark').length === 3`));
       const supPrev = await launchPlays(1, () => click(1, '.hhs-btns .btn.ghost'));
       check('supporter: Preview plays Your colours (a hand-written Gold waits)', supPrev?.look === 'your-colours' && supPrev?.pace === 'quick', JSON.stringify(supPrev && { look: supPrev.look, pace: supPrev.pace }));
       await click(1, '.launch-card', 'Gold');
       await sleep(800);
-      check('supporter: a twicable+ card leads to twicable+, nothing saved', (await api(GUEST, '/api/status')).config.launchAnimation === 'gold' && !(await hh(1, `L.playableLook('gold') === 'gold'`)));
+      check('supporter: a twincable+ card leads to twincable+, nothing saved', (await api(GUEST, '/api/status')).config.launchAnimation === 'gold' && !(await hh(1, `L.playableLook('gold') === 'gold'`)));
       await go(1, '#/settings?s=play', '.launch-setting');
       await ev(1, `document.querySelector('.hhs-hand').scrollIntoView({ block: 'center' }); true`);
       await sleep(1500);

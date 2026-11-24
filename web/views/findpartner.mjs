@@ -1,4 +1,4 @@
-// "No partner yet? Find one on the twicable Discord" – a small secondary action where a player is about to start a
+// "No partner yet? Find one on the twincable Discord" – a small secondary action where a player is about to start a
 // SoulLink without a partner (the new-run wizard's "Who plays", the Friends page with no friends yet). It makes the same
 // post as the Discord bot's partner finder in #find-a-partner – game, partners, language and time zone, when you play,
 // rules – prefilled, as the player's own Discord account (the accounts service hands it to the bot, API.md §14), then
@@ -15,12 +15,12 @@ import { langAndZone } from '../lib/lfg.mjs';
 /** What went wrong, in words – and, for an open post, its link. */
 function problem(e) {
   const code = e?.vars?.code;
-  if (code === 'lfg_active') return { text: t('lfg.active', 'You already have an open post on the twicable Discord. Close it there with “Found / close” to make a new one – or wait, posts close by themselves after 7 days.'), url: e.vars.url || null };
-  if (code === 'lfg_not_member') return { text: t('lfg.notMember', 'Join the twicable Discord server first – the post goes up there.'), join: true };
+  if (code === 'lfg_active') return { text: t('lfg.active', 'You already have an open post on the twincable Discord. Close it there with “Found / close” to make a new one – or wait, posts close by themselves after 7 days.'), url: e.vars.url || null };
+  if (code === 'lfg_not_member') return { text: t('lfg.notMember', 'Join the twincable Discord server first – the post goes up there.'), join: true };
   if (code === 'text_rejected') return { text: t('lfg.rejected', 'The post wasn’t sent: {reason}.', { reason: e.vars.reason || t('lfg.rejectedWhy', 'something in it isn’t allowed (links, mentions, certain words)') }) };
   if (code === 'rate_limited') return { text: t('lfg.tooMany', 'That’s enough posts for today – try again tomorrow.') };
   if (code === 'invalid_field') return { text: t('lfg.fill', 'Please fill in the game, your language and when you play.') };
-  return { text: t('lfg.failed', 'The twicable Discord can’t be reached right now – try again in a moment.') };
+  return { text: t('lfg.failed', 'The twincable Discord can’t be reached right now – try again in a moment.') };
 }
 
 /** The form, prefilled. game / partners / rules come from where it was opened. */
@@ -36,7 +36,7 @@ export function FindPartnerModal({ game = '', partners = 1, rules = '', onClose 
     setErr(null);
     try {
       const r = await findPartner(v);
-      toast({ kind: 'ok', title: t('lfg.posted', 'Your post is up on the twicable Discord'), text: t('lfg.postedText', 'Whoever clicks “I’m in” gets a private thread with you.') });
+      toast({ kind: 'ok', title: t('lfg.posted', 'Your post is up on the twincable Discord'), text: t('lfg.postedText', 'Whoever clicks “I’m in” gets a private thread with you.') });
       openExternal(r.url);
       onClose();
     } catch (e) {
@@ -48,7 +48,7 @@ export function FindPartnerModal({ game = '', partners = 1, rules = '', onClose 
     footer=${html`<button class="btn ghost" onClick=${onClose}>${t('common.cancel', 'Cancel')}</button>
       <button class="btn go" disabled=${!ready || busy} onClick=${post}><${Icon} name="external" size=${14} />${t('lfg.post', 'Post on Discord')}</button>`}>
     <div class="stack">
-      <p class="small muted">${t('lfg.intro', 'Your post goes up in #find-a-partner on the twicable Discord, under your Discord name. Whoever clicks “I’m in” joins a private thread with you to plan the run.')}</p>
+      <p class="small muted">${t('lfg.intro', 'Your post goes up in #find-a-partner on the twincable Discord, under your Discord name. Whoever clicks “I’m in” joins a private thread with you to plan the run.')}</p>
       <div class="grid-2">
         <label class="field"><span>${t('lfg.game', 'Game')}</span><input type="text" value=${v.game} maxLength="60" placeholder=${t('lfg.gamePh', 'e.g. Emerald, Radical Red, Platinum')} onInput=${set('game')} /></label>
         <label class="field"><span>${t('lfg.partners', 'Partners wanted')}</span><select value=${v.partners} onChange=${set('partners')}>
@@ -60,13 +60,13 @@ export function FindPartnerModal({ game = '', partners = 1, rules = '', onClose 
         <span class="hint">${t('lfg.rulesHint', 'No links or mentions – those are refused.')}</span></label>
       ${err && html`<div class="warning info small stack-s" role="status"><span>${err.text}</span>
         ${err.url && html`<div><button class="btn small" onClick=${() => openExternal(err.url)}><${Icon} name="external" size=${12} />${t('lfg.openPost', 'Open my post')}</button></div>`}
-        ${err.join && html`<div><button class="btn small" onClick=${() => openExternal(LINKS.discord)}><${Icon} name="external" size=${12} />${t('lfg.join', 'Join the twicable Discord')}</button></div>`}</div>`}
+        ${err.join && html`<div><button class="btn small" onClick=${() => openExternal(LINKS.discord)}><${Icon} name="external" size=${12} />${t('lfg.join', 'Join the twincable Discord')}</button></div>`}</div>`}
     </div>
   <//>`;
 }
 
 /**
- * The small secondary action: "No partner yet? Find one on the twicable Discord" (signed in) or "… Sign in to find one"
+ * The small secondary action: "No partner yet? Find one on the twincable Discord" (signed in) or "… Sign in to find one"
  * (signed out). Props are the form's prefill.
  */
 export function FindPartnerLink({ game, partners, rules, class: cls = '' }) {
@@ -78,8 +78,8 @@ export function FindPartnerLink({ game, partners, rules, class: cls = '' }) {
   return html`<p class=${`small muted lfg-link ${cls}`}>
     <${Icon} name="friends" size=${13} />
     <span>${t('lfg.noPartner', 'No partner yet?')}</span>
-    ${on ? html`<a href="#" onClick=${(e) => { e.preventDefault(); setOpen(true); }}>${t('lfg.findOne', 'Find one on the twicable Discord')}</a>`
-      : html`<a href="#" onClick=${(e) => { e.preventDefault(); navigate('settings', settingsLink('account')); }}>${t('lfg.signIn', 'Sign in to find one on the twicable Discord')}</a>`}
+    ${on ? html`<a href="#" onClick=${(e) => { e.preventDefault(); setOpen(true); }}>${t('lfg.findOne', 'Find one on the twincable Discord')}</a>`
+      : html`<a href="#" onClick=${(e) => { e.preventDefault(); navigate('settings', settingsLink('account')); }}>${t('lfg.signIn', 'Sign in to find one on the twincable Discord')}</a>`}
     ${open && html`<${FindPartnerModal} game=${game} partners=${partners} rules=${rules} onClose=${() => setOpen(false)} />`}
   </p>`;
 }

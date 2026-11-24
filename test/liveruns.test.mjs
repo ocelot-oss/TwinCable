@@ -16,7 +16,7 @@ import {
 } from '../shared/liveruns.mjs';
 import { LIVE_FIXTURES } from './fixtures/livecards.mjs';
 
-const DATA = mkdtempSync(join(tmpdir(), 'twicable-live-'));
+const DATA = mkdtempSync(join(tmpdir(), 'twincable-live-'));
 process.env.SLS_DATA_DIR = DATA;
 
 // web/lib/*.mjs import browser paths (/shared/…, /vendor/…): map them onto the project folder
@@ -150,25 +150,25 @@ test('bot answers → what the page shows', async () => {
   assert.deepEqual(outcome(405, {}), { ok: false, error: 'server' });
 });
 
-test('the base URL: the bot by default, TWICABLE_LIVE_URL only as https or on this computer', async () => {
+test('the base URL: the bot by default, TWINCABLE_LIVE_URL only as https or on this computer', async () => {
   const { liveBase, LIVE_RUNS_URL } = await import('../server/lib/liveruns.mjs');
   assert.equal(liveBase({}), LIVE_RUNS_URL);
-  assert.equal(liveBase({ TWICABLE_LIVE_URL: 'http://127.0.0.1:5555/' }), 'http://127.0.0.1:5555');
-  assert.equal(liveBase({ TWICABLE_LIVE_URL: 'https://staging.example/bot/' }), 'https://staging.example/bot');
-  assert.equal(liveBase({ TWICABLE_LIVE_URL: 'http://evil.example' }), LIVE_RUNS_URL, 'no plain http to another host');
-  assert.equal(liveBase({ TWICABLE_LIVE_URL: 'nonsense' }), LIVE_RUNS_URL);
+  assert.equal(liveBase({ TWINCABLE_LIVE_URL: 'http://127.0.0.1:5555/' }), 'http://127.0.0.1:5555');
+  assert.equal(liveBase({ TWINCABLE_LIVE_URL: 'https://staging.example/bot/' }), 'https://staging.example/bot');
+  assert.equal(liveBase({ TWINCABLE_LIVE_URL: 'http://evil.example' }), LIVE_RUNS_URL, 'no plain http to another host');
+  assert.equal(liveBase({ TWINCABLE_LIVE_URL: 'nonsense' }), LIVE_RUNS_URL);
 });
 
 // ---------------------------------------------------------------------------------------------------------------
 // The card model from a run doc (the fixtures scripts/render-live-cards.mjs paints)
-test('the base URL: the bot’s own domain first, the workers.dev address only as the fallback, never for TWICABLE_LIVE_URL', async () => {
+test('the base URL: the bot’s own domain first, the workers.dev address only as the fallback, never for TWINCABLE_LIVE_URL', async () => {
   const { liveBases, LIVE_RUNS_URL, LIVE_RUNS_FALLBACK_URL } = await import('../server/lib/liveruns.mjs');
-  assert.equal(LIVE_RUNS_URL, `https://${['api', 'twicable', 'app'].join('.')}`);
+  assert.equal(LIVE_RUNS_URL, `https://${['api', 'twincable', 'app'].join('.')}`);
   // (the addresses are built here, so that server/lib/liveruns.mjs stays the only file naming them – test/secrets.test.mjs)
-  assert.equal(LIVE_RUNS_FALLBACK_URL, `https://${['twicable-discord-bot', 'sweeparena', 'workers', 'dev'].join('.')}`);
+  assert.equal(LIVE_RUNS_FALLBACK_URL, `https://${['twincable-discord-bot', 'sweeparena', 'workers', 'dev'].join('.')}`);
   assert.deepEqual(liveBases({}), [LIVE_RUNS_URL, LIVE_RUNS_FALLBACK_URL]);
-  assert.deepEqual(liveBases({ TWICABLE_LIVE_URL: 'http://evil.example' }), [LIVE_RUNS_URL, LIVE_RUNS_FALLBACK_URL]);
-  assert.deepEqual(liveBases({ TWICABLE_LIVE_URL: 'http://127.0.0.1:5555/' }), ['http://127.0.0.1:5555'], 'a mock bot alone');
+  assert.deepEqual(liveBases({ TWINCABLE_LIVE_URL: 'http://evil.example' }), [LIVE_RUNS_URL, LIVE_RUNS_FALLBACK_URL]);
+  assert.deepEqual(liveBases({ TWINCABLE_LIVE_URL: 'http://127.0.0.1:5555/' }), ['http://127.0.0.1:5555'], 'a mock bot alone');
 });
 
 test('the fallback: only when the bot’s own domain gives no answer at all – same request, still no redirects', async () => {
@@ -183,7 +183,7 @@ test('the fallback: only when the bot’s own domain gives no answer at all – 
     };
     return { calls, fetchImpl };
   };
-  const env = {}; // (not process.env: the server tests below point TWICABLE_LIVE_URL at their mock bot)
+  const env = {}; // (not process.env: the server tests below point TWINCABLE_LIVE_URL at their mock bot)
   // 1. blocked or unknown host (DNS, connection, TLS – fetch throws): the same POST again at workers.dev
   const blocked = mock((url) => {
     if (url.startsWith(LIVE_RUNS_URL)) throw new TypeError('fetch failed');
@@ -213,11 +213,11 @@ test('the fallback: only when the bot’s own domain gives no answer at all – 
   });
   assert.equal((await status({ fetchImpl: silent.fetchImpl, env })).offline, true);
   assert.deepEqual(silent.calls.map((c) => c.url), [`${LIVE_RUNS_URL}/live/me`, `${LIVE_RUNS_FALLBACK_URL}/live/me`]);
-  // 4. a mock bot (TWICABLE_LIVE_URL) is the only address – a test never falls through to the real bot
+  // 4. a mock bot (TWINCABLE_LIVE_URL) is the only address – a test never falls through to the real bot
   const mockBot = mock(() => {
     throw new TypeError('fetch failed');
   });
-  assert.equal((await status({ fetchImpl: mockBot.fetchImpl, env: { TWICABLE_LIVE_URL: 'http://127.0.0.1:9' } })).offline, true);
+  assert.equal((await status({ fetchImpl: mockBot.fetchImpl, env: { TWINCABLE_LIVE_URL: 'http://127.0.0.1:9' } })).offline, true);
   assert.deepEqual(mockBot.calls.map((c) => c.url), ['http://127.0.0.1:9/live/me']);
   // unlinking through the fallback as well; the token is gone afterwards
   const bye = mock((url) => {
@@ -436,7 +436,7 @@ let starting;
 before(() => (starting = (async () => {
   bot = mockBot();
   await new Promise((r) => bot.server.listen(0, '127.0.0.1', r));
-  process.env.TWICABLE_LIVE_URL = `http://127.0.0.1:${bot.server.address().port}`;
+  process.env.TWINCABLE_LIVE_URL = `http://127.0.0.1:${bot.server.address().port}`;
   for (const k of ['log', 'warn', 'error']) console[k] = (...a) => { logs.push(a.map(String).join(' ')); };
   const { startServer } = await import('../server/app.mjs');
   app = await startServer({ port: 0, background: false });
@@ -478,7 +478,7 @@ test('server: link with the code, status with today’s posts, the token stays o
   assert.equal(r.body.linked, true);
   assert.equal(r.body.user.name, 'Ash');
   assert.equal(bot.s.lastLink.code, 'K7Q-4M2');
-  assert.match(bot.s.lastLink.app, /^twicable \d+\.\d+\.\d+/);
+  assert.match(bot.s.lastLink.app, /^twincable \d+\.\d+\.\d+/);
   assert.equal(bot.s.lastLink.platform, process.platform);
   assert.ok(token());
   // where it is kept: live-runs.json in the data folder, readable only by this user, not config.json

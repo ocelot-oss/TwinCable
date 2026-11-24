@@ -1,6 +1,6 @@
 // Electron main for scripts/plus-previews.mjs renderLaunchPreviews: the launch looks of "Your handheld" as public
 // preview pictures – drawn by the REAL launch scene (web/lib/handheld/scene.mjs through look.mjs poseScene) in the real
-// app page (its own server, a throwaway data folder, signed out, muted, hidden window), with the twicable+ looks' data
+// app page (its own server, a throwaway data folder, signed out, muted, hidden window), with the twincable+ looks' data
 // (<dir>/looks.json – the design source's LOOKS, checked by looks.mjs cleanLooks) set in memory the way a verified pack
 // sets it. A GBA from behind (the cartridge and its label in view), swinging gently: frames for a loop and one still.
 //   electron scripts/handheld/launch-shots.mjs <dir>
@@ -35,7 +35,7 @@ if (process.versions.electron) {
       const looks = JSON.parse(readFileSync(join(dir, 'looks.json'), 'utf8'));
       const data = join(scratch, 'data');
       mkdirSync(data, { recursive: true });
-      writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'twicable', bootAnimation: false, sounds: false, nagOff: true }));
+      writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'twincable', bootAnimation: false, sounds: false, nagOff: true }));
       process.env.SLS_DATA_DIR = data;
       process.env.SLS_ACCOUNTS_URL = 'http://127.0.0.1:9'; // never the real service: signed out, nothing to reach
       const { startServer } = await import(pathToFileURL(join(ROOT, 'server', 'app.mjs')).href);

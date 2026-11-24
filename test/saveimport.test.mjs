@@ -155,7 +155,7 @@ test('.dsv: DeSmuME’s footer comes off, a save it counted short is padded to t
   assert.equal(short.size, 512 * KB);
   assert.deepEqual(short.bytes, shortRaw);
   assert.ok(S.isDsv(dsv(raw)) && !S.isDsv(raw));
-  // the same save as a raw file cut short (DeSmuME's raw export, an older twicable): padded the same way
+  // the same save as a raw file cut short (DeSmuME's raw export, an older twincable): padded the same way
   const cut = S.normalizeSave(shortRaw.slice(0, 256 * KB + 1), 'nds');
   assert.deepEqual([cut.size, cut.notes], [512 * KB, ['padded']]);
   assert.deepEqual(cut.bytes, shortRaw);

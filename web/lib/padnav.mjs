@@ -1,4 +1,4 @@
-// Controller navigation for twicable's own screens (issue #33): library, boards, runs, settings, dialogs and menus with
+// Controller navigation for twincable's own screens (issue #33): library, boards, runs, settings, dialogs and menus with
 // nothing but a gamepad – for the couch and Steam Deck game mode.
 //
 // D-pad / left stick: move the focus to the nearest control in that direction (held: repeats). A: press it (a select
@@ -11,7 +11,7 @@
 //
 // The game always comes first: while it fills the Play page and runs, the controller is the game's alone and this
 // module only watches. Pausing it, opening a menu or dialog over it, or leaving it in the corner hands the controller
-// to the app – and the game frame then ignores the buttons (window.__twicablePad.mute, read by lib/controls.mjs
+// to the app – and the game frame then ignores the buttons (window.__twincablePad.mute, read by lib/controls.mjs
 // appHasPad in player.html, playernative.html and player3ds.html). Handing back waits until every button is released,
 // so the A that pressed "Resume" doesn't also press A in the game.
 //
@@ -234,7 +234,7 @@ const state = {
   raw: '',
   activeAt: -Infinity,
 };
-const shared = () => (globalThis.__twicablePad ||= { mute: false });
+const shared = () => (globalThis.__twincablePad ||= { mute: false });
 
 /** The running game session reports here what gameOwnsPad needs; returns the function that ends the claim. */
 export function claimPad(report) {

@@ -1,4 +1,4 @@
-// Is a 3DS game file whole? A copy that was cut off (twicable closed while it copied a 4 GB game, a download that
+// Is a 3DS game file whole? A copy that was cut off (twincable closed while it copied a 4 GB game, a download that
 // stopped) still has its header – it is recognised, listed as ready and starts – but the game behind it is missing,
 // and the player sees a black screen (ticket #19). The game's own hashes tell: the NCCH header holds SHA-256 hashes of
 // the ExeFS's and the RomFS's first bytes, and the RomFS is a hash tree (IVFC: level 3 = the files, level 2 = a hash
@@ -34,7 +34,7 @@ export const CTR_MAX_HASH_REGION = 1024 * 1024;
  * { state, why } – state 'ok' (every hash checked matched), 'damaged' (the game is missing parts: the file ends early, or
  * where its hashes say data is there are only zeros – a copy that was cut off), 'mismatch' (hashes that don't match over
  * data that is there – a modified game whose tools left old hashes; it may well run, so it is only reported), or
- * 'unchecked' (no NCCH twicable can check: encrypted, a .cia / .3dsx, compressed, unknown). `why` names the first
+ * 'unchecked' (no NCCH twincable can check: encrypted, a .cia / .3dsx, compressed, unknown). `why` names the first
  * finding. Never throws.
  */
 export function ctrIntegrity(readAt, fileSize, sha256, { samples = CTR_SAMPLES } = {}) {

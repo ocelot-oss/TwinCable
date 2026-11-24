@@ -1,4 +1,4 @@
-/* twicable website – progressive enhancement only: without JS every link works, every text and picture is there. */
+/* twincable website – progressive enhancement only: without JS every link works, every text and picture is there. */
 (() => {
   'use strict';
   const $ = (s, el = document) => el.querySelector(s);
@@ -16,14 +16,14 @@
   const T = DE ? {
     free: 'Kostenlos · Open Source (GPL-3.0)',
     peel: 'Ohne Sticker', stick: 'Mit Stickern', alt: (n) => `Dein Handheld im Skin ${n}, mit sechs Stickern.`,
-    tiers: { supporter: 'Supporter', plus: 'twicable+', legend: 'Legend', coffee: 'Kaffee' },
+    tiers: { supporter: 'Supporter', plus: 'twincable+', legend: 'Legend', coffee: 'Kaffee' },
     more: (n) => `und ${n} weitere`,
     first: 'Deiner könnte der erste sein.',
     since: (d) => `dabei seit ${d}`,
   } : {
     free: 'Free · open source (GPL-3.0)',
     peel: 'Without stickers', stick: 'With stickers', alt: (n) => `Your handheld in the ${n} skin, with six stickers.`,
-    tiers: { supporter: 'Supporter', plus: 'twicable+', legend: 'Legend', coffee: 'Coffee' },
+    tiers: { supporter: 'Supporter', plus: 'twincable+', legend: 'Legend', coffee: 'Coffee' },
     more: (n) => `and ${n} more`,
     first: 'Yours could be the first.',
     since: (d) => `since ${d}`,
@@ -143,7 +143,7 @@
     again.addEventListener('click', run);
   }
 
-  // ---------- twicable+ · the launch: frames of the real 3D handheld scene ----------
+  // ---------- twincable+ · the launch: frames of the real 3D handheld scene ----------
   const launch = $('[data-launch]');
   if (launch && !reduced) {
     const canvas = $('[data-launch-canvas]', launch);
@@ -226,7 +226,7 @@
     }, { threshold: 0.55 }).observe($('.launch-dev', launch));
   } else if (launch) $$('[data-beat]', launch).forEach((b) => b.classList.add('on'));
 
-  // ---------- twicable+ · your handheld: every skin in one carousel, stickers on or off ----------
+  // ---------- twincable+ · your handheld: every skin in one carousel, stickers on or off ----------
   const hh = $('[data-hh]');
   const skins = $('[data-skins]');
   if (hh && skins) {
@@ -238,7 +238,7 @@
     const capFor = (el) => {
       cap.textContent = el.dataset.name + ' ';
       const pill = document.createElement('span');
-      pill.className = `pill${el.dataset.tier === 'twicable+' ? ' pill-gold' : ''}`;
+      pill.className = `pill${el.dataset.tier === 'twincable+' ? ' pill-gold' : ''}`;
       pill.textContent = el.dataset.tier;
       cap.append(pill);
     };
@@ -292,7 +292,7 @@
     btn.addEventListener('click', () => show(!on));
   }
 
-  // ---------- twicable+ · colour themes ----------
+  // ---------- twincable+ · colour themes ----------
   const themes = $('[data-themes]');
   if (themes) {
     const img = $('[data-theme-img]', themes), name = $('[data-theme-name]', themes);
@@ -318,7 +318,7 @@
     }
   }
 
-  // ---------- twicable+ · banners drift (only while on screen) ----------
+  // ---------- twincable+ · banners drift (only while on screen) ----------
   for (const row of $$('[data-marquee]')) {
     if (reduced) break;
     for (const c of [...row.children]) { const d = c.cloneNode(true); d.setAttribute('aria-hidden', 'true'); for (const i of $$('img', d)) i.alt = ''; row.append(d); }
@@ -326,7 +326,7 @@
     new IntersectionObserver(([e]) => row.classList.toggle('run', e.isIntersecting)).observe(row);
   }
 
-  // ---------- twicable+ · thank you: live names from accounts.souldew.app, never in the way ----------
+  // ---------- twincable+ · thank you: live names from accounts.souldew.app, never in the way ----------
   const thanks = $('[data-thanks]');
   if (thanks) {
     const loadThanks = async () => {
@@ -359,7 +359,7 @@
           li.className = `t-${tier}`;
           const av = document.createElement('span');
           av.className = 'av';
-          // pictures only from twicable's own service – nothing else is contacted
+          // pictures only from twincable's own service – nothing else is contacted
           if (typeof p.avatar === 'string' && p.avatar.startsWith('https://accounts.souldew.app/')) {
             const im = document.createElement('img');
             im.src = p.avatar; im.alt = ''; im.loading = 'lazy'; im.referrerPolicy = 'no-referrer';
@@ -394,7 +394,7 @@
     }
     for (const v of $$('[data-dl-version]')) v.textContent = `v${rel.version} · ${T.free}`;
   };
-  const CACHE_KEY = 'twicable-release-v3';
+  const CACHE_KEY = 'twincable-release-v3';
   const loadRelease = async () => {
     try {
       const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
@@ -405,8 +405,8 @@
     const data = await res.json();
     const assets = Array.isArray(data.assets) ? data.assets : [];
     const find = (re) => { const x = assets.find((a) => re.test(a.name)); return x ? { url: x.browser_download_url, size: x.size, name: x.name } : null; };
-    const rel = { version: String(data.tag_name || '').replace(/^v/, ''), mac: find(/^twicable-.+-arm64\.dmg$/i), win: find(/^twicable-.+-win-x64-setup\.exe$/i),
-      linux: find(/^twicable-.+-linux-x86_64\.AppImage$/i), deb: find(/^twicable-.+-linux-amd64\.deb$/i) };
+    const rel = { version: String(data.tag_name || '').replace(/^v/, ''), mac: find(/^twincable-.+-arm64\.dmg$/i), win: find(/^twincable-.+-win-x64-setup\.exe$/i),
+      linux: find(/^twincable-.+-linux-x86_64\.AppImage$/i), deb: find(/^twincable-.+-linux-amd64\.deb$/i) };
     try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), rel })); } catch { /* fine */ }
     return rel;
   };

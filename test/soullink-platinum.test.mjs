@@ -1,11 +1,11 @@
 // Ticket #18 (Discord, 2.7.4): a two-player SoulLink in vanilla Platinum, dupes clause "Per player", level caps on.
 // "The board didn't register an encounter as dupe if I caught the encounter on the route but my friend killed it."
-// What twicable does there, end to end on the run logic (web/lib/run.mjs) with a Platinum run:
+// What twincable does there, end to end on the run logic (web/lib/run.mjs) with a Platinum run:
 // - the pair of that area failed: the caught Pokémon may not be used (an error while it is in the team);
 // - the dupes clause counts every catch – also one of a failed or dead pair: a second Pokémon of that line is a dupe;
 //   "Per player" only your own catches, "For both" the partner's too;
 // - a Pokémon that got away or was knocked out isn't a catch: it counts as a dupe only with the dupes clause's switch
-//   "Fled or knocked-out encounters count as dupes" on (rules.missedDupes) and its species known – twicable notes it
+//   "Fled or knocked-out encounters count as dupes" on (rules.missedDupes) and its species known – twincable notes it
 //   when it saw the battle, the board's "Missed" takes it optionally;
 // - like a solo Nuzlocke, each player's play view asks after a wild battle that ended without a catch: "Mark as
 //   spent" enters that player's encounter as missed, with its species – the pair fails, the partners get it by sync;

@@ -1,4 +1,4 @@
-// twicable+ banner engine – core. Dependency-free ES module, runs in the browser (runtime.mjs) and in Node (tools/).
+// twincable+ banner engine – core. Dependency-free ES module, runs in the browser (runtime.mjs) and in Node (tools/).
 //
 // A banner is a RECIPE (plain data: palette + ordered layers). compile(recipe, {width}) turns it into an indexed
 // pixel scene at native resolution (H = 56 rows, width = whatever the box needs at an integer scale) and returns

@@ -1,8 +1,8 @@
-# twicable stream API (v1)
+# twincable stream API (v1)
 
-Build your own stream layout: twicable hands out the current run – players, teams, linked groups, graveyard,
+Build your own stream layout: twincable hands out the current run – players, teams, linked groups, graveyard,
 encounters, locations, battles – as JSON, pushes every change live, and serves the same sprites the app shows.
-Back to [Streaming with twicable](STREAMING.md).
+Back to [Streaming with twincable](STREAMING.md).
 
 The address is on the **Stream** page under **Open API** (with a copy button). It is normally
 
@@ -10,7 +10,7 @@ The address is on the **Stream** page under **Open API** (with a copy button). I
 http://127.0.0.1:47390/api/v1
 ```
 
-If port 47390 is taken, twicable picks another one – the Stream page always shows the real address.
+If port 47390 is taken, twincable picks another one – the Stream page always shows the real address.
 
 ## Safe by default
 
@@ -19,17 +19,17 @@ If port 47390 is taken, twicable picks another one – the Stream page always sh
 - **Only what a stream may show.** No ROMs, saves, savestates, file names or folders, no invite codes, room keys or
   device IDs, no spoiler log, no Discord webhook, no moves.
 - **Who may read without a token:** OBS browser sources (a URL, or a file with **Local file** ticked), `curl` and
-  scripts, and twicable's own pages. Pages opened from disk in a browser (`file://`) and pages served by another web
+  scripts, and twincable's own pages. Pages opened from disk in a browser (`file://`) and pages served by another web
   server on this computer (`localhost` / `127.0.0.1` on another port) need the token – or the switch **Pages on this
   computer without a token, too** on the Stream page (`403 localPage` until then). Pages of other websites get `403`.
   - *Why the switch:* a page opened from disk sends the origin `null`, and so does a sandboxed frame on any website –
-    twicable can't tell them apart. With the switch off, a website you happen to have open can't read your run.
+    twincable can't tell them apart. With the switch off, a website you happen to have open can't read your run.
   - *Updating from 2.5.0 or older:* an install that was already set up keeps the old rule (the switch starts on), so
     existing layouts keep working; a new install starts with it off. Switch it off once your layouts run in OBS or
     use the token.
 - **Optional token.** Switch on **Require a token** on the Stream page: then every data request needs it – from
   anywhere, which also lets a layout hosted on a website read the API. Pass it as `Authorization: Bearer …` or
-  `X-Twicable-Token: …` where you can (`fetch`), or as `?token=…` (the only way for `EventSource`). Keep it in your
+  `X-TwinCable-Token: …` where you can (`fetch`), or as `?token=…` (the only way for `EventSource`). Keep it in your
   layout's script, not in the address of a page you host. The token is covered in streamer mode. Sprites, the QR
   code and the legendary list are public pictures/data and never need it.
 - **CORS** is on: answers carry `Access-Control-Allow-Origin` for the asking page; preflights are answered. Chrome's
@@ -47,7 +47,7 @@ meaning. A breaking change would get `/api/v2`, with v1 kept alongside. Unknown 
 |---|---|
 | `GET /api/v1` | Index: API version, current run ID, `auth` (`token`: a token is required; `localPages`: pages from disk / localhost may read without one), endpoint and event lists |
 | `GET /api/v1/runs` | All runs: `[{ id, name, mode, gen, current, players: [{ slot, name, color }], createdAt }]` |
-| `GET /api/v1/runs/current` | The current run – the one open in twicable, else the one played last (its data changed last) – the whole state, see below |
+| `GET /api/v1/runs/current` | The current run – the one open in twincable, else the one played last (its data changed last) – the whole state, see below |
 | `GET /api/v1/runs/{id}` | One run's state (8-character run ID from `/runs`) |
 | `GET /api/v1/runs/{id}/players` · `/players/p1` | `players` of the state – all, or one |
 | `GET /api/v1/runs/{id}/links` · `/graveyard` · `/encounters` · `/feed` | That part of the state |
@@ -113,9 +113,9 @@ Every data endpoint takes `?lang=en|de|fr|es|it` for Pokémon, item and place na
 Field notes:
 
 - `run.mode`: `soullink` (2–4 players), `nuzlocke` (one player) or `together` (3.0, Play together: 2–4 players in their own games, no challenge – no encounters, deaths or a status; teams, badges and the log as usual). `run.gen`: 1–5. `run.status`: `null` while the
-  run is on, else `{ state: "failed" | "won" | "ended", reason, at, by }` – `reason` when twicable ended it: `wipe`,
+  run is on, else `{ state: "failed" | "won" | "ended", reason, at, by }` – `reason` when twincable ended it: `wipe`,
   `blackout`, `deathless` or `lives`.
-- `run.rules`: the run's rules with twicable's defaults filled in (SoulLink: `typeClause`, `dupes`, `shinyClause`,
+- `run.rules`: the run's rules with twincable's defaults filled in (SoulLink: `typeClause`, `dupes`, `shinyClause`,
   `gifts`, `levelCaps`, `failKillsPair`, …; Nuzlocke: `blackout`, `deathless`, `dupes`, `statics`, `nicknames`,
   `levelCaps` (`false` / `"warn"` / `"strict"`), …). `lives` is `0` while the lives rule is off.
 - `run.lives`: `null` unless the run plays with lives. `total`: lives per pool; `pool`: `shared` (one pool for the run –
@@ -125,7 +125,7 @@ Field notes:
   life ends the run (`run.status.reason: "lives"`).
 - `players[].lives`: `{ left, used }` of the pool this player spends from (the shared one or their own), `null` without
   lives.
-- `players[].color`: the player's colour in twicable (p1 blue, p2 pink, p3 green, p4 violet). `live`: the game sent
+- `players[].color`: the player's colour in twincable (p1 blue, p2 pink, p3 green, p4 violet). `live`: the game sent
   data in the last 10 minutes. `badges`, `playTime`, `levelCap` and `location` are `null` until the game has been
   read. `levelCap`: HeartGold/SoulSilver's curated caps, else the vanilla gym aces of Gen 1/2; `null` when the run
   has no caps or the game has none.
@@ -144,7 +144,7 @@ Field notes:
   (someone missed) or `waiting` (not everyone has a result yet). `results[slot].outcome`: `caught` or `missed`.
   With the rule "a missed encounter costs the whole pair/group" off (`run.rules.failKillsPair: false`), the
   others' catches of a `failed` area stay usable – `results` shows whose they are.
-- `graveyard[]`: dead links, newest first, with the killer when twicable saw the battle.
+- `graveyard[]`: dead links, newest first, with the killer when twincable saw the battle.
 - `feed[]`: the 20 newest log entries (`catch`, `death`, `badge`, `evolve`, …). A `linkBattle` entry also has `winners`, `losers`, `draw`, `battles` and `wager` (as the `link-battle` event), a `raid` entry `won`, `players`, `mvp`, `survivors`, `ms` and `size` (as the `raid` event).
 - Times are milliseconds since 1970 (`Date.now()`).
 
@@ -158,7 +158,7 @@ The stream starts with `event: hello` (`{ api, run, lang, events }`) and `event:
 After that, whenever the run changes (the app saves several times a second while you play), you get the events that
 happened and then one fresh `state`. Browsers reconnect by themselves (`retry: 2000`); a comment line (`: ping`)
 comes every 20 s. A stream opened for `current` follows it: when another run becomes current (you open another run
-in twicable, start a new one or delete the open one), it sends `hello` and `state` again for that run – no reconnect
+in twincable, start a new one or delete the open one), it sends `hello` and `state` again for that run – no reconnect
 needed; `hello` with `run: null` means there is no run any more. Every event's data has `type`, `run` and `at`, plus:
 
 | Event | Data |
@@ -179,7 +179,7 @@ needed; `hello` with `run: null` means there is no run any more. Every event's d
 | `battle-end` | `slot, kind, species, name` |
 | `legendary` | Same as `encounter`, for a wild legendary or mythical |
 | `coffee` | The coffee pop-up (below) |
-| `link-battle` | `winners: [slots], losers: [slots], draw, battles, wager` – a link battle between the players (3.0) once every player's twicable read the same result; `wager`: the in-game money (₽) the losers paid, 0 for none |
+| `link-battle` | `winners: [slots], losers: [slots], draw, battles, wager` – a link battle between the players (3.0) once every player's twincable read the same result; `wager`: the in-game money (₽) the losers paid, 0 for none |
 | `raid` | `won, players: [slots], mvp, survivors: [slots], ms, size` – a raid is over (3.0): the players fought one trainer with a shared HP pool; `mvp`: who took the most off the pool, `survivors`: whose team still stood, `ms`: how long it took, `size`: the trainer's Pokémon |
 
 `mon` is `{ slot, key, species, name, nickname, level, shiny, sprites }`.
@@ -190,7 +190,7 @@ needed; `hello` with `run: null` means there is no run any more. Every event's d
 GET /api/v1/sprites/{style}/{variant}/{id}.png
 ```
 
-The images come from PokeAPI's sprite collection and are cached by twicable on first use (the app pre-loads the
+The images come from PokeAPI's sprite collection and are cached by twincable on first use (the app pre-loads the
 default and HeartGold/SoulSilver sets), so they work offline afterwards. Long cache headers – the URLs never change.
 
 | `style` | What | Species |
@@ -203,14 +203,14 @@ default and HeartGold/SoulSilver sets), so they work offline afterwards. Long ca
 
 `variant`: `front`, `back`, `front-shiny`, `back-shiny` (Gen 1 has no shiny). A combination that doesn't exist answers
 `404`. You rarely need to build these yourself: every Pokémon in the state carries `sprites` in the run's own style
-(the game's generation where the species exists in it, else `default`) – exactly what the app and twicable's
+(the game's generation where the species exists in it, else `default`) – exactly what the app and twincable's
 overlays show.
 
 ## The coffee pop-up
 
 When a player meets a **legendary or mythical** Pokémon in a wild battle (static encounters included) while live
-tracking runs, twicable rolls once for that species in that run: with a 25 % chance – at most once every 20 minutes –
-a pop-up with a joke about that Pokémon and the "Buy me a coffee" link shows on stream, in twicable's Alerts overlay.
+tracking runs, twincable rolls once for that species in that run: with a 25 % chance – at most once every 20 minutes –
+a pop-up with a joke about that Pokémon and the "Buy me a coffee" link shows on stream, in twincable's Alerts overlay.
 Settings › About switches it off.
 
 Custom layouts get the same moment as `event: coffee` (also for previews, with `test: true`):
@@ -218,8 +218,8 @@ Custom layouts get the same moment as `event: coffee` (also for previews, with `
 ```json
 { "id": "coffee:c0ffee02:150:1762790000000", "type": "coffee", "run": "c0ffee02", "at": 1762790000000,
   "slot": "p1", "player": "Ana", "species": 150, "name": "Mewtwo", "level": 70, "kind": "legendary",
-  "jokeId": "species:150", "joke": "Mewtwo has entered the chat. twicable’s developer has entered the coffee shortage.",
-  "kicker": "Legendary encounter", "cta": "Buy the twicable dev a coffee", "scan": "Scan or visit",
+  "jokeId": "species:150", "joke": "Mewtwo has entered the chat. twincable’s developer has entered the coffee shortage.",
+  "kicker": "Legendary encounter", "cta": "Buy the twincable dev a coffee", "scan": "Scan or visit",
   "url": "https://buymeacoffee.com/souldew", "short": "buymeacoffee.com/souldew",
   "qr": "http://127.0.0.1:47390/api/v1/coffee/qr.svg", "corner": "bl", "showMs": 12000, "layer": true,
   "sprites": { "…": "…" } }
@@ -240,9 +240,9 @@ browser straight from disk, put the token in (or switch on **Pages on this compu
 <meta charset="utf-8">
 <title>My party</title>
 <body>
-<div id="out">Waiting for twicable …</div>
+<div id="out">Waiting for twincable …</div>
 <script>
-  const API = 'http://127.0.0.1:47390/api/v1'; // the address from twicable's Stream page
+  const API = 'http://127.0.0.1:47390/api/v1'; // the address from twincable's Stream page
   const LANG = 'en';                           // en, de, fr, es, it
   const TOKEN = '';                            // only if you switched on "Require a token"
   const q = `?lang=${LANG}${TOKEN ? `&token=${TOKEN}` : ''}`;
@@ -294,9 +294,9 @@ curl -N http://127.0.0.1:47390/api/v1/runs/current/events      # watch the event
 ## Tips
 
 - One source per URL is plenty: the `state` event has everything. A browser keeps at most six open connections per
-  address – twicable's own overlays share them – so use `127.0.0.1` for your layout if you also run twicable overlays on
+  address – twincable's own overlays share them – so use `127.0.0.1` for your layout if you also run twincable overlays on
   `localhost` (or the other way round).
-- Keep twicable open while you stream; when it's closed, `EventSource` keeps retrying every 2 s and picks up where it
+- Keep twincable open while you stream; when it's closed, `EventSource` keeps retrying every 2 s and picks up where it
   left off.
 - Polling instead of a stream is fine too: `GET /runs/current` every second or two.
 - Field reference in code: `shared/streamapi.mjs` (state, events, sprites), `server/lib/streamapi.mjs` (endpoints,

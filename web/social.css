@@ -1,7 +1,7 @@
-/* twicable account: Settings › Account, the profile ("A – Logbook"), Friends, friend invites (views/social.mjs,
+/* twincable account: Settings › Account, the profile ("A – Logbook"), Friends, friend invites (views/social.mjs,
    views/profile.mjs, views/friends.mjs, views/settings/account.mjs). Colours from the app's tokens; the player's accent
    (--acc, from the curated palette only) tints a few edges – never text.
-   Wells and hairlines read the skin's own (--sk-well / --sk-line, set by the twicable+ skins – light ones included) and
+   Wells and hairlines read the skin's own (--sk-well / --sk-line, set by the twincable+ skins – light ones included) and
    fall back to classic's near-black: a skin never leaves light text on a dark well or dark text on a light one here.
    test/skin-proof.test.mjs checks every text on these pages at ≥ 4.5:1 in classic and every skin. */
 
@@ -104,7 +104,7 @@ button.rail-me.rail-signin:disabled { cursor: progress; opacity: .8; }
 .fr-invite { margin-right: 8px; opacity: 0; transition: opacity .15s; }
 .fr-row:hover .fr-invite, .fr-row.on .fr-invite, .fr-invite:focus-visible { opacity: 1; }
 .fr-empty { padding: 18px 8px; }
-/* "No partner yet? Find one on the twicable Discord" (views/findpartner.mjs) – a quiet line, never a section */
+/* "No partner yet? Find one on the twincable Discord" (views/findpartner.mjs) – a quiet line, never a section */
 .lfg-link { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0; }
 .lfg-link svg { flex: none; }
 .fr-pane { min-width: 0; }
@@ -221,7 +221,7 @@ button.rail-me.rail-signin:disabled { cursor: progress; opacity: .8; }
 
 .pf-count { white-space: nowrap; font-variant-numeric: tabular-nums; }
 
-/* the new-run wizard: a twicable friend for a seat */
+/* the new-run wizard: a twincable friend for a seat */
 .who-friend { margin-top: 6px; height: 34px; padding-top: 4px; padding-bottom: 4px; font-size: 13px; }
 
 /* cosmetics placeholders (lib/cosmetics/*.mjs stubs until the real module lands – they carry .cos-stub, the real one doesn't) */
@@ -355,7 +355,7 @@ button.rail-me.rail-signin:disabled { cursor: progress; opacity: .8; }
 .sc-other .sprite img { display: block; }
 
 
-/* a friend's twicable+ banner: what it is, and where to see more – shown while the banner is hovered or focused */
+/* a friend's twincable+ banner: what it is, and where to see more – shown while the banner is hovered or focused */
 .pf-banner { position: relative; }
 .pf-banner-note { position: absolute; right: 12px; top: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px;
   color: #f1ece2; background: #0b0a0ecc; text-decoration: none; opacity: 0; transition: opacity .15s; }

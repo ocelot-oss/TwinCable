@@ -43,7 +43,7 @@ export function remember(memo, key, mode) {
   return Object.fromEntries(out.slice(-MEMO_MAX));
 }
 
-// host errors that are about the game file or twicable's own files – a different renderer wouldn't help
+// host errors that are about the game file or twincable's own files – a different renderer wouldn't help
 const NOT_RENDERER = /couldn.t load the game|core not loadable|missing in the core|usage:/i;
 const RENDERER_ERROR = /vulkan|graphics|gpu|VK_ERROR|driver/i;
 

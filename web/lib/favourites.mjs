@@ -1,16 +1,16 @@
 // Favourites in the cosmetics pickers – the page's half (the rules are shared/favourites.mjs). One pattern everywhere
-// a look is listed (profile editor, Settings › Theme and Launch animation, the twicable+ page, "What twicable+ holds"):
+// a look is listed (profile editor, Settings › Theme and Launch animation, the twincable+ page, "What twincable+ holds"):
 //
 //   the star   FavScope wraps an item card and puts a ☆ in its corner: shown while the card is hovered or focused,
 //              always (filled ★) once it is a favourite. Click toggles it, F on the focused card toggles it, and so
 //              does Y / △ on a controller (lib/padnav.mjs clicks the [data-pad-y] of the focused [data-pad-y-scope]).
 //              The star is its own button next to the card – never inside it – so it never picks or tries on the item.
-//   the row    FavFilter: All · ★ Favourites n · Owned · twicable+ (· Earned) – small chips on one line, the chips that
+//   the row    FavFilter: All · ★ Favourites n · Owned · twincable+ (· Earned) – small chips on one line, the chips that
 //              wouldn't narrow the list left out. Favourites keep the list's own order. The last filter per picker is
 //              remembered for the session (useFavFilter).
 //
 // Stored in the local config (`favourites`, saved with POST /api/config like the theme): there is no account sync for
-// settings, so favourites stay on this computer. Locked and twicable+ items can be starred too – a wish list.
+// settings, so favourites stay on this computer. Locked and twincable+ items can be starred too – a wish list.
 import { html, useState, useEffect, useRef } from '/vendor/htm-preact.mjs';
 import { t } from './i18n.mjs';
 import { api } from './api.mjs';
@@ -117,7 +117,7 @@ export function FavScope({ kind, id, name, known, class: cls = '', starClass = '
   return html`<div class=${`fav-scope ${on ? 'is-fav' : ''} ${cls}`} data-pad-y-scope onKeyDown=${key}>${children}<${FavStar} kind=${kind} id=${id} name=${name} known=${known} class=${starClass} /></div>`;
 }
 
-const LABELS = () => ({ all: t('fav.all', 'All'), favs: t('fav.favs', 'Favourites'), owned: t('fav.owned', 'Owned'), plus: t('fav.plus', 'twicable+'), earned: t('fav.earned', 'Earned') });
+const LABELS = () => ({ all: t('fav.all', 'All'), favs: t('fav.favs', 'Favourites'), owned: t('fav.owned', 'Owned'), plus: t('fav.plus', 'twincable+'), earned: t('fav.earned', 'Earned') });
 
 /** Lists shorter than this get stars but no filter row – there is nothing to scroll through. */
 export const FILTER_MIN = 9;

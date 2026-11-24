@@ -32,7 +32,7 @@ walk(join(root, 'electron'));
 // Randomizer labels live in shared/ and are looked up with dynamic keys (rnd.*).
 const { randomizerStrings } = await import('../shared/randomizer-options.mjs');
 Object.assign(out, randomizerStrings());
-// twicable+ cosmetics: the themes' lines and the collections' names, looked up by the catalog's ids (plus.hint.*, plus.coll.*)
+// twincable+ cosmetics: the themes' lines and the collections' names, looked up by the catalog's ids (plus.hint.*, plus.coll.*)
 const { cosmeticStrings } = await import('../web/lib/cosmetics/strings.mjs');
 Object.assign(out, cosmeticStrings());
 const sorted = Object.fromEntries(Object.keys(out).sort().map((k) => [k, out[k]]));

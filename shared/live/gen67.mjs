@@ -186,7 +186,7 @@ export function regions67(entry) {
 // count (checked live in Omega Ruby 1.0: 0x08CF727C, `06 00 00 00 01 00 00 00` right behind the slots with Torchic; the
 // party menu shows what is written there). Over the whole heap of Omega Ruby 1.0 (a new game, with a cold start and
 // after a loaded state alike) exactly that one place has it – the save data's copy of the team (0x08C7D4CC) has the
-// box layout (0x104 per Pokémon) and no such tail. Where no known address holds the team, twicable looks for that.
+// box layout (0x104 per Pokémon) and no such tail. Where no known address holds the team, twincable looks for that.
 export const PARTY_TAIL = 8;
 
 /** The team of a party object at `o` in `b` (slots, then u32 6, u32 count = the Pokémon read) – or null. */
@@ -265,7 +265,7 @@ export function locateCtrParty(entry, mem, state, { team = null } = {}) {
     const owner = new Set((team || []).map(tidSid).filter(Boolean));
     const knownAt = new Set((entry.partyAddrs || []).map((a) => hex(a.addr ?? a)));
     const mine = [...hits].filter(([, p]) => !owner.size || p.some((m) => owner.has(tidSid(m))));
-    // one at a known address only: that is where twicable reads already. One elsewhere (with or without one at a known
+    // one at a known address only: that is where twincable reads already. One elsewhere (with or without one at a known
     // address – a copy left there that may stand still): read next to them, readGen67 decides by what changes.
     const other = mine.filter(([a]) => !knownAt.has(a));
     const done = { windows, candidates: hits.size };
@@ -286,9 +286,9 @@ export function locateCtrParty(entry, mem, state, { team = null } = {}) {
 const popcount = (n) => n.toString(2).replace(/0/g, '').length;
 
 /**
- * The update version a running game plays, as addresses.json names it ('1.0', '1.5' …), from what twicable's 3DS player
+ * The update version a running game plays, as addresses.json names it ('1.0', '1.5' …), from what twincable's 3DS player
  * says it started the game with (web/lib/ctrplayer.mjs update() – server/lib/ctrupdate.mjs prepareUpdate): null – no
- * update: '1.0'; one that isn't used (randomized, encrypted, failed): '1.0'; one installed that twicable knows as the
+ * update: '1.0'; one that isn't used (randomized, encrypted, failed): '1.0'; one installed that twincable knows as the
  * latest: its game version. An older update, or a player that doesn't say (undefined): null – not known.
  */
 export function runningVersion(update) {
@@ -312,7 +312,7 @@ function regionSig(b) {
 /**
  * Read the party of a running Gen 6/7 game: every known update's address is read on each poll, and the one that holds
  * a party is locked for the session.
- *  - `state.ctrVersion` (runningVersion): the update twicable knows the game runs – its address is taken first.
+ *  - `state.ctrVersion` (runningVersion): the update twincable knows the game runs – its address is taken first.
  *  - The lock is checked on every poll: when its party stands still while another address's party changes (twice), it
  *    was a leftover copy and the lock moves; when it holds no party for a few polls while another address does, too
  *    (ticket #35). Each move goes into `state.g67Log` ({ from, to, why: 'update' | 'stale' | 'invalid' | 'grew' }) for

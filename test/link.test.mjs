@@ -41,7 +41,7 @@ registerHooks({
   },
 });
 
-const dir = mkdtempSync(join(tmpdir(), 'twicable-link-'));
+const dir = mkdtempSync(join(tmpdir(), 'twincable-link-'));
 test.after(() => rmSync(dir, { recursive: true, force: true }));
 const sha1 = (b) => createHash('sha1').update(b).digest('hex');
 const file = (name, bytes) => {
@@ -136,7 +136,7 @@ test('linkice: the bot\'s /link/ice, cached while the credentials are young; STU
   const down = await linkIceServers({ fetchImpl: async () => { throw new Error('offline'); }, env: {}, now: 5 });
   assert.deepEqual(down, { iceServers: [], turn: false, ttl: 0 });
   resetLinkIce();
-  assert.equal((await linkIceServers({ fetchImpl, env: { TWICABLE_LINK_ICE: 'off' } })).turn, false);
+  assert.equal((await linkIceServers({ fetchImpl, env: { TWINCABLE_LINK_ICE: 'off' } })).turn, false);
   resetLinkIce();
 });
 
@@ -306,7 +306,7 @@ async function pair({ missingOnB = false, seamless = false, binary = false, save
     ...(third ? { others: ['p1', 'p2', 'p3'].filter((s) => s !== slot) } : {}),
     onLink: (fn) => ((peers[slot] = fn), () => delete peers[slot]),
     sendLink: (msg, to) => {
-      // (oldB: B's twicable is an older 3.0 build – it knows no caps and no wager)
+      // (oldB: B's twincable is an older 3.0 build – it knows no caps and no wager)
       const old = (m) => Object.fromEntries(Object.entries(m).filter(([k]) => !['caps', 'wager', 'format'].includes(k)));
       for (const t of to) {
         if (net.drop && msg.t === 'in') continue;
@@ -653,7 +653,7 @@ test('linksession: a link that stands still is never silent – waiting at one f
   A.stop(), B.stop();
 });
 
-test('linksession, DS: a partner on twicable 3.0.0 (no session clock) – the link doesn\'t start, both are told to update', async () => {
+test('linksession, DS: a partner on twincable 3.0.0 (no session clock) – the link doesn\'t start, both are told to update', async () => {
   // (oldB: everything to and from B goes without caps, as an older build sends it)
   const { A, B, settle } = await pair({ system: 'nds', oldB: true });
   await A.invite('trade', ['p2']);

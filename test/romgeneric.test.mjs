@@ -1,5 +1,5 @@
 // Reading a game's data from its ROM instead of per-game patches: types (names, each Pokémon's, the chart, the moves'),
-// level caps from the trainers, Gen 3 badges and the battle's current types, and what twicable can read per feature.
+// level caps from the trainers, Gen 3 badges and the battle's current types, and what twincable can read per feature.
 // Synthetic ROMs and RAM shaped like what was measured in the real games (numbers in comments).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -53,7 +53,7 @@ const FAIRY_ATK = { fighting: 2, poison: 0.5, steel: 0.5, fire: 0.5, dragon: 2, 
 const FAIRY_DEF = { fighting: 0.5, bug: 0.5, poison: 2, steel: 2, dragon: 0, dark: 0.5 };
 
 /**
- * A GBA ROM with the tables twicable reads types from: type names (`names`, `stride`), base stats (entry `bsStride`, the
+ * A GBA ROM with the tables twincable reads types from: type names (`names`, `stride`), base stats (entry `bsStride`, the
  * National Dex order for #1–386 with the app's Gen 3 types, ids `+ shift`), the chart (`chart(rom, idOf)`) and moves.
  */
 function typesRom({ names = RETAIL_NAMES, stride = 7, bsStride = 28, shift = 0, retype = {}, chart, moves = true } = {}) {
@@ -611,7 +611,7 @@ test('level caps read from the ROM: the cap with n badges, the champion\'s after
   assert.equal(levelCapOf(manifest, { levelCaps: false }, raw, 2, 'p1'), null, 'caps off in the rules');
 });
 
-test('what twicable can read: from the ROM data, then confirmed poll by poll – a held item without a name turns items off for the session', () => {
+test('what twincable can read: from the ROM data, then confirmed poll by poll – a held item without a name turns items off for the session', () => {
   const rom = { header: { system: 'gba', code: 'BPRE', title: 'POKEMON FIRE' }, species: { engine: 'vanilla' }, data: { gen: 3 }, types: { species: { 1: ['grass'] }, chart: {}, own: 0 }, caps: { caps: [14], badgeFlags: 0x820 }, vanilla: true };
   assert.deepEqual(romFeatures(rom, addresses), { party: 'yes', items: 'yes', moves: 'yes', location: 'yes', battle: 'yes', catch: 'yes', types: 'yes', caps: 'yes' });
   // an expanded engine without its species table: nothing ("not supported")

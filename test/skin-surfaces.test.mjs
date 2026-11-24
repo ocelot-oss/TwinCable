@@ -1,4 +1,4 @@
-// Light twicable+ skins (Soft Light, Sunbleached, Glacier, Sakura, Cartridge Grey) must never show a dark field,
+// Light twincable+ skins (Soft Light, Sunbleached, Glacier, Sakura, Cartridge Grey) must never show a dark field,
 // popover, menu, hint, toast or dialog: a skin only sets tokens (--sk-field, --sk-well, --sk-line, --sk-shadow …) and
 // rules for the selectors it knows – a surface the app paints with a hard-coded dark colour stays dark in every skin.
 // (That is how the Settings search ended up a black pill on Soft Light.) So: every such surface in the app's own

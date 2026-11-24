@@ -65,7 +65,7 @@ bool seats_open(const struct link_backend *backend, int n, const struct seat_gam
     seats_close();
     return false;
   }
-  for (int s = 0; s < n; s++) { // what twicable has: the save given (or the one a state carried)
+  for (int s = 0; s < n; s++) { // what twincable has: the save given (or the one a state carried)
     void *p = NULL;
     const size_t len = B->sram(s, &p);
     sram_known(&sram_w[s], p, p ? len : 0);

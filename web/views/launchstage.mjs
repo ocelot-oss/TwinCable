@@ -1,4 +1,4 @@
-// The 3.0 launch animation in the play view (design rounds 4–6): your twicable handheld in 3D – the DS / 3DS unfolds, the
+// The 3.0 launch animation in the play view (design rounds 4–6): your twincable handheld in 3D – the DS / 3DS unfolds, the
 // GBA / GB turns, the card or cartridge drops in and latches, the screens power on and the camera pushes into them; the
 // last frame is the play view's own screen rectangle(s), pixel for pixel, and the real game is under it (a match-cut).
 //
@@ -113,11 +113,11 @@ export function LaunchStage({ cfg, system, dsLayout, ctrLayout, frame, ready, co
       const reduced = prefersReduced();
       const quick = cfg.pace === 'quick';
       // what the membership allows right now (shared/handheld.mjs launchRights): a Supporter plays "Your colours" with the
-      // free skin and stickers and the look on the device (no Surprise me); the Rare start is twicable+'s, automatic
+      // free skin and stickers and the look on the device (no Surprise me); the Rare start is twincable+'s, automatic
       const rights = launchRightsNow();
       const lookId = playableLook(cfg.look, rights);
       const V = launchLook(lookId);
-      // the twicable+ looks' data (Gold's light, the Rare start's) comes with the verified pack – without it there is none
+      // the twincable+ looks' data (Gold's light, the Rare start's) comes with the verified pack – without it there is none
       const LK = paidLooks();
       const rare = !reduced && rights.rare && !!LK?.rare && Math.random() < 1 / RARE_ODDS;
       const look = lookNow(Math.random, rights);
@@ -195,7 +195,7 @@ export function LaunchStage({ cfg, system, dsLayout, ctrLayout, frame, ready, co
         anim(flood, [[0, { opacity: 0, transform: pos(b0) }], [b0 + 40, { opacity: 0, transform: pos(b0 + 40) }, 'cubic-bezier(.2,.7,.3,1)'],
           [b0 + 160, { opacity: 1, transform: pos(b0 + 160) }], ...pts.filter(([t]) => t > b0 + 160 && t < plan.H0).map(([t]) => [t, { opacity: Math.max(0.42, 1 - (t - b0 - 160) / 900), transform: pos(t) }]),
           [plan.H0, { opacity: 0.35, transform: pos(plan.H0) }, 'cubic-bezier(.4,0,.6,1)'], [T, { opacity: 0, transform: pos(T) }]]);
-        // twicable+: glints round the device on the latch (Rare start), one on the label (Holo), and light dust (Rare start)
+        // twincable+: glints round the device on the latch (Rare start), one on the label (Holo), and light dust (Rare start)
         el.querySelectorAll('.l3d-glint').forEach((g, i) => {
           if (!(rare || (V.cart === 'holo' && LK?.holo && i === 0))) return;
           const d = i === 0 ? 20 : 30 + i * 42;
@@ -313,7 +313,7 @@ export function LaunchStage({ cfg, system, dsLayout, ctrLayout, frame, ready, co
 }
 
 /**
- * The launch as a preview (Settings, the editor's "Play my launch", the twicable+ page): a small play area with a screen
+ * The launch as a preview (Settings, the editor's "Play my launch", the twincable+ page): a small play area with a screen
  * in the game's shape showing the neutral placeholder picture, and the stage over it. cfg: launchConfig() or the config
  * itself (previewConfig); Off plays Full.
  */
@@ -329,5 +329,5 @@ export function LaunchPreview({ cfg, system, onDone }) {
     cv.getContext('2d').drawImage(src, 0, 0);
   }, [lk]);
   return html`<div class="hhs-prev"><div class="console-screen hhs-prev-cs" style=${`--arn:${L.W / L.H}`}><canvas ref=${ref}></canvas></div>
-    <${LaunchStage} cfg=${previewConfig(cfg)} system=${system} ready picture="placeholder" title="twicable" onDone=${onDone} /></div>`;
+    <${LaunchStage} cfg=${previewConfig(cfg)} system=${system} ready picture="placeholder" title="twincable" onDone=${onDone} /></div>`;
 }

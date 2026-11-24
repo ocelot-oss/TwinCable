@@ -1,4 +1,4 @@
-// The DS, GBA and Game Boy in twicable's fast player: the native host (native/retro-host) runs a libretro core – melonDS
+// The DS, GBA and Game Boy in twincable's fast player: the native host (native/retro-host) runs a libretro core – melonDS
 // DS with its JIT, mGBA, SameBoy – as a native program and speaks the 3DS host's protocol (server/lib/ctr.mjs) with a
 // few more messages (see the header of native/retro-host/retrohost.c). Sessions, the page's stream and the command
 // checks are the 3DS ones (CtrSessions); this module knows the cores, their memory and their settings.
@@ -8,11 +8,11 @@
 //   melondsds_libretro.dylib | .dll | .so             DS
 //   mgba_libretro.*                                   GBA
 //   sameboy_libretro.*                                Game Boy / Game Boy Color
-//   linkhost[.exe]                                    the twicable engine (native/link-host): link sessions – and, with
-//                                                     Settings › "twicable engine (beta)", the fast player itself
+//   linkhost[.exe]                                    the twincable engine (native/link-host): link sessions – and, with
+//                                                     Settings › "twincable engine (beta)", the fast player itself
 // When the host or a core is missing, the play view uses the built-in browser emulator (player.html) as before.
 //
-// The twicable engine (config.nativeEngine): ONE native player for these systems – the link host alone (`--solo`) runs
+// The twincable engine (config.nativeEngine): ONE native player for these systems – the link host alone (`--solo`) runs
 // the game on the emulators' own APIs, speaks retrohost's protocol (the same page, the same save-state format), and a
 // trade or battle links the running game in place: the server hands the session to the same process (CMD_LINK, every
 // seat from the agreed states), and back (CMD_SOLO) when it ends. retrohost stays the fallback while the engine is beta.
@@ -53,7 +53,7 @@ export const MAX_STATE = 64 * 1024 * 1024; // a save state (a DS console with it
 
 /**
  * Per system: the core, the memory the live reader reads (bus address, length – what player.html's read() maps:
- * DS main RAM, GBA EWRAM + IWRAM, Game Boy WRAM banks 0 and 1) and the core options twicable sets. `id` names the
+ * DS main RAM, GBA EWRAM + IWRAM, Game Boy WRAM banks 0 and 1) and the core options twincable sets. `id` names the
  * core for save states (a state of the browser emulator's core can't be loaded here, and the other way round).
  */
 export const NATIVE_CORES = {
@@ -131,7 +131,7 @@ export function nativeTools({ dirs = nativeDirs(), exists = existsSync } = {}) {
   return { ok: Object.values(cores).some(Boolean), dir, host: join(dir, EXE), cores };
 }
 
-/** The core folder of a game / run slot (cores keep a few files there; the battery save itself goes through twicable). */
+/** The core folder of a game / run slot (cores keep a few files there; the battery save itself goes through twincable). */
 export function nativeSaveDir(key) {
   const h = createHash('sha1').update(String(key)).digest('hex').slice(0, 16);
   return join(DATA_DIR, DEV ? 'runs/.native' : 'native', 'saves', h);
@@ -199,14 +199,14 @@ export function checkLinkCommands(body) {
 
 /** Server → engine only (never accepted from a page, see check()): partners join the running game / it goes on alone. */
 export const ENGINE_CMD = { LINK: 27, SOLO: 28 };
-/** Systems the twicable engine plays alone (the link host's: its backends are the fast player's emulators). */
+/** Systems the twincable engine plays alone (the link host's: its backends are the fast player's emulators). */
 export const ENGINE_SYSTEMS = LINK_SYSTEMS;
 
 /** Arguments as the engine reads them in CMD_LINK / CMD_SOLO: the command line's words, NUL-separated. */
 export const engineWords = (args) => Buffer.from(args.map((a) => `${a}\0`).join(''), 'utf8');
 
 /**
- * The twicable engine alone (`linkhost --solo`): the game, its battery save, a state to go on from, the Game Boy model,
+ * The twincable engine alone (`linkhost --solo`): the game, its battery save, a state to go on from, the Game Boy model,
  * and the RAM the live reader needs – the fast player's settings are the engine's own (native/link-host).
  */
 export function engineArgs({ system, rom, sram = null, state = null, model = null }) {
@@ -311,8 +311,8 @@ export class NativeSessions extends CtrSessions {
   }
 
   /**
-   * Start `rom` (a path) on `system` with the core folder of `key`; `save` = the battery save twicable has for it
-   * (bytes) or null. Ends a session that still runs. `engine`: the twicable engine's link host plays it (else retrohost
+   * Start `rom` (a path) on `system` with the core folder of `key`; `save` = the battery save twincable has for it
+   * (bytes) or null. Ends a session that still runs. `engine`: the twincable engine's link host plays it (else retrohost
    * with the system's libretro core). Coming back from a link session the engine already runs (`state` given, the same
    * game): the game goes on alone in that process (CMD_SOLO) – no new player; then a promise of the id.
    */

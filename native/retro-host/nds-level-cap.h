@@ -1,8 +1,8 @@
 // ARM9 Thumb layouts for US HGSS and Platinum. The game's level-up ceiling
 // clips awards that would otherwise grant several levels in one battle.
 // Battle locations: G4Patcher (Memory5ty7/Kalaay); Platinum ARM9: PokePlat.
-#ifndef TWICABLE_NDS_LEVEL_CAP_H
-#define TWICABLE_NDS_LEVEL_CAP_H
+#ifndef TWINCABLE_NDS_LEVEL_CAP_H
+#define TWINCABLE_NDS_LEVEL_CAP_H
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>

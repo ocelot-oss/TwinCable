@@ -546,7 +546,7 @@ export function BattlePanel({ battle, mine, gen, game = '', isRun, collapsed = f
     ${battle.kind === 'wild' && !(rule && !rule.ok) && html`<${CatchChance} foe=${foe} foes=${foes} types=${foeTypes} gen=${gen} game=${game} balls=${battle.balls} />`}
     ${notes.length > 0 && html`<div class="bt-notes">${notes.map((x) => html`<span class="rs-chip honour" title=${t('nz.honourHint', 'The app can’t check this – it only reminds you. Keep it yourself.')}>${x}</span>`)}</div>`}
     ${!help && html`<p class="tiny faint bt-nohelp">${t('battle.helpOff', 'Type matchup help is off in this run.')}</p>`}
-    ${help && !matchups && html`<p class="tiny faint bt-nohelp">${t('battle.noChart', 'twicable couldn’t read this ROM hack’s type chart – it shows the types, but no matchups rather than wrong ones.')}</p>`}
+    ${help && !matchups && html`<p class="tiny faint bt-nohelp">${t('battle.noChart', 'twincable couldn’t read this ROM hack’s type chart – it shows the types, but no matchups rather than wrong ones.')}</p>`}
     ${help && matchups && outs.map((m) => html`<${OutHelp} key=${m.key || m.species} mon=${m} foes=${foeData} typesOf=${typesOf} movesOf=${movesOf} gen=${gen}
       hits=${onPrefs ? { open: hitsOpen, toggle: () => onPrefs({ hits: !hitsOpen }) } : null} />`)}
     ${help && matchups && html`<${TeamCheck} team=${team} out=${new Set(outs)} foe=${foeData.find(({ f }) => !(f.maxHp > 0 && f.hp === 0)) || foeData[0]} typesOf=${typesOf} movesOf=${movesOf} gen=${gen} hideFoeMoves=${!!onPrefs && !hitsOpen} />`}
@@ -588,7 +588,7 @@ function CatchChance({ foe, foes, types, gen, game, balls }) {
     t('battle.catchTip', 'One ball, as this game calculates it: catch rate {rate}, {hp}/{max} HP, level {level}{status}.', {
       rate: foe.catchRate, hp: foe.hp, max: foe.maxHp, level: foe.level, status: st ? `, ${statusLabel(st)}` : '',
     }),
-    !statusRead && t('battle.catchNoStatusTip', 'twicable can’t read status conditions in this game – asleep, frozen, paralysed, poisoned or burned it’s easier to catch than shown.'),
+    !statusRead && t('battle.catchNoStatusTip', 'twincable can’t read status conditions in this game – asleep, frozen, paralysed, poisoned or burned it’s easier to catch than shown.'),
     gen >= 5 && t('battle.catchCrit', 'Critical captures aren’t counted – they only make a catch more likely.'),
     gen === 5 && t('battle.catchDarkGrass', 'In dark grass it’s harder until you have caught many species.'),
   ].filter(Boolean).join('\n');

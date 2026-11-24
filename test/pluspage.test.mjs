@@ -1,5 +1,5 @@
-// The twicable+ page (web/views/plus.mjs, data in web/lib/pluspage.mjs): one version per viewer – signed out, free,
-// Supporter, twicable+ member, Legend – the owner's three tiers and prices, a curated handful of each kind (never the
+// The twincable+ page (web/views/plus.mjs, data in web/lib/pluspage.mjs): one version per viewer – signed out, free,
+// Supporter, twincable+ member, Legend – the owner's three tiers and prices, a curated handful of each kind (never the
 // whole catalog), the viewer's own look on the hero card, and the tier buttons per state.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -17,7 +17,7 @@ const CATALOG = (await import('../web/lib/cosmetics/content/catalog.mjs')).defau
 
 const acct = (tier, extra = {}) => ({ session: { signedIn: true }, me: { name: 'Robin', handle: 'robin', entitlement: { tier, until: tier === 'none' ? null : 1797559246000 }, ...extra } });
 
-test('states: signed out, free, Supporter, twicable+, Legend', () => {
+test('states: signed out, free, Supporter, twincable+, Legend', () => {
   assert.deepEqual(P.plusState({ session: { signedIn: false }, me: null }), { kind: 'signedOut', tier: 'none', name: '', until: null });
   assert.equal(P.plusState(null).kind, 'signedOut');
   assert.equal(P.plusState({ session: { signedIn: false }, me: { name: 'stale' } }).kind, 'signedOut', 'a kept profile without a session counts as signed out');
@@ -32,7 +32,7 @@ test('states: signed out, free, Supporter, twicable+, Legend', () => {
   assert.equal(P.isMember(P.plusState(null)), false);
 });
 
-test('tiers: Supporter 3 €, twicable+ 5 € (the featured one), Legend 10 € – and each card\'s button per viewer', () => {
+test('tiers: Supporter 3 €, twincable+ 5 € (the featured one), Legend 10 € – and each card\'s button per viewer', () => {
   assert.deepEqual(P.TIERS.map((x) => [x.id, x.price]), [['supporter', 3], ['plus', 5], ['patron', 10]]);
   assert.deepEqual(P.TIERS.filter((x) => x.main).map((x) => x.id), ['plus']);
   const act = (t) => P.TIERS.map((x) => P.tierAction(t === null ? P.plusState(null) : P.plusState(acct(t)), x.id));
@@ -45,12 +45,12 @@ test('tiers: Supporter 3 €, twicable+ 5 € (the featured one), Legend 10 € 
 
 test('the hero card: you in the page\'s look – a member in their own picks where they have them', () => {
   assert.deepEqual(P.heroLook(null, P.plusState(null)), P.HERO_LOOK);
-  // a free account's own (free) picks don't replace the twicable+ look the card shows
+  // a free account's own (free) picks don't replace the twincable+ look the card shows
   assert.deepEqual(P.heroLook({ banner: 'plain-dusk' }, P.plusState(acct('none'))), P.HERO_LOOK);
   assert.deepEqual(P.heroLook({ banner: 'aurora-fjord', frame: null }, P.plusState(acct('plus'))), { ...P.HERO_LOOK, banner: 'aurora-fjord' });
 });
 
-test('curated: a handful of the strongest per kind – every pick exists, is twicable+ and no unreleased drop', () => {
+test('curated: a handful of the strongest per kind – every pick exists, is twincable+ and no unreleased drop', () => {
   const cat = { ...CATALOG, nameplates: CATALOG.banners };
   const c = P.curatedFrom(cat);
   for (const [kind, ids] of Object.entries(P.CURATED)) {
@@ -84,18 +84,18 @@ test('the page: one hero per state, the viewer\'s real picture through the local
   assert.ok(at(/function Themes/) > 0 && !/previewSrc\('skins'/.test(src), 'no big screenshot of the app – a small live preview');
 });
 
-test('colour themes: every twicable+ theme in the strip (dark first, no editions), each wearing a matching banner, frame and nameplate', () => {
+test('colour themes: every twincable+ theme in the strip (dark first, no editions), each wearing a matching banner, frame and nameplate', () => {
   const cat = { skins: CATALOG.skins, banners: CATALOG.banners, frames: CATALOG.frames };
   const skins = P.plusSkins(cat);
   assert.equal(skins.length, 16);
-  assert.ok(skins.every((s) => s.plus), 'twicable+ only – the free look isn’t offered as a theme');
+  assert.ok(skins.every((s) => s.plus), 'twincable+ only – the free look isn’t offered as a theme');
   assert.equal(skins.findIndex((s) => s.group === 'light'), skins.filter((s) => s.group === 'dark').length, 'dark ones first');
   assert.ok(!skins.some((s) => /edition/i.test(`${s.id} ${s.name} ${s.hint}`)), 'themes are colour skins only');
   for (const s of skins) {
     const look = P.themeLook(cat, s.id);
     const b = CATALOG.banners.find((x) => x.id === look.banner);
     const f = CATALOG.frames.find((x) => x.id === look.frame);
-    assert.ok(b?.plus && f?.plus, `${s.id}: real twicable+ items (${look.banner}, ${look.frame})`);
+    assert.ok(b?.plus && f?.plus, `${s.id}: real twincable+ items (${look.banner}, ${look.frame})`);
     assert.equal(look.nameplate, look.banner);
   }
   assert.equal(P.themeLook(cat, 'moss').banner, 'forest-floor', 'the banner made for the theme');
@@ -106,20 +106,20 @@ test('colour themes: every twicable+ theme in the strip (dark first, no editions
   assert.equal(P.themeVars(null), '');
 });
 
-test('“Get twicable+” without the page wired up yet opens the Buy Me a Coffee membership page, never the tip jar', () => {
+test('“Get twincable+” without the page wired up yet opens the Buy Me a Coffee membership page, never the tip jar', () => {
   const src = readFileSync(new URL('../web/lib/cosmetics/plus.mjs', import.meta.url), 'utf8');
   assert.match(src, /openExternal\(LINKS\.membership\)/);
   assert.doesNotMatch(src, /LINKS\.coffee/);
   const links = readFileSync(new URL('../shared/links.mjs', import.meta.url), 'utf8');
-  assert.match(links, /membership: 'https:\/\/buymeacoffee\.com\/twicable\/membership'/);
+  assert.match(links, /membership: 'https:\/\/buymeacoffee\.com\/twincable\/membership'/);
 });
 
-test('the 7-day trial: offered only while available; a running trial-only twicable+ is its own state – the looks, no thanks', () => {
+test('the 7-day trial: offered only while available; a running trial-only twincable+ is its own state – the looks, no thanks', () => {
   const withTrial = (tier, trial) => acct(tier, { entitlement: { tier, until: tier === 'none' ? null : 1797559246000, trial } });
   const avail = P.plusState(withTrial('none', { state: 'available', days: 7, until: null }));
   assert.equal(avail.kind, 'free');
   assert.equal(P.trialOffered(avail), true);
-  assert.equal(P.trialOffered(P.plusState(withTrial('supporter', { state: 'available' }))), true, 'a Supporter may try twicable+');
+  assert.equal(P.trialOffered(P.plusState(withTrial('supporter', { state: 'available' }))), true, 'a Supporter may try twincable+');
   for (const s of ['used', 'unavailable']) assert.equal(P.trialOffered(P.plusState(withTrial('none', { state: s }))), false, s);
   assert.equal(P.trialOffered(P.plusState(acct('none'))), false, 'no answer about the trial: no offer');
   assert.equal(P.trialOffered(P.plusState(null)), false);

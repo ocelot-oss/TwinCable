@@ -1,5 +1,5 @@
 @echo off
-rem Doppelklick startet twicable (Windows).
+rem Doppelklick startet twincable (Windows).
 cd /d "%~dp0"
 where node >nul 2>nul
 if errorlevel 1 (

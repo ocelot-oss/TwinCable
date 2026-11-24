@@ -1,4 +1,4 @@
-// twicable+ cosmetics in the player's language: every theme's line under its name and every collection's name (After
+// twincable+ cosmetics in the player's language: every theme's line under its name and every collection's name (After
 // Dark, Four Seasons, Earned …) – they showed in English in every language. The generated catalog stays English; the
 // words are looked up by the catalog's ids (web/lib/cosmetics/strings.mjs) and every key is translated.
 import { test } from 'node:test';

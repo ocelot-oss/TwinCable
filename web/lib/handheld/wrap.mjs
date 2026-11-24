@@ -3,7 +3,7 @@
 // every panel, and the sky above is continued by the same engine (a second, sky-only recipe from the banner's own
 // palette: its stars twinkle, its aurora waves, its clouds drift). One art pixel is PX mm on every device.
 //
-// The free wrap (Plain Dusk, from the free banner) ships here; the six twicable+ compositions come with the twicable+ pack
+// The free wrap (Plain Dusk, from the free banner) ships here; the six twincable+ compositions come with the twincable+ pack
 // (handheld/wraps.json), next to the banner recipes they need. The catalog (names, tiers) is shared/handheld.mjs.
 //
 //   const art = wrapArt(comp, recipe, panels) → { px (Uint32Array RGBA), w, h, rects, update(seconds) → changed?, animated }
@@ -24,7 +24,7 @@ export const FREE_WRAPS = [
 const okComp = (c) => c && typeof c.id === 'string' && typeof c.banner === 'string' && Array.isArray(c.ext) && Array.isArray(c.far) && /^#[0-9a-f]{6}$/i.test(c.zen);
 
 /** a wrap's composition (shared/handheld.mjs WRAPS has its name, tier and finish), or null when its data isn't here
- * (a twicable+ wrap without the pack) */
+ * (a twincable+ wrap without the pack) */
 export function wrapComp(id) {
   const c = FREE_WRAPS.find((x) => x.id === id) || (content.handheld?.wraps || []).find((x) => x.id === id);
   return okComp(c) ? c : null;
@@ -130,13 +130,13 @@ export function wrapThumb(id) {
   return url;
 }
 
-// ---- a twicable+ wrap you don't own, from its public preview picture -------------------------------------------------
-// The twicable+ page lets everyone put every skin on the 3D handheld. A wrap's composition and banner recipe come with
-// the twicable+ pack only; without it the scene prints the wrap's public preview picture (the accounts service's
+// ---- a twincable+ wrap you don't own, from its public preview picture -------------------------------------------------
+// The twincable+ page lets everyone put every skin on the 3D handheld. A wrap's composition and banner recipe come with
+// the twincable+ pack only; without it the scene prints the wrap's public preview picture (the accounts service's
 // previews: wraps/<id>.png – the skin card's window onto the wrap, shot a few degrees turned, ×2, with a light sheen;
 // scripts/plus-dev-pack.mjs handheldPreviews). Nothing more than that picture is used: it is levelled again, read at
 // its art pixels and continued past its edges (mirrored sideways, the sky above, the ground below) to cover each panel.
-// It never animates, and the page marks it as a twicable+ preview.
+// It never animates, and the page marks it as a twincable+ preview.
 
 /** preview-shot.mjs's seed hash (FNV-1a → 0..0.999): where a picture's sheen crosses */
 export const sheenHash = (str) => {

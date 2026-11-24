@@ -1,4 +1,4 @@
-// The twicable account on this computer: "Sign in with Discord" and the session that follows (PLUS_SPEC.md › Auth).
+// The twincable account on this computer: "Sign in with Discord" and the session that follows (PLUS_SPEC.md › Auth).
 //
 // Sign-in is OAuth 2 authorization code + PKCE in the SYSTEM browser – never an embedded web view, never a Discord
 // password in the app. startLogin() makes a code_verifier (32 random bytes), its S256 challenge and a random state;
@@ -17,7 +17,7 @@
 import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
 import { API, accountsBase } from './contract.mjs';
 
-// The service's state lives 10 minutes and its confirmation page ("Sign in to twicable on this computer as …?") another
+// The service's state lives 10 minutes and its confirmation page ("Sign in to twincable on this computer as …?") another
 // 5 after Discord said yes – the loopback keeps waiting for all of it (API.md §1.3a: at least 10 minutes).
 const LOGIN_TTL = 15 * 60000;
 const REFRESH_EARLY = 60000; // refresh this long before the access token runs out (clock skew, slow networks)
@@ -66,7 +66,7 @@ export function createSession({ store, port, fetchImpl = fetch, env = process.en
   // stays here in memory – no request reads the keychain again.
   let saved = null;
   let loading = null;
-  // load() is done: until then "signed out" only means "not read yet" – the page must not act on it (a twicable+
+  // load() is done: until then "signed out" only means "not read yet" – the page must not act on it (a twincable+
   // member's pack would be wiped and downloaded again at every start)
   let loaded = false;
   let pending = null; // { state, verifier, at, bad }
@@ -78,7 +78,7 @@ export function createSession({ store, port, fetchImpl = fetch, env = process.en
   // what the session list of the account shows for this computer: the kind of computer, never its name (a host name
   // is often the owner's own name – "Sam's MacBook")
   const platformName = () => ({ darwin: 'mac', win32: 'win', linux: 'linux' }[platform] || undefined);
-  const deviceName = () => ({ darwin: 'twicable on a Mac', win32: 'twicable on Windows', linux: 'twicable on Linux' }[platform] || 'twicable');
+  const deviceName = () => ({ darwin: 'twincable on a Mac', win32: 'twincable on Windows', linux: 'twincable on Linux' }[platform] || 'twincable');
 
   const changed = () => onChange(publicState());
   // the loopback the service sends the browser back to (API.md §1.2: exactly 127.0.0.1, this port, /auth/done)

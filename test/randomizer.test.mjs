@@ -14,7 +14,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 // `java -cp PokeRandoZX.jar:tools/upr-bridge SoulLinkBridge fields` of UPR ZX 4.6.1 (re-checked live below)
 const UPR = JSON.parse(readFileSync(join(root, 'test', 'data', 'upr-settings-fields.json'), 'utf8'));
 const FIELDS = OPTION_GROUPS.flatMap((g) => g.fields).filter((f) => f.type !== 'head');
-/** twicable's own options, done by the bridge itself (no UPR field): key → type */
+/** twincable's own options, done by the bridge itself (no UPR field): key → type */
 const OWN = { [TMS_FOLLOW_MOVES]: 'bool' };
 const byKey = Object.fromEntries(FIELDS.map((f) => [f.key, f]));
 
@@ -36,7 +36,7 @@ function uprAccepts(key, value) {
 test('every exposed option is a real UPR 4.6.1 setting with a matching type', () => {
   for (const f of FIELDS) {
     if (f.key.startsWith('@')) {
-      assert.equal(OWN[f.key], f.type, `${f.key}: twicable's own options are handled by the bridge (SoulLinkBridge.readSettings)`);
+      assert.equal(OWN[f.key], f.type, `${f.key}: twincable's own options are handled by the bridge (SoulLinkBridge.readSettings)`);
       continue;
     }
     const u = UPR[f.key];

@@ -6,7 +6,7 @@
 // A digest only holds what the run doc really records (catches, deaths with their killer, badges, the run's end,
 // evolutions, cheats, the last live party), so every achievement here is one the app can actually detect.
 
-/** National dex ranges by generation – the "regional" dexes of the games twicable plays. */
+/** National dex ranges by generation – the "regional" dexes of the games twincable plays. */
 export const GENERATIONS = [
   { gen: 1, region: 'Kanto', from: 1, to: 151 },
   { gen: 2, region: 'Johto', from: 152, to: 251 },
@@ -19,9 +19,9 @@ export const GENERATIONS = [
   { gen: 9, region: 'Paldea', from: 906, to: 1025 },
 ];
 export const MAX_SPECIES = 1025;
-/** The newest species a game twicable supports can hold (Gen 1–7: GB, GBC, GBA, DS, 3DS). */
+/** The newest species a game twincable supports can hold (Gen 1–7: GB, GBC, GBA, DS, 3DS). */
 export const SUPPORTED_MAX = 809;
-/** The generations twicable's games cover. */
+/** The generations twincable's games cover. */
 export const PLAYABLE_GENS = GENERATIONS.filter((g) => g.to <= SUPPORTED_MAX).map((g) => g.gen);
 export const genOfSpecies = (id) => GENERATIONS.find((g) => id >= g.from && id <= g.to)?.gen || null;
 export const obtainable = (id) => id >= 1 && id <= SUPPORTED_MAX;

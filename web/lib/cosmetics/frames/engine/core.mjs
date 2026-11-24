@@ -1,4 +1,4 @@
-// twicable+ avatar-frame engine – core. Dependency-free ES module (browser runtime + Node tools).
+// twincable+ avatar-frame engine – core. Dependency-free ES module (browser runtime + Node tools).
 //
 // It reuses the banner engine's primitives read-only (hashing, noise, the 4×4 Bayer dither, colour maths):
 //   ../../banners/engine/core.mjs  – nothing in banners/ is modified.

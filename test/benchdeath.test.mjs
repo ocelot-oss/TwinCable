@@ -1,5 +1,5 @@
 // #79 (SoulSilver US, built-in player, solo Nuzlocke, 2.8.1): training on Route 32, the player knocked out a wild
-// Taillow – and twicable marked the team's last Pokémon, a Houndour that never entered the battle, dead "against
+// Taillow – and twincable marked the team's last Pokémon, a Houndour that never entered the battle, dead "against
 // Taillow", logged under Ruins of Alph (where the Houndour was caught). Not reproducible on demand. These replay the
 // live loop of the play view (web/views/play.mjs: readLiveParty → readLiveBattle → withBattleHp → confirmFaints →
 // applySnapshot) on synthetic SoulSilver RAM, poll by poll.

@@ -1,5 +1,5 @@
 // The partners' sprites for the Shared World overlay (shared/world.mjs), taken from the local game's own ROM at run
-// time – twicable ships no Nintendo graphics. Gen 3: the object event graphics table (gObjectEventGraphicsInfoPointers)
+// time – twincable ships no Nintendo graphics. Gen 3: the object event graphics table (gObjectEventGraphicsInfoPointers)
 // → the graphics info of the player's avatar (size, palette tag, frame images, animations) → its 4bpp frames and the
 // palette with that tag (sObjectEventSpritePalettes). Randomized ROMs keep these; a hack that moved the tables is
 // searched for; anything that doesn't look right gives null (the overlay then draws nothing for that partner).

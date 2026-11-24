@@ -49,7 +49,7 @@ html.platform-win32 .app-native.rail-folded .pe-bar, html.platform-linux .app-na
 .pe-add-line { color: var(--ink-3); }
 .pe-preview-tag { position: absolute; right: 14px; top: 14px; z-index: 3; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 5px; border-radius: 999px;
   background: color-mix(in srgb, #000 55%, transparent); color: #f3e7c6; font-size: 12px; backdrop-filter: blur(4px); zoom: calc(.75 / var(--z, 1)); }
-/* twicable+ art from the preview media (a member's pack draws it live) */
+/* twincable+ art from the preview media (a member's pack draws it live) */
 .pe-pic { position: relative; overflow: hidden; }
 .pe-pic > .cos-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .pe-framepic { position: relative; display: inline-grid; place-items: center; }
@@ -200,7 +200,7 @@ html.platform-win32 .app-native.rail-folded .pe-bar, html.platform-linux .app-na
 .pe-foot > .pe-kicker { font-size: 10.5px; }
 .pe-foot.hot .pe-you { box-shadow: inset 2px 0 0 var(--tri), 0 0 0 2px var(--focus); }
 
-/* the quiet twicable+ line */
+/* the quiet twincable+ line */
 .pe-lock { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--r-m);
   background: color-mix(in srgb, #e1b05a 9%, var(--sk-well, #15141a)); border: 1px solid color-mix(in srgb, #e1b05a 26%, var(--sk-line, #0d0c10)); }
 .pe-lock .small { flex: 1; min-width: 0; line-height: 1.4; }
@@ -421,7 +421,7 @@ html.platform-win32 .app-native.rail-folded .pe-bar, html.platform-linux .app-na
 /* the category bar scrolls sideways where it doesn't fit: its end fades, so it reads as more, not as cut off */
 @media (max-width: 1360px) { .pe-cats { mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); padding-right: 32px; } }
 
-/* an earned look you haven't earned yet (Summit Dawn): grey, with the trophy that unlocks it – never a twicable+ upsell */
+/* an earned look you haven't earned yet (Summit Dawn): grey, with the trophy that unlocks it – never a twincable+ upsell */
 .pe-card.not-earned { cursor: help; }
 .pe-card.not-earned .pe-art { filter: grayscale(1) brightness(.6); }
 .pe-earned-word { font-size: 11px; color: var(--ink-3); }

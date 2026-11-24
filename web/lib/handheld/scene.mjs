@@ -1,6 +1,6 @@
 // "Your handheld" in 3D – the launch animation's scene (design rounds 4–6, vendored three.js r180, web/vendor/three, loaded
 // only for the launch animation and the editor). One transparent canvas over the play view's screen area: our own
-// twicable handhelds (no Nintendo shapes, no logos – "twicable" on the shell), a real camera (dolly, crane, orbit, handheld
+// twincable handhelds (no Nintendo shapes, no logos – "twincable" on the shell), a real camera (dolly, crane, orbit, handheld
 // drift that settles), physical light (an environment, a key light with soft shadows, the screens' own light on the
 // plastic), a cartridge with weight, the wrap and the stickers on the shell (surface.mjs). Everything is a pure function
 // of time: render(ms) draws that moment, so a skip just renders the last frame.
@@ -165,7 +165,7 @@ function wordTex(text, px = 120) {
   }, false);
 }
 /**
- * the board under a clear shell, drawn from the twicable+ pack's recipe (handheld/looks.json › clear.board, checked by
+ * the board under a clear shell, drawn from the twincable+ pack's recipe (handheld/looks.json › clear.board, checked by
  * looks.mjs): copper traces fanning out, chips, a coin cell, the connector. Returns [map, traceMask].
  */
 function boardTex(w, h, B) {
@@ -305,7 +305,7 @@ void main() {
   #include <colorspace_fragment>
 }`;
 
-function screenMat(tex, rect, res, sys, warm) { // warm: the Rare start's screen palette (twicable+ pack) or null
+function screenMat(tex, rect, res, sys, warm) { // warm: the Rare start's screen palette (twincable+ pack) or null
   const pal = warm || (sys === 'gb' ? ['#3c4535', '#5f6b4c', '#c2cc9c', '#e9f0cf'] : sys === 'gbc' ? ['#2e312a', '#4f5446', '#ced1be', '#f3f4ea'] : ['#07090b', '#1a2229', '#e9eeec', '#ffffff']);
   const col = (h) => new THREE.Color(h);
   return new THREE.ShaderMaterial({
@@ -358,7 +358,7 @@ const EMPTY_ATLAS = { w: 1, h: 1, rgba: new Uint8Array(4), sw: 1, sh: 1, sdf: ne
 /**
  * The scene. o = { sys, lk (LAYOUTS key), w, h (canvas css px), final ({ x, y, w, h }: the play view's screen rectangle in
  * the canvas), dark, look ('theme' | 'clear' | 'gold'), shell (#rrggbb), clearTint, cartLook ('gold' | 'holo'), cartColor,
- * looks (the twicable+ pack's looks, looks.mjs cleanLooks – without them a twicable+ look draws "Your colours"),
+ * looks (the twincable+ pack's looks, looks.mjs cleanLooks – without them a twincable+ look draws "Your colours"),
  * cover (url), title, pulse, glow, warm (Rare start), plan (t → state), picture ('placeholder' | a live canvas | null),
  * keep (preserveDrawingBuffer, for a still), atlas (web/lib/handheld/stickers.mjs), hh: { skin (wrap composition +
  * finish) | null, recipe, reduced, stickers, preview (wrap.mjs levelPreview – drawn instead of the recipe) } }.
@@ -396,7 +396,7 @@ export async function createScene(canvas, o) {
   const P = { uPR: { value: 0 }, uPW: { value: 9 }, uPA: { value: 0 }, uPC: { value: new THREE.Color(o.pulse || '#fff4e0') }, uPO: { value: new THREE.Vector3() },
     uGA: { value: 0 }, uGR: { value: 60 }, uGC: { value: new THREE.Color(o.glow || '#dfe8ff') }, uGO: { value: new THREE.Vector3() } };
   const shellColor = new THREE.Color(o.shell);
-  // theme | clear | gold – a twicable+ shell, cartridge, finish or Rare start only with its data from the verified pack
+  // theme | clear | gold – a twincable+ shell, cartridge, finish or Rare start only with its data from the verified pack
   const LK = o.looks || null;
   const look = effectiveLook(o.look, LK);
   const cartLook = effectiveCart(o.cartLook, LK);
@@ -430,7 +430,7 @@ export async function createScene(canvas, o) {
   const glassM = fadeable(new THREE.MeshPhysicalMaterial({ color: '#060708', roughness: 0.22, metalness: 0, clearcoat: GLASS_COAT, clearcoatRoughness: 0.1, envMapIntensity: 0.6 }));
   const slotM = fadeable(new THREE.MeshStandardMaterial({ color: '#050506', roughness: 0.9 }));
   const clearWord = look === 'clear' ? LK.clear.word : null;
-  const wordM = fadeable(new THREE.MeshPhysicalMaterial({ color: gold ? new THREE.Color(gold.word.color) : shellColor.clone().multiplyScalar(clearWord?.shade ?? 0.55), roughness: 0.22, clearcoat: 1, alphaMap: wordTex('twicable'), transparent: true, depthWrite: false, opacity: clearWord?.opacity ?? 0.9 }));
+  const wordM = fadeable(new THREE.MeshPhysicalMaterial({ color: gold ? new THREE.Color(gold.word.color) : shellColor.clone().multiplyScalar(clearWord?.shade ?? 0.55), roughness: 0.22, clearcoat: 1, alphaMap: wordTex('twincable'), transparent: true, depthWrite: false, opacity: clearWord?.opacity ?? 0.9 }));
   const ledM = fadeable(new THREE.MeshBasicMaterial({ color: new THREE.Color(dev.led).multiplyScalar(0.12), toneMapped: false }));
   const glareM = new THREE.MeshBasicMaterial({ color: dev.led, map: blobTex(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0, toneMapped: false });
   const backM = new THREE.MeshBasicMaterial({ color: '#000', transparent: true, opacity: 0, depthWrite: false, depthTest: false, toneMapped: false });
@@ -673,7 +673,7 @@ export async function createScene(canvas, o) {
     screenFrame = { center: new THREE.Vector3(0, h + 0.72, dev.scrZ), normal: new THREE.Vector3(0, 1, 0), up: new THREE.Vector3(0, 0, -1), size: [sw, sh], gap: 0, close: [] };
   }
 
-  // the clear shell shows the board inside (its recipe comes with the twicable+ pack)
+  // the clear shell shows the board inside (its recipe comes with the twincable+ pack)
   if (look === 'clear') {
     // (the launch: the transmission pass – the scene drawn once more for what shows through the plastic, which blurs it
     // anyway – at half the canvas's resolution: the heaviest look keeps its frames in time; steady.mjs pixelRatioFor)
@@ -716,7 +716,7 @@ export async function createScene(canvas, o) {
         panels.push({ key: `${k}:${face}`, w: pw, h: ph, cx, base, word });
       }
     }
-    // a twicable+ wrap without the pack (the twicable+ page's preview): its public preview picture (wrap.mjs previewArt)
+    // a twincable+ wrap without the pack (the twincable+ page's preview): its public preview picture (wrap.mjs previewArt)
     const art = !skin ? null : o.hh.preview ? previewArt(o.hh.preview, panels) : wrapArt(skin, o.hh.recipe, panels, { reduced: !!o.hh.reduced });
     HH.art = art;
     const tex = (t) => { t.flipY = false; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; t.needsUpdate = true; HH.tex.push(t); return t; };

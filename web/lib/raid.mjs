@@ -3,7 +3,7 @@
 // rock-paper-scissors hub – holds:
 //   - the raids in the doc (raid:<id>, raid:<id>:<slot>), started from the board, answered on the invite card;
 //   - this build's capability and whether the game playing now can take part (raidcap:<slot>) – a partner whose
-//     twicable never wrote one (an older 3.0 build) can't be invited;
+//     twincable never wrote one (an older 3.0 build) can't be invited;
 //   - the game side (gameTick, from the play view's loop): this player's RaidPlayer, the writes into the game through
 //     the cheat path (read back), holding the game at its first menu while the others' battles begin;
 //   - the host's part: once everybody answered (or after RAID.answerMs) the raid starts with those who joined;

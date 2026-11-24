@@ -11,7 +11,7 @@ import { presenceLoop, presenceSystem, presenceBody } from '../web/lib/presence.
 import { createPresence, presenceOf } from '../server/lib/presence.mjs';
 import { LIVE_RUNS_URL, LIVE_RUNS_FALLBACK_URL } from '../server/lib/liveruns.mjs';
 
-const DATA = mkdtempSync(join(tmpdir(), 'twicable-presence-'));
+const DATA = mkdtempSync(join(tmpdir(), 'twincable-presence-'));
 process.env.SLS_DATA_DIR = DATA;
 
 /** Fake timers: intervals and timeouts that only run when the test says so. */
@@ -63,7 +63,7 @@ test('page: another game or mode restarts the beat; unknown systems are not coun
   loop.set({ system: 'gba', mode: 'soullink' });
   loop.set({ system: 'nds', mode: 'solo' });
   assert.deepEqual(sent, [{ system: 'gba', mode: 'soullink' }, { system: 'nds', mode: 'solo' }]);
-  loop.set({ system: 'n64', mode: 'solo' }); // not a twicable system → treated as nothing running
+  loop.set({ system: 'n64', mode: 'solo' }); // not a twincable system → treated as nothing running
   assert.deepEqual(sent.at(-1), null);
   assert.equal(presenceSystem('3ds'), '3ds');
   assert.equal(presenceSystem('psx'), null);
@@ -81,7 +81,7 @@ function fakeBot({ fail = false, every } = {}) {
   };
   return { calls, fetchImpl };
 }
-const ENV = { TWICABLE_LIVE_URL: 'http://127.0.0.1:9' }; // a test address – never the real bot
+const ENV = { TWINCABLE_LIVE_URL: 'http://127.0.0.1:9' }; // a test address – never the real bot
 
 test('server: exactly sid, system, mode and version – a new random id per game, a stop when it closes', async () => {
   const bot = fakeBot();
@@ -196,7 +196,7 @@ before(() => (starting = (async () => {
     res.end('{"ok":true,"every":60}');
   });
   await new Promise((r) => bot.listen(0, '127.0.0.1', r));
-  process.env.TWICABLE_LIVE_URL = `http://127.0.0.1:${bot.address().port}`;
+  process.env.TWINCABLE_LIVE_URL = `http://127.0.0.1:${bot.address().port}`;
   mkdirSync(DATA, { recursive: true });
   writeFileSync(join(DATA, 'config.json'), JSON.stringify({ onboarded: true }));
   const { startServer } = await import('../server/app.mjs');

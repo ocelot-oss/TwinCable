@@ -175,10 +175,10 @@ test('the screen history: forward adds, back removes, B goes back – or to the 
 });
 
 test('the game frames ignore their buttons while the app has the controller', async () => {
-  const app = { __twicablePad: { mute: true } };
+  const app = { __twincablePad: { mute: true } };
   const frame = { parent: app };
   assert.equal(appHasPad(frame), true);
-  app.__twicablePad.mute = false;
+  app.__twincablePad.mute = false;
   assert.equal(appHasPad(frame), false);
   const alone = {};
   alone.parent = alone; // a player page opened on its own (the ROM matrix, emu-test.html)

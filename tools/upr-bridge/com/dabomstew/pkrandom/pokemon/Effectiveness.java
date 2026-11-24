@@ -55,7 +55,7 @@ public enum Effectiveness {
     }
 
     private static Map<Type, Effectiveness> against(Type primaryType, Type secondaryType, Effectiveness[][] effectivenesses, List<Type> allTypes) {
-        Map<Type, Effectiveness> result = new EnumMap<>(Type.class); // twicable: fixed (type) order on every JVM
+        Map<Type, Effectiveness> result = new EnumMap<>(Type.class); // twincable: fixed (type) order on every JVM
         for(Type type : allTypes) {
             Effectiveness effect = effectivenesses[type.ordinal()][primaryType.ordinal()];
             if (secondaryType != null) {

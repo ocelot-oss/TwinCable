@@ -1,10 +1,10 @@
-// The message numbers twicable and its native hosts (native/retro-host, native/link-host) agree on. Messages are
+// The message numbers twincable and its native hosts (native/retro-host, native/link-host) agree on. Messages are
 // { u32 type, u32 length, payload } (little-endian) in both directions over stdin / stdout. shared/link.mjs and
 // server/lib/native.mjs mirror these numbers for the JavaScript side – change them together.
-#ifndef TWICABLE_PROTOCOL_H
-#define TWICABLE_PROTOCOL_H
+#ifndef TWINCABLE_PROTOCOL_H
+#define TWINCABLE_PROTOCOL_H
 
-// ---- host → twicable --------------------------------------------------------------------------------------------------
+// ---- host → twincable --------------------------------------------------------------------------------------------------
 enum host_msg {
   MSG_VIDEO = 2,     // u16 width, u16 height, u32 format (0 XRGB8888 = BGRA bytes, 2 RGB565), packed pixels
   MSG_AUDIO = 3,     // interleaved stereo s16 at the loaded event's sampleRate (fast-forward: sped up, see ffaudio.h)
@@ -22,7 +22,7 @@ enum host_msg {
                      // by row } – right before WATCHED
 };
 
-// ---- twicable → host --------------------------------------------------------------------------------------------------
+// ---- twincable → host --------------------------------------------------------------------------------------------------
 enum host_cmd_type {
   CMD_INPUT = 1,   // u32 joypad bits (RETRO_DEVICE_ID_JOYPAD_*), s16 lx, ly, rx, ry, s16 px, py (pointer over the whole
                    // picture, -0x7fff…0x7fff), u8 pressed – 17 bytes
@@ -33,7 +33,7 @@ enum host_cmd_type {
   CMD_RESET = 7,   // the console starts over (its battery save kept)
   CMD_WRITE = 9,   // u32 addr, bytes – a cheat, written between two frames into a --ram region → event written
   CMD_FLUSH = 10,  // send the battery save now
-  CMD_SRAM = 11,   // bytes: this battery save instead, then the game starts over (the save twicable had, given late)
+  CMD_SRAM = 11,   // bytes: this battery save instead, then the game starts over (the save twincable had, given late)
   CMD_RESYNC = 12, // all of the RAM with the next RAM message
   CMD_STEP = 13,   // u32 n: run exactly n frames, then pause → event stepped
   CMD_WATCH = 14,  // u32 count (≤ 16), count × { u32 addr, u32 len } (≤ 512 bytes in all; 0 = off) → WATCHED
@@ -47,7 +47,7 @@ enum host_cmd_type {
   CMD_UNTIL = 24,     // u32 frame: run until the session reaches it, then pause
   CMD_NEED = 25,      // u32 seat, u32 from – a peer missed buttons: send what this host knows as LINPUT
   CMD_SEATSTATE = 26, // u32 settle → SEATSTATE (the local seat for the fast player once a session is over)
-  // the twicable engine: one link host plays a game alone and links it in place (only the server sends these)
+  // the twincable engine: one link host plays a game alone and links it in place (only the server sends these)
   CMD_LINK = 27,      // the link session's arguments (NUL-separated, as on the command line): partners join this game
   CMD_SOLO = 28,      // optional arguments (--rom --sram --state --model): the session is over, this game goes on alone
 };

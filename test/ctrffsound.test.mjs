@@ -1,4 +1,4 @@
-// The fast-forward sound of twicable's native hosts (native/ctr-host/ffsound.h – the 3DS host ctrhost.c and, since 2.8.2,
+// The fast-forward sound of twincable's native hosts (native/ctr-host/ffsound.h – the 3DS host ctrhost.c and, since 2.8.2,
 // the fast player's host retrohost.c with melonDS and the other native cores): the real C code, compiled with a small
 // driver that plays a game whose speed swings – as a Windows player's Pokémon Y video showed it (2.8.x, 4× asked, the PC
 // at ≈1.7–3.7×, the speed changing from frame to frame). Needs a C compiler (cc); skipped without one.
@@ -85,7 +85,7 @@ const builds = new Map();
 /** The driver around ffsound.h, compiled once per set of defines in front of it (`pre`: a host's own FF_TARGET). */
 function build(pre = '') {
   if (builds.has(pre)) return builds.get(pre);
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-ff-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-ff-'));
   const c = join(dir, 'ff.c');
   writeFileSync(c, DRIVER.replace('@FF@', pre + ffSection()));
   const exe = join(dir, 'ff');
@@ -178,7 +178,7 @@ test('both native hosts use the shared fast-forward sound – the fast player’
   assert.ok(ctr.includes('#include "ffsound.h"'), 'ctrhost.c includes ffsound.h');
   assert.ok(/ff_reset\(turbo \?/.test(ctr) && ctr.includes('ff_frame(t - last_audio, sample_rate)'), 'ctrhost.c resets it at each switch and feeds it every fast-forwarded frame');
   assert.ok(ctr.includes('ffrate'), 'ctrhost.c announces the ratio at the switch');
-  // 3.0: the fast player's host and the twicable engine (the link host) send their sound through native/common/ffaudio.c,
+  // 3.0: the fast player's host and the twincable engine (the link host) send their sound through native/common/ffaudio.c,
   // which is ffsound.h
   const common = host('common/ffaudio.c');
   assert.ok(common.includes('#include "../ctr-host/ffsound.h"'), 'common/ffaudio.c includes ffsound.h');
@@ -203,7 +203,7 @@ test('fast-forward sound at "Max" (a PC that reaches ~9×): the ratio comes down
 });
 
 test('fast player (retrohost.c, melonDS): its shallower queue keeps the pitch steady too, and the sped-up sound close to the picture', { skip: !cc && 'no C compiler' }, () => {
-  // (3.0: the fast player's host and the twicable engine take it from native/common/ffaudio.c)
+  // (3.0: the fast player's host and the twincable engine take it from native/common/ffaudio.c)
   const retro = readFileSync(new URL('../native/common/ffaudio.c', import.meta.url), 'utf8');
   const target = /#define FF_TARGET ([\d.]+)\s*\n#include "\.\.\/ctr-host\/ffsound.h"/.exec(retro)?.[1];
   assert.ok(target && +target <= 0.3, `common/ffaudio.c keeps at most 0.3 s in the queue (${target})`);
@@ -343,7 +343,7 @@ function spectrum(file) {
 }
 
 test('fast-forward sound at "Max" (16×) is clean: what is sped up past the new Nyquist frequency doesn’t fold back (until 2.8.2: aliases at −28 to −49 dB)', { skip: !cc && 'no C compiler' }, () => {
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-ffa-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-ffa-'));
   try {
     const c = join(dir, 'a.c');
     writeFileSync(c, ALIAS_DRIVER.replace('@FF@', ffSection()));

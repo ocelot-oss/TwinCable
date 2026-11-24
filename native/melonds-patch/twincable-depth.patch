@@ -6,8 +6,8 @@ index b0e1faf..465e089 100644
      virtual void DrawScanline(u32 line) = 0;
      virtual void DrawSprites(u32 line) = 0;
  
-+    // twicable: the 3D renderer (Shared World reads the depth of the frame on screen from the software one)
-+    Renderer3D* Twicable3D() noexcept { return Rend3D.get(); }
++    // twincable: the 3D renderer (Shared World reads the depth of the frame on screen from the software one)
++    Renderer3D* TwinCable3D() noexcept { return Rend3D.get(); }
 +
      virtual void Start3DRendering() { Rend3D->RenderFrame(); }
      virtual void Finish3DRendering() { Rend3D->FinishRendering(); }
@@ -21,26 +21,26 @@ index e620270..9b1d560 100644
      if (RenderThreadRunning.load(std::memory_order_relaxed) && !GPU3D.AbortFrame)
          Platform::Semaphore_Wait(Sema_RenderDone);
 +
-+    // twicable: the frame on screen is rendered (line 192) – keep its depth before line 215 starts the next one
-+    if (TwicableOn)
++    // twincable: the frame on screen is rendered (line 192) – keep its depth before line 215 starts the next one
++    if (TwinCableOn)
 +    {
 +        for (int y = 0; y < 192; y++)
-+            memcpy(&TwicableBuf[y * 256], &DepthBuffer[FirstPixelOffset + y * ScanlineWidth], 256 * sizeof(u32));
-+        TwicableWBuffer = GPU3D.RenderNumPolygons > 0 && GPU3D.RenderPolygonRAM[0] && GPU3D.RenderPolygonRAM[0]->WBuffer;
-+        TwicableValid = true;
++            memcpy(&TwinCableBuf[y * 256], &DepthBuffer[FirstPixelOffset + y * ScanlineWidth], 256 * sizeof(u32));
++        TwinCableWBuffer = GPU3D.RenderNumPolygons > 0 && GPU3D.RenderPolygonRAM[0] && GPU3D.RenderPolygonRAM[0]->WBuffer;
++        TwinCableValid = true;
 +    }
 +}
 +
-+int SoftRenderer3D::TwicableDepth(int x, int y, int w, int h, u32* out) const noexcept
++int SoftRenderer3D::TwinCableDepth(int x, int y, int w, int h, u32* out) const noexcept
 +{
-+    if (!TwicableValid || w <= 0 || h <= 0) return 0;
++    if (!TwinCableValid || w <= 0 || h <= 0) return 0;
 +    for (int r = 0; r < h; r++)
 +        for (int c = 0; c < w; c++)
 +        {
 +            const int sx = x + c, sy = y + r;
-+            out[r * w + c] = (sx < 0 || sy < 0 || sx >= 256 || sy >= 192) ? 0xFFFFFFFF : (TwicableBuf[sy * 256 + sx] & 0xFFFFFF);
++            out[r * w + c] = (sx < 0 || sy < 0 || sx >= 256 || sy >= 192) ? 0xFFFFFFFF : (TwinCableBuf[sy * 256 + sx] & 0xFFFFFF);
 +        }
-+    return TwicableWBuffer ? 3 : 1;
++    return TwinCableWBuffer ? 3 : 1;
  }
  
  void SoftRenderer3D::RenderFrame()
@@ -52,11 +52,11 @@ index f6034f2..e16ab18 100644
      void EnableRenderThread();
      void StopRenderThread();
  
-+    // twicable (Shared World): the depth of the 3D frame on screen, kept while asked for – partners drawn over the
-+    // picture hide where the map is nearer, as the game's own sprites do. TwicableDepth copies a rectangle of it, row by
++    // twincable (Shared World): the depth of the 3D frame on screen, kept while asked for – partners drawn over the
++    // picture hide where the map is nearer, as the game's own sprites do. TwinCableDepth copies a rectangle of it, row by
 +    // row (24-bit depth per pixel, Z or W as the frame used), and returns 1 | 2 when W-buffered (0: nothing kept yet).
-+    void TwicableKeepDepth(bool on) noexcept { TwicableOn = on; if (!on) TwicableValid = false; }
-+    int TwicableDepth(int x, int y, int w, int h, u32* out) const noexcept;
++    void TwinCableKeepDepth(bool on) noexcept { TwinCableOn = on; if (!on) TwinCableValid = false; }
++    int TwinCableDepth(int x, int y, int w, int h, u32* out) const noexcept;
 +
  private:
      SoftRenderer& Parent;
@@ -66,11 +66,11 @@ index f6034f2..e16ab18 100644
      // before (the 3D portion of) the entire frame is rasterized.
      Platform::Semaphore* Sema_ScanlineCount;
 +
-+    // twicable: the depth of the frame on screen, copied when its rendering is done (the next one starts at line 215,
++    // twincable: the depth of the frame on screen, copied when its rendering is done (the next one starts at line 215,
 +    // long before a frontend could read it)
-+    bool TwicableOn = false;
-+    bool TwicableValid = false;
-+    bool TwicableWBuffer = false;
-+    u32 TwicableBuf[256 * 192];
++    bool TwinCableOn = false;
++    bool TwinCableValid = false;
++    bool TwinCableWBuffer = false;
++    u32 TwinCableBuf[256 * 192];
  };
  }

@@ -1,9 +1,9 @@
-// The twicable profile (look "A – Logbook"): banner, avatar with frame and presence, name in its nameplate, title,
+// The twincable profile (look "A – Logbook"): banner, avatar with frame and presence, name in its nameplate, title,
 // the numbers and run history (only when the player opted in to "Show my runs on my profile"), what they do now,
 // most trusted, favourite game and the showcase. #/profile is your own (with "Edit profile"), #/profile?id=<user> a
 // friend's (with "Invite to a run"). #/profile?edit=1 is your own in its edit state – the parts drawer of
 // views/profileedit.mjs (banner, frame, nameplate, accent, name & status, title, showcase layout, trophies, most
-// trusted, favourite game, who sees what), one Save / Cancel; twicable+ items can be tried on by everyone, never pushed.
+// trusted, favourite game, who sees what), one Save / Cancel; twincable+ items can be tried on by everyone, never pushed.
 import { html, useState, useEffect, useMemo } from '/vendor/htm-preact.mjs';
 import { useApp, Led } from '../lib/ui.mjs';
 import { Icon } from '../lib/icons.mjs';
@@ -124,19 +124,19 @@ export function ProfileView() {
   }, [id, acct.session?.signedIn]);
   const ownPresence = useMemo(() => (own ? presenceFrom({ route: 'profile', session, manifest, doc, me: slot, taken: manifest ? takenSlots(manifest, { me: slot, doc, linkStatus }) : [] }) : null), [own, session, manifest]);
   if (!acct.known) return html`<div class="empty-state"><p class="muted">${t('common.loading', 'Loading …')}</p></div>`;
-  if (!acct.session?.signedIn) return html`<div class="stack-l"><${SignInFirst} what=${t('pf.signInTitle', 'Your twicable profile')} /></div>`;
+  if (!acct.session?.signedIn) return html`<div class="stack-l"><${SignInFirst} what=${t('pf.signInTitle', 'Your twincable profile')} /></div>`;
   const prof = own ? acct.me : other;
   if (!prof) {
     if (error) return html`<div class="panel empty-state"><${Icon} name="user" size=${48} /><h2>${t('pf.notVisible', 'This profile isn’t visible')}</h2>
-      <p class="muted">${t('pf.notVisibleText', 'It may be private, or the player isn’t on twicable any more.')}</p><button class="btn" onClick=${() => navigate('friends')}>${t('nav.friends', 'Friends')}</button></div>`;
+      <p class="muted">${t('pf.notVisibleText', 'It may be private, or the player isn’t on twincable any more.')}</p><button class="btn" onClick=${() => navigate('friends')}>${t('nav.friends', 'Friends')}</button></div>`;
     return html`<div class="empty-state"><p class="muted">${t('common.loading', 'Loading …')}</p></div>`;
   }
   const friend = !own ? friends?.friends?.find((f) => f.user.id === prof.id) : null;
   const presence = own ? (acct.me?.privacy?.presence === 'friends' ? ownPresence : { state: 'offline' }) : friend?.presence || null;
   const accent = accentHex(cat, prof.accent);
   const friendCount = own ? friends?.friends?.length : null;
-  const meta = own ? [`@${prof.handle}`, prof.createdAt && t('pf.since', 'on twicable since {date}', { date: monthYear(prof.createdAt) }), friendCount != null && t('pf.friendsN', '1 friend|{count} friends', { count: friendCount })].filter(Boolean).join(' · ')
-    : [`@${prof.handle}`, prof.memberSince && t('pf.since', 'on twicable since {date}', { date: monthYear(prof.memberSince) }), friend?.since && t('fr.since', 'friends since {date}', { date: monthYear(friend.since) })].filter(Boolean).join(' · ');
+  const meta = own ? [`@${prof.handle}`, prof.createdAt && t('pf.since', 'on twincable since {date}', { date: monthYear(prof.createdAt) }), friendCount != null && t('pf.friendsN', '1 friend|{count} friends', { count: friendCount })].filter(Boolean).join(' · ')
+    : [`@${prof.handle}`, prof.memberSince && t('pf.since', 'on twincable since {date}', { date: monthYear(prof.memberSince) }), friend?.since && t('fr.since', 'friends since {date}', { date: monthYear(friend.since) })].filter(Boolean).join(' · ');
   const ask = async () => {
     try {
       await askToJoin(prof.id);
@@ -160,10 +160,10 @@ export function ProfileView() {
   // your own profile in its edit state: the parts drawer (views/profileedit.mjs), one Save / Cancel
   if (own && route.params.edit) return html`<${ProfileEditor} key=${acct.me.id} me=${acct.me} presence=${presence} meta=${meta} part=${route.params.edit} onExit=${() => navigate('profile')} />`;
   const scProps = { prof, own, onLayout: own ? setLayout : null, busy: layoutBusy, onEdit: own ? () => edit('trophies') : null };
-  // a friend's twicable+ banner says what it is and links to the twicable+ page (on hover / focus – never a pop-up)
+  // a friend's twincable+ banner says what it is and links to the twincable+ page (on hover / focus – never a pop-up)
   const plusBanner = !own && prof.banner ? cosmetics().banners.find((b) => b.id === prof.banner && b.plus) : null;
   const bannerNote = plusBanner ? html`<a class="pf-banner-note" href="#/plus" onClick=${(e) => { e.preventDefault(); navigate('plus'); }}>
-    <${PlusMark} title="" /><span>${t('pf.plusBanner', '{name} · a twicable+ banner', { name: plusBanner.name })}</span></a>` : null;
+    <${PlusMark} title="" /><span>${t('pf.plusBanner', '{name} · a twincable+ banner', { name: plusBanner.name })}</span></a>` : null;
   const actions = own ? html`<button class="btn ghost" onClick=${() => edit()}><${Icon} name="user" size=${14} />${t('pf.edit', 'Edit profile')}</button>`
     : prof.relationship === 'friend' ? html`<button class="btn go" onClick=${() => setInviting(true)}><${Icon} name="link" size=${14} />${t('fr.inviteTo', 'Invite to a run')}</button>` : null;
   return html`<div class="stack-l profile" style=${accent ? `--acc:${accent}` : ''}>

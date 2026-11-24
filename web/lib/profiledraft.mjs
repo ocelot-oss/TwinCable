@@ -1,6 +1,6 @@
 // The profile editor's draft (web/views/profileedit.mjs, design 3.0 "B · Parts drawer"): one editing session with one
 // Save / Cancel. Every pick tries itself on at once; the bar counts the parts that differ from what is saved, each
-// part can go "Back to saved" alone, and Save sends only what changed. A twicable+ item tried on without the membership
+// part can go "Back to saved" alone, and Save sends only what changed. A twincable+ item tried on without the membership
 // never blocks Save – Save keeps the saved (free) item for that part and saves the rest. Pure, so
 // test/profiledraft.test.mjs checks it without a page.
 import { SHOWCASE_LAYOUTS, DEFAULT_SHOWCASE_LAYOUT, PROFILE_VISIBILITY, PRESENCE_VISIBILITY } from '/shared/social.mjs';
@@ -22,7 +22,7 @@ export const PARTS = {
 /** The drawer's groups, in the order of the list (and of the part dots, L / R). */
 export const GROUPS = [['look', ['banner', 'frame', 'nameplate', 'accent']], ['about', ['name', 'title']], ['showcase', ['layout', 'trophies', 'trusted', 'fav']], ['privacy', ['privacy']]];
 export const ORDER = GROUPS.flatMap(([, ids]) => ids);
-/** The parts that can hold a twicable+ item. */
+/** The parts that can hold a twincable+ item. */
 export const LOCKABLE = ['banner', 'frame', 'nameplate'];
 
 const pad3 = (a) => [0, 1, 2].map((i) => (Array.isArray(a) && a[i]) || null);
@@ -73,7 +73,7 @@ export function nextSlot(trophies, slot) {
 
 /**
  * Save: the PATCH for lib/account.mjs updateMe (the page's camelCase shape) – only what differs from `initial`.
- * `locked`: parts whose tried-on twicable+ item can't be kept; they stay as saved (the free item) and the rest saves.
+ * `locked`: parts whose tried-on twincable+ item can't be kept; they stay as saved (the free item) and the rest saves.
  * An emptied display name is sent as null (the service falls back to the Discord name). null when nothing changed.
  */
 export function savePatch(initial, d, { locked = [] } = {}) {

@@ -1,5 +1,5 @@
 // The pixel art of "playing together" (docs/MULTIPLAYER.md › 9): the battle bubble, the gift, the tombstone and the
-// "come here" arrow. Original art, drawn for twicable – no game graphics. Same masks as web/lib/worldart.mjs ('#' the
+// "come here" arrow. Original art, drawn for twincable – no game graphics. Same masks as web/lib/worldart.mjs ('#' the
 // player's colour, 'o' the outline ink); the tombstone has a palette of its own (stone, light, shade, grass).
 // The battle and gift masks join worldart's ART, so the overlay's speech bubble and the menus draw them like the emotes.
 import { ART, INK, artUrl } from './worldart.mjs';

@@ -191,7 +191,7 @@ export function syncTrophies({ slots = {}, seen = [], moments = [] } = {}) {
 }
 
 /**
- * Every run's digest (shared/trophies.mjs digestRun), up to date – also of deleted runs. For the twicable account's
+ * Every run's digest (shared/trophies.mjs digestRun), up to date – also of deleted runs. For the twincable account's
  * profile numbers (server/lib/accounts/stats.mjs), which only leave the computer when the player opted in.
  */
 export function runDigests() {
@@ -200,7 +200,7 @@ export function runDigests() {
   return Object.entries(state?.runs || {}).map(([id, r]) => (r.digest ? { ...r.digest, id, archived: !!r.archived } : null)).filter(Boolean);
 }
 
-/** The ids of the achievements this computer has unlocked (titles and showcase picks of the twicable profile). */
+/** The ids of the achievements this computer has unlocked (titles and showcase picks of the twincable profile). */
 export function unlockedAchievements() {
   return Object.keys(load()?.unlocked || {});
 }

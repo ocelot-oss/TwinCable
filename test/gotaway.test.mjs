@@ -1,6 +1,6 @@
 // "Got away?" after a wild battle (2.8.2, a player's report on Discord: Platinum SoulLink – fleeing the first
 // encounter on Route 204 never marked the area, the next catch there was filed as its encounter; the question "only
-// shows up sometimes"). Measured in twicable's own player (Platinum US, Route 201, four wild battles fled in a row): the
+// shows up sometimes"). Measured in twincable's own player (Platinum US, Route 201, four wild battles fled in a row): the
 // readers saw every battle as wild and its end at once (0x2100 → 0x2800 the poll after "Got away safely!") – but the
 // next wild battle began 3.6–13 s after the last one ended (214–776 frames at 1×; far sooner with fast-forward or in
 // Route 204's grass), and the play view's 10-second timer was cancelled by every change of the battle. So the question
@@ -372,7 +372,7 @@ test('Platinum in another language: the English battle flag\'s address counts on
 });
 
 // ---- #80 (SoulSilver US, built-in player, solo Nuzlocke, 2.8.1): a wild Pokémon knocked out or fled, the player walks
-// straight on into an area whose first encounter is still open – and about one time in three twicable asked whether
+// straight on into an area whose first encounter is still open – and about one time in three twincable asked whether
 // THAT area was spent. 2.8.1 checked the place sign as the battle ended and put the place the player stood at when the
 // question came up (10 s later) first in the prompt. The question is about the place of the battle, captured while it
 // runs; when that isn't known in a game that shows places, nothing is asked.

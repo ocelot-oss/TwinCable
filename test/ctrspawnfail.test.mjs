@@ -20,7 +20,7 @@ const throwingSpawn = () => {
 
 test('a host that fails in spawn() itself ends the session; stop, a new start and send do not crash', () => {
   const ctr = new CtrSessions({ spawn: throwingSpawn });
-  const id = ctr.launch('C:/twicable/tools/ctr/ctrhost.exe', ['--rom', 'game.3ds'], null);
+  const id = ctr.launch('C:/twincable/tools/ctr/ctrhost.exe', ['--rom', 'game.3ds'], null);
   const s = ctr.get(id);
   assert.equal(s.child, null);
   assert.deepEqual(s.exit, { error: 'spawn UNKNOWN' });
@@ -29,7 +29,7 @@ test('a host that fails in spawn() itself ends the session; stop, a new start an
   assert.throws(() => ctr.send(id, Buffer.alloc(0)), (e) => e.code === 'ctrEnded' || /stopped/.test(e.message));
   assert.doesNotThrow(() => ctr.release(s));
   // a new start stops the old session first – this used to throw "Cannot read properties of null (reading 'stdout')"
-  const id2 = ctr.launch('C:/twicable/tools/ctr/ctrhost.exe', ['--rom', 'game.3ds'], null);
+  const id2 = ctr.launch('C:/twincable/tools/ctr/ctrhost.exe', ['--rom', 'game.3ds'], null);
   assert.notEqual(id2, id);
   assert.doesNotThrow(() => ctr.stop());
   assert.equal(ctr.current, null);

@@ -1,5 +1,5 @@
 // Settings › General: language, name, the interface size, start-up animations, app sounds, the welcome tour, the colour
-// scheme and the twicable+ theme.
+// scheme and the twincable+ theme.
 import { html, useState, useEffect } from '/vendor/htm-preact.mjs';
 import { t, LANGS, setLang, currentLang } from '../../lib/i18n.mjs';
 import { applyTheme } from '../../lib/theme.mjs';
@@ -51,7 +51,7 @@ function UiScaleSetting({ cfg }) {
   const keys = uiScaleKeys();
   if (!uiScaleNative()) {
     return html`<div class="field"><span>${label}</span>
-      <span class="small faint">${t('set.uiScaleBrowser', 'In the browser, its own zoom sizes twicable: {bigger} and {smaller}.', keys)}</span></div>`;
+      <span class="small faint">${t('set.uiScaleBrowser', 'In the browser, its own zoom sizes twincable: {bigger} and {smaller}.', keys)}</span></div>`;
   }
   const hot = resolveHotkeys(cfg.controls);
   const game = HOTKEY_IDS.filter((id) => hot[id].some((c) => uiScaleKey(c, IS_MAC)));
@@ -60,7 +60,7 @@ function UiScaleSetting({ cfg }) {
       ${UI_SCALES.map((v) => html`<button type="button" role="radio" aria-checked=${s.chosen === v} class=${s.chosen === v ? 'on' : ''}
         onClick=${() => setUiScale(v)}>${uiScaleLabel(v)}</button>`)}
     </div>
-    <span class="small faint">${t('set.uiScaleHint', 'How big twicable draws its menus, panels, the board and text on this computer – for big, sharp screens. The game itself isn’t scaled: it keeps filling the room it has, pixel-sharp. {bigger}, {smaller} and {reset} change it anywhere.', keys)}</span>
+    <span class="small faint">${t('set.uiScaleHint', 'How big twincable draws its menus, panels, the board and text on this computer – for big, sharp screens. The game itself isn’t scaled: it keeps filling the room it has, pixel-sharp. {bigger}, {smaller} and {reset} change it anywhere.', keys)}</span>
     ${s.applied !== s.chosen && html`<span class="small warn-text">${t('set.uiScaleFit', 'This window has room for {size} – make it larger and it grows to {chosen}.', { size: uiScaleLabel(s.applied), chosen: uiScaleLabel(s.chosen) })}</span>`}
     ${game.length > 0 && html`<span class="small faint">${t('set.uiScaleGame', 'While a game fills the window, these keys stay its shortcuts: {list} (Settings › Controls).', { list: game.map((id) => hotkeyLabel(id)).join(', ') })}</span>`}
   </div>`;

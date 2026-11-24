@@ -247,7 +247,7 @@ test('rules: collection counts across runs, regional dexes, types, legendaries, 
   assert.equal(evalOf([kanto]).allTypes.n, 0, 'no type data – no progress, no crash');
   assert.equal(evalOf([many('cccc0002', 152, 251)]).dexJohto.ok, true);
   assert.equal(evalOf([kanto, many('cccc0003', 152, 400)]).dex250.ok, true);
-  // later generations are not in the National Dex goal that twicable can reach
+  // later generations are not in the National Dex goal that twincable can reach
   assert.equal(T.ACHIEVEMENTS.find((a) => a.id === 'dexNational').target, T.SUPPORTED_MAX - T.EVENT_ONLY.size);
   const noMew = many('cccc0004', 1, 150);
   assert.equal(evalOf([noMew]).dexKanto.ok, true, 'Kanto complete without Mew');
@@ -396,7 +396,7 @@ test('medals: tiers per category, per regional dex and the champion’s medal', 
   assert.equal(m['dex-1'].tier, 4, 'Kanto complete');
   assert.equal(m['dex-2'].tier, -1);
   assert.equal(m['dex-7'].tier, -1, 'Alola: a medal to earn');
-  assert.ok(!m['dex-8'], 'no medal for a generation twicable doesn’t play');
+  assert.ok(!m['dex-8'], 'no medal for a generation twincable doesn’t play');
   assert.ok(m.champion.tier >= 0);
   assert.equal(T.TIERS.length, 5);
 });

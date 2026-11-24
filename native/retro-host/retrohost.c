@@ -1,6 +1,6 @@
-// twicable's native host for the DS, GBA and Game Boy: runs a libretro core (melonDS DS, mGBA, SameBoy) as a native
-// program – with the core's JIT and all of the computer's speed – and talks to twicable over stdin/stdout like the 3DS
-// host (native/ctr-host). The game then plays inside twicable's own player (web/lib/nativeplayer.mjs). The twicable
+// twincable's native host for the DS, GBA and Game Boy: runs a libretro core (melonDS DS, mGBA, SameBoy) as a native
+// program – with the core's JIT and all of the computer's speed – and talks to twincable over stdin/stdout like the 3DS
+// host (native/ctr-host). The game then plays inside twincable's own player (web/lib/nativeplayer.mjs). The twincable
 // engine (native/link-host in solo mode) plays the same games on the same emulators' own APIs and speaks this protocol
 // too; both share native/common (IPC, the RAM stream, the fast-forward sound, the frame loop's rhythm).
 //
@@ -176,7 +176,7 @@ static void video_refresh(const void *data, unsigned w, unsigned h, size_t pitch
 }
 
 // ---- the DS's 3D depth (Shared World: partners hide behind the map – native/common/depth.h) -------------------------
-// twicable's melonDS DS (native/melonds-ds-patch) exports twicable_depth; another core has none and the page gets nothing.
+// twincable's melonDS DS (native/melonds-ds-patch) exports twincable_depth; another core has none and the page gets nothing.
 static int (*core_depth)(int on, int x, int y, int w, int h, uint32_t *out);
 static struct depth_req depth;
 static int retro_depth(void *ctx, int on, int x, int y, int w, int h, uint32_t *out) {
@@ -269,7 +269,7 @@ static bool environment(unsigned cmd, void *data) {
   if (IS(cmd, RETRO_ENVIRONMENT_GET_AUDIO_VIDEO_ENABLE)) { *(int *)data = 1 | 2; return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_GET_FASTFORWARDING)) { *(bool *)data = fastforwarding != 0; return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_GET_LANGUAGE)) { *(unsigned *)data = RETRO_LANGUAGE_ENGLISH; return true; }
-  if (IS(cmd, RETRO_ENVIRONMENT_GET_USERNAME)) { *(const char **)data = "twicable"; return true; }
+  if (IS(cmd, RETRO_ENVIRONMENT_GET_USERNAME)) { *(const char **)data = "twincable"; return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION)) { *(unsigned *)data = 1; return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_SET_MESSAGE)) { core_message(data ? ((const struct retro_message *)data)->msg : NULL); return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_SET_MESSAGE_EXT)) { core_message(data ? ((const struct retro_message_ext *)data)->msg : NULL); return true; }
@@ -343,11 +343,11 @@ static void sram_get(uint8_t **p, size_t *n) {
   *n = *p && core.get_memory_size ? core.get_memory_size(RETRO_MEMORY_SAVE_RAM) : 0;
   if (!*n) *p = NULL;
 }
-// The cartridge clock (Game Boy MBC3: Gold/Silver/Crystal). twicable keeps it in the battery save as the 48-byte footer
+// The cartridge clock (Game Boy MBC3: Gold/Silver/Crystal). twincable keeps it in the battery save as the 48-byte footer
 // VBA-M, mGBA and SameBoy write (u32 seconds, minutes, hours, days, flags – the clock then latched – then the u64 Unix
 // second it was saved): the same file then carries the clock into the link host (SameBoy) and back. SameBoy keeps it as
 // RETRO_MEMORY_RTC – its "rtc" save-state section (32 bytes): the clock's 5 registers, the latched 5, at 16 the u64 Unix
-// second the clock was last brought up to (it runs on the computer's clock from there). (Older twicable played the Game
+// second the clock was last brought up to (it runs on the computer's clock from there). (Older twincable played the Game
 // Boy on Gambatte; its saves carry the same footer.)
 #define RTC_FOOTER 48
 #define SAMEBOY_RTC 32
@@ -378,7 +378,7 @@ static void rtc_from_footer(const uint8_t *f) {
   const uint64_t days = (v[3] & 0xff) | (uint64_t)(v[4] & 1) << 8;
   host_log("cartridge clock from the save: %llu days %02u:%02u", (unsigned long long)days, v[2] % 24, v[1] % 60);
 }
-/** The battery save as twicable keeps it: the save memory, plus the clock footer for a clock cartridge. */
+/** The battery save as twincable keeps it: the save memory, plus the clock footer for a clock cartridge. */
 static void send_sram(const uint8_t *p, size_t n) {
   uint8_t f[RTC_FOOTER];
   if (rtc_footer(f)) host_send2(MSG_SRAM, p, (uint32_t)n, f, RTC_FOOTER);
@@ -393,7 +393,7 @@ static void check_sram(bool force) {
   send_sram(p, n);
   host_event("{\"event\":\"saved\",\"size\":%zu}", n);
 }
-/** The save twicable hands over at the start, into the core's save memory (as RetroArch does with .srm files). */
+/** The save twincable hands over at the start, into the core's save memory (as RetroArch does with .srm files). */
 static void load_sram(void) {
   uint8_t *p;
   size_t n;
@@ -409,7 +409,7 @@ static void load_sram(void) {
       host_log("battery save: %zu of %zu bytes", got, n);
     }
   }
-  sram_known(&sram_w, p, n); // twicable has this one
+  sram_known(&sram_w, p, n); // twincable has this one
 }
 
 /** A state far off the core's own size is no state of this game (cores trust the sizes inside it). (SameBoy names twice
@@ -483,7 +483,7 @@ int main(int argc, char **argv) {
   SYM(unserialize, "retro_unserialize"); SYM(get_memory_data, "retro_get_memory_data");
   SYM(get_memory_size, "retro_get_memory_size");
   core.set_controller_port_device = (void *)dlsym(lib, "retro_set_controller_port_device");
-  core_depth = (void *)dlsym(lib, "twicable_depth"); // (twicable's melonDS DS only: the 3D depth for Shared World)
+  core_depth = (void *)dlsym(lib, "twincable_depth"); // (twincable's melonDS DS only: the 3D depth for Shared World)
 
   core.set_environment(environment);
   core.set_video_refresh(video_refresh);
@@ -543,7 +543,7 @@ int main(int argc, char **argv) {
     }
     if (!state_ok) host_log("save state %s not loadable (%zu bytes, the core's are %zu)", opt_state, sl, core.serialize_size());
     free(sb);
-    // the battery save as the state left it is the one twicable has (a state carries the save memory of its moment)
+    // the battery save as the state left it is the one twincable has (a state carries the save memory of its moment)
     uint8_t *p;
     size_t n;
     sram_get(&p, &n);
@@ -598,7 +598,7 @@ int main(int argc, char **argv) {
   uint32_t step_left = 0; // STEP: frames still to run before pausing
   struct host_cmd cmds[256];
   for (;;) {
-    // ---- twicable's commands, in order, between two frames
+    // ---- twincable's commands, in order, between two frames
     bool quit = false, wrote = false;
     for (int nc; !quit && (nc = host_take_commands(cmds, 256)) > 0;) {
       for (int i = 0; i < nc; i++) {

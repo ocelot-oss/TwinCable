@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { unwrapNotes, inlineNotes, parseNotes } from '../shared/notes.mjs';
 import { changelogSection } from '../scripts/release.mjs';
 
-const WRAPPED = `- **Nintendo 3DS games play inside twicable**: X/Y run
+const WRAPPED = `- **Nintendo 3DS games play inside twincable**: X/Y run
   in the play view like every other game – both screens,
   controller and \`savestates\`.
 - **Trophies**: Kalos counts.
@@ -16,7 +16,7 @@ const WRAPPED = `- **Nintendo 3DS games play inside twicable**: X/Y run
 
 test('continuation lines join the bullet they belong to', () => {
   assert.equal(unwrapNotes(WRAPPED), [
-    '- **Nintendo 3DS games play inside twicable**: X/Y run in the play view like every other game – both screens, controller and `savestates`.',
+    '- **Nintendo 3DS games play inside twincable**: X/Y run in the play view like every other game – both screens, controller and `savestates`.',
     '- **Trophies**: Kalos counts.',
     '',
     '### Fixes',

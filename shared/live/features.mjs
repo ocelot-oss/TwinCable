@@ -1,7 +1,7 @@
-// What twicable can read for a game, feature by feature – so the app shows only what it can read with confidence and
+// What twincable can read for a game, feature by feature – so the app shows only what it can read with confidence and
 // hides the rest instead of showing made-up values. Two stages:
 // - romFeatures: what the ROM data makes possible at all (server/lib/romloc.mjs romData + the memory table entry) –
-//   for the library's "what twicable reads" line and as the starting point of a session;
+//   for the library's "what twincable reads" line and as the starting point of a session;
 // - FeatureCheck: what the live readers have confirmed in this session (a team read cleanly a few times, held items
 //   and moves that all have names, a place, a battle, a catch filed) – the play view and the diagnostics file.
 // Status per feature: 'yes' (can read / confirmed), 'partial' (part of it: types without their matchups), 'wait' (can

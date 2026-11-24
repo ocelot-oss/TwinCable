@@ -28,7 +28,7 @@ library/
 *.ips
 *.bps
 *.xdelta
-twicable-diagnostics-*.json
+twincable-diagnostics-*.json
 
 # Downloaded or built tools (fetched by scripts/fetch-jre.mjs / the app)
 tools/emulator/
@@ -45,6 +45,6 @@ tools/jre/
 .idea/
 *.log
 
-# twicable's 3DS part, built by scripts/build-ctr.mjs
+# twincable's 3DS part, built by scripts/build-ctr.mjs
 tools/ctr/
 tools/native/

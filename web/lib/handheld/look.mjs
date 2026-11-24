@@ -1,5 +1,5 @@
 // "Your handheld" on the page: the local setting (config.json `handheld`, shared/handheld.mjs keeps the rules), what the
-// launch plays from it, and the 3D scene posed still (the editor's stage, the library's tile, the twicable+ page). The
+// launch plays from it, and the 3D scene posed still (the editor's stage, the library's tile, the twincable+ page). The
 // scene and three.js are imported only here and only when something draws a device – never at the app's start.
 import { useState, useEffect } from '/vendor/htm-preact.mjs';
 import { api } from '../api.mjs';
@@ -70,7 +70,7 @@ export function launchConfig(cfg) {
   return { look, pace, clear: cleanClearTint(cfg?.launchClear), off: pace === 'off' || cfg?.bootAnimation === false };
 }
 /**
- * The launch a preview plays (Settings, the editor, the twicable+ page): launchConfig() of the config – a caller may hand
+ * The launch a preview plays (Settings, the editor, the twincable+ page): launchConfig() of the config – a caller may hand
  * either the config itself or launchConfig() of it – and Off plays Full (pressing Preview asks to see it). The look is
  * the member's pick; LaunchStage still plays only what the account's rights and the pack allow (playableLook).
  */
@@ -81,7 +81,7 @@ export function previewConfig(cfg) {
 
 /**
  * What this account's launch may use right now (shared/handheld.mjs launchRights): the verified tier from the account
- * store (signed out: free), twicable+ items with the pack loaded. Read at the moment a game starts – never a request.
+ * store (signed out: free), twincable+ items with the pack loaded. Read at the moment a game starts – never a request.
  */
 export function launchRightsNow() {
   const a = accountState();
@@ -98,12 +98,12 @@ export function useLaunchRights() {
   }, []);
   return launchRightsNow();
 }
-/** twicable+ items usable (the pack is here) */
+/** twincable+ items usable (the pack is here) */
 export const member = () => launchRightsNow().plus;
-/** The twicable+ looks from the verified pack (looks.mjs cleanLooks) – null without the pack, or in an older one. */
+/** The twincable+ looks from the verified pack (looks.mjs cleanLooks) – null without the pack, or in an older one. */
 export const paidLooks = () => content.handheld?.looks || null;
 /**
- * The launch look this account can play: a twicable+ look needs the tier (launchRights: twicable+ with the pack loaded)
+ * The launch look this account can play: a twincable+ look needs the tier (launchRights: twincable+ with the pack loaded)
  * AND its data from the pack (Gold, Clear shell, Holo label aren't in the app) – else "Your colours" (the choice is kept).
  */
 export const playableLook = (id, rights = launchRightsNow()) => {
@@ -121,9 +121,9 @@ export function lookNow(rnd = Math.random, rights = launchRightsNow()) {
 
 /**
  * The current look as this account can wear it right now – what a still of "Your handheld" shows (Settings, the library's
- * tile): twicable+ skin, stickers and finishes only with twicable+ (launchRights: the tier and the pack), holo / glitter
+ * tile): twincable+ skin, stickers and finishes only with twincable+ (launchRights: the tier and the pack), holo / glitter
  * only with their data from the pack – like the launch itself. A Supporter sees the free skin, the free and the earned
- * stickers. The handheld keeps them all (the editor shows them as kept), so they are back the moment twicable+ is.
+ * stickers. The handheld keeps them all (the editor shows them as kept), so they are back the moment twincable+ is.
  */
 export function ownedLook(d = doc, rights = launchRightsNow()) {
   const own = lookToPlay(d, { member: rights.plus, trophies: earnedTrophies() || new Set(), surprise: false });
@@ -144,7 +144,7 @@ export function sceneWrap(id) {
 
 const previewWraps = new Map();
 /**
- * A twicable+ wrap this account can't draw (no pack) as its public preview picture, for the twicable+ page's showcase:
+ * A twincable+ wrap this account can't draw (no pack) as its public preview picture, for the twincable+ page's showcase:
  * { comp (wrap.mjs previewComp), lv (levelPreview) } – null when there is no picture (the previews aren't in yet, or
  * none for this wrap). Cached per picture while the app runs.
  */
@@ -228,7 +228,7 @@ export const viewPlan = (sys, view, orbit = { yaw: 0, tilt: 0, zoom: 1 }) => {
 export async function poseScene(canvas, o) {
   const { S, atlas } = await loadScene();
   const fold = isFold(o.sys);
-  // o.preview (previewWrap): a twicable+ skin shown from its preview picture – only when the real one can't be drawn here
+  // o.preview (previewWrap): a twincable+ skin shown from its preview picture – only when the real one can't be drawn here
   const shell = o.look === 'clear' || o.look === 'gold';
   const wrap = shell ? null : sceneWrap(o.skin) || (o.preview ? { skin: o.preview.comp, recipe: null, preview: o.preview.lv } : null);
   const w = o.w, h = o.h;

@@ -1,9 +1,9 @@
-// What twicable reads from the ROM file itself besides the place names: which Pokémon a GBA game's species numbers
+// What twincable reads from the ROM file itself besides the place names: which Pokémon a GBA game's species numbers
 // stand for (shared/live/romspecies.mjs – ROM hacks like Light Platinum put other Pokémon into the slots, expanded
 // engines like Run & Bun / Unbound are recognised), whether a ROM is an unmodified retail dump (server/lib/romloc.mjs),
 // and which place name the sign and new catches get (shared/live/location.mjs placeName, web/lib/run.mjs).
 // Real ROMs – when present – are checked too:
-//   TWICABLE_TEST_ROMS=/folder/with/roms node --test test/romdata.test.mjs
+//   TWINCABLE_TEST_ROMS=/folder/with/roms node --test test/romdata.test.mjs
 // (any .gb/.gbc/.gba/.nds in the folder, retail dumps, hacks and randomized games alike; never commit ROMs). Without
 // the variable those tests are skipped. scripts/rom-matrix.mjs runs the whole matrix incl. the built-in emulator.
 import { fileURLToPath } from 'node:url';
@@ -245,10 +245,10 @@ test('the species picker offers every Pokémon a hack holds: speciesCeiling = th
 
 // ---------------------------------------------------------------- real ROMs (optional)
 
-const DIR = process.env.TWICABLE_TEST_ROMS;
+const DIR = process.env.TWINCABLE_TEST_ROMS;
 const files = DIR && existsSync(DIR) ? readdirSync(DIR).filter((f) => /\.(gba|nds)$/i.test(f)).map((f) => join(DIR, f)) : [];
 
-test('real ROMs: retail dumps are vanilla with the retail species; hacks are told apart', { skip: files.length ? false : 'set TWICABLE_TEST_ROMS to a folder with ROMs' }, () => {
+test('real ROMs: retail dumps are vanilla with the retail species; hacks are told apart', { skip: files.length ? false : 'set TWINCABLE_TEST_ROMS to a folder with ROMs' }, () => {
   for (const f of files) {
     const bytes = new Uint8Array(readFileSync(f));
     const r = romData(bytes, SHARED);
@@ -271,7 +271,7 @@ test('real ROMs: retail dumps are vanilla with the retail species; hacks are tol
   }
 });
 
-test('real ROMs: romLocations never throws and finds data for every Gen 3–5 retail dump', { skip: files.length ? false : 'set TWICABLE_TEST_ROMS to a folder with ROMs' }, () => {
+test('real ROMs: romLocations never throws and finds data for every Gen 3–5 retail dump', { skip: files.length ? false : 'set TWINCABLE_TEST_ROMS to a folder with ROMs' }, () => {
   for (const f of files) {
     const bytes = new Uint8Array(readFileSync(f));
     const r = romData(bytes, SHARED);

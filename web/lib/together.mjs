@@ -24,7 +24,7 @@ import { feed, feedText, msg, live, encounter, players, rules as getRules, slots
 
 const TICK_MS = 500;
 /**
- * A partner whose direct connection has stood this long without one status from them runs an older twicable (2.x): every
+ * A partner whose direct connection has stood this long without one status from them runs an older twincable (2.x): every
  * 3.0 build sends its status as a heartbeat (TG.statusEveryMs) the moment the link is up. Three heartbeats' worth, so a
  * slow first message never makes a 3.0 partner look old.
  */
@@ -184,7 +184,7 @@ export class TogetherHub {
     return s && this.now() - s.at < TG.staleMs ? s : null;
   }
   /**
-   * Is `slot` on an older twicable – one without link trades and battles, Shared World, raids and gifts (2.x)? true once
+   * Is `slot` on an older twincable – one without link trades and battles, Shared World, raids and gifts (2.x)? true once
    * our direct connection to them has stood OLDER_APP_MS without a single status from them. false while unknown (no
    * direct connection, or not long enough) – the callers then say what they said before (offline, no connection).
    */
@@ -348,7 +348,7 @@ export class TogetherHub {
   }
 
   /**
-   * Why I can't give `slot` anything right now (null: I can): 'off' (the rule), 'old' (their twicable doesn't know
+   * Why I can't give `slot` anything right now (null: I can): 'off' (the rule), 'old' (their twincable doesn't know
    * gifts), 'offline', 'nogame' (my game isn't running here), 'busy' (a gift with them is open), or my game's reason.
    */
   giftWhy(slot) {
@@ -395,7 +395,7 @@ export class TogetherHub {
   }
 
   /**
-   * One line in the run's log, once per partner on an older twicable: their 2.x app shows a new log line of someone else
+   * One line in the run's log, once per partner on an older twincable: their 2.x app shows a new log line of someone else
    * as a notice, so this is how they learn that the others are on 3.0 and what they miss. Every 3.0 player writes the
    * same entry (keyed by the older partner's slot), so it's there once. The English text is what a 2.x app shows: it
    * doesn't know the key.
@@ -407,7 +407,7 @@ export class TogetherHub {
       if (this.doc.get(`feed:${id}`, null)) return;
       const name = players(this.doc, this.manifest)[slot]?.name || slot.toUpperCase();
       const entry = { type: 'note', slot: this.me, about: slot,
-        msg: msg('feed.olderApp', '{name} is on an older twicable – trading, battling, raids and Shared World need twicable 3.0 on every computer of the run. Update in Settings › About.', { name }) };
+        msg: msg('feed.olderApp', '{name} is on an older twincable – trading, battling, raids and Shared World need twincable 3.0 on every computer of the run. Update in Settings › About.', { name }) };
       feed(this.doc, { ...entry, text: feedText(this.doc, this.manifest, entry) }, id);
     } catch (err) {
       console.warn('older app note', err);
@@ -478,7 +478,7 @@ const worldTables = new WeakMap(); // game entry → its Shared World table (or 
 /**
  * Why my game can't give or take an item right now – null when it can. A gift is only written on the overworld:
  * never during a battle (the game keeps its own copy of the bag then), a link, before live tracking found the team,
- * and – where twicable reads the screen state (Shared World's tables: Gen 1–4 today, any generation that gets them) –
+ * and – where twincable reads the screen state (Shared World's tables: Gen 1–4 today, any generation that gets them) –
  * not while a menu, a text, a script or a screen fade holds the player (the bag menu keeps its own list of the bag).
  */
 export function gameWhy({ entry, read, live = false, inBattle = false, link = false }) {

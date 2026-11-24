@@ -1,8 +1,8 @@
-// The 3DS bag that isn't where twicable knows it (2.8.4): the 3DS player's page (web/lib/ctrplayer.mjs) run for real with
+// The 3DS bag that isn't where twincable knows it (2.8.4): the 3DS player's page (web/lib/ctrplayer.mjs) run for real with
 // a stand-in page and host around it (as test/ctrhalftilt-live) – the host keeps a synthetic game heap, answers WATCH
 // with the regions asked for (MEM, unmapped ones empty) and WRITE as ctrhost.c does (only where the old bytes are still
 // there). __emu.watch resolves once the regions are there; a Rare Candy cheat on an Ultra Moon whose bag sits at an
-// address twicable doesn't know searches it through the page, writes there and keeps the place for the session.
+// address twincable doesn't know searches it through the page, writes there and keeps the place for the session.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
@@ -102,7 +102,7 @@ Object.assign(globalThis, {
   location: { search: '?rom=%2From.3ds&key=k', origin: 'http://127.0.0.1' },
   document: Object.assign(any(), { visibilityState: 'visible', getElementById: () => any(), createElement: () => any(), body: any(), documentElement: any() }),
   window: globalThis,
-  parent: { postMessage() {}, __twicablePad: { mute: false } },
+  parent: { postMessage() {}, __twincablePad: { mute: false } },
   addEventListener: page.addEventListener.bind(page),
   removeEventListener: page.removeEventListener.bind(page),
   dispatchEvent: page.dispatchEvent.bind(page),
@@ -170,7 +170,7 @@ test('3DS player: watch() resolves once the host has sent the regions – then r
   assert.equal(emu().read(r.addr, 4), null, 'let go again');
 });
 
-test('3DS player: a bag twicable doesn’t know the place of is searched through the page, written there and kept', async () => {
+test('3DS player: a bag twincable doesn’t know the place of is searched through the page, written there and kept', async () => {
   await started();
   const state = { g67: 0 };
   const mem = { read: emu().read, write: emu().write, watch: emu().watch };

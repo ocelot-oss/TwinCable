@@ -1,6 +1,6 @@
-// twicable+ PREVIEW MEDIA (twicable-accounts API.md §10.6): pictures of every premium banner, nameplate, avatar frame,
+// twincable+ PREVIEW MEDIA (twincable-accounts API.md §10.6): pictures of every premium banner, nameplate, avatar frame,
 // the handheld's stickers and wraps and colour skin – a PNG still and a short animated WebP each – so anyone, signed in or not, sees what
-// twicable+ holds before buying it. They hold no recipe or code (scripts/plus-previews.mjs renders them offline), and the
+// twincable+ holds before buying it. They hold no recipe or code (scripts/plus-previews.mjs renders them offline), and the
 // service hands them to anyone, but they come in a pack signed with the pack key like every other: nothing is shown
 // before the manifest's signature (pinned key) and the file's SHA-256 check out.
 //
@@ -16,7 +16,7 @@ import { manifestSigned } from './pluspack.mjs';
 import { writeFileAtomic, httpError } from './fsutil.mjs';
 import { accountsBase } from './accounts/contract.mjs';
 
-// launch/: the 3D launch looks' still and loop (your-colours, gold, holo, clear-shell-<colour> – the twicable+ page's launch
+// launch/: the 3D launch looks' still and loop (your-colours, gold, holo, clear-shell-<colour> – the twincable+ page's launch
 // cards, views/launchlooks.mjs); an older pack's 2D launch pictures there are simply never asked for
 export const PREVIEWS_PATH_RE = /^(banners|nameplates|frames|launch|skins|stickers|wraps)\/[a-z0-9][a-z0-9-]{0,47}\.(png|webp)$/;
 export const PREVIEW_FILE_MAX = 512 * 1024;
@@ -31,7 +31,7 @@ const sha = (b) => createHash('sha256').update(b).digest('hex');
  */
 export function readPreviewsManifest(manifestB64, signatureB64, devKey = null) {
   if (typeof manifestB64 !== 'string' || typeof signatureB64 !== 'string' || manifestB64.length > MANIFEST_MAX * 1.4) throw httpError(502, 'Bad previews', 'plusPreviews');
-  if (!manifestSigned(manifestB64, signatureB64, devKey)) throw httpError(502, 'The previews are not signed by twicable', 'plusPreviews');
+  if (!manifestSigned(manifestB64, signatureB64, devKey)) throw httpError(502, 'The previews are not signed by twincable', 'plusPreviews');
   let m;
   try {
     m = JSON.parse(Buffer.from(manifestB64, 'base64url').toString('utf8'));
@@ -100,7 +100,7 @@ export function createPlusPreviews({ dir, devDir = process.env.SLS_PLUS_DEV_PACK
         mem = p;
         return p;
       }, (e) => {
-        if (e?.status !== 502 || !/unavailable/i.test(e.message)) console.warn('twicable+ previews:', e?.message || e);
+        if (e?.status !== 502 || !/unavailable/i.test(e.message)) console.warn('twincable+ previews:', e?.message || e);
         // offline: the last verified manifest on disk (checked again), if any
         if (!mem && existsSync(metaFile)) {
           try {

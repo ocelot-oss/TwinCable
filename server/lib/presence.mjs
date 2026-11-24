@@ -1,4 +1,4 @@
-// "Playing now": the anonymous heartbeat behind the twicable Discord's "🎮 Playing now: N" (docs/PRIVACY.md).
+// "Playing now": the anonymous heartbeat behind the twincable Discord's "🎮 Playing now: N" (docs/PRIVACY.md).
 //
 // Only while a game runs (the page reports it, web/lib/presence.mjs) and only when Settings › General › "Count me in"
 // is on (config.presence !== false), the local server sends the bot one small JSON every minute:
@@ -9,7 +9,7 @@
 // no game title, no run data, no ROM, no file path. When the bot can't be reached nothing happens (no retries, no
 // error, no log line) – the next heartbeat simply tries again.
 import { randomBytes } from 'node:crypto';
-import { liveBases, twicableVersion } from './liveruns.mjs';
+import { liveBases, twincableVersion } from './liveruns.mjs';
 
 export const SYSTEMS = { gb: 'gb', gbc: 'gb', gba: 'gba', nds: 'nds', '3ds': '3ds' };
 export const MODES = ['solo', 'nuzlocke', 'soullink', 'together'];
@@ -19,7 +19,7 @@ const QUIET_MS = 3 * 60_000; // no word from the page this long (crashed, closed
 const TIMEOUT_MS = 8000;
 
 /**
- * The page's report → { system, mode } or null (not a game twicable counts). A Play together game is counted as
+ * The page's report → { system, mode } or null (not a game twincable counts). A Play together game is counted as
  * 'together' (the bot takes it since 19 Nov 2026).
  */
 export function presenceOf(body) {
@@ -32,7 +32,7 @@ export function presenceOf(body) {
  * One per local server. `enabled()` reads the setting at every call, so switching it off takes effect at once.
  * fetchImpl / env / now / timers are for the tests.
  */
-export function createPresence({ enabled = () => true, fetchImpl = fetch, env = process.env, version = twicableVersion, now = Date.now, timers = globalThis } = {}) {
+export function createPresence({ enabled = () => true, fetchImpl = fetch, env = process.env, version = twincableVersion, now = Date.now, timers = globalThis } = {}) {
   let sid = null; // the running game's id while the bot knows about it
   let lastKey = '';
   let lastSent = 0;

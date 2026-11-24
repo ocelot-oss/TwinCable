@@ -1,5 +1,5 @@
 // Round-2 layers: abstract fields (gradients, heatmaps, plasma, contours), paper and ink, circuit traces, segment
-// readouts, LED bars, the twicable wordmark and rings, CRT scanlines, LCD grids, the SoulLink thread, passing
+// readouts, LED bars, the twincable wordmark and rings, CRT scanlines, LCD grids, the SoulLink thread, passing
 // sprites, tall grass, electric arcs, an arena, plain rects. Same rules as everything else: palette indices only,
 // ordered dither only, every motion periodic in the loop.
 import { H, PAD, T, layer, put, od, h1, h2, noise1, fbm2 } from './core.mjs';
@@ -133,7 +133,7 @@ layer('ledbar', (ctx, p) => {
   } };
 });
 
-// ------------------------------------------------------------------ the twicable wordmark and ring mark
+// ------------------------------------------------------------------ the twincable wordmark and ring mark
 // wordmark {size:'L'|'S', x (centre), y (top), c, shadow, scroll: true (drops in during the intro, 16 steps), cursor:{c, period}}
 layer('wordmark', (ctx, p) => {
   const art = p.size === 'S' ? WORD_S : WORD_L; const w = art[0].length, h = art.length; const c = ctx.c(p.c), sh = p.shadow != null ? ctx.c(p.shadow) : null; const d = p.size === 'S' ? 1 : 2;

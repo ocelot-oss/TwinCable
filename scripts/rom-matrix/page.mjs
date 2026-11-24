@@ -1,4 +1,4 @@
-// Runs inside twicable's player page (web/player.html) for scripts/rom-matrix/live.mjs: presses buttons frame by frame
+// Runs inside twincable's player page (web/player.html) for scripts/rom-matrix/live.mjs: presses buttons frame by frame
 // following a plan, and reads team, place and battle with the app's own live readers. Exported as source text.
 /* global window, MouseEvent, location */
 

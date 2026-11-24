@@ -54,7 +54,7 @@
 // track at its normal speed and pitch, its own loop, the next track crossfaded in when the game starts one. When
 // fast-forward ends it jumps to where the game is now and crossfades back into the game's own sound. The game's sound
 // effects go on over it: the core leaves the voices that play the music out of its fast-forward sound ({ type: 'sfx' },
-// native/azahar-patch/twicable-sfx.patch) and says where each new sound begins – each one plays at its normal speed and
+// native/azahar-patch/twincable-sfx.patch) and says where each new sound begins – each one plays at its normal speed and
 // pitch the moment it happens, never piling up (sfxplayer.mjs). Without it
 // (another system, an unpatched core, a game whose music isn't a stream file) everything below applies.
 //
@@ -373,7 +373,7 @@ export class TurboMixer {
     this.k.tquiet = S(0.25); // …but never shorter than this in real time: a stutter of the emulator isn't a song change
     this.k.tgrace = S(0.8); // after switching to fast-forward OpenAL hiccups (a gap, then sped-up sound): not judged
     // After a speed command the sound is not yet at the new speed: OpenAL still plays ~60 ms made at the old one, and
-    // RetroArch's speed-up of the sound follows the new pace over a few frames (until twicable 2.1 a step change even
+    // RetroArch's speed-up of the sound follows the new pace over a few frames (until twincable 2.1 a step change even
     // switched fast-forward off for ~70 ms). Slowed down by the new ratio that would come out at the wrong pitch (a 1×
     // stretch at 3× sounds an octave and a fifth too low) – that stretch is not recorded.
     this.k.tskip = S(0.25);

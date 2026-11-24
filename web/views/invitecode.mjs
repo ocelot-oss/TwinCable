@@ -71,18 +71,18 @@ const mmss = (ms) => {
 /**
  * A run that older apps can't join (its pack names the version it needs – shared/runpack.mjs: another shiny rate, TM
  * compatibility that follows the TM moves): said where the invite is handed out, so nobody waits for a friend whose
- * twicable refuses the invite.
+ * twincable refuses the invite.
  */
 export function PackVersionNote({ manifest }) {
   const version = manifest?.pack?.minVersion;
   if (!version) return null;
   return html`<p class="warning info">${manifest.mode === 'together'
-    ? t('invite.needsVersionTogether', 'Play together is new in twicable {version}: everyone needs {version} or newer. A friend on an older version is told to update when they open the invite.', { version })
+    ? t('invite.needsVersionTogether', 'Play together is new in twincable {version}: everyone needs {version} or newer. A friend on an older version is told to update when they open the invite.', { version })
     : manifest.randomizer?.enabled !== false && manifest.randomizer?.values?.[TMS_FOLLOW_MOVES] === true
-    ? t('invite.needsVersionTms', 'In this run TM compatibility follows the new TM moves: everyone needs twicable {version} or newer to join. Older versions can’t open the invite.', { version })
+    ? t('invite.needsVersionTms', 'In this run TM compatibility follows the new TM moves: everyone needs twincable {version} or newer to join. Older versions can’t open the invite.', { version })
     : manifest.shiny
-    ? t('invite.needsVersionShiny', 'This run changes the shiny rate: everyone needs twicable {version} or newer to join. Older versions can’t open the invite.', { version })
-    : t('invite.needsVersion', 'Everyone needs twicable {version} or newer to join this run. Older versions can’t open the invite.', { version })}</p>`;
+    ? t('invite.needsVersionShiny', 'This run changes the shiny rate: everyone needs twincable {version} or newer to join. Older versions can’t open the invite.', { version })
+    : t('invite.needsVersion', 'Everyone needs twincable {version} or newer to join this run. Older versions can’t open the invite.', { version })}</p>`;
 }
 
 /** Host: "Invite with code" → big code, countdown, live status, Allow / Decline. */
@@ -181,12 +181,12 @@ function CodeRequest({ req, host }) {
   const allow = () => match && host.allow({ confirm: typed });
   return html`<div class="code-request" role="alert">
     <p><b>${t('code.request', '{name} wants to join – allow?', { name: who })}</b></p>
-    <label class="field confirm-field"><span>${t('code.confirmAsk', 'Ask {name} for the 4 digits their twicable shows and type them here:', { name: who })}</span>
+    <label class="field confirm-field"><span>${t('code.confirmAsk', 'Ask {name} for the 4 digits their twincable shows and type them here:', { name: who })}</span>
       <input type="text" class="confirm-code-input" inputmode="numeric" autocomplete="off" maxLength="4" placeholder="0000" value=${digits}
         aria-invalid=${typed && !match ? 'true' : 'false'}
         onInput=${(e) => setDigits(e.target.value.replace(/\D/g, '').slice(0, 4))}
         onKeyDown=${(e) => e.key === 'Enter' && allow()} /></label>
-    ${typed && !match && html`<p class="warning error small" role="alert">${t('code.confirmMismatch', 'These digits don’t match. Check them with {name} once more – if their twicable really shows these, somebody else is in between: decline.', { name: who })}</p>`}
+    ${typed && !match && html`<p class="warning error small" role="alert">${t('code.confirmMismatch', 'These digits don’t match. Check them with {name} once more – if their twincable really shows these, somebody else is in between: decline.', { name: who })}</p>`}
     <p class="small muted">${t('code.requestHint', 'Only allow it if you gave this person the code. They get the key to your run.')}</p>
     <div class="row"><button class="btn primary" disabled=${!match} title=${match ? '' : t('code.confirmFirst', 'Type the 4 digits first')} onClick=${allow}><${Icon} name="check" size=${14} />${t('code.allow', 'Allow')}</button>
       <button class="btn ghost" onClick=${() => host.decline()}>${t('code.decline', 'Decline')}</button></div>
@@ -196,17 +196,17 @@ function CodeRequest({ req, host }) {
 // The joining player doesn't know who invited them until the pack arrives: "the host", not a name.
 const joinErrors = () => ({
   format: t('code.errFormat', 'Enter the 6-digit code you were given.'),
-  'no-host': t('code.errNoHost', 'Nobody answered this code. Check the digits – whoever invited you must have it open in twicable, and a code is valid for 15 minutes.'),
+  'no-host': t('code.errNoHost', 'Nobody answered this code. Check the digits – whoever invited you must have it open in twincable, and a code is valid for 15 minutes.'),
   offline: t('code.errOffline', 'Can’t reach the relay servers. Check your internet connection.'),
   bad: t('code.errBad', 'The code didn’t match. Check the digits and try again.'),
-  newer: t('code.errNewer', 'This run needs a newer twicable. Update twicable, then ask for a new code.'),
+  newer: t('code.errNewer', 'This run needs a newer twincable. Update twincable, then ask for a new code.'),
   expired: t('code.errExpired', 'This code has expired. Ask for a new one.'),
   used: t('code.errUsed', 'This code was already used – every player needs their own. Ask for a new one.'),
   locked: t('code.errLocked', 'This code was blocked after too many attempts. Ask for a new one.'),
   conflict: t('code.errConflict', 'Someone else used this code at the same time, so it was cancelled to be safe. Ask for a new one.'),
   declined: t('code.errDeclined', 'The host declined the request.'),
   timeout: t('code.errTimeout', 'The host didn’t answer in time.'),
-  'host-gone': t('code.errHostGone', 'The host’s twicable stopped answering (closed or restarted). Ask for a new code.'),
+  'host-gone': t('code.errHostGone', 'The host’s twincable stopped answering (closed or restarted). Ask for a new code.'),
   unsupported: t('code.errUnsupported', 'This browser can’t use invite codes – use the invite file instead.'),
 });
 
@@ -214,7 +214,7 @@ const joinErrors = () => ({
  * Joining player: name + 6-digit code → onPack(run pack, { slot, taken, name }) once the host allowed it. slot: the
  * player the host suggests (first free one, or the one with this name) – null if unknown; taken: slots that
  * have somebody already. Both are hints for the "I am …" choice, which stays the joining player's.
- * A friend's invite (twicable account, lib/friendinvite.mjs) comes with its code: `invite` = { code, from, run } – the
+ * A friend's invite (twincable account, lib/friendinvite.mjs) comes with its code: `invite` = { code, from, run } – the
  * code field is left out and joining starts right away when the name is known.
  */
 export function JoinCode({ onPack, invite = null }) {
@@ -287,7 +287,7 @@ export function JoinCode({ onPack, invite = null }) {
         : phase === 'searching' ? t('code.searching', 'Looking for the host …') : t('code.connecting', 'Connecting …')}</span>
         <button class="btn small ghost" onClick=${() => job.current?.cancel()}>${t('common.cancel', 'Cancel')}</button></div>
       ${phase === 'waiting' && confirm && !invite && html`<p role="status"><span class="small">${t('code.confirmTellHost', 'Tell the host these 4 digits – they type them in to let you in:')}</span> <b class="confirm-code">${confirm}</b></p>`}
-      ${phase === 'waiting' && invite && html`<p class="small muted" role="status">${t('code.friendWait', '{name} gets a message in twicable and lets you in with one click.', { name: invite.from?.name || t('code.someone', 'Someone') })}</p>`}`
+      ${phase === 'waiting' && invite && html`<p class="small muted" role="status">${t('code.friendWait', '{name} gets a message in twincable and lets you in with one click.', { name: invite.from?.name || t('code.someone', 'Someone') })}</p>`}`
       : html`<div><button class="btn primary big" disabled=${!normalizeCode(code) || (invite && !name.trim())} onClick=${go}><${Icon} name="link" size=${16} />${invite ? t('code.joinFriend', 'Join') : t('code.join', 'Join with code')}</button></div>`}
   </div>`;
 }

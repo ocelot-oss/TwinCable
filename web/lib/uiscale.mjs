@@ -19,7 +19,7 @@ export function uiScaleKeys({ space = false } = {}) {
   return { bigger: base.replace(/0$/, '+'), smaller: base.replace(/0$/, '−'), reset: base };
 }
 
-/** Can twicable size its interface here (the desktop app)? */
+/** Can twincable size its interface here (the desktop app)? */
 export const uiScaleNative = () => typeof window !== 'undefined' && typeof window.sls?.uiScale === 'function';
 
 let state = { chosen: 1, applied: 1, fit: 1.75, display: null, win: null };

@@ -1,4 +1,4 @@
-// Shared World: every sprite twicable draws walks like the game's own – a partner (shared/world.mjs Track), their
+// Shared World: every sprite twincable draws walks like the game's own – a partner (shared/world.mjs Track), their
 // follower and yours (Follower), on the pictures' own clock (PictureClock). Fed with player paths recorded in a real
 // game (test/fixtures/worldmotion: Emerald, the camera that follows the player at every game picture), measured with
 // the same metrics as world-e2e --smooth (scripts/world-motion.mjs).

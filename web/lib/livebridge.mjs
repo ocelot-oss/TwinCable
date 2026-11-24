@@ -7,7 +7,7 @@ export const REJECTED_FRESH = 2 * 60 * 1000;
  * One of: 'live' (data is coming in), 'noPort' (the bridge couldn't start), 'unsupported' (connected, but no live
  * data for that game), 'connected' (script connected, no game data yet), 'rejected' (a script from another install
  * or an outdated one tried to connect), 'waiting' (no script connected). `outdated`: the connected script is older
- * than the one twicable writes now.
+ * than the one twincable writes now.
  */
 export function bridgeState(live, { fresh = false, now = Date.now() } = {}) {
   const conn = live?.connection || null;

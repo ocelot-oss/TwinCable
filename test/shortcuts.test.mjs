@@ -81,7 +81,7 @@ test('EmulatorJS and RetroArch keep no hotkeys of their own: only the 12 game bu
   const html = read('web/player.html');
   // EmulatorJS' extras (index 12 and up: L2/R2, the sticks, its hotkeys 24–29 on 1/2/3 …) are dropped once it runs
   assert.match(html, /for \(const n of Object\.keys\(p\)\) if \(Number\(n\) >= 12\) delete p\[n\];/);
-  // the table twicable hands it: the 12 game buttons (RetroArch joypad 0–11), nothing else
+  // the table twincable hands it: the 12 game buttons (RetroArch joypad 0–11), nothing else
   const t = ejsControls(null)[0];
   // (the 3DS half tilt is no joypad button – EmulatorJS never gets it)
   assert.deepEqual(Object.keys(t).map(Number).sort((a, b) => a - b), BUTTONS.filter((b) => b.ejs !== undefined).map((b) => b.ejs).sort((a, b) => a - b));

@@ -154,7 +154,7 @@ test('added: several files are counted ("2 games and 1 patch added"), unusable f
   assert.equal(msg.title, '2 games and 1 patch added');
   assert.match(msg.text, /Emerald Crest 2 \(patch\)/);
   assert.match(msg.text, /Already in your library: Pokémon Emerald/);
-  assert.match(msg.text, /1 file has no game or patch twicable can use\./);
+  assert.match(msg.text, /1 file has no game or patch twincable can use\./);
   const none = addedToLibrary(before, before, [`${LIB}/notes.zip`]);
   assert.deepEqual([addedMessage(none, cat).kind, addedMessage(none, cat).title], ['warn', 'Nothing added']);
 });

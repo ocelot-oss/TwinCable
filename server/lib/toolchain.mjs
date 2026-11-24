@@ -37,10 +37,10 @@ export const CTR_TIMEOUT_MS = 30 * 60 * 1000;
 
 /**
  * JVM options of one bridge call. `ctr`: a 3DS game – the larger heap. `workDir`: UPR's working folder (the patched
- * SysConstants in tools/upr-bridge reads -Dtwicable.upr.root; without it UPR writes next to its jar, inside the app).
+ * SysConstants in tools/upr-bridge reads -Dtwincable.upr.root; without it UPR writes next to its jar, inside the app).
  */
 export function javaOptsFor({ ctr = false, workDir = null } = {}) {
-  const root = workDir ? [`-Dtwicable.upr.root=${workDir}`] : [];
+  const root = workDir ? [`-Dtwincable.upr.root=${workDir}`] : [];
   if (!ctr) return [...JAVA_OPTS, ...root];
   return [CTR_HEAP, ...JAVA_OPTS.filter((o) => !o.startsWith('-Xmx')), ...root];
 }
@@ -288,7 +288,7 @@ export function randomizerError(e, { statfs = statfsSync } = {}) {
     const file = { game: 'the game file', output: 'the new game in the run folder', work: 'the randomizer’s working files' }[io.where] || 'a file';
     const text = {
       randoNoSpace: [507, `The disk ran full while the randomizer was writing ${file} (${io.error})`],
-      randoNoAccess: [403, `twicable isn’t allowed to use ${file} (${io.error})`],
+      randoNoAccess: [403, `twincable isn’t allowed to use ${file} (${io.error})`],
       randoReadFailed: [422, `The game file couldn’t be read completely (${io.error})`],
       randoIoFailed: [422, `The randomizer stopped at a file error: ${io.error} (${file})`],
     }[io.code];
@@ -476,7 +476,7 @@ export function runBridge(args, { timeoutMs, ctr = false, onLine = null, spawnFn
   const java = detectJava();
   if (!java.ok && java.crashed) return Promise.reject(httpError(409, 'Java crashes on this computer (on a Mac usually because System Integrity Protection is turned off).', 'javaCrash'));
   if (!java.ok) return Promise.reject(httpError(409, 'Java 8+ wasn’t found. Install Java (e.g. Temurin 21 from adoptium.net).', 'javaMissing'));
-  if (!existsSync(UPR_JAR)) return Promise.reject(httpError(409, 'Universal Pokemon Randomizer ZX is missing – reinstall twicable, or play without the randomizer.', 'uprMissing'));
+  if (!existsSync(UPR_JAR)) return Promise.reject(httpError(409, 'Universal Pokemon Randomizer ZX is missing – reinstall twincable, or play without the randomizer.', 'uprMissing'));
   const limit = timeoutMs ?? (ctr ? CTR_TIMEOUT_MS : 180000);
   // every run's own folder for the game files UPR unpacks (a 3DS game: hundreds of MB) – never inside the app, never
   // shared: two runs on the same game (the wizard's check while a build runs) took each other's files away

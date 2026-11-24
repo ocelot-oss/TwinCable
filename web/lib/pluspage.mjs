@@ -1,12 +1,12 @@
-// The twicable+ page's data (web/views/plus.mjs): who is looking (signed out, free, a Supporter, a twicable+ member, a
+// The twincable+ page's data (web/views/plus.mjs): who is looking (signed out, free, a Supporter, a twincable+ member, a
 // Legend), the three tiers with the owner's prices, and the handful of items the page shows – the strongest of each
 // kind, never the whole catalog. Pure, so test/pluspage.test.mjs checks it without a page.
 //
-// The prices are what the owner set on Buy Me a Coffee (PLUS_SPEC.md: tier 1 Supporter, tier 2 twicable+ 5 €, tier 3
+// The prices are what the owner set on Buy Me a Coffee (PLUS_SPEC.md: tier 1 Supporter, tier 2 twincable+ 5 €, tier 3
 // Legend 10 €). Which BMC level gives which tier is the accounts service's config – the app never decides a tier from
 // these numbers, it only shows them.
 
-/** API.md §8.0: plus and patron are twicable+; supporter is the badge only. */
+/** API.md §8.0: plus and patron are twincable+; supporter is the badge only. */
 export const TIERS = [
   { id: 'supporter', price: 3 },
   { id: 'plus', price: 5, main: true },
@@ -21,19 +21,19 @@ export const CURATED = {
   nameplates: ['night-train', 'cherry-orchard'],
 };
 
-/** What the viewer wears on the hero card when they have no twicable+ look of their own yet. */
+/** What the viewer wears on the hero card when they have no twincable+ look of their own yet. */
 export const HERO_LOOK = { banner: 'night-train', frame: 'brass-ring', nameplate: 'night-train' };
 
 /**
  * Who is looking – the page has one version per state:
  *   'signedOut'                        the hero names nobody, a neutral placeholder wears the look
  *   'free'                             signed in, no membership
- *   'supporter'                        tier 1: thanked, twicable+ still offered (the looks are tier 2)
- *   'member' | 'patron'                twicable+: the thank-you version, everything marked "Yours"
- *   'trial'                            twicable+ from the 7-day trial alone (API.md §8.6): the looks are theirs, nobody is
+ *   'supporter'                        tier 1: thanked, twincable+ still offered (the looks are tier 2)
+ *   'member' | 'patron'                twincable+: the thank-you version, everything marked "Yours"
+ *   'trial'                            twincable+ from the 7-day trial alone (API.md §8.6): the looks are theirs, nobody is
  *                                      thanked for paying, the end date and the membership are shown
  * `trial` (when the service sent one): { state: available | running | used | unavailable, until, reason, only } – the page
- * offers "Try twicable+ free for 7 days" only while it is 'available'.
+ * offers "Try twincable+ free for 7 days" only while it is 'available'.
  * `acct`: the account store (lib/account.mjs useAccount()).
  */
 export function plusState(acct) {
@@ -46,18 +46,18 @@ export function plusState(acct) {
   return { kind, tier, name: me.name || '', until: me.entitlement?.until ?? null, ...(trial ? { trial } : {}) };
 }
 
-/** twicable+ (all the looks) for this state? */
+/** twincable+ (all the looks) for this state? */
 export const hasPlusLooks = (state) => state.kind === 'member' || state.kind === 'patron' || state.kind === 'trial';
 /** A member of any tier – they are thanked (the rail says "thank you" too). A trial is not a membership. */
 export const isMember = (state) => state.kind === 'supporter' || state.kind === 'member' || state.kind === 'patron';
-/** "Try twicable+ free for 7 days" – only while the service says this account may start it. */
+/** "Try twincable+ free for 7 days" – only while the service says this account may start it. */
 export const trialOffered = (state) => state.trial?.state === 'available' && (state.kind === 'free' || state.kind === 'supporter');
-/** Thanked in the rail: a tier from a membership, grant or role – not twicable+ from the trial alone. */
+/** Thanked in the rail: a tier from a membership, grant or role – not twincable+ from the trial alone. */
 export const thankedFor = (entitlement) => (entitlement?.tier || 'none') !== 'none' && !(entitlement?.trial?.only && entitlement.trial.state === 'running');
 
 /**
  * The hero card's look: a member's own banner / frame / nameplate where they picked one, the page's pick everywhere
- * else (so everyone sees what twicable+ looks like on them).
+ * else (so everyone sees what twincable+ looks like on them).
  */
 export function heroLook(me, state) {
   const own = hasPlusLooks(state) && me ? me : {};
@@ -82,18 +82,18 @@ export function curatedFrom(cat) {
   };
 }
 
-/** How many twicable+ items of each kind there are in all (monthly drops count once they're out). */
+/** How many twincable+ items of each kind there are in all (monthly drops count once they're out). */
 export function plusCounts(cat) {
   const n = (list) => (list || []).filter((x) => x.plus && !x.drop).length;
   return { skins: n(cat?.skins), banners: n(cat?.banners), frames: n(cat?.frames) };
 }
 
-/** Every twicable+ colour theme, the dark ones first – the page's swatch strip (colours only, never an edition). */
+/** Every twincable+ colour theme, the dark ones first – the page's swatch strip (colours only, never an edition). */
 export const plusSkins = (cat) => [...(cat?.skins || []).filter((s) => s.plus && !s.drop)].sort((a, b) => (a.group === 'light') - (b.group === 'light'));
 
 /**
- * The look the theme preview wears: the twicable+ banner (also as the nameplate) and frame made to go with that theme
- * (the catalog's pairsWith), else the hero's look – real pack items, so the preview shows what twicable+ is.
+ * The look the theme preview wears: the twincable+ banner (also as the nameplate) and frame made to go with that theme
+ * (the catalog's pairsWith), else the hero's look – real pack items, so the preview shows what twincable+ is.
  */
 export function themeLook(cat, skinId) {
   // the item made most for this theme: the one paired with the fewest others

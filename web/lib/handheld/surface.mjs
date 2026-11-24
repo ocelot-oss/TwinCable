@@ -8,8 +8,8 @@
 // speaker holes, slot, hinge) as rounded boxes – a signed distance, so its edge is crisp at any zoom and catches the
 // light like a 0.1 mm film edge. Stickers are a distance field too (the die-cut line round the pixel art).
 //
-// Vinyl is the free finish and the only one drawn here. The twicable+ finishes (holo film, glitter) are a few lines of
-// fragment code and two numbers that come with the twicable+ pack (handheld/looks.json › finishes, checked by looks.mjs);
+// Vinyl is the free finish and the only one drawn here. The twincable+ finishes (holo film, glitter) are a few lines of
+// fragment code and two numbers that come with the twincable+ pack (handheld/looks.json › finishes, checked by looks.mjs);
 // without them a holo or glitter sticker is drawn as vinyl (scene.mjs sets its finish index from the same data).
 
 export const NCUT = 28;
@@ -166,8 +166,8 @@ const OPAQUE_BASE = /* glsl */ `
 
 /** The finishes' fragment code (from the pack) in its place; nothing without them. */
 export function opaqueChunk(finishes = null) {
-  const holo = finishes?.holo?.glsl ? `if (hh_holo > 0.001) { // holographic film (twicable+ pack)\n${finishes.holo.glsl}\n    }` : '';
-  const glit = finishes?.glitter?.glsl ? `if (hh_glit > 0.001) { // glitter (twicable+ pack)\n${finishes.glitter.glsl}\n    }` : '';
+  const holo = finishes?.holo?.glsl ? `if (hh_holo > 0.001) { // holographic film (twincable+ pack)\n${finishes.holo.glsl}\n    }` : '';
+  const glit = finishes?.glitter?.glsl ? `if (hh_glit > 0.001) { // glitter (twincable+ pack)\n${finishes.glitter.glsl}\n    }` : '';
   return OPAQUE_BASE.replace('__FINISHES__', `${holo}\n    ${glit}`);
 }
 

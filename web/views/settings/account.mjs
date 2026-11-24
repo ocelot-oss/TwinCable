@@ -1,6 +1,6 @@
-// Settings › Account: the twicable account. Signed out – what it is for and "Sign in with Discord" (nothing else in the
+// Settings › Account: the twincable account. Signed out – what it is for and "Sign in with Discord" (nothing else in the
 // app needs it). Signed in – who you are (Discord name and picture, handle, friend code), privacy and presence, the
-// opt-in for showing your runs, twicable+ and linking a membership, your data (export, delete) and signing out.
+// opt-in for showing your runs, twincable+ and linking a membership, your data (export, delete) and signing out.
 import { html, useState, useEffect } from '/vendor/htm-preact.mjs';
 import { t, ago } from '../../lib/i18n.mjs';
 import { Icon } from '../../lib/icons.mjs';
@@ -16,7 +16,7 @@ import { Avatar, Badges, CodeChip } from '../social.mjs';
 import { Item, Group, Check } from './parts.mjs';
 import { PlusShowcase } from './cosmetics.mjs';
 
-const tierName = (tier) => ({ plus: 'twicable+', patron: t('acct.patronTier', 'twicable+ · Legend'), supporter: t('acct.supporter', 'Supporter') }[tier] || t('acct.tierNone', 'No membership'));
+const tierName = (tier) => ({ plus: 'twincable+', patron: t('acct.patronTier', 'twincable+ · Legend'), supporter: t('acct.supporter', 'Supporter') }[tier] || t('acct.tierNone', 'No membership'));
 const dateOf = (ms) => (ms ? new Date(ms).toLocaleDateString(document.documentElement.lang || undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '');
 
 function SignedOut({ acct, toast }) {
@@ -33,21 +33,21 @@ function SignedOut({ acct, toast }) {
   };
   return html`
         <div class="acct-intro stack">
-          <p>${t('acct.intro', 'An account is optional. Everything in twicable works without one – signing in only adds the social side:')}</p>
+          <p>${t('acct.intro', 'An account is optional. Everything in twincable works without one – signing in only adds the social side:')}</p>
           <ul class="acct-gets">
             <li><${Icon} name="user" size=${14} /><span>${t('acct.getProfile', 'A profile with your title, trophies and – if you like – your runs')}</span></li>
             <li><${Icon} name="heart" size=${14} /><span>${t('acct.getFriends', 'Friends: see who is online and what they play')}</span></li>
             <li><${Icon} name="link" size=${14} /><span>${t('acct.getInvites', 'Invite friends into a SoulLink with one click – no code to read out')}</span></li>
-            <li><${Icon} name="star" size=${14} /><span>${t('acct.getPlus', 'twicable+ looks for your profile if you support twicable')}</span></li>
+            <li><${Icon} name="star" size=${14} /><span>${t('acct.getPlus', 'twincable+ looks for your profile if you support twincable')}</span></li>
           </ul>
           ${s.condition === 'expired' && html`<p class="warning info" role="status">${t('acct.expired', 'You were signed out – the session ended on another device or was signed out everywhere. Sign in again to continue.')}</p>`}
-          ${s.condition === 'unreadable' && html`<p class="warning info" role="status">${t('acct.unreadable', 'twicable couldn’t read your saved sign-in – sign in again. Your runs and settings are fine.')}</p>`}
-          ${!s.persistent && html`<p class="small muted">${t('acct.noKeychain', 'This computer has no keychain twicable can use, so you would stay signed in only until you close the app – twicable never keeps your sign-in in a plain file.')}</p>`}
+          ${s.condition === 'unreadable' && html`<p class="warning info" role="status">${t('acct.unreadable', 'twincable couldn’t read your saved sign-in – sign in again. Your runs and settings are fine.')}</p>`}
+          ${!s.persistent && html`<p class="small muted">${t('acct.noKeychain', 'This computer has no keychain twincable can use, so you would stay signed in only until you close the app – twincable never keeps your sign-in in a plain file.')}</p>`}
           ${s.pending ? html`<div class="row"><span class="small">${t('acct.pending', 'Finish signing in in your browser …')}</span>
               <button class="btn small ghost" onClick=${() => cancelSignIn()}>${t('common.cancel', 'Cancel')}</button>
               <button class="btn small ghost" onClick=${go}>${t('acct.openAgain', 'Open the browser again')}</button></div>`
             : html`<div><button class="btn primary big acct-discord" disabled=${busy} onClick=${go}><${Icon} name="discord" size=${16} />${t('acct.signIn', 'Sign in with Discord')}</button></div>`}
-          <p class="small muted">${t('acct.signInNote', 'Opens your browser. twicable only gets your Discord name and picture – no email, no servers, no messages. You never type your Discord password into twicable.')}</p>
+          <p class="small muted">${t('acct.signInNote', 'Opens your browser. twincable only gets your Discord name and picture – no email, no servers, no messages. You never type your Discord password into twincable.')}</p>
         </div>`;
 }
 
@@ -59,14 +59,14 @@ function DeleteModal({ me, onClose, toast }) {
     setBusy(true);
     try {
       await deleteAccount(me.handle);
-      toast({ kind: 'ok', title: t('acct.deleted', 'Your twicable account is deleted'), text: t('acct.deletedText', 'Your profile, friends and invites are gone. Your runs on this computer stay.') });
+      toast({ kind: 'ok', title: t('acct.deleted', 'Your twincable account is deleted'), text: t('acct.deletedText', 'Your profile, friends and invites are gone. Your runs on this computer stay.') });
       onClose();
     } catch (e) {
       toast({ kind: 'death', title: t('acct.deleteFailed', 'Couldn’t delete the account'), text: e.message });
     }
     setBusy(false);
   };
-  return html`<${Modal} open onClose=${onClose} title=${t('acct.deleteTitle', 'Delete your twicable account?')}
+  return html`<${Modal} open onClose=${onClose} title=${t('acct.deleteTitle', 'Delete your twincable account?')}
     footer=${html`<button class="btn ghost" onClick=${onClose}>${t('common.cancel', 'Cancel')}</button>
       <button class="btn danger" disabled=${!ok || busy} onClick=${go}>${t('acct.deleteNow', 'Delete account')}</button>`}>
     <div class="stack">
@@ -118,7 +118,7 @@ function UnlinkModal({ tier, onClose, toast }) {
       <button class="btn danger" disabled=${busy} onClick=${go}>${t('acct.unlinkNow', 'Unlink membership')}</button>`}>
     <div class="stack">
       <ul class="acct-gets">
-        <li><${Icon} name="close" size=${14} /><span>${isPlus(tier) ? t('acct.unlinkPlus', 'twicable+ ends for this account on every device: your profile goes back to the free banners and frames, the twicable+ look on this computer is deleted.')
+        <li><${Icon} name="close" size=${14} /><span>${isPlus(tier) ? t('acct.unlinkPlus', 'twincable+ ends for this account on every device: your profile goes back to the free banners and frames, the twincable+ look on this computer is deleted.')
           : t('acct.unlinkSupporter', 'The Supporter badge goes away from this account on every device.')}</span></li>
         <li><${Icon} name="clock" size=${14} /><span>${t('acct.unlinkCooldown', 'The membership’s email can be linked again – to this or another account – only 30 days after it was linked, and at least 7 days from now.')}</span></li>
         <li><${Icon} name="coffee" size=${14} /><span>${t('acct.unlinkPayment', 'Your membership on Buy Me a Coffee keeps running – cancel it there if you want to stop paying.')}</span></li>
@@ -129,7 +129,7 @@ function UnlinkModal({ tier, onClose, toast }) {
 
 function PlusGroup({ me, toast }) {
   const ent = me.entitlement || { tier: 'none', badges: [] };
-  // twicable+ from the 7-day trial alone (§8.6): its end, the membership to keep it – no "thank you", nothing to unlink
+  // twincable+ from the 7-day trial alone (§8.6): its end, the membership to keep it – no "thank you", nothing to unlink
   const onlyTrial = ent.tier === 'plus' && ent.trial?.state === 'running' && ent.trial.only === true;
   const [unlink, setUnlink] = useState(false);
   const [email, setEmail] = useState('');
@@ -163,10 +163,10 @@ function PlusGroup({ me, toast }) {
           ${onlyTrial ? html`<span class="small muted">${t('plus.trialEnds', 'Trial · ends {date}', { date: dateOf(ent.trial.until || ent.until) })}</span>`
             : ent.until && html`<span class="small muted">${t('acct.until', 'until {date}', { date: dateOf(ent.until) })}</span>`}<${Badges} badges=${ent.badges} /></div>
         ${onlyTrial && html`<div class="row"><button class="btn small go" onClick=${() => openExternal(LINKS.membership)}><${Icon} name="external" size=${14} />${t('plus.trialKeep', 'Keep it on Buy Me a Coffee')}</button></div>`}
-        <p class="small muted">${onlyTrial ? t('acct.trialText', 'Your twicable+ banners, frames and nameplates are in the profile editor. When the trial ends nothing renews – twicable goes back to its free looks and your picks wait for you.')
-          : isPlus(ent.tier) ? t('acct.plusThanks', 'Thank you for supporting twicable! Your twicable+ banners, frames and nameplates are in the profile editor.')
-          : t('acct.plusText2', 'twicable stays free. If you support it on Buy Me a Coffee, twicable+ adds banners, frames and nameplates for your profile, the colour themes and everything for your handheld. Supporter gets a badge and the 3D launch with your own handheld.')}</p>
-        ${!isPlus(ent.tier) && html`<div class="row"><a class="btn small go" href="#/plus"><${Icon} name="plus" size=${12} />${t('acct.seePlus', 'See twicable+')}</a>
+        <p class="small muted">${onlyTrial ? t('acct.trialText', 'Your twincable+ banners, frames and nameplates are in the profile editor. When the trial ends nothing renews – twincable goes back to its free looks and your picks wait for you.')
+          : isPlus(ent.tier) ? t('acct.plusThanks', 'Thank you for supporting twincable! Your twincable+ banners, frames and nameplates are in the profile editor.')
+          : t('acct.plusText2', 'twincable stays free. If you support it on Buy Me a Coffee, twincable+ adds banners, frames and nameplates for your profile, the colour themes and everything for your handheld. Supporter gets a badge and the 3D launch with your own handheld.')}</p>
+        ${!isPlus(ent.tier) && html`<div class="row"><a class="btn small go" href="#/plus"><${Icon} name="plus" size=${12} />${t('acct.seePlus', 'See twincable+')}</a>
           <button class="btn small ghost" onClick=${() => openExternal(LINKS.coffee)}><${Icon} name="coffee" size=${14} />${t('acct.toCoffee', 'Buy Me a Coffee')}</button></div>`}
         ${!isPlus(ent.tier) && html`<${PlusShowcase} />`}
         ${ent.tier !== 'none' && !onlyTrial && html`<div class="row"><button class="btn small ghost" onClick=${() => setUnlink(true)}>${t('acct.unlink', 'Unlink membership …')}</button>
@@ -179,11 +179,11 @@ function PlusGroup({ me, toast }) {
               <div class="row nowrap"><input type="email" class="grow" value=${email} autocomplete="email" spellcheck="false" onInput=${(e) => setEmail(e.target.value)}
                 onKeyDown=${(e) => e.key === 'Enter' && email.includes('@') && link()} />
               <button class="btn" disabled=${busy || !email.includes('@')} onClick=${link}>${t('acct.link', 'Link')}</button></div>
-              <span class="hint">${t('acct.linkHint', 'twicable sends nothing to this address – the service only compares it with the membership. It isn’t stored.')}</span></label>
+              <span class="hint">${t('acct.linkHint', 'twincable sends nothing to this address – the service only compares it with the membership. It isn’t stored.')}</span></label>
             ${result === 'linked' && html`<p class="note small" role="status">${t('acct.linked', 'Linked – thank you!')}</p>`}
-            ${result === 'nomatch' && html`<p class="warning info small" role="status">${t('acct.noMatchClaim', 'No membership found for this email. Check the spelling – it’s the address Buy Me a Coffee has – or use /supporter claim in the twicable Discord, or contact support.')}</p>`}
-            ${result === 'locked' && html`<p class="warning info small" role="status">${t('acct.linkLocked', 'Too many tries – linking by email is paused for a while. /supporter claim in the twicable Discord works any time.')}</p>`}
-            <div class="row"><span class="small muted grow">${t('acct.discordClaim', 'Already claimed with /supporter claim in the twicable Discord? That links it too.')}</span>
+            ${result === 'nomatch' && html`<p class="warning info small" role="status">${t('acct.noMatchClaim', 'No membership found for this email. Check the spelling – it’s the address Buy Me a Coffee has – or use /supporter claim in the twincable Discord, or contact support.')}</p>`}
+            ${result === 'locked' && html`<p class="warning info small" role="status">${t('acct.linkLocked', 'Too many tries – linking by email is paused for a while. /supporter claim in the twincable Discord works any time.')}</p>`}
+            <div class="row"><span class="small muted grow">${t('acct.discordClaim', 'Already claimed with /supporter claim in the twincable Discord? That links it too.')}</span>
               <button class="btn small ghost" onClick=${check}>${t('acct.claimedDiscord', 'I already claimed on Discord')}</button></div>
           </div></details>
       </div>`;
@@ -213,7 +213,7 @@ function Sessions({ toast }) {
     }
     setBusy(null);
   };
-  const name = (x) => (x.platform ? t('acct.devicePlatform', 'twicable on {platform}', { platform: PLATFORM[x.platform] }) : x.device || 'twicable');
+  const name = (x) => (x.platform ? t('acct.devicePlatform', 'twincable on {platform}', { platform: PLATFORM[x.platform] }) : x.device || 'twincable');
   return html`<div class="stack">
     <p class="small muted">${t('acct.devicesText', 'Everywhere you’re signed in to this account. Sign out a device you don’t use or don’t recognise.')}</p>
     ${failed && html`<p class="warning info small" role="status">${t('acct.devicesFailed', 'The list can’t be loaded right now.')}</p>`}
@@ -249,7 +249,7 @@ function useSignedIn(acct, toast) {
   };
   const doExport = async () => {
     try {
-      download('twicable-account-export.json', JSON.stringify(await exportData(), null, 2));
+      download('twincable-account-export.json', JSON.stringify(await exportData(), null, 2));
     } catch (e) {
       toast({ kind: 'death', title: t('acct.exportFailed', 'Couldn’t export your data'), text: e.message });
     }
@@ -265,9 +265,9 @@ function useSignedIn(acct, toast) {
             </div>
             <a class="btn small" href="#/profile">${t('acct.openProfile', 'Open profile')}</a>
           </div>
-          ${s.condition === 'offline' && html`<p class="warning info small" role="status">${t('acct.offline', 'The account service can’t be reached right now – showing what twicable knew last. Friends and invites come back once you’re online.')}</p>`}
-          ${s.condition === 'suspended' && html`<p class="warning small" role="status">${t('acct.suspended', 'This twicable account is suspended. Your runs on this computer work as always.')}</p>`}
-          ${!s.persistent && html`<p class="small muted">${t('acct.memoryOnly', 'This computer has no keychain twicable can use: you stay signed in until you close the app, then you sign in again. twicable never keeps your sign-in in a plain file.')}</p>`}
+          ${s.condition === 'offline' && html`<p class="warning info small" role="status">${t('acct.offline', 'The account service can’t be reached right now – showing what twincable knew last. Friends and invites come back once you’re online.')}</p>`}
+          ${s.condition === 'suspended' && html`<p class="warning small" role="status">${t('acct.suspended', 'This twincable account is suspended. Your runs on this computer work as always.')}</p>`}
+          ${!s.persistent && html`<p class="small muted">${t('acct.memoryOnly', 'This computer has no keychain twincable can use: you stay signed in until you close the app, then you sign in again. twincable never keeps your sign-in in a plain file.')}</p>`}
           ${me && html`<div class="grid-2">
             <${HandleField} me=${me} toast=${toast} />
             <div class="field"><span>${t('acct.friendCode', 'Friend code')}</span>
@@ -289,8 +289,8 @@ function useSignedIn(acct, toast) {
                 <option value="friends">${t('acct.presFriends', 'Yes – online, the game I play')}</option>
                 <option value="offline">${t('acct.presOffline', 'Appear offline')}</option>
                 <option value="nobody">${t('acct.presNobody', 'Hide me completely')}</option></select>
-              <span class="hint">${p.presence === 'friends' ? t('acct.presHint', 'While twicable runs: online, in the library, the game or run you play. Never your saves or where you are in a game unless you allow it below.')
-                : t('acct.presOffHint', 'twicable then sends nothing about what you do – you still get friend requests and invites.')}</span></label>
+              <span class="hint">${p.presence === 'friends' ? t('acct.presHint', 'While twincable runs: online, in the library, the game or run you play. Never your saves or where you are in a game unless you allow it below.')
+                : t('acct.presOffHint', 'twincable then sends nothing about what you do – you still get friend requests and invites.')}</span></label>
           </div>
           <${Check} checked=${p.showLocation} disabled=${p.presence !== 'friends'} onChange=${(v) => patch({ privacy: { showLocation: v } })}
             label=${t('acct.showLocation', 'Show friends where I am in the game')} hint=${t('acct.showLocationHint', 'The route or town your run is on, next to the game.')} />
@@ -299,7 +299,7 @@ function useSignedIn(acct, toast) {
             hint=${t('acct.showRunsHint', 'Uploads summary numbers only – runs, wins, catches, deaths, badges, play time and your last five runs by name and game. Never saves, ROMs or files. Turning it off deletes them from the service.')} />
           <${Check} checked=${p.showOnThanks === true} onChange=${(v) => patch({ privacy: { showOnThanks: v } })}
             label=${t('acct.showOnThanks', 'Show my name on the Thank you page')}
-            hint=${t('acct.showOnThanksHint', 'While you support twicable: your name, Discord picture, banner and frame, with your tier. Off unless you switch it on – you’re counted either way.')} />
+            hint=${t('acct.showOnThanksHint', 'While you support twincable: your name, Discord picture, banner and frame, with your tier. Off unless you switch it on – you’re counted either way.')} />
           <${Check} checked=${askJoin} disabled=${p.presence !== 'friends'} onChange=${(v) => { setAskToJoin(v); setAskJoinState(v); }}
             label=${t('acct.askToJoin', 'Friends may ask to join my SoulLink when a seat is free')}
             hint=${t('acct.askToJoinHint', 'They see “Ask to join” next to your run. You decide every time.')} />
@@ -310,7 +310,7 @@ function useSignedIn(acct, toast) {
         </div>`;
   const data = html`
         <div class="stack">
-          <p class="small muted">${t('acct.dataText', 'Download everything the twicable account service stores about you as a JSON file, or delete the account.')}</p>
+          <p class="small muted">${t('acct.dataText', 'Download everything the twincable account service stores about you as a JSON file, or delete the account.')}</p>
           <div class="row">
             <button class="btn small" disabled=${!me} onClick=${doExport}><${Icon} name="download" size=${14} />${t('acct.export', 'Export my data')}</button>
             <button class="btn small danger" disabled=${!me} onClick=${() => setDel(true)}>${t('acct.delete', 'Delete account …')}</button>
@@ -335,13 +335,13 @@ export function AccountSection({ toast }) {
   const on = acct.known && acct.session.signedIn;
   const parts = useSignedIn(acct, toast);
   return html`
-    <${Group} title=${t('acct.title', 'twicable account')}>
+    <${Group} title=${t('acct.title', 'twincable account')}>
       <${Item} id="account">${!acct.known ? html`<p class="muted small">${t('common.loading', 'Loading …')}</p>` : on ? parts.who : html`<${SignedOut} acct=${acct} toast=${toast} />`}<//>
     <//>
     ${on && parts.privacy && html`<${Group} title=${t('acct.privacy', 'Privacy')}><${Item} id="account-privacy">${parts.privacy}<//><//>`}
-    ${on && parts.plus && html`<${Group} title="twicable+"><${Item} id="plus">${parts.plus}<//><//>`}
-    ${acct.known && !on && html`<${Group} title="twicable+"><${Item} id="plus-show"><div class="stack">
-      <p class="small muted">${t('acct.plusText2', 'twicable stays free. If you support it on Buy Me a Coffee, twicable+ adds banners, frames and nameplates for your profile, the colour themes and everything for your handheld. Supporter gets a badge and the 3D launch with your own handheld.')}</p>
+    ${on && parts.plus && html`<${Group} title="twincable+"><${Item} id="plus">${parts.plus}<//><//>`}
+    ${acct.known && !on && html`<${Group} title="twincable+"><${Item} id="plus-show"><div class="stack">
+      <p class="small muted">${t('acct.plusText2', 'twincable stays free. If you support it on Buy Me a Coffee, twincable+ adds banners, frames and nameplates for your profile, the colour themes and everything for your handheld. Supporter gets a badge and the 3D launch with your own handheld.')}</p>
       <${PlusShowcase} /></div><//><//>`}
     ${on && html`<${Group} title=${t('acct.devices', 'Signed-in devices')}><${Item} id="account-sessions">${parts.sessions}<//><//>`}
     ${on && html`<${Group} title=${t('acct.dataTitle', 'Your data')}><${Item} id="account-data">${parts.data}<//><//>`}`;

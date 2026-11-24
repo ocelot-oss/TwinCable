@@ -34,7 +34,7 @@ export function safeExternalUrl(url) {
 }
 
 /**
- * The sign-in page of the twicable accounts service for shell.openExternal, or null: https without user info, or – for a
+ * The sign-in page of the twincable accounts service for shell.openExternal, or null: https without user info, or – for a
  * development service on this computer (SLS_ACCOUNTS_URL) – http on 127.0.0.1 / localhost / [::1]. Only the local
  * server's account module asks for this, with the address it built itself.
  */

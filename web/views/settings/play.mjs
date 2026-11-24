@@ -45,7 +45,7 @@ function TurboAudioSetting() {
         <option value="original">${t('play.turboAudioOriginal', 'Sped-up original')}</option>
         <option value="plain">${t('play.turboAudioPlain', 'Plain (no extra processing)')}</option>
       </select></label></div>
-    <span class="small faint">${t('play.turboAudioHint', 'What you hear while fast-forwarding. “Music continues” keeps the music at its normal speed and pitch – sound effects stay silent. Where twicable has no music of its own yet (a song not yet heard at normal speed), you hear the sped-up original. “Sped-up original” plays the game’s own sound, faster and higher.')}
+    <span class="small faint">${t('play.turboAudioHint', 'What you hear while fast-forwarding. “Music continues” keeps the music at its normal speed and pitch – sound effects stay silent. Where twincable has no music of its own yet (a song not yet heard at normal speed), you hear the sped-up original. “Sped-up original” plays the game’s own sound, faster and higher.')}
       ${mode === 'plain' ? ` ${t('play.turboAudioPlainHint', 'The emulator’s sound only – no recording, no mixer. Try it if the sound crackles.')}` : ''}</span>
   </div>`;
 }
@@ -64,7 +64,7 @@ function CtrScaleSetting({ cfg, save }) {
     <span class="small faint">${t('set.ctrScaleHint', 'Draws the 3DS games at two or three times their own resolution – sharper and less pixelated, but more work for the graphics card. Applies to the next 3DS game you start. The Software renderer always plays at 1×, and so does the automatic step down after a crash.')}</span>
     <${Check} checked=${cfg.ctrFfHintOff !== true} onChange=${(v) => save({ ctrFfHintOff: !v })}
       label=${t('set.ctrFfHint', 'Tell me when it slows down fast-forward')}
-      hint=${t('set.ctrFfHintHint', 'On some graphics cards fast-forward at 2× or 3× stays well below the speed you pick – the play view then says so, at most once each time twicable starts.')} />
+      hint=${t('set.ctrFfHintHint', 'On some graphics cards fast-forward at 2× or 3× stays well below the speed you pick – the play view then says so, at most once each time twincable starts.')} />
   </div>`;
 }
 
@@ -82,7 +82,7 @@ function GbLookSetting({ cfg, save }) {
 export function PlaySection({ cfg, status, save }) {
   const native = !!status?.native?.ok; // the fast player is part of this install
   const nativeOn = native && cfg.nativeCore !== false;
-  const ctr = !!status?.ctr?.ok; // twicable's 3DS host is installed
+  const ctr = !!status?.ctr?.ok; // twincable's 3DS host is installed
   return html`
     <${Group} title=${t('set.speed', 'Speed & turbo')} note=${t('set.speedNote', 'How fast-forward behaves. The speed itself is picked in the game’s bar.')}>
       <${Item} id="full-turbo"><${Check} checked=${cfg.fullTurbo !== false} onChange=${(v) => save({ fullTurbo: v })}
@@ -116,7 +116,7 @@ export function PlaySection({ cfg, status, save }) {
         label=${t('set.native', 'Fast player for DS, GBA and Game Boy')}
         hint=${t('set.nativeHint', 'Runs the game with the real emulators (melonDS, mGBA, SameBoy) directly on your computer: full speed even on weaker PCs, and fast-forward that really reaches 4× and more. Live sync, cheats, save states and the in-game save work as before. Save states from the other player can’t be loaded here (and the other way round). Off: the browser emulator as before. Applies to the next game you start.')} /><//>
       <${Item} id="engine" when=${!!status?.native?.engine && cfg.nativeCore !== false}><${Check} checked=${cfg.nativeEngine === true} onChange=${(v) => save({ nativeEngine: v })}
-        label=${t('set.engine', 'twicable engine (beta)')}
-        hint=${t('set.engineHint', 'The fast player on twicable’s own engine: one player for DS, GBA and Game Boy that trades and battles straight from your running game – your partners join it, nobody’s game restarts. Same speed, save states, cheats and live sync as the fast player. Off: the fast player as before. Applies to the next game you start.')} /><//>
+        label=${t('set.engine', 'twincable engine (beta)')}
+        hint=${t('set.engineHint', 'The fast player on twincable’s own engine: one player for DS, GBA and Game Boy that trades and battles straight from your running game – your partners join it, nobody’s game restarts. Same speed, save states, cheats and live sync as the fast player. Off: the fast player as before. Applies to the next game you start.')} /><//>
     <//>`}`;
 }

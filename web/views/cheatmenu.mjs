@@ -18,7 +18,7 @@ export const cheatItemText = (id, n) => (n > 1 ? t('feed.itemCount', '{n} × {it
 
 const money = (v) => moneyText(v, currentLang());
 
-/** The icon of a cheat's row (twicable's own pixel icons). */
+/** The icon of a cheat's row (twincable's own pixel icons). */
 const ICON = { rareCandy: 'candy', maxRepel: 'repel', masterBall: 'ball', ultraBall: 'ball', pokeBall: 'ball', fullRestore: 'heart', revive: 'heart', maxRevive: 'heart' };
 
 /** The question before a cheat is written: { id, amount } – an item and how many, or the money ('max' or ₽). */
@@ -46,12 +46,12 @@ export function cheatFailText(id, res, { gen = 0, where = '' } = {}) {
   const isMoney = !!CHEATS[id]?.money;
   const title = isMoney ? t('cheat.failedMoney', 'Money not changed') : t('cheat.failedItem', 'No {item} added', { item: cheatItemName(id) });
   const reason = {
-    // (a 3DS game: not where twicable knows it, not nearby either – or, without the game's own pocket table, an empty bag
+    // (a 3DS game: not where twincable knows it, not nearby either – or, without the game's own pocket table, an empty bag
     // that can't be told from other memory yet)
     notFound: isMoney ? t('cheat.moneyNotFound', 'Your money wasn’t found in the game’s memory just now. Try again outside of menus and battles.')
-      : gen >= 6 ? (res.why === 'empty' ? t('cheat.notFoundEmpty', 'Your bag looks empty, and twicable can’t tell an empty bag from other memory in this game. Pick up any item in the game, then try again.')
-        : t('cheat.notFoundCtr', 'twicable couldn’t find your bag in the game’s memory – not where this game keeps it, and not nearby. “Save diagnostics” in the sound menu records where it looked; please send it along with a report.'))
-        : res.why === 'empty' ? t('cheat.notFoundEmptyDs', 'Your bag is still empty, and twicable can’t be sure yet where the game keeps it. Pick up or buy any item first, then try again.')
+      : gen >= 6 ? (res.why === 'empty' ? t('cheat.notFoundEmpty', 'Your bag looks empty, and twincable can’t tell an empty bag from other memory in this game. Pick up any item in the game, then try again.')
+        : t('cheat.notFoundCtr', 'twincable couldn’t find your bag in the game’s memory – not where this game keeps it, and not nearby. “Save diagnostics” in the sound menu records where it looked; please send it along with a report.'))
+        : res.why === 'empty' ? t('cheat.notFoundEmptyDs', 'Your bag is still empty, and twincable can’t be sure yet where the game keeps it. Pick up or buy any item first, then try again.')
           : t('cheat.notFound', 'Your bag wasn’t found in the game’s memory just now. Try again outside of menus and battles.'),
     changed: t('cheat.changed', 'The game changed your bag just then – try again.'),
     // (Gen 3: not while a battle, a menu, a text or a screen change holds the player – shared/live/cheats.mjs cheatIdle)

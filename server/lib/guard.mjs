@@ -47,9 +47,9 @@ export const PRIVATE_GETS = [
   /^\/api\/saves\/(solo|solo\/download|states|state|state\/thumb)$/,
   /^\/api\/(stream|status|events)$/,
   /^\/live\/soullink\.lua$/,
-  // the twicable account: profile, friends, invites, entitlements (and the avatars, which an <img> loads same-origin)
+  // the twincable account: profile, friends, invites, entitlements (and the avatars, which an <img> loads same-origin)
   /^\/api\/account(\/.*)?$/,
-  // twicable+: the account's encrypted pack and the dev pack's key
+  // twincable+: the account's encrypted pack and the dev pack's key
   /^\/api\/plus\/(pack\/meta|pack\/file|dev\/access|dev\/key)$/,
 ];
 
@@ -69,12 +69,12 @@ export function privateRequestError(req, path) {
 
 /** The renderer secret's cookie (set by electron/main.mjs into the app window's own cookie jar – never served by HTTP). */
 export const RENDERER_COOKIE = 'sls_rt';
-/** Routes that act as the signed-in twicable account or touch its twicable+ pack: only the app window may call them. */
+/** Routes that act as the signed-in twincable account or touch its twincable+ pack: only the app window may call them. */
 const RENDERER_ONLY = /^\/api\/(account|plus)(\/|$)/;
 
 /**
  * The desktop app's third gate: the static `x-soullink` header keeps websites out, but any other program on this
- * computer (another user's on a shared machine) can send it too. The account and twicable+ routes therefore also need a
+ * computer (another user's on a shared machine) can send it too. The account and twincable+ routes therefore also need a
  * per-launch random secret that only the app window has: electron/main.mjs makes it, sets it as an HttpOnly,
  * SameSite=Strict cookie in the window's session and hands it to the server – nothing ever serves it, so a program that
  * only talks HTTP to 127.0.0.1 can't learn it. Without a secret (the browser build `npm start`, tests) this gate is off.

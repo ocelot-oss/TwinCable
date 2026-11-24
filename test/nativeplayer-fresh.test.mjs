@@ -100,7 +100,7 @@ Object.assign(globalThis, {
   location: { search: '?system=nds&rom=%2From&key=k&name=Platinum', origin: 'http://127.0.0.1' },
   document: Object.assign(any(), { visibilityState: 'visible', getElementById: () => any(), body: any(), documentElement: any() }),
   window: globalThis,
-  parent: { postMessage() {}, __twicablePad: { mute: false } },
+  parent: { postMessage() {}, __twincablePad: { mute: false } },
   addEventListener: page.addEventListener.bind(page),
   removeEventListener: page.removeEventListener.bind(page),
   dispatchEvent: page.dispatchEvent.bind(page),

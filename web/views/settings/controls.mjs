@@ -60,7 +60,7 @@ function KeyboardPanel({ saved, save }) {
       }
       const why = reservedCombo(hk ? k : { keyCode: k.keyCode });
       if (why === 'system') return setMsg({ at, text: t('ctl.system', '{key} belongs to the system. Press another key.', { key: comboLabel(k) }) });
-      if (why === 'menu') return setMsg({ at, text: t('ctl.menu', '{key} is a shortcut of twicable’s menu. Press another key.', { key: comboLabel(k) }) });
+      if (why === 'menu') return setMsg({ at, text: t('ctl.menu', '{key} is a shortcut of twincable’s menu. Press another key.', { key: comboLabel(k) }) });
       bound.current = Date.now();
       setListen(null);
       const mine = hk ? hot[listen] : map[listen] ? [map[listen]] : [];
@@ -107,8 +107,8 @@ function KeyboardPanel({ saved, save }) {
         store(Object.keys(next).length ? next : null);
       };
       return html`<tr class="ctl-note"><td colspan="3"><div class="note row" role="status"><span class="grow">${now.length
-        ? t('ctl.refusedNow', '{key}, your key for “{action}”, is taken by {owner} – it is on {now} for now. Click it to pick another key.', { key: comboLabel(refused.key), action: nameOf(refused.id), now: comboLabel(now[0]), owner: refused.why === 'menu' ? t('ctl.ownerMenu', 'twicable’s menu') : t('ctl.ownerSystem', 'the system') })
-        : t('ctl.refusedNone', '{key}, your key for “{action}”, is taken by {owner} – it has no key for now. Click it to pick another key.', { key: comboLabel(refused.key), action: nameOf(refused.id), owner: refused.why === 'menu' ? t('ctl.ownerMenu', 'twicable’s menu') : t('ctl.ownerSystem', 'the system') })}</span>
+        ? t('ctl.refusedNow', '{key}, your key for “{action}”, is taken by {owner} – it is on {now} for now. Click it to pick another key.', { key: comboLabel(refused.key), action: nameOf(refused.id), now: comboLabel(now[0]), owner: refused.why === 'menu' ? t('ctl.ownerMenu', 'twincable’s menu') : t('ctl.ownerSystem', 'the system') })
+        : t('ctl.refusedNone', '{key}, your key for “{action}”, is taken by {owner} – it has no key for now. Click it to pick another key.', { key: comboLabel(refused.key), action: nameOf(refused.id), owner: refused.why === 'menu' ? t('ctl.ownerMenu', 'twincable’s menu') : t('ctl.ownerSystem', 'the system') })}</span>
         ${now.length > 0 && html`<button class="btn small" onClick=${keep}>${t('ctl.keepKey', 'Keep {key}', { key: comboLabel(now[0]) })}</button>`}
       </div></td></tr>`;
     }
@@ -209,7 +209,7 @@ function PadPicker({ pads, saved, pad, onPick }) {
       ${pads.filter((p, i) => pads.findIndex((q) => q.id === p.id) === i).map((p) => html`<option value=${padKey(p.id)}>${label(p)}</option>`)}
       ${missing && html`<option value=${wanted}>${t('pad.missing', '{name} (not connected)', { name: padName(wanted) })}</option>`}
     </select></label>
-    <span class="small faint pad-pick-hint">${pad && wanted && padKey(pad.id) === wanted ? t('pad.remembered', 'twicable remembers this controller and uses it whenever it is connected.')
+    <span class="small faint pad-pick-hint">${pad && wanted && padKey(pad.id) === wanted ? t('pad.remembered', 'twincable remembers this controller and uses it whenever it is connected.')
       : t('pad.autoHint', 'Automatic picks a real controller and skips microphones, headsets and other devices the system lists as controllers.')}</span></div>`;
 }
 

@@ -1,5 +1,5 @@
 // Input plans for scripts/rom-matrix.mjs --live: from power-on to the first Pokémon (and a battle) per game, driven
-// frame by frame through twicable's player page (page.mjs runs the steps). Each `check` step records what the app's
+// frame by frame through twincable's player page (page.mjs runs the steps). Each `check` step records what the app's
 // live readers see; `expect[check name]` says what must be there. Plans were built against the US/EU retail ROMs and
 // work for hacks and randomized games of the same game where the intro is the same (a randomized starter is any
 // Pokémon – only its level and a valid read are required then).

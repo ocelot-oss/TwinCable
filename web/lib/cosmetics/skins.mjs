@@ -1,4 +1,4 @@
-// twicable+ skins: html[data-skin="…"] plus that skin's stylesheet from the verified pack, injected as a <style> (the CSP
+// twincable+ skins: html[data-skin="…"] plus that skin's stylesheet from the verified pack, injected as a <style> (the CSP
 // allows inline styles; fonts and art the CSS uses become data: URLs, which font-src / img-src allow). A skin changes
 // the look only – never a box, never a text (proven by test/skin-proof.test.mjs on the real app views).
 //
@@ -74,7 +74,7 @@ function show(id) {
 
 const visible = () => (previewing ? norm(previewing) : committed);
 
-/** The player's skin (null / 'classic' = the look twicable ships with). Returns false when it isn't owned (yet). */
+/** The player's skin (null / 'classic' = the look twincable ships with). Returns false when it isn't owned (yet). */
 export function applySkin(id) {
   const want = norm(id);
   try {
@@ -107,7 +107,7 @@ export function previewSkin(id) {
   return true;
 }
 
-/** Back to the committed skin (leaving Settings, "Back to twicable"). */
+/** Back to the committed skin (leaving Settings, "Back to twincable"). */
 export function endPreview() {
   if (previewing === null) return;
   previewing = null;

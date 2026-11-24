@@ -482,7 +482,7 @@ test('support per game: the verified ones; other versions and the 3DS say why', 
 
 // ---- the hub: capability, the host's start, the rule ------------------------------------------------------------
 
-test('the hub: only partners whose twicable announced raids (and whose game can take part) are asked; the host starts once all answered', async () => {
+test('the hub: only partners whose twincable announced raids (and whose game can take part) are asked; the host starts once all answered', async () => {
   const ROOT = new URL('../', import.meta.url).href;
   const { registerHooks } = await import('node:module');
   registerHooks({ resolve: (spec, ctx, next) => next(spec.startsWith('/shared/') ? new URL(`.${spec}`, ROOT).href : spec === '/vendor/htm-preact.mjs' ? new URL('./node_modules/htm/preact/standalone.module.js', ROOT).href : spec, ctx) });

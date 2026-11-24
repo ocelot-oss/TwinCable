@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// The ROM test matrix: everything twicable reads from a game, checked against a folder of ROMs and patches – retail
+// The ROM test matrix: everything twincable reads from a game, checked against a folder of ROMs and patches – retail
 // games, ROM hacks (patches are applied the way the app does it) and randomized games (the bundled randomizer, one
 // game per generation). Without --live it checks what can be read from the files themselves: header and catalog match,
 // retail or modified (CRC32), the memory table entry, the ROM's place names (shared/live/romloc.mjs) and, for GBA,
 // its species table (shared/live/romspecies.mjs – ROM hacks with other Pokémon, expanded engines). With --live it also
-// boots every game in twicable's own emulator page (Electron from node_modules, hidden and muted, a throwaway data
+// boots every game in twincable's own emulator page (Electron from node_modules, hidden and muted, a throwaway data
 // folder), plays it to the first Pokémon with the input plans in scripts/rom-matrix/plans.mjs and checks the team,
 // the place sign and a battle with the app's live readers. Plain Node, no platform tools: runs the same on Windows.
 //
@@ -18,14 +18,14 @@
 //   --randomize   also randomize one game per generation (Classic preset, fixed seed) and check the result
 //                 (needs Java: tools/jre from `npm run jre`, JAVA_HOME or --tools <folder with jre/, upr/, upr-bridge/>)
 //   --only <text> only ROMs whose file name contains the text (case-insensitive)
-//   --out <dir>   where results, patched/randomized ROMs and screenshots go (default: <tmp>/twicable-rom-matrix);
+//   --out <dir>   where results, patched/randomized ROMs and screenshots go (default: <tmp>/twincable-rom-matrix);
 //                 patched and randomized ROMs are deleted at the end unless --keep
 //   --attempts n  tries per game when a plan loses its way (default 3)
 //   --show        show the emulator windows (they stay muted)
 //   --states      keep each game's save state after its plan (<out>/shots/<key>.state)
 //   --battery     keep each game's battery save after its plan (<out>/shots/<key>.sav – never commit it)
 //   --native      play in the fast player (playernative.html – the native host, tools/native) instead of player.html
-//   --engine      the fast player on the twicable engine (Settings › "twicable engine (beta)": the link host plays the
+//   --engine      the fast player on the twincable engine (Settings › "twincable engine (beta)": the link host plays the
 //                 game) – implies --native; each result says which player ran it ("player")
 //   --plan <json> play this plan file instead of the game's own (with --only: a probe for one game)
 //   --saves <dir> where saves for the plans that start from one are, too: <patch or ROM name>.sav or <hack id>.sav
@@ -44,7 +44,7 @@
 // Results: <out>/matrix.json, <out>/matrix.md (the table for docs/TESTED_GAMES.md) and <out>/shots/*.png. Columns: the
 // team, its held items (all named), the place sign, a battle, a catch filed, types (the ROM's chart and each Pokémon's
 // types – for a retail ROM compared with the app's data) and level caps (curated, or read from the ROM's trainers, with
-// badges read live). "hidden": twicable can't read it for this game and shows nothing (shared/live/features.mjs).
+// badges read live). "hidden": twincable can't read it for this game and shows nothing (shared/live/features.mjs).
 // Never commit ROMs, patched ROMs or the screenshots.
 import { spawn } from 'node:child_process';
 import { readdirSync, statSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
@@ -71,7 +71,7 @@ if (!sources.length || !sources.every((p) => existsSync(p))) {
   console.error('usage: node scripts/rom-matrix.mjs <rom-dir|rom-file> [more …] [--live] [--randomize] [--only <text>] [--out <dir>] [--tools <dir>] [--show] [--keep]');
   process.exit(2);
 }
-const out = resolve(opt('out', join(tmpdir(), 'twicable-rom-matrix')));
+const out = resolve(opt('out', join(tmpdir(), 'twincable-rom-matrix')));
 const work = join(out, 'roms');
 mkdirSync(work, { recursive: true });
 mkdirSync(join(out, 'shots'), { recursive: true });
@@ -356,7 +356,7 @@ async function runLive(list) {
   mkdirSync(dataDir, { recursive: true });
   writeFileSync(join(dataDir, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'Matrix', libraryFolders: [...sources.map((p) => (statSync(p).isDirectory() ? p : dirname(p))), work], nativeEngine: flag('engine') }));
   const electron = (await import('electron')).default;
-  log(`live: ${jobs.length} game(s) in twicable's emulator …`);
+  log(`live: ${jobs.length} game(s) in twincable's emulator …`);
   const all = [];
   // one Electron per game: a second emulator page in the same Electron process sometimes takes the process down
   for (const [i, { r, plan }] of jobs.entries()) {
@@ -417,7 +417,7 @@ function judge(r, plan, x) {
   const checks = (x.log || []).filter((l) => l.do === 'check');
   const failed = (x.log || []).find((l) => l.ok === false && l.required !== false);
   const verdict = { party: null, items: null, place: null, battle: null, catch: null, types: null, cap: null, notes: [], error: x.error || null, frames: x.frames, ms: x.ms, shots: x.shots };
-  // held items: every one the team holds has a name (where twicable can name them at all – else they're hidden)
+  // held items: every one the team holds has a name (where twincable can name them at all – else they're hidden)
   const held = checks.flatMap((c) => (c.team?.party || []).filter((m) => m.item));
   if (r.features?.items === 'no') verdict.items = 'hidden';
   else if (held.length) {
@@ -511,7 +511,7 @@ const rows = targets.map((r) => {
   };
 });
 writeFileSync(join(out, 'matrix.json'), JSON.stringify({ at: new Date().toISOString(), sources, notes, patches: patches.map(({ name, format, hack, result }) => ({ name, format, hack, result })), rows }, null, 1));
-// (without --live the static judgement stands in: what twicable can read from the file)
+// (without --live the static judgement stands in: what twincable can read from the file)
 const cell = (x, k) => (x.live[k] !== undefined && x.live[k] !== null ? mark(x.live[k]) : x.features?.[{ place: 'location', cap: 'caps' }[k] || k] === 'no' ? 'hidden' : '–');
 const md = [
   '| ROM | Kind | Memory table | Places (from file) | Species table | Party | Items | Location | Battle | Catch | Types | Cap | Notes |',

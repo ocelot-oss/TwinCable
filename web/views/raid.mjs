@@ -52,20 +52,20 @@ function useStyle() {
 export function raidWhyText(code, name = '') {
   return {
     offline: t('raid.whyOffline', '{name} isn’t online', { name }),
-    old: t('raid.whyOld', '{name}’s twicable doesn’t know raids yet', { name }),
+    old: t('raid.whyOld', '{name}’s twincable doesn’t know raids yet', { name }),
     game: t('raid.whyGame', '{name}’s game can’t take part in raids', { name }),
     busy: t('raid.whyBusy', '{name} is in another raid', { name }),
-    ctr: t('raid.whyCtr', 'Not in the 3DS games: twicable can’t change the opponent’s HP there cleanly.'),
-    hack: t('raid.whyHack', 'Not in this ROM hack: its battles aren’t laid out like the original game’s, so twicable doesn’t change the opponent’s HP there.'),
+    ctr: t('raid.whyCtr', 'Not in the 3DS games: twincable can’t change the opponent’s HP there cleanly.'),
+    hack: t('raid.whyHack', 'Not in this ROM hack: its battles aren’t laid out like the original game’s, so twincable doesn’t change the opponent’s HP there.'),
     version: t('raid.whyVersion', 'Not in this version of the game yet – raids are checked game by game, in the English versions first.'),
-    unknown: t('raid.whyUnknown', 'Only in games twicable reads live.'),
+    unknown: t('raid.whyUnknown', 'Only in games twincable reads live.'),
   }[code] || '';
 }
 
 /** The same, in two words next to a name. */
 const shortWhy = (code) => ({
   offline: t('raid.shortOffline', 'offline'),
-  old: t('raid.shortOld', 'older twicable'),
+  old: t('raid.shortOld', 'older twincable'),
   game: t('raid.shortGame', 'game can’t take part'),
   busy: t('raid.shortBusy', 'in another raid'),
 }[code] || '');
@@ -225,7 +225,7 @@ export function RaidCards() {
 }
 
 /**
- * The board's way in: "Raid" → the partners to ask (online ones whose twicable and game can take part), then start.
+ * The board's way in: "Raid" → the partners to ask (online ones whose twincable and game can take part), then start.
  * `online`: the slots connected right now.
  */
 export function RaidStart({ online = null }) {

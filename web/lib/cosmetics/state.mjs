@@ -12,7 +12,7 @@ const APP_BANNERS = [...FREE_BANNERS, ...EARNED_BANNERS];
 
 const listeners = new Set();
 export const state = {
-  entitled: false, // the account owns twicable+ and its pack is loaded and verified
+  entitled: false, // the account owns twincable+ and its pack is loaded and verified
   preview: false, // a live theme preview is in memory (API.md §10.4): its skins can be tried, nothing can be kept
   previewUntil: null, // when the preview ends (ISO) – its content is dropped then
   previewLoading: false,
@@ -31,7 +31,7 @@ export const content = {
   files: new Map(), // pack path → bytes (fonts, art the skins use)
   framesModule: null, // signed module text (frames.mjs) – runs only in a worker (sandbox.mjs)
   frameIds: new Set(),
-  handheld: null, // "Your handheld"'s twicable+ part: { wraps: [composition], stickers: { layout, art, cut } } (web/lib/handheld)
+  handheld: null, // "Your handheld"'s twincable+ part: { wraps: [composition], stickers: { layout, art, cut } } (web/lib/handheld)
 };
 
 export function setContent(next) {

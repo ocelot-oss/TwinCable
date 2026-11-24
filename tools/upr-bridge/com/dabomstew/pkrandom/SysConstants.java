@@ -25,8 +25,8 @@ package com.dabomstew.pkrandom;
 /*--  You should have received a copy of the GNU General Public License     --*/
 /*--  along with this program. If not, see <http://www.gnu.org/licenses/>.  --*/
 /*----------------------------------------------------------------------------*/
-/*--  twicable: UPR ZX 4.6.1's SysConstants with one change (getRootPath:    --*/
-/*--  -Dtwicable.upr.root) – loaded ahead of PokeRandoZX.jar by the bridge.  --*/
+/*--  twincable: UPR ZX 4.6.1's SysConstants with one change (getRootPath:    --*/
+/*--  -Dtwincable.upr.root) – loaded ahead of PokeRandoZX.jar by the bridge.  --*/
 /*----------------------------------------------------------------------------*/
 
 import java.io.File;
@@ -49,10 +49,10 @@ public class SysConstants {
     public static final String nnamesFile = "nicknames.txt";
 
     private static String getRootPath() {
-        // twicable: every bridge run gets its own working folder (-Dtwicable.upr.root=…). UPR keeps the game files it reads
+        // twincable: every bridge run gets its own working folder (-Dtwincable.upr.root=…). UPR keeps the game files it reads
         // in ROOT_PATH/tmp_<name>/ – next to the jar, i.e. inside the installed app, and shared by two runs on the same
         // game. Without the property (UPR on its own) nothing changes.
-        String own = System.getProperty("twicable.upr.root");
+        String own = System.getProperty("twincable.upr.root");
         if (own != null && !own.isEmpty()) {
             return new File(own).getAbsolutePath() + File.separator;
         }

@@ -1,5 +1,5 @@
 Real Pokémon files (decrypted PK6/PK7) from PKHeX's test data – kwsch/PKHeX, Tests/PKHeX.Core.Tests/Legality/Legal
-(GPL-3.0, like twicable). Used by test/gen67.test.mjs to check the Gen 6/7 field offsets and checksum against data the
+(GPL-3.0, like twincable). Used by test/gen67.test.mjs to check the Gen 6/7 field offsets and checksum against data the
 games wrote, not only against structs the tests build themselves.
 
 - spewpa-route7.pk6   Generation 6/665-17 - Spewpa - 9DBBA19BC145 Route 7 berry field.pk6 (260 bytes, with party stats)

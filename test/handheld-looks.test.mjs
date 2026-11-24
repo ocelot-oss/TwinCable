@@ -1,6 +1,6 @@
-// The twicable+ looks of the 3.0 launch animation (Gold, Clear shell, Holo label, the Rare start, holo / glitter finishes)
-// are data from the twicable+ pack (handheld/looks.json, web/lib/handheld/looks.mjs) – the public app only draws "Your
-// colours" and vinyl. A patched client that flips its membership switch gets no twicable+ look, because the look's data
+// The twincable+ looks of the 3.0 launch animation (Gold, Clear shell, Holo label, the Rare start, holo / glitter finishes)
+// are data from the twincable+ pack (handheld/looks.json, web/lib/handheld/looks.mjs) – the public app only draws "Your
+// colours" and vinyl. A patched client that flips its membership switch gets no twincable+ look, because the look's data
 // isn't in the app. These tests use made-up looks (never the real ones: those live only in the private pack sources).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -98,7 +98,7 @@ test('cleanGlsl: statements only – no preprocessor, declarations, texture read
   }
 });
 
-test('without the pack\'s data a twicable+ look draws "Your colours", vinyl and no Rare start – whatever a client switches on', () => {
+test('without the pack\'s data a twincable+ look draws "Your colours", vinyl and no Rare start – whatever a client switches on', () => {
   for (const L of [null, undefined, {}, { finishes: {} }]) {
     assert.equal(effectiveLook('gold', L), 'theme');
     assert.equal(effectiveLook('clear', L), 'theme');
@@ -122,7 +122,7 @@ test('without the pack\'s data a twicable+ look draws "Your colours", vinyl and 
   assert.ok(chunk.includes(L.finishes.glitter.glsl));
 });
 
-test('the tier gate and the data gate together (web/lib/handheld/look.mjs playableLook): a twicable+ look plays only with twicable+, the pack AND its data', () => {
+test('the tier gate and the data gate together (web/lib/handheld/look.mjs playableLook): a twincable+ look plays only with twincable+, the pack AND its data', () => {
   const L = cleanLooks(FAKE_LOOKS());
   // look.mjs: playableLookFor (the tier, shared/handheld.mjs) – then the look's data from the pack, else "Your colours"
   const play = (id, rights, looks) => { const p = playableLookFor(id, rights); return hasLook(p, looks) ? p : LAUNCH_DEFAULT; };
@@ -130,9 +130,9 @@ test('the tier gate and the data gate together (web/lib/handheld/look.mjs playab
   const cases = [
     [{ signedIn: false }, false],
     [{ signedIn: true, tier: 'supporter' }, false],
-    [{ signedIn: true, tier: 'plus' }, false], // twicable+ on the account, but no pack on this computer
+    [{ signedIn: true, tier: 'plus' }, false], // twincable+ on the account, but no pack on this computer
     [{ signedIn: true, tier: 'patron', entitled: true }, true],
-    [{ signedIn: true, tier: 'none', entitled: true }, true], // a verified pack is twicable+
+    [{ signedIn: true, tier: 'none', entitled: true }, true], // a verified pack is twincable+
   ];
   for (const [who, full] of cases) {
     const rights = launchRights(launchTier(who), { entitled: !!who.entitled });
@@ -163,7 +163,7 @@ test('the pack client reads handheld/looks.json through the same check (and drop
   assert.equal(contentFrom(older).handheld.looks, null, 'an older pack has no looks');
 });
 
-// The values the public app used to hard-code for the twicable+ looks (before they moved into the pack) – as hashes, so
+// The values the public app used to hard-code for the twincable+ looks (before they moved into the pack) – as hashes, so
 // this test doesn't publish them again. None may come back into the public scene, surface, look or launch code.
 const PAID_HASHES = new Set([
   '1838936e', 'ccf7f3e4', '11c1f38e', '96569355', 'ea14d2a6', '73910ce5', '20ecbca4', 'cf64a3d5', '393617ec', 'a3842908', '033dfe93', '4018750e',
@@ -174,11 +174,11 @@ const PAID_HASHES = new Set([
 const h8 = (s) => createHash('sha256').update(s).digest('hex').slice(0, 8);
 export const paidTokensOf = (src) => [...new Set([...(src.match(/#[0-9a-f]{6}\b/gi) || []).map((c) => c.toLowerCase()), ...src.split('\n').map((l) => l.trim()).filter((l) => l.length > 30)])];
 
-test('no twicable+ look is hard-coded in the public launch scene any more', () => {
+test('no twincable+ look is hard-coded in the public launch scene any more', () => {
   const files = ['web/lib/handheld/scene.mjs', 'web/lib/handheld/surface.mjs', 'web/lib/handheld/look.mjs', 'web/lib/handheld/looks.mjs', 'web/views/launchstage.mjs', 'shared/handheld.mjs'];
   for (const f of files) {
     const hits = paidTokensOf(readFileSync(join(ROOT, f), 'utf8')).filter((t) => PAID_HASHES.has(h8(t)));
-    assert.deepEqual(hits, [], `${f} still holds twicable+ look values`);
+    assert.deepEqual(hits, [], `${f} still holds twincable+ look values`);
   }
   // and the private source, where it is next to this checkout, carries every one of them (the list above stays honest)
   const src = join(ROOT, '..', 'design-plus', 'design', 'plus', 'handheld', 'looks.mjs');
@@ -188,7 +188,7 @@ test('no twicable+ look is hard-coded in the public launch scene any more', () =
   }
 });
 
-test('preview media of a twicable+ sticker are a product shot, never the pixel art 1:1', () => {
+test('preview media of a twincable+ sticker are a product shot, never the pixel art 1:1', () => {
   const atlas = buildAtlas(DESIGNS);
   // a round badge, and round 7's pixel lettering (a wide bar with text, big letters) – text is the easiest to lift
   for (const id of ['moon', 'one-hp', 'gg']) previewIsNoCopy(atlas, id);
@@ -220,8 +220,8 @@ function previewIsNoCopy(atlas, id) {
 }
 
 const noDisplay = process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY;
-test('real Chromium: a twicable+ look without its data is "Your colours" to the pixel; with it, the pack\'s code compiles and draws', { skip: noDisplay ? 'no display' : false, timeout: 150000 }, async () => {
-  const data = mkdtempSync(join(tmpdir(), 'twicable-looks-'));
+test('real Chromium: a twincable+ look without its data is "Your colours" to the pixel; with it, the pack\'s code compiles and draws', { skip: noDisplay ? 'no display' : false, timeout: 150000 }, async () => {
+  const data = mkdtempSync(join(tmpdir(), 'twincable-looks-'));
   writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'Proof', bootAnimation: false, nagOff: true }));
   // the real looks when the private sources are next to this checkout, else the made-up ones
   const src = join(ROOT, '..', 'design-plus', 'design', 'plus', 'handheld', 'looks.mjs');

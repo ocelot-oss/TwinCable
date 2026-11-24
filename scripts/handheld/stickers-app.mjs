@@ -1,7 +1,7 @@
 // The FREE and EARNED sticker designs of "Your handheld" (shared/handheld.mjs has the catalog): original pixel art in the
 // banner family – no Pokémon or Nintendo motifs. Build input only: scripts/build-handheld-atlas.mjs turns them into the
-// app's pre-built atlas (web/assets/handheld/); the page never runs this. The twicable+ designs are not in this repository –
-// they come with the twicable+ pack (scripts/plus-dev-pack.mjs --handheld).
+// app's pre-built atlas (web/assets/handheld/); the page never runs this. The twincable+ designs are not in this repository –
+// they come with the twincable+ pack (scripts/plus-dev-pack.mjs --handheld).
 import { WORD_S } from '../../web/lib/cosmetics/banners/engine/brand.mjs';
 import { FONT_S, FONT_L } from './pixel-font.mjs';
 
@@ -70,7 +70,7 @@ function sparkle() { // a four-point star, warm gold
   return R.done();
 }
 
-function logo() { // the twicable wordmark (the app's own pixel grid) on a cream pill
+function logo() { // the twincable wordmark (the app's own pixel grid) on a cream pill
   const w = WORD_S[0].length + 6, h = WORD_S.length + 6;
   const R = raster(w, h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
@@ -187,8 +187,8 @@ const CLOUD = art([ // a cumulus in three puffs: lit rims on top, a shaded belly
   '.sssssssssssssssss.',
 ], { h: '#ffffff', w: '#eceef3', m: '#d0d6e4', s: '#a8b2c8' });
 
-// ---- round 7: the free three of the cool and funny stickers (the other 17 come with twicable+) ------------------------
-// The same designs as the twicable+ design sources' handheld/stickers-fun.mjs (the sheet's source) – keep them the same.
+// ---- round 7: the free three of the cool and funny stickers (the other 17 come with twincable+) ------------------------
+// The same designs as the twincable+ design sources' handheld/stickers-fun.mjs (the sheet's source) – keep them the same.
 const F7 = {
   g1: '#f0f2f6', g2: '#c8ccd6', g3: '#9aa0ae', g4: '#6a7080', g5: '#434856', grass: '#5ea048', grass2: '#86c060', grass3: '#3a7038', dirt2: '#5a3a28',
   coral: '#dc7268', gold: '#f2c477', gold3: '#a8702a', sun: '#fff4d2', navy: '#151b30', navy2: '#2a3050', cream: '#ece6cf', red: '#d0443a', pink: '#f8b9ad',

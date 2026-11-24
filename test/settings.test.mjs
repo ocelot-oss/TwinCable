@@ -98,7 +98,7 @@ test('the texts the search reads exist in English and every app language; the ta
   for (const [k, v] of Object.entries(EN)) assert.ok(!/Settings › (Emulators|General|Discord|Game Boy look)\b/.test(v), `${k} still points at an old section: ${v}`);
 });
 
-test('sections: tab order – the Account section (twicable account) sits between Online and About', () => {
+test('sections: tab order – the Account section (twincable account) sits between Online and About', () => {
   assert.deepEqual(SECTIONS.map((s) => s.id), ['general', 'play', 'controls', 'games', 'online', 'account', 'about']);
   assert.deepEqual(VISIBLE_SECTIONS, ['general', 'play', 'controls', 'games', 'online', 'account', 'about']);
   assert.deepEqual(SETTINGS.filter((e) => e.section === 'account').map((e) => e.id), ['account', 'account-privacy', 'plus-show', 'plus', 'account-sessions', 'account-data']);

@@ -1626,7 +1626,7 @@
    "color": "#9C3B32",
    "live": "partial",
    "liveNote": "cfru",
-   "notes": "Thread title states version 4.1 (first post last edited 2024-03-22). Patch must be applied to FireRed USA 1.0 (not Rev 1). Checked in twicable with a pre-patched 4.1 ROM (CRC32 FBA55DD8): team, place and battles read live.",
+   "notes": "Thread title states version 4.1 (first post last edited 2024-03-22). Patch must be applied to FireRed USA 1.0 (not Rev 1). Checked in twincable with a pre-patched 4.1 ROM (CRC32 FBA55DD8): team, place and battles read live.",
    "romCrc32": [
     "FBA55DD8"
    ]
@@ -1657,7 +1657,7 @@
    "color": "#3F4E7A",
    "live": "partial",
    "liveNote": "cfru",
-   "notes": "Version 2.1.1.1 is the newest listed in the first post (last edited 2025-04-14). The official patch is a UPS patch for FireRed USA 1.0 (result CRC32 4B3D4957); checked in twicable with it: team, place and battles read live.",
+   "notes": "Version 2.1.1.1 is the newest listed in the first post (last edited 2025-04-14). The official patch is a UPS patch for FireRed USA 1.0 (result CRC32 4B3D4957); checked in twincable with it: team, place and battles read live.",
    "romCrc32": [
     "4B3D4957"
    ]
@@ -1971,7 +1971,7 @@
    "color": "#8A4FA8",
    "live": "partial",
    "liveNote": "types",
-   "notes": "Official thread (Sep 2023): v1.6, apply to Pokémon Emerald (US). Credits RHH pokeemerald-expansion. Checked in twicable 2.3.1 with the v1.6 BPS (result CRC32 E91FEF2D, the same as a pre-patched v1.6 ROM): team, place, battles and catches read live; its own types (57 besides '???') are unknown to twicable.",
+   "notes": "Official thread (Sep 2023): v1.6, apply to Pokémon Emerald (US). Credits RHH pokeemerald-expansion. Checked in twincable 2.3.1 with the v1.6 BPS (result CRC32 E91FEF2D, the same as a pre-patched v1.6 ROM): team, place, battles and catches read live; its own types (57 besides '???') are unknown to twincable.",
    "uncertain": true,
    "uncertainFields": [
     "difficulty"
@@ -2007,7 +2007,7 @@
    "color": "#6B3FA0",
    "live": "partial",
    "liveNote": "types",
-   "notes": "Official thread (Dec 2025): apply to Pokémon Emerald (US); credits the RHH pokeemerald-expansion. Checked in twicable 2.3.1 with a pre-patched v1.5.2 ROM (CRC32 D25FBCCC) and an older BPS patch (\"1.1.1 mirror\", result CRC32 69ECC373): team, place, battles and catches read live; its own types (80) are unknown to twicable.",
+   "notes": "Official thread (Dec 2025): apply to Pokémon Emerald (US); credits the RHH pokeemerald-expansion. Checked in twincable 2.3.1 with a pre-patched v1.5.2 ROM (CRC32 D25FBCCC) and an older BPS patch (\"1.1.1 mirror\", result CRC32 69ECC373): team, place, battles and catches read live; its own types (80) are unknown to twincable.",
    "uncertain": true,
    "uncertainFields": [
     "latestVersion",
@@ -2044,7 +2044,7 @@
    "color": "#2F7D5B",
    "live": "partial",
    "liveNote": "quetzal",
-   "notes": "Recognised by its header (title 'PKM QUETZAL' with Emerald's code BPEE – romTitle/romCode), so every version is, not only the checked one. Checked in twicable 3.0 with a pre-patched English Alpha 9v1 ROM (CRC32 E655684C): team, place, battles and catches read live (a new game: Sprigatito from Oak, the rival's Squirtle, a Pidgey caught on Route 1).",
+   "notes": "Recognised by its header (title 'PKM QUETZAL' with Emerald's code BPEE – romTitle/romCode), so every version is, not only the checked one. Checked in twincable 3.0 with a pre-patched English Alpha 9v1 ROM (CRC32 E655684C): team, place, battles and catches read live (a new game: Sprigatito from Oak, the rival's Squirtle, a Pidgey caught on Route 1).",
    "uncertain": true,
    "uncertainFields": [
     "patchFormat",
@@ -2414,7 +2414,7 @@
    "difficulty": "hard",
    "nuzlockeFriendly": true,
    "uprCompatible": "yes",
-   "uprNote": "Tested 1.4.1 (Complete) on Black 2 (USA, Europe) with all of twicable's presets: works; gifts and legendaries stay as in the hack, its Fairy type is kept.",
+   "uprNote": "Tested 1.4.1 (Complete) on Black 2 (USA, Europe) with all of twincable's presets: works; gifts and legendaries stay as in the hack, its Fairy type is kept.",
    "color": "#2F3A44",
    "notes": "No dedicated official Redux release page found. Version 1.4.1 seen only in community tools; the original (non-Redux) release is 1.1.",
    "uncertain": true,
@@ -2563,7 +2563,7 @@
    "difficulty": "casual",
    "nuzlockeFriendly": true,
    "uprCompatible": "yes",
-   "uprNote": "Stock UPR ZX 4.6.1 crashes on this hack; twicable's randomizer bridge skips the broken static-encounter offsets and protects two intro scripts, so randomizing works.",
+   "uprNote": "Stock UPR ZX 4.6.1 crashes on this hack; twincable's randomizer bridge skips the broken static-encounter offsets and protects two intro scripts, so randomizing works.",
    "color": "#B0904A",
    "notes": "Release thread 2025-12-20, marked COMPLETE; no version number published. Base HeartGold (USA) CRC C180A0E9 confirmed by the patch ReadMe.",
    "patchSha1": "80fa3c0b16a72240e55eeeac9a017000275d36ae",

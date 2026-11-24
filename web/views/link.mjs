@@ -84,10 +84,10 @@ export function LinkView() {
       <${PackVersionNote} manifest=${manifest} />
       ${!manifest.imported && html`<${HostCode} manifest=${manifest} />`}
       <p class="small muted">${others.length > 1
-        ? manifest.imported ? t('link.inviteFileGroupImported', 'Save the invite file – the other players open it in twicable under SoulLink › “Join with code”.')
-          : t('link.inviteFileGroup', 'Or save the invite file – the other players open it in twicable under SoulLink › “Join with code”.')
-        : manifest.imported ? t('link.inviteFileOneImported', 'Save the invite file – {name} opens it in twicable under SoulLink › “Join with code”.', { name: names[others[0]]?.name || others[0].toUpperCase() })
-          : t('link.inviteFileOne', 'Or save the invite file – {name} opens it in twicable under SoulLink › “Join with code”.', { name: names[others[0]]?.name || others[0].toUpperCase() })}</p>
+        ? manifest.imported ? t('link.inviteFileGroupImported', 'Save the invite file – the other players open it in twincable under SoulLink › “Join with code”.')
+          : t('link.inviteFileGroup', 'Or save the invite file – the other players open it in twincable under SoulLink › “Join with code”.')
+        : manifest.imported ? t('link.inviteFileOneImported', 'Save the invite file – {name} opens it in twincable under SoulLink › “Join with code”.', { name: names[others[0]]?.name || others[0].toUpperCase() })
+          : t('link.inviteFileOne', 'Or save the invite file – {name} opens it in twincable under SoulLink › “Join with code”.', { name: names[others[0]]?.name || others[0].toUpperCase() })}</p>
       <div class="row"><button class="btn" onClick=${() => download(`soullink-invite-${manifest.id}.soullink.json`, packJson)}><${Icon} name="save" size=${16} />${t('new.saveInvite', 'Save invite')}</button>
         <button class="btn ghost" onClick=${() => { copy(packJson); toast({ kind: 'ok', title: t('common.copied', 'Copied'), text: t('new.inviteCopied', 'The invite is on your clipboard.') }); }}>${t('common.copy', 'Copy')}</button></div>
     </section>`}

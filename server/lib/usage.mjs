@@ -1,4 +1,4 @@
-// The anonymous daily usage ping (docs/PRIVACY.md › "Daily usage count"): how many people use twicable, which versions
+// The anonymous daily usage ping (docs/PRIVACY.md › "Daily usage count"): how many people use twincable, which versions
 // and systems, and whether they come back – for the team's stats page – without any id for the install.
 //
 // Once a day (the first time the app runs that day, then nothing more that day) and only while Settings › Online ›
@@ -7,18 +7,18 @@
 //   POST <the bot>/usage { day_id, v, os, arch, first_week, active7, active28, new }
 //   day_id      16 random bytes, made for this day only, kept in memory only (a retry the same day isn't counted twice)
 //   v           the app version · os mac | win | linux · arch x64 | arm64
-//   first_week  the ISO week twicable was first used on this computer ("2026-W47")
-//   active7     on how many of the last 7 days twicable was used here (today included), 1–7; active28 the same for 28
+//   first_week  the ISO week twincable was first used on this computer ("2026-W47")
+//   active7     on how many of the last 7 days twincable was used here (today included), 1–7; active28 the same for 28
 //   new         true on the day of the first use
 // What it needs to know for that stays on this computer, in usage.json next to config.json: the first-use date and the
-// dates (no times) twicable was used in the last 28 days. Nothing is recorded while the switch is off. Offline, or when
+// dates (no times) twincable was used in the last 28 days. Nothing is recorded while the switch is off. Offline, or when
 // the bot can't be reached: nothing happens (the next hour tries again; no queue, no log line).
-// Only a packaged app sends (a development or test server never reaches the real bot; TWICABLE_LIVE_URL points a test at
+// Only a packaged app sends (a development or test server never reaches the real bot; TWINCABLE_LIVE_URL points a test at
 // a mock).
 import { randomBytes } from 'node:crypto';
 import { readFileSync, statSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { liveBases, twicableVersion } from './liveruns.mjs';
+import { liveBases, twincableVersion } from './liveruns.mjs';
 import { writeFileAtomic } from './fsutil.mjs';
 
 export const CHECK_MS = 60 * 60_000; // looks once an hour whether today's ping is still due
@@ -55,7 +55,7 @@ function readState(file) {
 }
 
 /**
- * When twicable was first used here, for an install from before this ping existed: the day its config.json was made
+ * When twincable was first used here, for an install from before this ping existed: the day its config.json was made
  * (when that is a real date before today), else null (= a new install).
  */
 export function firstUseOf(configPath, today) {
@@ -93,8 +93,8 @@ export function pingFor(state, { today, version, platform, arch, existing }) {
   return { state: next, body };
 }
 
-/** One per local server. `allowed`: a packaged app (or a test pointing TWICABLE_LIVE_URL at a mock). */
-export function createUsage({ enabled = () => true, allowed = false, file, configPath, fetchImpl = fetch, env = process.env, version = twicableVersion, now = () => new Date(), platform = process.platform, arch = process.arch, timers = globalThis } = {}) {
+/** One per local server. `allowed`: a packaged app (or a test pointing TWINCABLE_LIVE_URL at a mock). */
+export function createUsage({ enabled = () => true, allowed = false, file, configPath, fetchImpl = fetch, env = process.env, version = twincableVersion, now = () => new Date(), platform = process.platform, arch = process.arch, timers = globalThis } = {}) {
   let dayId = null; // { day, id } – memory only
   let timer = null;
 

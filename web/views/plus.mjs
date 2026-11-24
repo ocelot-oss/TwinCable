@@ -1,11 +1,11 @@
-// The twicable+ page (#/plus – owner's choice "A – Showroom", made calmer): first the viewer themselves wearing twicable+
+// The twincable+ page (#/plus – owner's choice "A – Showroom", made calmer): first the viewer themselves wearing twincable+
 // (their real Discord picture and name when signed in, through the local avatar proxy; a neutral placeholder when
 // not), then a handful of the strongest banners, frames and nameplates, "Your handheld" (live, turning slowly) with the
 // launch looks and, kept small, the colour
 // themes – live from the pack for members, the signed preview media (lib/cosmetics/previews.mjs) for everyone else –
 // then the three tiers, what
 // stays free, where the money goes, what happens when you stop, and a few questions. Members get the thank-you
-// version. Every "Get twicable+" in the app leads here (lib/cosmetics/plus.mjs) – never a pop-up. Motion: the preview
+// version. Every "Get twincable+" in the app leads here (lib/cosmetics/plus.mjs) – never a pop-up. Motion: the preview
 // loops play while hovered or focused (the hero card always), never with reduced motion. No favourite stars here (owner,
 // 19.11.26): they belong where you choose your looks – the profile editor and the pickers, with their filters.
 import { html, useState } from '/vendor/htm-preact.mjs';
@@ -34,10 +34,10 @@ function useHot() {
   return [hot, { onPointerEnter: () => setHot(true), onPointerLeave: () => setHot(false), onfocusin: () => setHot(true), onfocusout: () => setHot(false) }];
 }
 
-/** The twicable+ mark with its name – or, for something you have, a quiet "Yours". */
+/** The twincable+ mark with its name – or, for something you have, a quiet "Yours". */
 function Owned({ yours }) {
   return yours ? html`<span class="plus-yours"><${Icon} name="check" size=${11} />${t('plus.yours', 'Yours')}</span>`
-    : html`<span class="plus-chip"><${Icon} name="plus" size=${9} />${t('rail.plus', 'twicable+')}</span>`;
+    : html`<span class="plus-chip"><${Icon} name="plus" size=${9} />${t('rail.plus', 'twincable+')}</span>`;
 }
 
 /** A banner: live when the pack has it, else its preview picture (the loop while `loop`). */
@@ -64,12 +64,12 @@ function PlateRow({ id, me, sub, loop }) {
   return html`<div class="plus-plate plus-plate--pic"><${PreviewPicture} kind="nameplates" id=${id} loop=${loop} />${body}</div>`;
 }
 
-/** The hero's card: you, wearing twicable+ – on your profile and in a friend's list. */
+/** The hero's card: you, wearing twincable+ – on your profile and in a friend's list. */
 function YouCard({ me, look, signedIn }) {
   const shown = signedIn ? me : null;
   // the banner moves (as on a profile); the frame and the nameplate play while the card is pointed at, like in a list
   const [hot, on] = useHot();
-  return html`<figure class="plus-you" aria-label=${t('plus.youAria', 'How you look with twicable+')} ...${on}>
+  return html`<figure class="plus-you" aria-label=${t('plus.youAria', 'How you look with twincable+')} ...${on}>
     <div class="plus-you-banner"><${BannerLook} id=${look.banner} loop=${!prefersReduced()} /></div>
     <div class="plus-you-id"><${FramedAvatar} me=${shown} frame=${look.frame} size=${72} loop=${hot} />
       <div class="plus-you-names"><b class="plus-you-name">${shown?.name || t('plus.you', 'You')}</b>
@@ -101,7 +101,7 @@ function useTryTheme(navigate) {
 }
 
 function previewError(e) {
-  if (e?.code === 'rate_limited') return t('skin.previewDay', 'You’ve used today’s previews – try again tomorrow, or get twicable+ to keep every theme.');
+  if (e?.code === 'rate_limited') return t('skin.previewDay', 'You’ve used today’s previews – try again tomorrow, or get twincable+ to keep every theme.');
   if (e?.code === 'limit_reached') return t('skin.previewBusy', 'Too many previews are running on your account – wait until one ends.');
   if (e?.code === 'none') return t('skin.previewNone', 'Previews aren’t available right now.');
   return t('skin.previewFailed', 'The preview couldn’t be loaded. Check your connection and try again.');
@@ -109,7 +109,7 @@ function previewError(e) {
 
 /**
  * The colour themes, kept small (they matter least of the looks): every theme as a swatch in one strip, and a small live
- * preview – a profile dressed in twicable+ (the banner, frame and nameplate made for that theme, real pack items) in the
+ * preview – a profile dressed in twincable+ (the banner, frame and nameplate made for that theme, real pack items) in the
  * theme's own colours. Trying one on the whole app is a button away.
  */
 function Themes({ skins, state, me, count, navigate }) {
@@ -137,7 +137,7 @@ function Themes({ skins, state, me, count, navigate }) {
         <div class="row">${action}</div>
         ${trying && trying !== 'busy' && html`<p class="small warning info" role="status">${previewError(trying)}</p>`}
       </div>
-      <figure class="plus-tp" style=${themeVars(k.sw)} aria-label=${t('skin.shotAlt', 'twicable in {name}', { name: k.name })} ...${on}>
+      <figure class="plus-tp" style=${themeVars(k.sw)} aria-label=${t('skin.shotAlt', 'twincable in {name}', { name: k.name })} ...${on}>
         <span class="plus-tp-rail" aria-hidden="true"><i></i><i class="on"></i><i></i><i></i><i></i></span>
         <div class="plus-tp-main">
           <div class="plus-tp-banner"><${BannerLook} id=${look.banner} loop=${hot} /></div>
@@ -208,8 +208,8 @@ function Gallery({ state, me, navigate }) {
 function Tiers({ state }) {
   const text = {
     supporter: { name: t('acct.supporter', 'Supporter'), what: [t('plus.tSup1', 'The Supporter badge on your profile'), t('plus.tSup3', 'The 3D launch: your own handheld, in your colours'), t('plus.tSup2', 'You help keep the servers running')], cta: t('plus.tSupCta', 'Become a Supporter') },
-    plus: { name: t('rail.plus', 'twicable+'), what: [t('plus.tPlus1b', 'Every theme, banner, frame and nameplate – and every launch look, skin and sticker for your handheld'), t('plus.tPlus2', 'New ones every month'), t('plus.tPlus3', 'The twicable+ badge')], cta: t('plus.tPlusCta', 'Join twicable+') },
-    patron: { name: t('acct.patron', 'Legend'), what: [t('plus.tPat1', 'Everything in twicable+'), t('plus.tPat2', 'The Legend badge'), t('plus.tPat3', 'For when you want to give more')], cta: t('plus.tPatCta', 'Become a Legend') },
+    plus: { name: t('rail.plus', 'twincable+'), what: [t('plus.tPlus1b', 'Every theme, banner, frame and nameplate – and every launch look, skin and sticker for your handheld'), t('plus.tPlus2', 'New ones every month'), t('plus.tPlus3', 'The twincable+ badge')], cta: t('plus.tPlusCta', 'Join twincable+') },
+    patron: { name: t('acct.patron', 'Legend'), what: [t('plus.tPat1', 'Everything in twincable+'), t('plus.tPat2', 'The Legend badge'), t('plus.tPat3', 'For when you want to give more')], cta: t('plus.tPatCta', 'Become a Legend') },
   };
   return html`<section class="plus-sec" id="plus-tiers">
     <${Head} k=${t('plus.kTiers', 'Pick what fits')} title=${t('plus.tiersT', 'Three ways to chip in')}>${t('plus.tiersHint', 'Monthly, through Buy Me a Coffee – cancel there any time.')}<//>
@@ -240,9 +240,9 @@ function FreeAndMoney() {
       <ul class="plus-ticks">${free.map((x) => html`<li><${Icon} name="check" size=${12} /><span>${x}</span></li>`)}</ul>
     </section>
     <section class="plus-sec plus-panel">
-      <${Head} k=${t('plus.kMoney', 'Where the money goes')} title=${t('plus.moneyT', 'Keeping twicable going')} />
+      <${Head} k=${t('plus.kMoney', 'Where the money goes')} title=${t('plus.moneyT', 'Keeping twincable going')} />
       <ul class="plus-money">${money.map(([i, a, b]) => html`<li><span class="plus-money-ico"><${Icon} name=${i} size=${14} /></span><span><b>${a}</b><span class="small muted">${b}</span></span></li>`)}</ul>
-      <a class="plus-thanks-link small" href="#/thanks"><${Icon} name="heart" size=${12} /><span>${t('plus.thanksLink', 'See who already supports twicable')}</span><${Icon} name="external" size=${11} /></a>
+      <a class="plus-thanks-link small" href="#/thanks"><${Icon} name="heart" size=${12} /><span>${t('plus.thanksLink', 'See who already supports twincable')}</span><${Icon} name="external" size=${11} /></a>
     </section>
   </div>`;
 }
@@ -250,7 +250,7 @@ function FreeAndMoney() {
 function Cancel() {
   const rows = [[t('plus.c1', 'Nothing you earned goes away'), t('plus.c1t', 'Runs, trophies, titles, friends and your profile stay exactly as they are.')],
     [t('plus.c2', 'Your picks wait for you'), t('plus.c2t', 'Friends see the free banner, frame and nameplate again; your choices are remembered and come back when you rejoin.')],
-    [t('plus.c3', 'The app goes back to its own colours'), t('plus.c3t', 'Your theme returns the moment twicable+ is active again.')],
+    [t('plus.c3', 'The app goes back to its own colours'), t('plus.c3t', 'Your theme returns the moment twincable+ is active again.')],
     [t('plus.c4', 'A week of grace offline'), t('plus.c4t', 'No internet for a few days doesn’t take anything away.')],
     [t('plus.c5', 'Your handheld waits too'), t('plus.c5t', 'Your launch settings and designs are kept. With Supporter the free parts play; without a membership the cartridge does – until you’re back.')]];
   return html`<section class="plus-sec">
@@ -261,9 +261,9 @@ function Cancel() {
 
 function Faq({ navigate }) {
   const qa = [
-    [t('plus.q1', 'Does twicable+ change what the app can do?'), t('plus.a1', 'No. Every feature stays free for everyone – twicable+ adds looks only: colour themes, banners, frames, nameplates and launch animations.')],
-    [t('plus.q2', 'Can I try it first?'), html`${t('plus.a2', 'Signed in, you can try any theme on the whole app for 15 minutes, a few times a day. In the profile editor you can try on every banner, frame and nameplate as long as you like – saving keeps your free one.')} ${t('plus.a2Trial', 'Or try all of twicable+ free for 7 days – once per Discord account, if it’s at least 30 days old and never had twicable+. Nothing to pay, nothing renews, nothing to cancel.')}`],
-    [t('plus.q3', 'I already support twicable on Buy Me a Coffee – how do I get it?'), html`${t('plus.a3', 'Link the membership in Settings › Account with the email you used there, or with /supporter claim in the twicable Discord.')} <a href="#" onClick=${(e) => { e.preventDefault(); navigate('settings', settingsLink('plus')); }}>${t('plus.a3Link', 'Link a membership')}</a>`],
+    [t('plus.q1', 'Does twincable+ change what the app can do?'), t('plus.a1', 'No. Every feature stays free for everyone – twincable+ adds looks only: colour themes, banners, frames, nameplates and launch animations.')],
+    [t('plus.q2', 'Can I try it first?'), html`${t('plus.a2', 'Signed in, you can try any theme on the whole app for 15 minutes, a few times a day. In the profile editor you can try on every banner, frame and nameplate as long as you like – saving keeps your free one.')} ${t('plus.a2Trial', 'Or try all of twincable+ free for 7 days – once per Discord account, if it’s at least 30 days old and never had twincable+. Nothing to pay, nothing renews, nothing to cancel.')}`],
+    [t('plus.q3', 'I already support twincable on Buy Me a Coffee – how do I get it?'), html`${t('plus.a3', 'Link the membership in Settings › Account with the email you used there, or with /supporter claim in the twincable Discord.')} <a href="#" onClick=${(e) => { e.preventDefault(); navigate('settings', settingsLink('plus')); }}>${t('plus.a3Link', 'Link a membership')}</a>`],
     [t('plus.q4', 'What do my friends see?'), t('plus.a4', 'Your banner, frame and nameplate – on your profile and in their friends lists. Themes and launch animations are just for you.')],
   ];
   return html`<section class="plus-sec">
@@ -275,12 +275,12 @@ function Faq({ navigate }) {
 function trialError(e) {
   if (e?.vars?.code === 'trial_used') return t('plus.trialUsed', 'The free trial was already used on this Discord account.');
   if (e?.vars?.reason === 'account_age') return t('plus.trialAge', 'The free trial needs a Discord account that’s at least 30 days old.');
-  if (e?.vars?.reason === 'had_plus' || e?.vars?.reason === 'member') return t('plus.trialHad', 'The free trial is for accounts that never had twicable+ or Legend.');
+  if (e?.vars?.reason === 'had_plus' || e?.vars?.reason === 'member') return t('plus.trialHad', 'The free trial is for accounts that never had twincable+ or Legend.');
   if (e?.vars?.code === 'rate_limited') return t('plus.trialLater', 'Too many tries – please try again later.');
   return t('plus.trialFailed', 'The trial couldn’t be started. Check your connection and try again.');
 }
 
-/** "Try twicable+ free for 7 days": starts the trial (§8.6), then loads the looks. */
+/** "Try twincable+ free for 7 days": starts the trial (§8.6), then loads the looks. */
 function useTrial() {
   const { toast } = useApp();
   const [state, setState] = useState(null); // null | 'busy' | Error
@@ -290,7 +290,7 @@ function useTrial() {
       const r = await startTrial();
       refreshPack().catch(() => {});
       setState(null);
-      toast({ kind: 'ok', title: t('plus.trialOn', 'twicable+ is yours for 7 days'), text: r.until ? t('plus.trialEnds', 'Trial · ends {date}', { date: dateOf(r.until) }) : '' });
+      toast({ kind: 'ok', title: t('plus.trialOn', 'twincable+ is yours for 7 days'), text: r.until ? t('plus.trialEnds', 'Trial · ends {date}', { date: dateOf(r.until) }) : '' });
     } catch (e) {
       setState(e);
     }
@@ -301,17 +301,17 @@ function useTrial() {
 /** The trial offer: a clear button and, right under it, what it is – no card details, nothing renews. */
 function TrialOffer({ big }) {
   const [trial, run] = useTrial();
-  return html`<button type="button" class=${`btn ${big ? 'big' : ''}`} disabled=${trial === 'busy'} onClick=${run}><${Icon} name="clock" size=${14} />${t('plus.trialTry', 'Try twicable+ free for 7 days')}</button>
+  return html`<button type="button" class=${`btn ${big ? 'big' : ''}`} disabled=${trial === 'busy'} onClick=${run}><${Icon} name="clock" size=${14} />${t('plus.trialTry', 'Try twincable+ free for 7 days')}</button>
     ${trial && trial !== 'busy' && html`<p class="small warning info plus-trial-msg" role="status">${trialError(trial)}</p>`}`;
 }
 
 /** The hero's words and buttons for this state. */
 function HeroText({ state, me, navigate }) {
-  const mark = html`<div class="plus-wordmark" aria-hidden="true"><span>twicable</span><span class="plus-box"><${Icon} name="plus" size=${14} /></span></div>`;
+  const mark = html`<div class="plus-wordmark" aria-hidden="true"><span>twincable</span><span class="plus-box"><${Icon} name="plus" size=${14} /></span></div>`;
   if (state.kind === 'trial') {
     const ends = dateOf(state.trial?.until || state.until);
-    return html`${mark}<h1 class="plus-h1">${t('plus.trialH', 'Enjoy twicable+, {name}.', { name: state.name })}</h1>
-      <p class="plus-lede">${t('plus.trialLede', 'Everything on this page is yours until {date}. Nothing renews and there’s nothing to cancel – afterwards twicable goes back to its free looks, and your picks wait for you.', { date: ends })}</p>
+    return html`${mark}<h1 class="plus-h1">${t('plus.trialH', 'Enjoy twincable+, {name}.', { name: state.name })}</h1>
+      <p class="plus-lede">${t('plus.trialLede', 'Everything on this page is yours until {date}. Nothing renews and there’s nothing to cancel – afterwards twincable goes back to its free looks, and your picks wait for you.', { date: ends })}</p>
       <div class="plus-member">
         <div class="row tight"><span class="chip">${t('plus.trialEnds', 'Trial · ends {date}', { date: ends })}</span></div>
         <div class="row"><button type="button" class="btn go" onClick=${membership}><${Icon} name="external" size=${14} />${t('plus.trialKeep', 'Keep it on Buy Me a Coffee')}</button>
@@ -320,29 +320,29 @@ function HeroText({ state, me, navigate }) {
   }
   if (hasPlusLooks(state)) {
     return html`${mark}<h1 class="plus-h1">${t('plus.thanksH', 'Thank you, {name}.', { name: state.name })}</h1>
-      <p class="plus-lede">${t('plus.thanksLede', 'You help keep twicable free for everyone – the servers, the signing certificates, the time. Everything on this page is yours to use.')}</p>
+      <p class="plus-lede">${t('plus.thanksLede', 'You help keep twincable free for everyone – the servers, the signing certificates, the time. Everything on this page is yours to use.')}</p>
       <div class="plus-member">
         <div class="row tight"><${Badges} badges=${me?.badges || []} />${state.until && html`<span class="small muted">${t('plus.until', 'until {date} · renews on Buy Me a Coffee', { date: dateOf(state.until) })}</span>`}</div>
         <div class="row"><button type="button" class="btn" onClick=${membership}><${Icon} name="external" size=${14} />${t('plus.manage', 'Manage on Buy Me a Coffee')}</button>
           <button type="button" class="btn ghost" onClick=${() => navigate('profile', { edit: '1' })}>${t('plus.dressUp', 'Dress up your profile')}</button></div>
       </div>`;
   }
-  const join = html`<button type="button" class="btn go big" onClick=${membership}><${Icon} name="plus" size=${14} />${t('plus.join', 'Join twicable+ · {price} € a month', { price: TIERS.find((x) => x.id === 'plus').price })}</button>`;
+  const join = html`<button type="button" class="btn go big" onClick=${membership}><${Icon} name="plus" size=${14} />${t('plus.join', 'Join twincable+ · {price} € a month', { price: TIERS.find((x) => x.id === 'plus').price })}</button>`;
   if (state.kind === 'supporter') {
     return html`${mark}<h1 class="plus-h1">${t('plus.thanksH', 'Thank you, {name}.', { name: state.name })}</h1>
-      <p class="plus-lede">${t('plus.supLede2', 'Your Supporter badge helps keep twicable free for everyone – and your games start on your own handheld in 3D. twicable+ adds the looks below – themes, banners, frames, nameplates, and the shells, skins and stickers for your handheld.')}</p>
+      <p class="plus-lede">${t('plus.supLede2', 'Your Supporter badge helps keep twincable free for everyone – and your games start on your own handheld in 3D. twincable+ adds the looks below – themes, banners, frames, nameplates, and the shells, skins and stickers for your handheld.')}</p>
       <div class="row">${join}${trialOffered(state) ? html`<${TrialOffer} big />`
         : html`<button type="button" class="btn ghost big" onClick=${() => document.getElementById('plus-tiers')?.scrollIntoView({ behavior: prefersReduced() ? 'auto' : 'smooth' })}>${t('plus.seeTiers', 'Compare the tiers')}</button>`}</div>
       ${trialOffered(state) && html`<p class="small faint plus-fine">${t('plus.trialFine', '7 days, once per Discord account. No payment details – nothing renews, nothing to cancel.')}</p>`}`;
   }
-  return html`${mark}<h1 class="plus-h1">${t('plus.heroH', 'twicable stays free.')}<br /><span class="plus-h1-2">${t('plus.heroH2', 'twicable+ makes it yours.')}</span></h1>
-    <p class="plus-lede">${t('plus.lede', 'Everything that plays – emulators, SoulLink, Nuzlocke tracking, sync, trophies, friends – costs nothing, forever. twicable+ is how you help pay for the servers and the time, and get a few beautiful things for it.')}</p>
+  return html`${mark}<h1 class="plus-h1">${t('plus.heroH', 'twincable stays free.')}<br /><span class="plus-h1-2">${t('plus.heroH2', 'twincable+ makes it yours.')}</span></h1>
+    <p class="plus-lede">${t('plus.lede', 'Everything that plays – emulators, SoulLink, Nuzlocke tracking, sync, trophies, friends – costs nothing, forever. twincable+ is how you help pay for the servers and the time, and get a few beautiful things for it.')}</p>
     <div class="row">${join}
       ${state.kind === 'signedOut' ? html`<button type="button" class="btn ghost big" onClick=${() => navigate('settings', settingsLink('account'))}>${t('plus.signIn', 'Sign in to try a theme')}</button>`
         : trialOffered(state) ? html`<${TrialOffer} big />`
           : html`<button type="button" class="btn ghost big" onClick=${() => navigate('settings', settingsLink('skin'))}>${t('plus.tryAny', 'Try a theme for 15 minutes')}</button>`}</div>
     ${trialOffered(state) && html`<p class="small faint plus-fine">${t('plus.trialFine', '7 days, once per Discord account. No payment details – nothing renews, nothing to cancel.')}</p>`}
-    <p class="small faint plus-fine">${t('plus.fine', 'Billed by Buy Me a Coffee. Cancel there whenever you like – nothing you earned in twicable goes away.')}
+    <p class="small faint plus-fine">${t('plus.fine', 'Billed by Buy Me a Coffee. Cancel there whenever you like – nothing you earned in twincable goes away.')}
       ${' '}<a href="#" onClick=${(e) => { e.preventDefault(); navigate('settings', settingsLink(state.kind === 'signedOut' ? 'account' : 'plus')); }}>${t('plus.already', 'Already a member? Link it')}</a></p>`;
 }
 

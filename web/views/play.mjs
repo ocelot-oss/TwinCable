@@ -153,7 +153,7 @@ export function PlayView() {
     </div>`;
   }
   if (target.error) return html`<${PlayHome} />`;
-  // 3DS: twicable's own player when its 3DS part is there (and Azahar isn't chosen in Settings), else Azahar on its own
+  // 3DS: twincable's own player when its 3DS part is there (and Azahar isn't chosen in Settings), else Azahar on its own
   if (target.system === '3ds' && (!status?.ctr?.ok || status?.config?.emulatorFor?.['3ds'] === 'azahar')) return html`<${ExternalPlay} target=${target} emu="azahar" />`;
   const choice = status?.config?.emulatorFor?.[target.system] || 'builtin';
   if (choice === 'melonds' && status?.emulators?.melonds?.installed && status?.native?.cores?.nds && status?.native?.ids?.nds) {
@@ -202,7 +202,7 @@ function CtrFailed({ fail, target, onClose }) {
     <div class="grow stack-s">
       <b>${t('ctr.failedTitle', 'The 3DS game has stopped')}</b>
       ${fail.message && html`<span class="small">${fail.message}</span>`}
-      ${!noAzahar && html`<span class="small muted">${t('ctr.failedHint', 'Some graphics cards and drivers can’t run twicable’s built-in 3DS player yet. Azahar, the free 3DS emulator, plays the same games – with live tracking. You can switch back any time in Settings › Games.')}</span>`}
+      ${!noAzahar && html`<span class="small muted">${t('ctr.failedHint', 'Some graphics cards and drivers can’t run twincable’s built-in 3DS player yet. Azahar, the free 3DS emulator, plays the same games – with live tracking. You can switch back any time in Settings › Games.')}</span>`}
     </div>
     <div class="row">
       ${!noAzahar && html`<button class="btn small primary" data-pad-first disabled=${busy} onClick=${toAzahar}>${t('ctr.useAzahar', 'Play 3DS games in Azahar')}</button>`}
@@ -297,7 +297,7 @@ export function GameSession({ session, mode }) {
   const target = session.target;
   // the launch animation (Settings › Play › Launch animation) – what the membership allows at this moment (shared/
   // handheld.mjs launchRights; a membership that ended keeps the settings and plays what the tier allows now):
-  // - Supporter and twicable+: your handheld in 3D (views/launchstage.mjs) over the screen area while the game boots
+  // - Supporter and twincable+: your handheld in 3D (views/launchstage.mjs) over the screen area while the game boots
   //   underneath – it never makes the game wait, and it is silent;
   // - free: the 2D module sliding into the console (views/cartinsert.mjs, never with reduced motion) – it clicks in.
   // Off (or the general "Play animations" switched off): nothing, the module's click sounds when the game appears.
@@ -373,7 +373,7 @@ export function GameSession({ session, mode }) {
   const setMine = (m) => setMineState((prev) => (JSON.stringify(prev) === JSON.stringify(m) ? prev : m));
   const [battle, setBattleState] = useState(null); // what's on the other side right now (readLiveBattle)
   const [here, setHere] = useState(null); // where the player is right now (location.mjs readHere)
-  // what twicable has confirmed it can read in this game (shared/live/features.mjs) – held items and moves only once
+  // what twincable has confirmed it can read in this game (shared/live/features.mjs) – held items and moves only once
   // they all have names
   const [features, setFeatures] = useState(null);
   const [ctrUpdate, setCtrUpdate] = useState(null); // 3DS: the update the game started with (server/lib/ctrupdate.mjs)
@@ -420,7 +420,7 @@ export function GameSession({ session, mode }) {
   // ~10 ms per frame on an M1, the same as "DeSmuME 2015" and with any core option (lib/reach.mjs).
   // (3DS: Azahar in the New 3DS mode – states of another core or mode can't be loaded, and a state of the other mode
   // would stop the game)
-  // The fast player (playernative.html, server/lib/native.mjs): DS, GBA and Game Boy run in twicable's native host –
+  // The fast player (playernative.html, server/lib/native.mjs): DS, GBA and Game Boy run in twincable's native host –
   // melonDS with its JIT, mGBA, SameBoy – at full speed with uncapped fast-forward, unless Settings › "Fast player" is
   // off or its part is missing. When it can't start the game, the session switches to the browser emulator by itself.
   const [nativeOn, setNativeOn] = useState(() => !!(target.link || target.embeddedMelon) || (target.system !== '3ds' && status?.config?.nativeCore !== false && !!status?.native?.cores?.[target.system] && !!status?.native?.ids?.[target.system]));
@@ -794,8 +794,8 @@ export function GameSession({ session, mode }) {
         const labels = { compat: t('set.ctrRendererCompat', 'Vulkan (compatibility)'), software: t('set.ctrRendererSoftware', 'Software') };
         diag('perf', { type: 'ctrRenderer', from: String(e.data.from || ''), to: String(e.data.to || '') });
         toast({ kind: 'warn', title: t('ctr.rendererSwitched', '3DS player: now with {mode}', { mode: labels[e.data.to] || String(e.data.to) }),
-          text: e.data.to === 'software' ? t('ctr.rendererSwitchedSoftware', 'The graphics driver couldn’t run the game with Vulkan, so it runs without the graphics card now – slower, but it runs. twicable remembers this for this graphics card; you can change it in Settings › About › Troubleshooting.')
-            : t('ctr.rendererSwitchedCompat', 'The game stopped right after starting, so twicable started it again in a more compatible Vulkan mode. twicable remembers this for this graphics card; you can change it in Settings › About › Troubleshooting.'),
+          text: e.data.to === 'software' ? t('ctr.rendererSwitchedSoftware', 'The graphics driver couldn’t run the game with Vulkan, so it runs without the graphics card now – slower, but it runs. twincable remembers this for this graphics card; you can change it in Settings › About › Troubleshooting.')
+            : t('ctr.rendererSwitchedCompat', 'The game stopped right after starting, so twincable started it again in a more compatible Vulkan mode. twincable remembers this for this graphics card; you can change it in Settings › About › Troubleshooting.'),
           action: { label: t('play.slowSettings', 'Open Settings'), run: () => navigate('settings', settingsLink('ctr-renderer')) } });
       }
       // the 3DS game runs but has shown nothing but black for a while (lib/ctrplayer.mjs watchBlack): a cut-off copy of the
@@ -803,7 +803,7 @@ export function GameSession({ session, mode }) {
       if (e.data?.type === 'emu-black' && target.system === '3ds') {
         diag('perf', { type: 'ctrBlack', seconds: Number(e.data.seconds) || 0, renderer: String(e.data.renderer || ''), title: String(e.data.title || ''), frames: Number(e.data.frames) || 0, liveMemory: !!e.data.liveMemory });
         toast({ kind: 'warn', ttl: 30000, title: t('ctr.blackTitle', 'The 3DS game shows only a black screen'),
-          text: t('ctr.blackText', 'If it stays black, the game file may be incomplete – remove it from the library and add the game again – or your graphics driver can’t draw it: try Settings › About › 3DS renderer › Software. “Save diagnostics” in the sound menu records what twicable sees.') });
+          text: t('ctr.blackText', 'If it stays black, the game file may be incomplete – remove it from the library and add the game again – or your graphics driver can’t draw it: try Settings › About › 3DS renderer › Software. “Save diagnostics” in the sound menu records what twincable sees.') });
       }
       if (e.data?.type === 'emu-key') onKey(e.data, true);
       if (e.data?.type === 'emu-pad') {
@@ -1112,7 +1112,7 @@ export function GameSession({ session, mode }) {
       let x3 = null; // (one entry object for the session: liveRef and the cheats compare it)
       const scan3Entry = (en) => (x3?.from === en ? x3.entry : (x3 = { from: en, entry: expandedEntry(en, romMaps3Now(), romOwnNow()?.items?.names) }).entry);
       let expandedMisses = 0; // reads in a battle without a team in an expanded engine (after ~15 s: "not supported")
-      // what twicable can read for this game, confirmed poll by poll (shared/live/features.mjs): only what passed is shown,
+      // what twincable can read for this game, confirmed poll by poll (shared/live/features.mjs): only what passed is shown,
       // and every change goes into the diagnostics
       let fc = null;
       let fcOwn = null; // the ROM data fc was made from
@@ -1288,7 +1288,7 @@ export function GameSession({ session, mode }) {
                 lastBalls = Date.now();
                 const balls = readBalls(ent, e.read, state);
                 if (balls > 0) bw.seen(party.filter((m) => m?.key && m.maxHp > 0 && m.hp === 0).map((m) => m.key));
-                // a 3DS bag that isn't where twicable knows it: searched for nearby, at most once a minute
+                // a 3DS bag that isn't where twincable knows it: searched for nearby, at most once a minute
                 else if (balls === null && ent.platform === '3ds' && e.watch && !state.g67Search && Date.now() - (state.ctrBagSearched || 0) > 60000) {
                   state.ctrBagSearched = Date.now();
                   locateCtrBag(ent, { read: e.read, watch: e.watch }, state).then((r) => r && diag('live', { type: 'ctrBagSearch', ...r }), () => {});
@@ -1608,7 +1608,7 @@ export function GameSession({ session, mode }) {
   });
   // The frame's URL is fixed for the whole session – changing it would reboot the game.
   const [wasmSrc] = useState(() => {
-    // 3DS: twicable's own player page – the game runs in the native host (server/lib/ctr.mjs), its saves live in the
+    // 3DS: twincable's own player page – the game runs in the native host (server/lib/ctr.mjs), its saves live in the
     // host's folder for this game / run slot (target.key)
     if (target.system === '3ds') return `/player3ds.html?rom=${encodeURIComponent(target.rom)}&key=${encodeURIComponent(target.key)}&name=${encodeURIComponent(target.name)}&layout=${layout3ds}${smooth3ds ? '&smooth=1' : ''}${wholePixels ? '&px=whole' : ''}`;
     // EmulatorJS names the ROM (and its browser-side save) after the URL's last segment → make it unique per game.
@@ -1816,7 +1816,7 @@ export function GameSession({ session, mode }) {
     let res;
     try {
       // (the 3DS player answers once its host has written – between two frames)
-      // (a 3DS game's bag that isn't where twicable knows it is searched for nearby: the player reads more memory then)
+      // (a 3DS game's bag that isn't where twincable knows it is searched for nearby: the player reads more memory then)
       // (the fast player: the host confirms the write, and the read-back reads the core's memory after it – e.fresh)
       const fast = typeof e.fresh === 'function' && typeof e.writeChecked === 'function';
       res = await applyCheat(id, entry, { read: e.read, write: fast ? e.writeChecked : e.write, ...(fast ? { fresh: e.fresh } : {}),
@@ -1947,7 +1947,7 @@ ${!target.link && html`          ${btn(paused ? 'resume' : 'pause', t('keys.paus
               <span class="mono tiny vol">${muted ? t('play.mutedShort', 'off') : `${Math.round(volume * 100)} %`}</span>
               ${btn(muted ? 'sound' : 'mute', muted ? t('play.unmute', 'Sound on') : t('play.mute', 'Mute') + hint('mute'), actions.mute)}
               </div>
-              <label class="turbo-audio" title=${t('play.turboAudioHint', 'What you hear while fast-forwarding. “Music continues” keeps the music at its normal speed and pitch – sound effects stay silent. Where twicable has no music of its own yet (a song not yet heard at normal speed), you hear the sped-up original. “Sped-up original” plays the game’s own sound, faster and higher.')}>
+              <label class="turbo-audio" title=${t('play.turboAudioHint', 'What you hear while fast-forwarding. “Music continues” keeps the music at its normal speed and pitch – sound effects stay silent. Where twincable has no music of its own yet (a song not yet heard at normal speed), you hear the sped-up original. “Sped-up original” plays the game’s own sound, faster and higher.')}>
                 <span class="tiny">${t('play.turboAudio', 'Turbo audio')}</span>
                 <select value=${turboAudio} onChange=${(e) => actions.turboAudio(e.target.value)}>
                   <option value="music">${t('play.turboAudioMusic', 'Music continues')}</option>
@@ -1957,7 +1957,7 @@ ${!target.link && html`          ${btn(paused ? 'resume' : 'pause', t('keys.paus
                 </select>
               </label>
               <a class="btn small ghost diag-btn" href=${`#/settings?${new URLSearchParams(settingsLink('turbo-audio'))}`} onClick=${() => setSoundOpen(false)}>${t('play.moreSound', 'More sound settings')}</a>
-              <button class="btn small ghost diag-btn" title=${t('play.diagHint', 'Saves what twicable recorded about the music and live tracking this session – attach the file to a bug report. No ROM, save or invite data.')}
+              <button class="btn small ghost diag-btn" title=${t('play.diagHint', 'Saves what twincable recorded about the music and live tracking this session – attach the file to a bug report. No ROM, save or invite data.')}
                 onClick=${() => saveDiagnostics({ turboAudio, speed: speed === MAX ? 'max' : speed, reach, steps: steps.map((x) => (x === MAX ? 'max' : x)), volume, perf: emu()?.perf?.() ?? null, audioGraph: emu()?.audioGraph?.() ?? null, pad: emu()?.padInfo?.() ?? null })}><${Icon} name="save" size=${14} />${t('play.diag', 'Save diagnostics')}</button>
             </div>`}
           </span>
@@ -2061,8 +2061,8 @@ ${!target.link && html`          ${btn(paused ? 'resume' : 'pause', t('keys.paus
       ? t('play.liveUnsupportedRun', 'This ROM isn’t in the memory table (other language or a hack with a changed layout). The run still works – enter catches by hand.')
       : t('play.liveNoneSolo', 'Live tracking reads Pokémon games – this one plays without it.')}</span>`}
     ${liveState.status === 'hack' && html`<span class="small muted">${isRun
-      ? t('play.liveHackRun', 'This ROM hack runs on an expanded engine (new Pokémon numbers and a different memory layout) that twicable can’t read reliably yet – so it shows nothing rather than wrong Pokémon. The run still works: enter catches by hand.')
-      : t('play.liveHackSolo', 'This ROM hack runs on an expanded engine (new Pokémon numbers and a different memory layout) that twicable can’t read reliably yet – so it shows nothing rather than wrong Pokémon.')}</span>`}
+      ? t('play.liveHackRun', 'This ROM hack runs on an expanded engine (new Pokémon numbers and a different memory layout) that twincable can’t read reliably yet – so it shows nothing rather than wrong Pokémon. The run still works: enter catches by hand.')
+      : t('play.liveHackSolo', 'This ROM hack runs on an expanded engine (new Pokémon numbers and a different memory layout) that twincable can’t read reliably yet – so it shows nothing rather than wrong Pokémon.')}</span>`}
     ${ctrUpdateNote(ctrUpdate, liveState.status === 'live') && html`<span class="small muted">${ctrUpdateNote(ctrUpdate, liveState.status === 'live')}</span>`}
     ${ballsNote && html`<p class="tiny muted balls-note" role="note">${solo ? t('play.ballsNoteSolo', 'Before your first Poké Balls nothing counts.')
       : t('play.ballsNote', 'Before your first Poké Balls nothing counts for you – only a partner’s loss still takes your linked Pokémon along.')}</p>`}
@@ -2192,10 +2192,10 @@ function ScriptBridge({ fresh }) {
   const gameName = game ? [game.title, game.code && `(${game.code})`].filter(Boolean).join(' ') : '';
   const text = {
     live: () => t('ext.liveOn', 'Live data is coming in'),
-    noPort: () => t('ext.liveNoPort', 'The live bridge couldn’t start: its network ports on this computer are taken. Restart twicable.'),
-    unsupported: () => t('ext.liveUnsupported', 'The script is connected, but twicable has no live data for {game}.', { game: gameName || '?' }),
+    noPort: () => t('ext.liveNoPort', 'The live bridge couldn’t start: its network ports on this computer are taken. Restart twincable.'),
+    unsupported: () => t('ext.liveUnsupported', 'The script is connected, but twincable has no live data for {game}.', { game: gameName || '?' }),
     connected: () => t('ext.liveConnected', 'Script connected – waiting for game data …'),
-    rejected: () => t('ext.liveRejected', 'mGBA tried to connect with an outdated script or one from another twicable installation. In mGBA’s scripting window choose File › Reset, then load the file above again.'),
+    rejected: () => t('ext.liveRejected', 'mGBA tried to connect with an outdated script or one from another twincable installation. In mGBA’s scripting window choose File › Reset, then load the file above again.'),
     waiting: () => t('ext.liveNoConnection', 'No connection yet – load the script in mGBA (see above). It connects as soon as a game runs.'),
   }[key]();
   const color = key === 'live' || key === 'connected' ? 'green' : 'amber';
@@ -2230,15 +2230,15 @@ function InstallEmulator({ target, emu }) {
     <div class="topbar"><h1>${target.label}</h1></div>
     <section class="panel stack">
       <h2>${t('ext.needEmu', '{emu} is needed for this game', { emu: e.name })}</h2>
-      <p class="small muted">${t('ext.needEmuText', 'Nintendo 3DS games run in {emu}, a free emulator. twicable downloads its latest release from GitHub and keeps it in its own folder.', { emu: e.name })}</p>
+      <p class="small muted">${t('ext.needEmuText', 'Nintendo 3DS games run in {emu}, a free emulator. twincable downloads its latest release from GitHub and keeps it in its own folder.', { emu: e.name })}</p>
       <div><button class="btn primary big" disabled=${busy} onClick=${install}><${Icon} name="plus" size=${16} />${busy ? t('set.installing', 'Installing …') : t('ext.installEmu', 'Install {emu}', { emu: e.name })}</button></div>
     </section>
   </div>`;
 }
 
 /**
- * Azahar's RPC server: off by default; twicable switches it on only after saying what it means (it answers on the
- * local network too). Then: connected or not, which game runs, whether twicable reads it.
+ * Azahar's RPC server: off by default; twincable switches it on only after saying what it means (it answers on the
+ * local network too). Then: connected or not, which game runs, whether twincable reads it.
  */
 function AzaharBridge({ fresh, isRun }) {
   const { toast } = useApp();
@@ -2270,7 +2270,7 @@ function AzaharBridge({ fresh, isRun }) {
   const text = {
     live: () => t('ext.liveOn', 'Live data is coming in'),
     reading: () => t('ext.azaharReading', 'Connected to Azahar – looking for your team in {game} …', { game: name }),
-    unsupported: () => t('ext.azaharUnsupported', 'Connected to Azahar, but twicable has no live data for {game}.', { game: name || '?' }),
+    unsupported: () => t('ext.azaharUnsupported', 'Connected to Azahar, but twincable has no live data for {game}.', { game: name || '?' }),
     noGame: () => t('ext.azaharNoGame', 'Connected to Azahar – start a game there.'),
     waiting: () => t('ext.azaharWaiting', 'No connection yet – start Azahar (after switching it on, restart it once).'),
     off: () => t('ext.azaharOff', 'Live data is off in Azahar.'),
@@ -2278,12 +2278,12 @@ function AzaharBridge({ fresh, isRun }) {
   const color = key === 'live' || key === 'reading' || key === 'noGame' ? 'green' : 'amber';
   return html`<div class="stack-s">
     ${!st.setting?.enabled && !st.connected && html`<div class="note stack-s">
-      <p class="small">${t('ext.rpcWhy', 'For live data (team, catches, deaths) Azahar has to share the running game’s memory with twicable: its “RPC server” (Settings › Debug).')}</p>
+      <p class="small">${t('ext.rpcWhy', 'For live data (team, catches, deaths) Azahar has to share the running game’s memory with twincable: its “RPC server” (Settings › Debug).')}</p>
       <p class="small"><b>${t('ext.rpcWarnTitle', 'Good to know:')}</b> ${t('ext.rpcWarn', 'Azahar answers on your local network too, not only on this computer (UDP port 45987). While Azahar runs, other devices in the same network could read and change the game’s memory. Only use it on networks you trust.')}</p>
       ${asking
         ? html`<div class="row"><button class="btn small primary" onClick=${enable}>${t('ext.rpcConfirm', 'Yes, switch it on')}</button><button class="btn small ghost" onClick=${() => setAsking(false)}>${t('common.cancel', 'Cancel')}</button></div>`
         : html`<div><button class="btn small" onClick=${() => setAsking(true)}>${t('ext.rpcEnable', 'Switch on live data in Azahar')}</button></div>`}
-      <p class="tiny faint">${t('ext.rpcFile', 'twicable changes this one setting in {file}.', { file: st.setting?.path || 'qt-config.ini' })}</p>
+      <p class="tiny faint">${t('ext.rpcFile', 'twincable changes this one setting in {file}.', { file: st.setting?.path || 'qt-config.ini' })}</p>
     </div>`}
     <div class="row nowrap" role="status" aria-live="polite"><${Led} on=${key !== 'off' && key !== 'waiting'} color=${color} blink=${key === 'reading'} /><span class="small grow">${text}</span></div>
     ${!isRun && key === 'live' && html`<p class="tiny faint">${t('ext.azaharSolo', 'Your team shows up in a SoulLink or Nuzlocke run with this game.')}</p>`}
@@ -2352,7 +2352,7 @@ export function ExternalFeed() {
 }
 
 /**
- * The battery-save fallback: which save file twicable reads for the run and when it last read it
+ * The battery-save fallback: which save file twincable reads for the run and when it last read it
  * – the place melonDS writes to, or why it can't be read. Asked every few seconds (an in-game save changes it).
  */
 function SaveWatchLine({ runId, emu, slot }) {
@@ -2368,8 +2368,8 @@ function SaveWatchLine({ runId, emu, slot }) {
     };
   }, [runId, slot]);
   if (!st) return null;
-  if (!st.readable) return html`<p class="small muted">${t('ext.saveUnreadable', 'twicable can’t read this game’s save files – your team won’t update while you play with {emu}.', { emu })}</p>`;
-  if (!st.watching) return html`<p class="tiny faint">${t('ext.saveNotYet', 'twicable starts reading the save file once you launch {emu} from here.', { emu })}</p>`;
+  if (!st.readable) return html`<p class="small muted">${t('ext.saveUnreadable', 'twincable can’t read this game’s save files – your team won’t update while you play with {emu}.', { emu })}</p>`;
+  if (!st.watching) return html`<p class="tiny faint">${t('ext.saveNotYet', 'twincable starts reading the save file once you launch {emu} from here.', { emu })}</p>`;
   const file = String(st.path || '').split(/[\\/]/).pop();
   const text = st.error ? t('ext.saveError', 'Can’t read {file}: {error}', { file, error: serverErrorText({ code: st.errorCode, error: st.error }) })
     : !st.exists ? t('ext.saveWaiting', 'Waiting for {file} – save in the game once.', { file })
@@ -2439,7 +2439,7 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
         <button class="btn primary big" onClick=${() => {
           setExternalRun(null);
           startSession({ ...target, embeddedMelon: true });
-        }}><${Icon} name="play" size=${16} />${t('ext.embedMelon', 'Play melonDS inside twicable')}</button>
+        }}><${Icon} name="play" size=${16} />${t('ext.embedMelon', 'Play melonDS inside twincable')}</button>
       </div>`}
       ${melon && html`<label>${t('ext.melonPort', 'ARM9 port for live sync (optional)')}
         <input type="number" min="1024" max="65535" step="1" placeholder="3333" value=${arm9Port} onInput=${(event) => setArm9Port(event.currentTarget.value)} />

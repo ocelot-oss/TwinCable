@@ -8,12 +8,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { deflateRawSync } from 'node:zlib';
 
-const DATA = mkdtempSync(join(tmpdir(), 'twicable-linkrestore-'));
+const DATA = mkdtempSync(join(tmpdir(), 'twincable-linkrestore-'));
 const TOOLS = join(DATA, 'bundled');
 process.env.SLS_DATA_DIR = DATA;
 process.env.SLS_TOOLS_DIR = TOOLS;
 process.env.SLS_ACCOUNTS_URL = 'http://127.0.0.1:9';
-process.env.TWICABLE_LINK_ICE = 'off';
+process.env.TWINCABLE_LINK_ICE = 'off';
 const { PLATFORM_DIR } = await import('../server/lib/ctr.mjs');
 if (process.platform !== 'win32') {
   const dir = join(TOOLS, 'native', PLATFORM_DIR);

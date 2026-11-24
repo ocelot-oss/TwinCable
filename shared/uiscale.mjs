@@ -1,4 +1,4 @@
-// Interface size (Settings › General): how big twicable draws its own interface on this computer – the sidebar, the
+// Interface size (Settings › General): how big twincable draws its own interface on this computer – the sidebar, the
 // dock, the board, partner windows, menus, toasts, the names and menus over the game. "On a bigger monitor with a higher
 // pixel count the UI is unreadable and too small to see" (a player on Discord).
 //
@@ -82,7 +82,7 @@ export function uiScaleKey(e, mac) {
 }
 
 /**
- * Should twicable suggest a bigger interface on this screen – and which size? `display`: the window's screen ({ w, h }
+ * Should twincable suggest a bigger interface on this screen – and which size? `display`: the window's screen ({ w, h }
  * in DIP, `scale`: its device pixels per DIP), `win`: the window's content ({ w, h } DIP), `chosen`: the size set now.
  * Returns a size from UI_SCALES or null.
  *

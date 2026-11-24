@@ -1,7 +1,7 @@
 // "Share to Discord" (Live runs): the local server's side of the bot's contract (docs/DEVELOPMENT.md › "Live runs").
 //
-// The player links twicable to their Discord account once with a code from `/live connect`; the bot answers with a
-// token for that player. The token is the only credential there is – twicable ships no key, secret or password of
+// The player links twincable to their Discord account once with a code from `/live connect`; the bot answers with a
+// token for that player. The token is the only credential there is – twincable ships no key, secret or password of
 // its own, only the bot's public addresses below. It is kept in its own file in the data folder (live-runs.json, next
 // to config.json – never in a run folder, a run pack, the config the page reads, diagnostics or a log line), and only
 // this module reads it: the page asks the local server, the local server asks the bot. A request to the bot never
@@ -12,7 +12,7 @@ import { DATA_DIR, DEV, APP_ROOT } from './paths.mjs';
 import { writeFileAtomic, httpError } from './fsutil.mjs';
 import { buildMeta, metaProblem, normalizeCode, pngProblem } from '../../shared/liveruns.mjs';
 
-/** The bot's public address (the contract's base URL). TWICABLE_LIVE_URL replaces it – for tests against a mock bot. */
+/** The bot's public address (the contract's base URL). TWINCABLE_LIVE_URL replaces it – for tests against a mock bot. */
 export const LIVE_RUNS_URL = 'https://api.souldew.app';
 /**
  * The same bot under its workers.dev address (the base URL up to 2.6). Some DNS filters block *.workers.dev, others may
@@ -23,7 +23,7 @@ export const LIVE_RUNS_FALLBACK_URL = 'https://souldew-discord-bot.sweeparena.wo
 
 /** The address in use: the variable when it is a valid https URL (or http on this computer, for tests), else the bot's. */
 export function liveBase(env = process.env) {
-  const v = env.TWICABLE_LIVE_URL;
+  const v = env.TWINCABLE_LIVE_URL;
   if (v) {
     try {
       const u = new URL(v);
@@ -36,7 +36,7 @@ export function liveBase(env = process.env) {
   return LIVE_RUNS_URL;
 }
 
-/** The addresses a request tries, in order: TWICABLE_LIVE_URL alone (a test never reaches the real bot), else the bot's. */
+/** The addresses a request tries, in order: TWINCABLE_LIVE_URL alone (a test never reaches the real bot), else the bot's. */
 export function liveBases(env = process.env) {
   const base = liveBase(env);
   return base === LIVE_RUNS_URL ? [LIVE_RUNS_URL, LIVE_RUNS_FALLBACK_URL] : [base];
@@ -46,7 +46,7 @@ export function liveBases(env = process.env) {
 export const liveRunsFile = () => join(DEV ? join(APP_ROOT, 'runs') : DATA_DIR, 'live-runs.json');
 
 let appVersion = null;
-export function twicableVersion() {
+export function twincableVersion() {
   if (!appVersion) {
     try {
       appVersion = JSON.parse(readFileSync(join(APP_ROOT, 'package.json'), 'utf8')).version || '0.0.0';
@@ -86,7 +86,7 @@ const cleanUser = (u) => ({ id: String(u?.id ?? '').slice(0, 32), name: String(u
 /** What the page may know: linked or not, the Discord name, the shared events. Never the token. */
 export function publicState(s = readState()) {
   const linked = !!tokenOf(s);
-  return { linked, user: linked && s.user ? cleanUser(s.user) : null, shared: s.shared && typeof s.shared === 'object' ? s.shared : {}, app: twicableVersion() };
+  return { linked, user: linked && s.user ? cleanUser(s.user) : null, shared: s.shared && typeof s.shared === 'object' ? s.shared : {}, app: twincableVersion() };
 }
 
 function remember(eventId, entry) {
@@ -164,7 +164,7 @@ export function outcome(status, body = {}) {
 export async function link(code, opts = {}) {
   const c = normalizeCode(code);
   if (!c) return { ok: false, error: 'code' };
-  const { status, body } = await botFetch('/live/link', { method: 'POST', json: { code: c, app: `twicable ${twicableVersion()}`, platform: process.platform }, ...opts });
+  const { status, body } = await botFetch('/live/link', { method: 'POST', json: { code: c, app: `twincable ${twincableVersion()}`, platform: process.platform }, ...opts });
   const o = outcome(status, body);
   if (!o.ok) return o;
   if (typeof body.token !== 'string' || !TOKEN.test(body.token)) return { ok: false, error: 'server' };
@@ -213,7 +213,7 @@ export async function post({ meta: input, image }, opts = {}) {
   const png = Buffer.isBuffer(image) ? image : typeof image === 'string' ? Buffer.from(image, 'base64') : null;
   const bad = pngProblem(png);
   if (bad) throw httpError(400, 'Invalid card image', 'liveCard', { what: bad });
-  const { meta } = buildMeta({ ...(input && typeof input === 'object' ? input : {}), app: twicableVersion() });
+  const { meta } = buildMeta({ ...(input && typeof input === 'object' ? input : {}), app: twincableVersion() });
   const field = metaProblem(meta);
   if (field) throw httpError(400, 'Invalid post details', 'liveMeta', { field });
   const form = new FormData();

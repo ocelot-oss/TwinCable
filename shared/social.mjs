@@ -73,7 +73,7 @@ export function safeAvatarUrl(v, service = null) {
   return `${u.origin}${u.pathname}${size ? `?size=${size}` : ''}`;
 }
 
-/** A twicable handle as typed ("@Ash_K") → "ash_k", or null (API.md §0.6: 3–20 of a–z, 0–9, _). */
+/** A twincable handle as typed ("@Ash_K") → "ash_k", or null (API.md §0.6: 3–20 of a–z, 0–9, _). */
 export function normalizeHandle(v) {
   const s = String(v ?? '').trim().replace(/^@/, '').toLowerCase();
   return /^[a-z0-9_]{3,20}$/.test(s) ? s : null;
@@ -119,7 +119,7 @@ export const presenceSystem = (sys) => ({ gb: 'gb', gbc: 'gb', gba: 'gba', nds: 
 export const safeHex = (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v.toLowerCase() : null);
 /**
  * The curated accent palette (profile accent colour). The accounts service's palette is generated from / checked against
- * this list (twicable-accounts tools/catalog-seed.mjs) – keys and colours must stay identical on both sides.
+ * this list (twincable-accounts tools/catalog-seed.mjs) – keys and colours must stay identical on both sides.
  */
 export const ACCENTS = [
   { key: 'moss', hex: '#5f8a4e' }, { key: 'fern', hex: '#3f7d5c' }, { key: 'tide', hex: '#2f7f9e' },

@@ -45,14 +45,14 @@ export function presenceText(p) {
 /** A free seat a friend opened for "Ask to join". */
 export const canAskToJoin = (p) => p?.state === 'in_run' && p.run?.freeSlot && p.run?.joinable;
 
-/** Supporter / twicable+ / Legend badges (API.md §8.0) – small, quiet. twicable+ and Legend show together. */
+/** Supporter / twincable+ / Legend badges (API.md §8.0) – small, quiet. twincable+ and Legend show together. */
 export function Badges({ badges = [] }) {
   if (!badges.length) return null;
   const plus = badges.includes('plus');
   return html`<span class="acct-badges">
-    ${plus && html`<span class="acct-badge plus" title=${t('acct.plusBadge', 'twicable+ member')}><${Icon} name="star" size=${11} />twicable+</span>`}
-    ${badges.includes('patron') && html`<span class="acct-badge patron" title=${t('acct.patronBadge', 'twicable Legend')}><${Icon} name="heart" size=${11} />${t('acct.patron', 'Legend')}</span>`}
-    ${!plus && badges.includes('supporter') && html`<span class="acct-badge" title=${t('acct.supporterBadge', 'Supports twicable')}><${Icon} name="heart" size=${11} />${t('acct.supporter', 'Supporter')}</span>`}
+    ${plus && html`<span class="acct-badge plus" title=${t('acct.plusBadge', 'twincable+ member')}><${Icon} name="star" size=${11} />twincable+</span>`}
+    ${badges.includes('patron') && html`<span class="acct-badge patron" title=${t('acct.patronBadge', 'twincable Legend')}><${Icon} name="heart" size=${11} />${t('acct.patron', 'Legend')}</span>`}
+    ${!plus && badges.includes('supporter') && html`<span class="acct-badge" title=${t('acct.supporterBadge', 'Supports twincable')}><${Icon} name="heart" size=${11} />${t('acct.supporter', 'Supporter')}</span>`}
   </span>`;
 }
 

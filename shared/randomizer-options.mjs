@@ -1,7 +1,7 @@
 // Curated Universal Pokemon Randomizer ZX options (Gen 1–7: the GB/GBC/GBA/DS games and the 3DS games).
 // Keys are UPR Settings field names — the Java bridge applies them by reflection.
 // Every key and enum value here exists in the bundled UPR ZX 4.6.1 (test/data/upr-settings-fields.json,
-// checked by test/randomizer.test.mjs) – except keys starting with @: twicable's own, done by the bridge itself
+// checked by test/randomizer.test.mjs) – except keys starting with @: twincable's own, done by the bridge itself
 // (@tmsFollowMoves: tools/upr-bridge/TmFollow.java; an older bridge ignores them with an "Unknown setting" warning).
 // User-visible strings are English source text; the UI translates them via localizeRandomizer(t)
 // with stable keys (see rndKey below). The server only uses toProperties(), never the labels.
@@ -18,7 +18,7 @@ const num = (key, label, min, max, help, dependsOn, more) => ({ key, label, type
 /** A small sub-heading inside a group (no value). */
 const head = (key, label) => ({ key, label, type: 'head' });
 
-/** twicable's "TM compatibility follows the TM moves" (the bridge's TmFollow, #81). */
+/** twincable's "TM compatibility follows the TM moves" (the bridge's TmFollow, #81). */
 export const TMS_FOLLOW_MOVES = '@tmsFollowMoves';
 const TRAINER_ITEMS = ['randomizeHeldItemsForBossTrainerPokemon', 'randomizeHeldItemsForImportantTrainerPokemon', 'randomizeHeldItemsForRegularTrainerPokemon'];
 const GEN_TO = (from) => [9, 8, 7, 6, 5, 4, 3, 2].filter((g) => g >= from).reverse().map((g) => [g, `Gen ${g}`, { gens: [1, g - 1] }]);
@@ -239,7 +239,7 @@ export const OPTION_GROUPS = [
       ]),
       bool('tmLevelUpMoveSanity', 'Pokémon can learn TMs of their level-up moves', null, { key: 'tmsHmsCompatibilityMod', in: ['RANDOM_PREFER_TYPE', 'COMPLETELY_RANDOM'] }),
       bool('tmsFollowEvolutions', 'Compatibility follows evolutions', null, { key: 'tmsHmsCompatibilityMod', in: ['RANDOM_PREFER_TYPE', 'COMPLETELY_RANDOM'] }),
-      // twicable's own (#81): UPR keeps a random TM's compatibility tied to its slot – the bridge gives it to the Pokémon
+      // twincable's own (#81): UPR keeps a random TM's compatibility tied to its slot – the bridge gives it to the Pokémon
       // that could learn the new move instead. Only with random TM moves and compatibility left unchanged.
       bool(TMS_FOLLOW_MOVES, 'TM compatibility follows the new TM moves',
         'A TM with a new move works for the Pokémon that could learn that move in the original game – by TM, tutor or level-up, also as an earlier evolution. A move no Pokémon could learn goes to the Pokémon of its type. HMs stay as they are.',
@@ -360,7 +360,7 @@ const BASE = {
   abilitiesFollowMegaEvolutions: false, baseStatsFollowMegaEvolutions: false,
   totemPokemonMod: 'UNCHANGED', allyPokemonMod: 'UNCHANGED', auraMod: 'UNCHANGED', randomizeTotemHeldItems: false,
   allowTotemAltFormes: false, totemLevelsModified: false, totemLevelModifier: 0,
-  // added in 2.8.3 – twicable's own, off (a run keeps it only when it's on: buildValues)
+  // added in 2.8.3 – twincable's own, off (a run keeps it only when it's on: buildValues)
   [TMS_FOLLOW_MOVES]: false,
   '@miscTweaks': [],
 };
@@ -468,7 +468,7 @@ export const PRESETS = [
  * Stable i18n keys for every user-visible string above. The UI translates with
  * localizeRandomizer(t) – the English text in this file is the fallback/source text.
  */
-// (twicable's own @keys without the @)
+// (twincable's own @keys without the @)
 const keyName = (fieldKey) => String(fieldKey).replace(/^@/, '');
 export const rndKey = {
   group: (groupId) => `rnd.group.${groupId}`,
@@ -648,7 +648,7 @@ export function sanitizeValues(input) {
 export function toProperties(values, { baseSettingsString } = {}) {
   // Values can come from an invite pack (the partner): no line breaks or '=' that would smuggle in extra keys.
   const clean = (s) => String(s).replace(/[\r\n=]/g, '');
-  const lines = ['# twicable → UPR ZX settings'];
+  const lines = ['# twincable → UPR ZX settings'];
   // (a UPR settings string is base64 – its '=' padding must stay; only line breaks are removed)
   if (baseSettingsString) lines.push(`@base=${String(baseSettingsString).replace(/[\r\n]/g, '')}`);
   for (const [k, v] of Object.entries(values || {})) {

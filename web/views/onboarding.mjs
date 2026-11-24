@@ -10,7 +10,7 @@ import { ThemePicker, usePads, FAMILY_NAMES, PAD_POS } from './settings.mjs';
 
 /**
  * Welcome tour, once: language → name → how a SoulLink works (and the solo Nuzlocke) → look & accessibility (and the
- * two things twicable sends by itself – "playing now", the update check – with the privacy policy) → controls → games →
+ * two things twincable sends by itself – "playing now", the update check – with the privacy policy) → controls → games →
  * how to start (new run / join / just play). It ends where the chosen path begins; the "First steps" checklist
  * (firststeps.mjs) takes over from there.
  */
@@ -22,7 +22,7 @@ export function Onboarding({ onDone }) {
   const [theme, setTheme] = useState(cfg.theme || 'classic');
   const [anim, setAnim] = useState(cfg.bootAnimation !== false);
   const [sounds, setSounds] = useState(cfg.sounds !== false);
-  // what twicable sends by itself (docs/PRIVACY.md) – as config.json has it (on Windows the installer's page may have
+  // what twincable sends by itself (docs/PRIVACY.md) – as config.json has it (on Windows the installer's page may have
   // changed it already), saved at once like the colour scheme
   const [presence, setPresence] = useState(cfg.presence !== false);
   const [updateCheck, setUpdateCheck] = useState(cfg.updateCheck !== false);
@@ -60,7 +60,7 @@ export function Onboarding({ onDone }) {
 
   const STEPS = [
     { id: 'lang', label: t('onb.sLang', 'Language'), body: html`<div class="stack-l">
-      <div class="onb-hero"><${AppMark} size=${88} /><div><h1>${t('onb.welcome', 'Welcome to twicable')}</h1>
+      <div class="onb-hero"><${AppMark} size=${88} /><div><h1>${t('onb.welcome', 'Welcome to twincable')}</h1>
         <p class="muted">${t('onb.tagline', 'Play Pokémon SoulLinks together: built-in emulator, live tracking of both teams, randomizer and rules – all in one app.')}</p></div></div>
       <p class="small muted">${t('onb.pickLanguage', 'Choose your language. You can change it later in the settings.')}</p>
       <div class="lang-grid" role="radiogroup">
@@ -100,7 +100,7 @@ export function Onboarding({ onDone }) {
         <label class="check"><input type="checkbox" checked=${sounds} onChange=${(e) => setSounds(e.target.checked)} /><span>${t('set.soundsAll', 'Sounds on this computer (start-up chime, catches, deaths, badges, pings)')}</span></label>
       </div>
       <div class="stack-s onb-online">
-        <span class="small muted">${t('onb.onlineText', 'twicable collects no personal data. Only what is ticked here goes out by itself – you can switch it off here or later in Settings.')}
+        <span class="small muted">${t('onb.onlineText', 'twincable collects no personal data. Only what is ticked here goes out by itself – you can switch it off here or later in Settings.')}
           ${' '}<a href=${LINKS.privacyPolicy} onClick=${(e) => { e.preventDefault(); openExternal(LINKS.privacyPolicy); }}>${t('onb.privacyLink', 'Privacy policy')}</a></span>
         <label class="check"><input type="checkbox" checked=${presence} onChange=${(e) => { setPresence(e.target.checked); save({ presence: e.target.checked }); }} /><span>${t('set.presence', 'Count me in “playing now” (anonymous)')}</span></label>
         ${window.sls?.update && html`<label class="check"><input type="checkbox" checked=${updateCheck} onChange=${(e) => { setUpdateCheck(e.target.checked); save({ updateCheck: e.target.checked }); }} /><span>${t('upd.auto', 'Check for updates automatically')}</span></label>`}
@@ -126,7 +126,7 @@ export function Onboarding({ onDone }) {
     </div>` },
     { id: 'games', label: t('onb.sGames', 'Games'), body: html`<div class="stack-l">
       <div class="stack-s"><h1>${t('onb.gamesTitle', 'Add your games')}</h1>
-        <p class="muted">${t('onb.gamesText', 'Add the ROMs you own (.gb, .gbc, .gba, .nds or .zip) and any ROM-hack patches. They are copied into your twicable library.')}</p></div>
+        <p class="muted">${t('onb.gamesText', 'Add the ROMs you own (.gb, .gbc, .gba, .nds or .zip) and any ROM-hack patches. They are copied into your twincable library.')}</p></div>
       <${DropZone} onAdded=${() => reloadLibrary()} />
       <div class="row">
         <button class="btn go" onClick=${() => setDiscover(true)}><${Icon} name="search" size=${16} />${discoverLabel()}</button>
@@ -135,7 +135,7 @@ export function Onboarding({ onDone }) {
         <span class="spacer"></span>
         <span class=${`small ${owned ? 'onb-ok' : 'muted'}`}>${t('onb.gamesFound', '{count} game in your library|{count} games in your library', { count: owned })}</span>
       </div>
-      <p class="small faint">${t('onb.gamesLegal', 'twicable does not download games. Use dumps of cartridges you own.')}</p>
+      <p class="small faint">${t('onb.gamesLegal', 'twincable does not download games. Use dumps of cartridges you own.')}</p>
     </div>` },
     { id: 'start', label: t('onb.sStart', 'Start'), body: html`<div class="stack-l">
       <div class="stack-s"><h1>${t('onb.startTitle', 'How do you want to start?')}</h1>
@@ -151,7 +151,7 @@ export function Onboarding({ onDone }) {
   const total = STEPS.length;
   const cur = STEPS[step];
   const canNext = !cur.valid || cur.valid();
-  return html`<div class="onboard" role="dialog" aria-modal="true" aria-label=${t('onb.welcome', 'Welcome to twicable')}>
+  return html`<div class="onboard" role="dialog" aria-modal="true" aria-label=${t('onb.welcome', 'Welcome to twincable')}>
     <div class="onboard-card">
       <ol class="onb-progress" aria-label=${t('onb.progress', 'Step {n} of {all}', { n: step + 1, all: total })}>
         ${STEPS.map((s, i) => html`<li class=${i < step ? 'done' : i === step ? 'on' : ''} aria-current=${i === step ? 'step' : undefined}><i></i><span>${s.label}</span></li>`)}

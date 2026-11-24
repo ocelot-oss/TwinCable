@@ -1,6 +1,6 @@
 // What adding files to the library actually changed – for the message after an import or upload (web/views/library.mjs).
 // Compares the library before and after: an entry from one of the added files is new, or was there already (the same
-// ROM or patch, by checksum, under this or another name). A file that gave no entry holds nothing twicable can use.
+// ROM or patch, by checksum, under this or another name). A file that gave no entry holds nothing twincable can use.
 import { t, currentLang } from './i18n.mjs';
 import { catalog, gameTitle } from './data.mjs';
 import { patchTitle } from '/shared/patchname.mjs';
@@ -63,7 +63,7 @@ export function unpackToast(p, cat = catalog()) {
   return {
     key: 'unpack', kind: 'warn', ttl: 30 * 60 * 1000,
     title: t('lib.unpacking', 'Unpacking {name} …', { name: g ? gameTitle(g) : p.name }),
-    text: t('lib.unpackingText', '{pct} % of {size} – twicable unpacks 3DS games into your library once', { pct, size: gbText(p.size) }),
+    text: t('lib.unpackingText', '{pct} % of {size} – twincable unpacks 3DS games into your library once', { pct, size: gbText(p.size) }),
   };
 }
 
@@ -93,11 +93,11 @@ export function addedMessage({ added, already, unusable }, cat = catalog()) {
   };
   const extra = [];
   if (added.length && already.length) extra.push(t('lib.addedAlready', 'Already in your library: {names}', { names: names(already) }));
-  if (unusable) extra.push(t('lib.addedUnusable', '{count} file has no game or patch twicable can use.|{count} files have no game or patch twicable can use.', { count: unusable }));
+  if (unusable) extra.push(t('lib.addedUnusable', '{count} file has no game or patch twincable can use.|{count} files have no game or patch twincable can use.', { count: unusable }));
   if (added.length === 1) {
     const u = added[0].kind === 'update' ? added[0] : null;
-    const hint = u ? (u.entry.encrypted ? t('lib.addedUpdateEncrypted', 'It’s encrypted, so twicable can’t use it – add a decrypted copy of the update.')
-      : u.hasGame ? t('lib.addedUpdateHint', 'twicable’s player starts the game with it now.') : t('lib.addedUpdateWaiting', 'twicable uses it as soon as you add the game.'))
+    const hint = u ? (u.entry.encrypted ? t('lib.addedUpdateEncrypted', 'It’s encrypted, so twincable can’t use it – add a decrypted copy of the update.')
+      : u.hasGame ? t('lib.addedUpdateHint', 'twincable’s player starts the game with it now.') : t('lib.addedUpdateWaiting', 'twincable uses it as soon as you add the game.'))
       : added[0].kind === 'patch' ? t('lib.addedPatchHint', 'You’ll find it under ROM hacks.') : t('lib.addedGameHint', 'It’s on the shelf now.');
     if (u?.entry.encrypted) return { kind: 'warn', title: t('lib.addedOne', 'Added: {name}', { name: name(added[0]) }), text: [hint, ...extra].join('\n') };
     // an already-patched ROM whose file name looks like a catalog hack ("kaizo-emerald.gba", server/lib/library.mjs):

@@ -1,6 +1,6 @@
 name: 3DS part (Windows, Linux)
 
-# Builds twicable's Nintendo 3DS part – the native host (native/ctr-host) and Azahar's libretro core with
+# Builds twincable's Nintendo 3DS part – the native host (native/ctr-host) and Azahar's libretro core with
 # native/azahar-patch/*.patch – for Windows and Linux, as tools/ctr/<platform>/ artifacts the app packages bundle
 # (release.yml, windows.yml and linux.yml call this workflow). macOS: `npm run ctr` on a Mac (docs/DEVELOPMENT.md).
 # The core is built the way Azahar's own CI builds it (.github/workflows/libretro.yml in azahar-emu/azahar): Linux
@@ -67,7 +67,7 @@ jobs:
         run: |
           set +e
           tools/ctr/linux-x64/ctrhost; test $? -eq 2 || exit 1 # usage
-          for s in retro_run twicable_read_memory twicable_write_memory twicable_title_id twicable_romfs_reads twicable_romfs_read twicable_romfs_size twicable_audio_music_ranges twicable_audio_mute_music twicable_audio_frame_flags twicable_audio_music_state; do nm -D tools/ctr/linux-x64/azahar_libretro.so | grep -E " T $s\$" || exit 1; done
+          for s in retro_run twincable_read_memory twincable_write_memory twincable_title_id twincable_romfs_reads twincable_romfs_read twincable_romfs_size twincable_audio_music_ranges twincable_audio_mute_music twincable_audio_frame_flags twincable_audio_music_state; do nm -D tools/ctr/linux-x64/azahar_libretro.so | grep -E " T $s\$" || exit 1; done
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ctr-linux-x64
@@ -99,7 +99,7 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y --no-install-recommends mingw-w64 git-lfs
-      - name: Azahar ${{ env.AZAHAR_TAG }} with the twicable patch
+      - name: Azahar ${{ env.AZAHAR_TAG }} with the twincable patch
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           git clone --depth 1 --branch "$AZAHAR_TAG" --recurse-submodules --shallow-submodules https://github.com/azahar-emu/azahar.git "_ref/azahar-$AZAHAR_TAG"
@@ -121,11 +121,11 @@ jobs:
           export CTR_VULKAN_INCLUDE="$PWD/_ref/azahar-$AZAHAR_TAG/externals/vulkan-headers/include"
           node scripts/build-ctr.mjs --platform win32-x64 --azahar "$AZAHAR_TAG" --core "_ref/azahar-$AZAHAR_TAG/build/windows-x86_64/bin/Release/azahar_libretro.dll"
           x86_64-w64-mingw32-strip -s tools/ctr/win32-x64/ctrhost.exe
-      - name: Complete, the core exports the twicable calls
+      - name: Complete, the core exports the twincable calls
         run: |
           node scripts/build-ctr.mjs --platform win32-x64 --check
           sudo apt-get install -y --no-install-recommends binutils-mingw-w64-x86-64 >/dev/null 2>&1 || true
-          for s in twicable_read_memory twicable_write_memory twicable_title_id twicable_romfs_reads twicable_romfs_read twicable_romfs_size twicable_audio_music_ranges twicable_audio_mute_music twicable_audio_frame_flags twicable_audio_music_state; do x86_64-w64-mingw32-objdump -p tools/ctr/win32-x64/azahar_libretro.dll | grep -w "$s" || exit 1; done
+          for s in twincable_read_memory twincable_write_memory twincable_title_id twincable_romfs_reads twincable_romfs_read twincable_romfs_size twincable_audio_music_ranges twincable_audio_mute_music twincable_audio_frame_flags twincable_audio_music_state; do x86_64-w64-mingw32-objdump -p tools/ctr/win32-x64/azahar_libretro.dll | grep -w "$s" || exit 1; done
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ctr-win32-x64

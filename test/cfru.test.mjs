@@ -1,4 +1,4 @@
-// Complete FireRed Upgrade hacks – Pokémon Unbound and Radical Red (checked in the running games): what twicable reads
+// Complete FireRed Upgrade hacks – Pokémon Unbound and Radical Red (checked in the running games): what twincable reads
 // from their ROMs and RAM. Their own species table behind a shorter row of '?' (the retail one stays in the ROM), item
 // names (some through a pointer) and moves in an order of their own, place names in mixed case, FireRed's RAM layout
 // with the Pokémon data stored unencrypted, and FireRed's 0x58-byte battlers. Synthetic data shaped like what was

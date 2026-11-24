@@ -1,4 +1,4 @@
-// twicable+ premium pack cache on disk. The server only ever holds what the accounts service hands out – the signed
+// twincable+ premium pack cache on disk. The server only ever holds what the accounts service hands out – the signed
 // manifest and the per-file ENCRYPTED envelopes (API.md §10). It never sees a pack key, never decrypts, verifies or runs
 // anything from a pack: it downloads the envelopes from the short-lived signed URLs, keeps them in the data folder,
 // hands them to the app's own page (which verifies and decrypts in memory), and wipes them.
@@ -31,7 +31,7 @@ const CLOCK_SLACK_MS = 5 * 60000; // a computer's clock may be this far off betw
 export const MAX_FILE_BYTES = 8 * 1024 * 1024 + 4096; // a file plus its envelope header and tag
 export const MAX_PACK_BYTES = 64 * 1024 * 1024;
 const MAX_FILES = 2000;
-const DEV_SCHEME = 'twicable-dev:';
+const DEV_SCHEME = 'twincable-dev:';
 const PATH_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*(\/[A-Za-z0-9][A-Za-z0-9._-]*)*$/;
 const validPath = (p) => typeof p === 'string' && p.length <= 200 && PATH_RE.test(p) && !p.split('/').some((s) => s === '.' || s === '..');
 const B64URL = (v, max) => typeof v === 'string' && v.length <= max && /^[A-Za-z0-9_-]+$/.test(v);
@@ -154,7 +154,7 @@ export function createPlusPack({ dir, devDir = process.env.SLS_PLUS_DEV_PACK || 
       chunks.push(Buffer.from(c));
     }
     const buf = Buffer.concat(chunks);
-    if (buf.length < 22 || buf.subarray(0, 4).toString('latin1') !== 'SDP1') throw httpError(502, 'Not a twicable+ file', 'plusFormat');
+    if (buf.length < 22 || buf.subarray(0, 4).toString('latin1') !== 'SDP1') throw httpError(502, 'Not a twincable+ file', 'plusFormat');
     return buf;
   }
 
@@ -168,7 +168,7 @@ export function createPlusPack({ dir, devDir = process.env.SLS_PLUS_DEV_PACK || 
     const watermark = typeof b.watermark === 'string' && /^wm_[A-Za-z0-9_-]{1,40}$/.test(b.watermark) ? b.watermark : null;
     if (!packId || !version || !keyId || !B64URL(b.manifest, 2 * 1024 * 1024) || !B64URL(b.signature, 200)) throw httpError(400, 'Bad pack answer', 'plusAnswer');
     // nothing is downloaded or stored for a manifest the pinned key didn't sign
-    if (!manifestSigned(b.manifest, b.signature, devKeyOrNull())) throw httpError(400, 'The pack is not signed by twicable', 'plusSignature');
+    if (!manifestSigned(b.manifest, b.signature, devKeyOrNull())) throw httpError(400, 'The pack is not signed by twincable', 'plusSignature');
     // the manifest is only read for the file list and the hashes (cache keys) – trusting it is the page's job
     let manifest;
     try {
@@ -202,7 +202,7 @@ export function createPlusPack({ dir, devDir = process.env.SLS_PLUS_DEV_PACK || 
     file(path) {
       const m = current();
       const f = m && validPath(path) ? m.files[path] : null;
-      if (!f) throw httpError(404, 'No such twicable+ file', 'plusNone');
+      if (!f) throw httpError(404, 'No such twincable+ file', 'plusNone');
       return readFileSync(join(filesDir, f.file));
     },
     async fetch(body) {
@@ -232,7 +232,7 @@ export function createPlusPack({ dir, devDir = process.env.SLS_PLUS_DEV_PACK || 
       };
       writeFileAtomic(metaFile, JSON.stringify(meta));
       prune(new Set(Object.values(files).map((x) => x.file)));
-      if (old && old.keyId !== a.keyId) console.log('twicable+ pack: key changed – old envelopes dropped');
+      if (old && old.keyId !== a.keyId) console.log('twincable+ pack: key changed – old envelopes dropped');
       return api.meta();
     },
     touch(body) {

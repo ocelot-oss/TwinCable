@@ -1,7 +1,7 @@
 // The game's sound effects while a 3DS game fast-forwards – at their normal speed and pitch, each one when it happens.
 //
 // With "Music continues" the turbo mixer plays the music track straight from the ROM (romvoice.mjs). The core hands out
-// the game's sound without the voices that play that music (native/azahar-patch/twicable-sfx.patch, ctrhost.c message
+// the game's sound without the voices that play that music (native/azahar-patch/twincable-sfx.patch, ctrhost.c message
 // 11): menu clicks, cries, attacks – at the game's pace, k seconds of it per second of real time, and the places where a
 // new sound began (the DSP voice's key-on). Sped up those would be chipmunk chirps, and played in full at 1× they would
 // pile up and come later and later (k × more of them than fits). So every new sound starts the moment it arrives (that is

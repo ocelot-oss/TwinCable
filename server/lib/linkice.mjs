@@ -1,5 +1,5 @@
 // ICE servers for the run's peer connections (docs/MULTIPLAYER.md › "Transport"): STUN plus short-lived Cloudflare TURN
-// credentials from twicable's bot (GET /link/ice at liveruns.mjs' address – the Worker holds the TURN key, the app never does).
+// credentials from twincable's bot (GET /link/ice at liveruns.mjs' address – the Worker holds the TURN key, the app never does).
 // With TURN, players behind strict NATs (mobile hotspots, some ISPs) still get a data channel – relayed. The direct path
 // is always tried first; when the bot can't be reached the app keeps its default STUN servers.
 import { liveBases } from './liveruns.mjs';
@@ -28,7 +28,7 @@ export function cleanIceServers(list) {
  * any trouble: { iceServers: [], turn: false } (the page then keeps Trystero's own STUN servers).
  */
 export async function linkIceServers({ fetchImpl = fetch, env = process.env, now = Date.now() } = {}) {
-  if (env.TWICABLE_LINK_ICE === 'off') return { iceServers: [], turn: false, ttl: 0 };
+  if (env.TWINCABLE_LINK_ICE === 'off') return { iceServers: [], turn: false, ttl: 0 };
   if (cache && now < cache.until) return cache.value;
   for (const base of liveBases(env)) {
     try {
@@ -38,8 +38,8 @@ export async function linkIceServers({ fetchImpl = fetch, env = process.env, now
       const iceServers = cleanIceServers(j?.iceServers);
       const turn = !!j?.turn && iceServers.some((s) => s.username);
       const ttl = Number.isFinite(j?.ttl) && j.ttl > 0 ? Math.min(j.ttl, 24 * 3600) : 0;
-      // (TWICABLE_LINK_ICE=relay: every peer connection through TURN, never direct – tests of the relayed path only)
-      const value = { iceServers, turn, ttl, ...(turn && env.TWICABLE_LINK_ICE === 'relay' ? { relayOnly: true } : {}) };
+      // (TWINCABLE_LINK_ICE=relay: every peer connection through TURN, never direct – tests of the relayed path only)
+      const value = { iceServers, turn, ttl, ...(turn && env.TWINCABLE_LINK_ICE === 'relay' ? { relayOnly: true } : {}) };
       cache = { until: now + (turn ? ttl * 800 : 10 * 60_000), value };
       return value;
     } catch {

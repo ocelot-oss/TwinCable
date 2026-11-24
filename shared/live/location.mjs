@@ -323,16 +323,16 @@ function readGen4(m, read, maps, entry, ctx = {}) {
 // Gen 5: the zone the player is in (a u16 zone id) and its parent zone (a building's town).
 //  - Black 2/White 2: behind the main pointer the game keeps at 0x02000024, masked like the party pointer
 //    (addresses.json black2_us) – NDS-Ironmon-Tracker constants/MemoryAddresses.lua MAIN_POINTER 0x24, childMapHeader
-//    0x41B5C, parentMapHeader 0x41B44 (community values; checked by twicable in Black 2 / White 2 US). Before the game
+//    0x41B5C, parentMapHeader 0x41B44 (community values; checked by twincable in Black 2 / White 2 US). Before the game
 //    wrote the pointer (power-on) there is no zone: zeroed RAM would read as zone 0, Black City.
 //  - Black/White: the game keeps a copy of the current zone's header – the 48 bytes of the ROM's zone table a/0/1/2
 //    (romloc.mjs `zoneHeaders`), the zone's own id at +0x16, its parent zone at +0x18 – and the zone id again right
-//    after it (+0x30). Verified by twicable in Black US (IRBO) and White US (IRAO), in the fast player (melonDS) and the
+//    after it (+0x30). Verified by twincable in Black US (IRBO) and White US (IRAO), in the fast player (melonDS) and the
 //    browser player (DeSmuME), 2026-11-16: byte for byte the ROM's header of the zone the player is in (391 the room,
 //    390 downstairs, 389 Nuvema Town, 396 Juniper's lab with parent 389, 317 Route 1, during battles too) at
 //    0x0225929C in Black and 0x022592BC in White – the copy NDS-Ironmon-Tracker reads as childMapHeader 0x022592B2 /
 //    parentMapHeader 0x022592B4 (+0x20 in White). Those static addresses are the English games' only: another
-//    language's static data sits elsewhere, and what twicable read there before was no zone (zeroes: zone 0, Black
+//    language's static data sits elsewhere, and what twincable read there before was no zone (zeroes: zone 0, Black
 //    City – also on the title screen of the English games – and then nothing at all, a player's report on Discord).
 //    So the copy is taken where it matches the ROM's own header: at the English address, else wherever the copy is in
 //    RAM (searched for at most every few seconds, then remembered for the session in the live reader's state). Black
@@ -506,7 +506,7 @@ function readGen5(m, read, maps, entry, ctx = {}) {
 // (romloc.mjs `zoneHeaders`) – its parent zone at +0x18, its place name at +0x1A – and the zone's id right after it
 // (+0x30). Unlike Black/White's, a Black 2/White 2 header doesn't hold the zone's own id (+0x16 is something else), so
 // the copy is matched by the id after it. NDS-Ironmon-Tracker's parentMapHeader (main pointer + 0x41B44) is its +0x18
-// and childMapHeader (+0x41B5C) the id after it, so the copy starts at main pointer + 0x41B2C – checked by twicable in
+// and childMapHeader (+0x41B5C) the id after it, so the copy starts at main pointer + 0x41B2C – checked by twincable in
 // Black 2 and White 2 (US/EU) live, 2026-11-16: byte for byte the ROM's header of the zone named after it (428 the
 // player's room – parent 427 –, 427 Aspertia City, 435, 438 Aspertia Gate, 437 Route 19, in battles too). Read like
 // Black/White's: at the address behind the main pointer when the copy there is the ROM's header of the zone it names,

@@ -38,7 +38,7 @@ test('the tools: the host and whichever cores are there', () => {
   assert.equal(nativeTools({ dirs: ['/t/a'], exists: (p) => p.endsWith(EXE) }).ok, false);
 });
 
-test('the host\'s arguments: the core, the RAM the live reader needs, twicable\'s core options', () => {
+test('the host\'s arguments: the core, the RAM the live reader needs, twincable\'s core options', () => {
   const a = hostArgs({ system: 'nds', core: '/c/melon', rom: '/r/p.nds', saveDir: '/s', systemDir: '/y', sram: '/s/boot.sav' });
   const pairs = [];
   for (let i = 0; i < a.length; i += 2) pairs.push([a[i], a[i + 1]]);
@@ -148,9 +148,9 @@ test('a battery save that comes after the page has gone is stored where the play
   out.write(msg(9, Buffer.alloc(8, 0xff))); // a blank cartridge: never
   assert.deepEqual(written, [{ target: { path: '/s/red.sav', runId: null }, bytes: [1, 2, 3] }]);
   // the host gets a trimmed environment (nothing the app was started with beyond what it needs)
-  process.env.TWICABLE_TEST_SECRET = 'x';
-  assert.equal('TWICABLE_TEST_SECRET' in s.hostEnv(), false);
-  delete process.env.TWICABLE_TEST_SECRET;
+  process.env.TWINCABLE_TEST_SECRET = 'x';
+  assert.equal('TWINCABLE_TEST_SECRET' in s.hostEnv(), false);
+  delete process.env.TWINCABLE_TEST_SECRET;
   // a session started without a save target (the save on disk couldn't be read) stores nothing
   s.startNative({ rom: '/r/red.gb', key: 'k', system: 'gb', tools });
   calls[1].child.stdout.write(msg(9, Buffer.from([4])));
@@ -178,7 +178,7 @@ const BOOT_FRAMES = 120; // SameBoy runs its (fast) Game Boy Color boot ROM befo
 function testRom() {
   const r = Buffer.alloc(0x8000);
   r.set([0x00, 0xc3, 0x50, 0x01], 0x100); // nop; jp 0x0150
-  r.write('TWICABLETEST', 0x134, 'latin1');
+  r.write('TWINCABLETEST', 0x134, 'latin1');
   r[0x147] = 0x03; // MBC1 + RAM + battery
   r[0x148] = 0x00; // 32 KB
   r[0x149] = 0x02; // 8 KB RAM
@@ -302,7 +302,7 @@ test('the real host: RAM mirror, exact steps, cheats, save states, the battery s
     h.send(NCMD.SPEED, Buffer.from(new Float32Array([1000]).buffer));
     await h.until(() => h.events.some((e) => e.event === 'stats' && e.speed > 1.5), 15000);
 
-    // a header that announces more than the host takes: it ends cleanly (as when twicable goes away)
+    // a header that announces more than the host takes: it ends cleanly (as when twincable goes away)
     h.p.stdin.write(Buffer.concat([u32(1), u32(0x7fffffff)]));
     assert.equal(await exitOf(h.p, h.exit), 0);
   } finally {

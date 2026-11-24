@@ -1,6 +1,6 @@
 // Electron main for test/handheld-looks.test.mjs: the app's own server and page in a hidden window (muted, software GL),
-// then the launch scene (web/lib/handheld/scene.mjs) posed still in a few looks – with and without the twicable+ looks'
-// data – to show that (1) without the pack's data a twicable+ look draws exactly "Your colours", (2) with it the scene
+// then the launch scene (web/lib/handheld/scene.mjs) posed still in a few looks – with and without the twincable+ looks'
+// data – to show that (1) without the pack's data a twincable+ look draws exactly "Your colours", (2) with it the scene
 // draws something else, and (3) the pack's fragment code compiles in the real shader (the GPU's WebGL 2, like the app). Writes one JSON result to the
 // path given as the last argument; the looks to use come as JSON in the path before it.
 import { app, BrowserWindow, session } from 'electron';

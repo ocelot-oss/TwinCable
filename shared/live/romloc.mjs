@@ -168,7 +168,7 @@ export function gen2MapHeaders(rom) {
 
 /**
  * The map headers of a Game Boy game for the live reader (gen1MapHeaders / gen2MapHeaders), checked against the map
- * table twicable has for its memory table entry (shared/data/maps.json `table`): Gen 2 must have exactly the maps of
+ * table twincable has for its memory table entry (shared/data/maps.json `table`): Gen 2 must have exactly the maps of
  * that table – the same groups, the same number of maps in each – so a map's number means the same place; Gen 1's
  * table has all map ids (Red/Blue 248, Yellow 249 – the unused ones too, which have no header: Red US 226 headers). → { gen: 1, headers } /
  * { gen: 2, maps } or null (another layout: a hack with maps of its own, or a table not found – the reader then falls

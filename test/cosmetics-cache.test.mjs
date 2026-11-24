@@ -1,4 +1,4 @@
-// twicable+ pack cache and lifecycle: the server's encrypted per-file cache (allow-listed downloads, small updates,
+// twincable+ pack cache and lifecycle: the server's encrypted per-file cache (allow-listed downloads, small updates,
 // offline grace, wipe) and the page's pack client on top of it (load, not a member, membership ended, the pack key
 // changed, offline within / beyond the grace period, a pack that doesn't verify, a damaged download, the live preview).
 import { test, beforeEach, afterEach } from 'node:test';
@@ -30,7 +30,7 @@ const FILES = (css = '--shell: #1f2a20;') => [
 ];
 
 /** A pack as the service hands it out: the download answer + the sealed files behind its URLs. */
-async function makePack({ version = '1.0.0', kid = '1', key = globalThis.crypto.getRandomValues(new Uint8Array(32)), signer, files = FILES(), id = 'twicable-plus', kind = 'mixed' } = {}) {
+async function makePack({ version = '1.0.0', kid = '1', key = globalThis.crypto.getRandomValues(new Uint8Array(32)), signer, files = FILES(), id = 'twincable-plus', kind = 'mixed' } = {}) {
   signer ||= await makeSigner();
   const { manifest, manifestBytes } = await buildManifest({ id, version, kind, title: 'Test', files });
   const signature = await signer.sign(manifestBytes);
@@ -53,8 +53,8 @@ const fakeFetch = (packs, log = []) => async (url) => {
 // ------------------------------------------------------------------ server cache
 test('pack URLs: the accounts service origin only, or the configured local service (no SSRF)', () => {
   assert.ok(packUrlAllowed(`${BASE}/1.0.0/file?path=a`, { env: NO_ENV }));
-  for (const u of ['https://packs.souldew.app/x', 'https://souldew.app/x', 'https://evil.souldew.app/x', 'http://accounts.souldew.app/x', 'https://souldew.app.evil.com/x', 'https://evil.com/twicable.app', 'https://127.0.0.1/x', 'http://127.0.0.1:8788/x',
-    'https://user:pw@accounts.souldew.app/x', 'https://accounts.souldew.app:8443/x', 'file:///etc/passwd', 'twicable-dev:pack/a.css', '', null]) {
+  for (const u of ['https://packs.souldew.app/x', 'https://souldew.app/x', 'https://evil.souldew.app/x', 'http://accounts.souldew.app/x', 'https://souldew.app.evil.com/x', 'https://evil.com/twincable.app', 'https://127.0.0.1/x', 'http://127.0.0.1:8788/x',
+    'https://user:pw@accounts.souldew.app/x', 'https://accounts.souldew.app:8443/x', 'file:///etc/passwd', 'twincable-dev:pack/a.css', '', null]) {
     assert.equal(packUrlAllowed(u, { env: NO_ENV }), false, String(u));
   }
   // a test service on this computer (SLS_ACCOUNTS_URL): exactly its origin, nothing else on loopback
@@ -64,14 +64,14 @@ test('pack URLs: the accounts service origin only, or the configured local servi
   assert.equal(packUrlAllowed('http://localhost:8788/x', { env }), false);
   // SLS_ACCOUNTS_URL itself is only taken for https or loopback http
   assert.equal(packUrlAllowed('http://evil.com/x', { env: { SLS_ACCOUNTS_URL: 'http://evil.com' } }), false);
-  assert.ok(packUrlAllowed('twicable-dev:pack/skins/a.css', { dev: true, env: NO_ENV }), 'the dev pack only with SLS_PLUS_DEV_PACK');
-  assert.equal(packUrlAllowed('twicable-dev:pack/../../etc/passwd', { dev: true, env: NO_ENV }), false);
+  assert.ok(packUrlAllowed('twincable-dev:pack/skins/a.css', { dev: true, env: NO_ENV }), 'the dev pack only with SLS_PLUS_DEV_PACK');
+  assert.equal(packUrlAllowed('twincable-dev:pack/../../etc/passwd', { dev: true, env: NO_ENV }), false);
 });
 
 test('server cache: per-file download, meta, file, touch only forward, wipe; the bytes stay encrypted', async () => {
   const p = await makePack();
   trustKey(p);
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-'));
   let now = Date.parse('2026-11-17T12:00:00Z');
   const plus = createPlusPack({ dir, devDir: '', fetchImpl: fakeFetch(p), now: () => now, env: NO_ENV });
   assert.deepEqual(plus.meta(), { none: true });
@@ -100,7 +100,7 @@ test('server cache: an update downloads only the files that changed; a new key d
   const v2 = await makePack({ signer, key, version: '1.1.0', files: FILES('--shell: #000000;') });
   const v2k = await makePack({ signer, key, version: '1.1.0', kid: '2', files: FILES('--shell: #000000;') });
   trustKey(v1);
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-'));
   const log = [];
   const plus = createPlusPack({ dir, devDir: '', fetchImpl: fakeFetch([v1, v2, v2k], log), env: NO_ENV });
   assert.equal((await plus.fetch(v1.answer)).downloaded, 5);
@@ -113,7 +113,7 @@ test('server cache: an update downloads only the files that changed; a new key d
 test('server cache: wiped once the offline grace (7 days) is over, also when the clock jumps', async () => {
   const p = await makePack();
   trustKey(p);
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-'));
   let now = Date.parse('2026-11-17T12:00:00Z');
   const plus = createPlusPack({ dir, devDir: '', fetchImpl: fakeFetch(p), now: () => now, env: NO_ENV });
   await plus.fetch(p.answer);
@@ -139,7 +139,7 @@ test('server cache: wiped once the offline grace (7 days) is over, also when the
 
 test('server cache: nothing is downloaded or stored for a manifest the pinned key did not sign (security review #8)', async () => {
   const p = await makePack();
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-'));
   const log = [];
   const plus = createPlusPack({ dir, devDir: '', fetchImpl: fakeFetch(p, log), env: NO_ENV });
   await assert.rejects(plus.fetch(p.answer), { code: 'plusSignature' }, 'signed with a key the app does not pin');
@@ -155,7 +155,7 @@ test('server cache: nothing is downloaded or stored for a manifest the pinned ke
 test('server cache: refuses non-envelopes, oversized and failed downloads; a preview file is never stored', async () => {
   const p = await makePack();
   trustKey(p);
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-'));
   const html = async () => bodyOf(enc.encode('<html>login</html> and some more bytes'));
   await assert.rejects(createPlusPack({ dir, devDir: '', fetchImpl: html, env: NO_ENV }).fetch(p.answer), { code: 'plusFormat' });
   await assert.rejects(createPlusPack({ dir, devDir: '', fetchImpl: async () => ({ ok: false, status: 403, headers: new Map() }), env: NO_ENV }).fetch(p.answer), { code: 'plusDownload' });
@@ -170,7 +170,7 @@ test('server cache: refuses non-envelopes, oversized and failed downloads; a pre
 });
 
 test('dev key: only with a dev pack, or a test service on this computer – never with the production service', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-'));
   const k = b64url(new Uint8Array(32).fill(7));
   assert.throws(() => createPlusPack({ dir, devDir: '', env: { SLS_PLUS_DEV_KEY: k } }).devKey(), { code: 'plusNoDev' });
   assert.throws(() => createPlusPack({ dir, devDir: '', env: { SLS_PLUS_DEV_KEY: k, SLS_ACCOUNTS_URL: 'https://accounts.souldew.app' } }).devKey(), { code: 'plusNoDev' });
@@ -182,7 +182,7 @@ let server;
 let serverNow;
 const realNow = Date.now;
 function installFetch(packs, { devKey = null } = {}) {
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-'));
   serverNow = realNow();
   const log = [];
   const state = { broken: null };

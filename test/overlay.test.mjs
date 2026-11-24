@@ -119,9 +119,9 @@ test('helpers: status bytes, play time, OBS URL with its layer size', () => {
   assert.equal(playTimeText({ h: 12, m: 5 }), '12:05');
   assert.equal(playTimeText(3700), '1:01');
   assert.equal(playTimeText(null), '');
-  const u = new URL(overlayUrl('http://localhost:47390', 'c0ffee01', { w: 'team', layout: 'v', hp: 0, nick: null, sound: true }, [300.4, 800], 'twicable · Team'));
+  const u = new URL(overlayUrl('http://localhost:47390', 'c0ffee01', { w: 'team', layout: 'v', hp: 0, nick: null, sound: true }, [300.4, 800], 'twincable · Team'));
   assert.equal(u.pathname, '/overlay');
-  assert.deepEqual(Object.fromEntries(u.searchParams), { run: 'c0ffee01', w: 'team', layout: 'v', hp: '0', sound: '1', 'layer-width': '300', 'layer-height': '800', 'layer-name': 'twicable · Team' });
+  assert.deepEqual(Object.fromEntries(u.searchParams), { run: 'c0ffee01', w: 'team', layout: 'v', hp: '0', sound: '1', 'layer-width': '300', 'layer-height': '800', 'layer-name': 'twincable · Team' });
 });
 
 // ---- links that keep working across runs, and a size that doesn't change (issues #8 and #7) ----------------
@@ -269,7 +269,7 @@ test('server: overlay snapshot, live push after a doc upload, test alerts and th
     // the old overlay URL still opens the overlay page
     const page = await fetch(`${url}/overlay?run=c0ffee01`);
     assert.equal(page.status, 200);
-    assert.match(await page.text(), /twicable overlay/);
+    assert.match(await page.text(), /twincable overlay/);
     assert.match(page.headers.get('content-security-policy') || '', /script-src 'self' 'sha256-/);
   } finally {
     server.closeAllConnections?.();

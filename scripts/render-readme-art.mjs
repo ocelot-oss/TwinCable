@@ -12,7 +12,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const chrome = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const art = join(root, 'build', 'readme', 'art.html');
 const out = join(root, 'docs', 'media');
-const tmp = mkdtempSync(join(tmpdir(), 'twicable-art-'));
+const tmp = mkdtempSync(join(tmpdir(), 'twincable-art-'));
 mkdirSync(join(out, 'icons'), { recursive: true });
 
 function shoot(query, [w, h], scale, file) {

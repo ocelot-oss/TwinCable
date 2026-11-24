@@ -95,8 +95,8 @@ static int pthread_create(pthread_t *t, void *attr, void *(*fn)(void *), void *a
 static int compat_trylock(pthread_mutex_t *m) { return TryAcquireSRWLockExclusive(m) ? 1 : 0; }
 
 // Crash reports: what went wrong and in which DLL (the graphics driver, the core, the host) – written to stderr, which
-// twicable keeps for "Save diagnostics". No Windows error dialog: it would keep the dead process (and the game's window
-// in twicable) waiting for a click nobody sees.
+// twincable keeps for "Save diagnostics". No Windows error dialog: it would keep the dead process (and the game's window
+// in twincable) waiting for a click nobody sees.
 #include <signal.h>
 static void (*compat_crash_cb)(const char *what);
 static const char *compat_exception_name(DWORD code) {

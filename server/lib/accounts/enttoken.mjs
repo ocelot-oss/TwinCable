@@ -1,6 +1,6 @@
-// The signed twicable+ entitlement (accounts API.md §8.2, SECURITY.md §4). The service answers GET /v1/entitlements with
+// The signed twincable+ entitlement (accounts API.md §8.2, SECURITY.md §4). The service answers GET /v1/entitlements with
 // plain JSON fields AND a token – a compact JWS (EdDSA / Ed25519, typ "souldew-ent+jwt") signed with the service's
-// entitlement key. Only the token counts: every twicable+ decision of the app (pack key and pack access, the preview
+// entitlement key. Only the token counts: every twincable+ decision of the app (pack key and pack access, the preview
 // offer, the badges shown for the own account) is made from its VERIFIED claims, never from the JSON next to it.
 //
 // The public key is pinned here, like the pack keys (web/lib/cosmetics/pack/keys.mjs): the owner's entitlement key

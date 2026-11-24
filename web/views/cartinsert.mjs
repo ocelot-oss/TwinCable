@@ -1,6 +1,6 @@
-// The free launch animation (2D, as in twicable 2.x): starting or continuing a game, the module slides into the console's
+// The free launch animation (2D, as in twincable 2.x): starting or continuing a game, the module slides into the console's
 // slot and clicks in – the game boots underneath meanwhile (kept invisible until this is over, play.mjs), so it costs no
-// time. Since 3.0 it is what plays without a membership (shared/handheld.mjs launchTier 'free'); Supporter and twicable+
+// time. Since 3.0 it is what plays without a membership (shared/handheld.mjs launchTier 'free'); Supporter and twincable+
 // get your handheld in 3D (views/launchstage.mjs). A click or key skips it; Settings › Play › Launch animation (On /
 // Off) and the general "Play animations" turn it off; with reduced motion it doesn't play (the module still clicks when
 // the game appears). One length – there is no Quick form of it.

@@ -1,4 +1,4 @@
-// A fake twicable accounts service for tests and screenshots: the parts of twicable-accounts docs/API.md the app uses,
+// A fake twincable accounts service for tests and screenshots: the parts of twincable-accounts docs/API.md the app uses,
 // in memory, on a random local port. Strict where the real one is strict (PKCE, redirect_uri, single-use login codes,
 // refresh rotation with reuse detection, unknown fields, friends-only invites, visibility), with switches for the
 // cases a test needs (who signs in next, a cancelled sign-in, short access tokens). Discord itself is skipped:
@@ -142,7 +142,7 @@ export async function startFakeAccounts({ port = 0 } = {}) {
   const packKey = (u) => createHash('sha256').update(`pack|${u.id}|${u.keyEpoch || 1}`).digest('base64url');
   /** §13: a user's place on the wall – their tier (patron → legend), or coffee for a one-time supporter. */
   const thanksTier = (u) => ({ patron: 'legend', plus: 'plus', supporter: 'supporter' })[u.entitlement.tier] || (u.coffee ? 'coffee' : null);
-  const plusOk = (u) => u.entitlement.tier === 'plus' || u.entitlement.tier === 'patron'; // §8.0: patron = twicable+
+  const plusOk = (u) => u.entitlement.tier === 'plus' || u.entitlement.tier === 'patron'; // §8.0: patron = twincable+
   const premium = (kind, id) => CATALOG.cosmetics.find((c) => c.kind === kind && c.id === id)?.tier === 'plus';
   const shown = (u, k) => (u[k] && premium(k, u[k]) && !plusOk(u) ? null : u[k]);
   const card = (u) => ({ id: u.id, handle: u.handle, display_name: u.display_name, avatar_url: avatarUrl(u), frame: shown(u, 'frame'), nameplate: shown(u, 'nameplate'), accent: u.accent, title: u.title, badges: u.entitlement.badges });
@@ -434,7 +434,7 @@ export async function startFakeAccounts({ port = 0 } = {}) {
       s.revoked = true;
       return json(res, 200, { ok: true });
     }
-    if (path === '/v1/me/export' && req.method === 'GET') return json(res, 200, { account: me(u), friends: [...f.friends.keys()].filter((k) => k.includes(u.id)) }, { 'Content-Disposition': 'attachment; filename="twicable-account-export.json"' });
+    if (path === '/v1/me/export' && req.method === 'GET') return json(res, 200, { account: me(u), friends: [...f.friends.keys()].filter((k) => k.includes(u.id)) }, { 'Content-Disposition': 'attachment; filename="twincable-account-export.json"' });
     if (path === '/v1/me' && req.method === 'DELETE') {
       if (body.confirm !== u.handle) return err(res, 400, 'invalid_field', { field: 'confirm' });
       f.users.delete(u.id);
@@ -621,7 +621,7 @@ export async function startFakeAccounts({ port = 0 } = {}) {
       return json(res, 201, { ok: true, id: rid('rep') });
     }
 
-    // ---- §8 twicable+ ----
+    // ---- §8 twincable+ ----
     if (path === '/v1/entitlements' && req.method === 'GET') {
       const e = u.entitlement;
       const now = f.entNow ?? Math.floor(Date.now() / 1000);

@@ -97,28 +97,28 @@ jobs:
         run: |
           v=$(node -p "require('./package.json').version")
           ls -la dist
-          appimage="dist/twicable-$v-linux-x86_64.AppImage"
-          deb="dist/twicable-$v-linux-amd64.deb"
+          appimage="dist/twincable-$v-linux-x86_64.AppImage"
+          deb="dist/twincable-$v-linux-amd64.deb"
           test -f "$appimage" || { echo "::error::missing $appimage"; exit 1; }
           test -f "$deb" || { echo "::error::missing $deb"; exit 1; }
           printf '%s  %s MB\n' "$appimage" "$(( $(stat -c %s "$appimage") / 1048576 ))" "$deb" "$(( $(stat -c %s "$deb") / 1048576 ))"
-          test -x dist/linux-unpacked/twicable
+          test -x dist/linux-unpacked/twincable
           test -x dist/linux-unpacked/resources/tools/jre/linux-x64/bin/java || { echo '::error::JRE not bundled'; exit 1; }
           test -x dist/linux-unpacked/resources/tools/native/linux-x64/linkhost || { echo '::error::link host not bundled (trades and battles)'; exit 1; }
           test -f dist/linux-unpacked/resources/app/build/icon.png || { echo '::error::window icon not bundled'; exit 1; }
           dpkg-deb --info "$deb"
-          dpkg-deb --contents "$deb" | grep -E '/opt/twicable/resources/tools/jre/linux-x64/bin/java$'
+          dpkg-deb --contents "$deb" | grep -E '/opt/twincable/resources/tools/jre/linux-x64/bin/java$'
 
       - name: Smoke test – unpacked app (incl. one-click melonDS + mGBA AppImages through the app)
-        run: xvfb-run -a node scripts/smoke-app.mjs dist/linux-unpacked/twicable --screenshot smoke-unpacked.png --emulators
+        run: xvfb-run -a node scripts/smoke-app.mjs dist/linux-unpacked/twincable --screenshot smoke-unpacked.png --emulators
 
       - name: Smoke test – the AppImage
         run: |
           v=$(node -p "require('./package.json').version")
           # Where people keep it: a folder of their own, under any name (the updater keeps that name)
           mkdir -p "$RUNNER_TEMP/Applications"
-          app="$RUNNER_TEMP/Applications/twicable.AppImage"
-          cp "dist/twicable-$v-linux-x86_64.AppImage" "$app"
+          app="$RUNNER_TEMP/Applications/twincable.AppImage"
+          cp "dist/twincable-$v-linux-x86_64.AppImage" "$app"
           chmod +x "$app"
           xvfb-run -a node scripts/smoke-app.mjs "$app" --screenshot smoke-appimage.png --lang de
 
@@ -132,24 +132,24 @@ jobs:
       - name: Smoke test – install the .deb, start it, remove it
         run: |
           v=$(node -p "require('./package.json').version")
-          sudo apt-get install -y "./dist/twicable-$v-linux-amd64.deb"
-          test -x /opt/twicable/twicable
-          desktop=/usr/share/applications/twicable.desktop
+          sudo apt-get install -y "./dist/twincable-$v-linux-amd64.deb"
+          test -x /opt/twincable/twincable
+          desktop=/usr/share/applications/twincable.desktop
           cat "$desktop"
-          grep -q '^StartupWMClass=twicable$' "$desktop" || { echo '::error::StartupWMClass does not match the app id'; exit 1; }
+          grep -q '^StartupWMClass=twincable$' "$desktop" || { echo '::error::StartupWMClass does not match the app id'; exit 1; }
           grep -q '^Categories=Game;' "$desktop" || { echo '::error::not listed under Games'; exit 1; }
-          command -v twicable
-          xvfb-run -a node scripts/smoke-app.mjs /opt/twicable/twicable
-          sudo apt-get remove -y twicable
-          if [ -e /opt/twicable/twicable ]; then echo '::error::apt left the app behind'; exit 1; fi
+          command -v twincable
+          xvfb-run -a node scripts/smoke-app.mjs /opt/twincable/twincable
+          sudo apt-get remove -y twincable
+          if [ -e /opt/twincable/twincable ]; then echo '::error::apt left the app behind'; exit 1; fi
           echo 'install / start / remove: ok'
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: twicable-linux
+          name: twincable-linux
           path: |
-            dist/twicable-*-linux-x86_64.AppImage
-            dist/twicable-*-linux-amd64.deb
+            dist/twincable-*-linux-x86_64.AppImage
+            dist/twincable-*-linux-amd64.deb
           if-no-files-found: error
           retention-days: 14
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

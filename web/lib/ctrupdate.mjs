@@ -2,7 +2,7 @@
 // game started with (server/lib/ctrupdate.mjs prepareUpdate, scanLibrary's rom.update / ctrUpdates).
 import { t } from './i18n.mjs';
 
-/** "v2.2.0 (game version 1.2)", or "v2.2.0" when twicable doesn't know which version the game shows for it. */
+/** "v2.2.0 (game version 1.2)", or "v2.2.0" when twincable doesn't know which version the game shows for it. */
 export function updateVersionLabel(u) {
   if (!u) return '';
   const v = u.versionText || '';
@@ -17,11 +17,11 @@ export function ctrUpdateNote(u, live = false) {
   const version = u.versionText || '';
   if (!u.installed) {
     if (u.why === 'randomized') return t('ctrUpdate.playRandomized', 'Randomized games start without their update ({version}) – the randomizer builds them from version 1.0 of the game.', { version });
-    if (u.why === 'encrypted') return t('ctrUpdate.playEncrypted', 'The update {version} is encrypted, so the game starts without it. twicable needs a decrypted copy of the update.', { version });
+    if (u.why === 'encrypted') return t('ctrUpdate.playEncrypted', 'The update {version} is encrypted, so the game starts without it. twincable needs a decrypted copy of the update.', { version });
     return t('ctrUpdate.playFailed', 'The update {version} couldn’t be installed, so the game starts without it.', { version });
   }
   if (u.tracking === 'older' && !live) {
-    return t('ctrUpdate.playOlder', 'This game runs an older update ({version}). twicable knows where version 1.0 and the latest update keep your team – if it doesn’t show up, add the latest update to your library or remove this one.', { version });
+    return t('ctrUpdate.playOlder', 'This game runs an older update ({version}). twincable knows where version 1.0 and the latest update keep your team – if it doesn’t show up, add the latest update to your library or remove this one.', { version });
   }
   return '';
 }

@@ -26,7 +26,7 @@ const okHex = (h) => typeof h === 'string' && /^[0-9a-f]{64}$/.test(h);
 
 /** The commitment: SHA-256 over game, round, player, hand and nonce (hex). */
 export async function rpsHash(id, round, slot, hand, nonce) {
-  const data = new TextEncoder().encode(`twicable-rps|${id}|${round}|${slot}|${hand}|${nonce}`);
+  const data = new TextEncoder().encode(`twincable-rps|${id}|${round}|${slot}|${hand}|${nonce}`);
   const d = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', data));
   return [...d].map((b) => b.toString(16).padStart(2, '0')).join('');
 }

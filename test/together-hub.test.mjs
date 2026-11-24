@@ -87,7 +87,7 @@ test('status: a battle goes out at once, HP at most twice a second, a heartbeat;
   hubs.p1.tick = () => {};
   for (let i = 0; i < 5; i++) await tick(TG.TG.staleMs / 4);
   assert.equal(hubs.p2.status('p1'), null);
-  assert.equal(hubs.p2.giftWhy('p1'), 'old', 'connected, but no status: an older twicable');
+  assert.equal(hubs.p2.giftWhy('p1'), 'old', 'connected, but no status: an older twincable');
 });
 
 test('a partner on an older build: "in a battle" from the run doc’s where:<slot> while their live data is fresh – no HP', () => {

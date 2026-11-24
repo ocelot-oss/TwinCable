@@ -1,4 +1,4 @@
-// twicable+ asset protection, the parts around the pack (audit of 18.11.26): the member's pack key is bound to the
+// twincable+ asset protection, the parts around the pack (audit of 18.11.26): the member's pack key is bound to the
 // signed-in session (key id <epoch>_<session tag>), a data folder copied to another computer opens nothing, and the dev
 // paths are gone from a packaged build.
 import { test, afterEach } from 'node:test';
@@ -24,13 +24,13 @@ const SESSION_B = '7_ZyXwVuTsRqPoNmLk';
 async function makePack(kid, key = globalThis.crypto.getRandomValues(new Uint8Array(32))) {
   const signer = await makeSigner();
   const files = [{ path: 'banners.json', bytes: enc.encode('[]') }, { path: 'handheld/looks.json', bytes: enc.encode('{"v":1}') }];
-  const { manifest, manifestBytes } = await buildManifest({ id: 'twicable-plus', version: '1.0.0', kind: 'mixed', title: 'Test', files });
+  const { manifest, manifestBytes } = await buildManifest({ id: 'twincable-plus', version: '1.0.0', kind: 'mixed', title: 'Test', files });
   const sealed = new Map();
-  for (const f of files) sealed.set(`${BASE}/1.0.0/file?path=${encodeURIComponent(f.path)}&k=${kid}`, await sealFile({ pack: 'twicable-plus', version: '1.0.0', path: f.path, wm: 'wm_acct', kid, key, bytes: f.bytes }));
+  for (const f of files) sealed.set(`${BASE}/1.0.0/file?path=${encodeURIComponent(f.path)}&k=${kid}`, await sealFile({ pack: 'twincable-plus', version: '1.0.0', path: f.path, wm: 'wm_acct', kid, key, bytes: f.bytes }));
   return {
     signer, key, kid, manifest, sealed,
     answer: {
-      packId: 'twicable-plus', version: '1.0.0', manifest: b64url(manifestBytes), signature: b64url(await signer.sign(manifestBytes)), keyId: kid, watermark: 'wm_acct',
+      packId: 'twincable-plus', version: '1.0.0', manifest: b64url(manifestBytes), signature: b64url(await signer.sign(manifestBytes)), keyId: kid, watermark: 'wm_acct',
       files: manifest.files.map((f) => ({ path: f.path, url: `${BASE}/1.0.0/file?path=${encodeURIComponent(f.path)}&k=${kid}` })),
     },
   };
@@ -46,16 +46,16 @@ test('key ids: a member\'s key is bound to the session (<epoch>_<16-char session
 test('session-bound key: the cache takes the new key id, the page opens the files – and another session\'s envelope is refused', async () => {
   const p = await makePack(SESSION_A);
   K.PRODUCTION_KEYS.push(b64url(p.signer.publicKey));
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-plus-sess-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-plus-sess-'));
   const plus = createPlusPack({ dir, devDir: '', fetchImpl: fakeFetch(p), env: NO_ENV });
   const meta = await plus.fetch({ ...p.answer, until: null });
   assert.equal(meta.keyId, SESSION_A);
   const entry = parseManifest(Buffer.from(p.answer.manifest, 'base64url')).files.find((f) => f.path === 'banners.json');
-  const opened = await openFile(plus.file('banners.json'), p.key, { pack: 'twicable-plus', kid: SESSION_A, entry });
+  const opened = await openFile(plus.file('banners.json'), p.key, { pack: 'twincable-plus', kid: SESSION_A, entry });
   assert.equal(new TextDecoder().decode(opened.bytes), '[]');
   // the same account signed in elsewhere has its own key id (and key): this computer's envelope isn't for it
-  await assert.rejects(openFile(plus.file('banners.json'), p.key, { pack: 'twicable-plus', kid: SESSION_B, entry }), { code: 'envelope' });
-  await assert.rejects(openFile(plus.file('banners.json'), globalThis.crypto.getRandomValues(new Uint8Array(32)), { pack: 'twicable-plus', kid: SESSION_A, entry }), { code: 'decrypt' });
+  await assert.rejects(openFile(plus.file('banners.json'), p.key, { pack: 'twincable-plus', kid: SESSION_B, entry }), { code: 'envelope' });
+  await assert.rejects(openFile(plus.file('banners.json'), globalThis.crypto.getRandomValues(new Uint8Array(32)), { pack: 'twincable-plus', kid: SESSION_A, entry }), { code: 'decrypt' });
   // a key id that isn't one is refused before anything is downloaded
   await assert.rejects(plus.fetch({ ...p.answer, keyId: '7_../../etc' }), { code: 'plusAnswer' });
 });
@@ -72,14 +72,14 @@ test('a data folder copied to another computer opens nothing: the key is in this
   };
   const p = await makePack(SESSION_A);
   K.PRODUCTION_KEYS.push(b64url(p.signer.publicKey));
-  const mine = mkdtempSync(join(tmpdir(), 'twicable-member-'));
+  const mine = mkdtempSync(join(tmpdir(), 'twincable-member-'));
   // the member's computer: tokens + the entitlement with the pack key in account.bin (encrypted by the keychain) …
   const store = createTokenStore(keychain(), { file: join(mine, 'account.bin') });
   assert.equal(await store.save({ refresh: 'r', extra: { entitlement: { packKey: b64url(p.key), packKeyId: SESSION_A } } }), true);
   // … and the encrypted pack cache
   await createPlusPack({ dir: join(mine, 'plus'), devDir: '', fetchImpl: fakeFetch(p), env: NO_ENV }).fetch({ ...p.answer, until: null });
   // copied whole to a friend's computer
-  const theirs = mkdtempSync(join(tmpdir(), 'twicable-copy-'));
+  const theirs = mkdtempSync(join(tmpdir(), 'twincable-copy-'));
   cpSync(mine, theirs, { recursive: true });
   const copied = createTokenStore(keychain(), { file: join(theirs, 'account.bin') });
   await assert.rejects(copied.load(), { code: 'unreadable' }, 'their keychain can\'t open the session: signed out, no pack key');
@@ -88,21 +88,21 @@ test('a data folder copied to another computer opens nothing: the key is in this
   assert.ok(Buffer.from(env).subarray(0, 4).toString('latin1') === 'SDP1' && !Buffer.from(env).includes('[]'), 'only the envelope is on disk');
   // and without the key not one file opens (the page's pack client wipes the cache when the account says "signed out")
   const entry = parseManifest(Buffer.from(p.answer.manifest, 'base64url')).files.find((f) => f.path === 'banners.json');
-  await assert.rejects(openFile(env, globalThis.crypto.getRandomValues(new Uint8Array(32)), { pack: 'twicable-plus', kid: SESSION_A, entry }), { code: 'decrypt' });
+  await assert.rejects(openFile(env, globalThis.crypto.getRandomValues(new Uint8Array(32)), { pack: 'twincable-plus', kid: SESSION_A, entry }), { code: 'decrypt' });
 });
 
 test('packaged build: no dev pack, no dev key, no dev URLs – even with every dev switch set', async () => {
-  const dev = mkdtempSync(join(tmpdir(), 'twicable-devpack-'));
+  const dev = mkdtempSync(join(tmpdir(), 'twincable-devpack-'));
   writeFileSync(join(dev, 'access.json'), JSON.stringify({ publicKey: 'A'.repeat(43) }));
   writeFileSync(join(dev, 'access-preview.json'), JSON.stringify({ publicKey: 'A'.repeat(43) }));
   const env = { SLS_PLUS_DEV_PACK: dev, SLS_PLUS_DEV_KEY: 'B'.repeat(43), SLS_ACCOUNTS_URL: 'http://127.0.0.1:8788' };
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-packaged-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-packaged-'));
   const packaged = createPlusPack({ dir, devDir: dev, env, packaged: true });
   assert.equal(packaged.dev, false);
   assert.throws(() => packaged.devAccess('pack'), { status: 404 });
   assert.throws(() => packaged.devAccess('preview'), { status: 404 });
   assert.throws(() => packaged.devKey(), { status: 404 });
-  await assert.rejects(packaged.fetchOne({ url: 'twicable-dev:preview/skins/moss.css' }), { code: 'plusUrl' });
+  await assert.rejects(packaged.fetchOne({ url: 'twincable-dev:preview/skins/moss.css' }), { code: 'plusUrl' });
   // the same switches in development do open them (so the test above means something)
   const devBuild = createPlusPack({ dir, devDir: dev, env, packaged: false });
   assert.equal(devBuild.dev, true);

@@ -13,7 +13,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dir = process.argv[process.argv.length - 1];
 app.commandLine.appendSwitch('mute-audio');
-const scratch = mkdtempSync(join(tmpdir(), 'twicable-skinshots-app-'));
+const scratch = mkdtempSync(join(tmpdir(), 'twincable-skinshots-app-'));
 app.setPath('userData', join(scratch, 'electron'));
 app.on('window-all-closed', () => {});
 
@@ -23,7 +23,7 @@ app.whenReady().then(async () => {
     const skins = JSON.parse(readFileSync(join(dir, 'skins.json'), 'utf8'));
     const data = join(scratch, 'data');
     mkdirSync(data, { recursive: true });
-    writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'twicable', bootAnimation: false, sounds: false, nagOff: true }));
+    writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'twincable', bootAnimation: false, sounds: false, nagOff: true }));
     process.env.SLS_DATA_DIR = data;
     process.env.SLS_ACCOUNTS_URL = 'http://127.0.0.1:9'; // never the real service: signed out, nothing to reach
     const { startServer } = await import(pathToFileURL(join(ROOT, 'server', 'app.mjs')).href);

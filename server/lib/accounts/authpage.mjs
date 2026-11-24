@@ -30,18 +30,18 @@ export function authPage(result, lang = 'en') {
   const tr = (k, fallback) => dict(l)[k] || dict('en')[k] || fallback;
   const ok = result === 'ok';
   const text = {
-    ok: tr('auth.okText', 'You can close this tab and go back to twicable.'),
-    mismatch: tr('auth.mismatchText', 'This sign-in link doesn’t belong to the sign-in twicable started. Go back to twicable and start again.'),
-    expired: tr('auth.expiredText', 'This sign-in took too long. Go back to twicable and start again.'),
-    none: tr('auth.expiredText', 'This sign-in took too long. Go back to twicable and start again.'),
-    denied: tr('auth.cancelledText', 'You cancelled the sign-in – nothing was shared with twicable. You can close this tab.'),
-    offline: tr('auth.offlineText', 'twicable couldn’t reach the account service. Check your internet connection, then try again in twicable.'),
-    suspended: tr('auth.suspendedText', 'This twicable account is suspended.'),
-  }[result] || tr('auth.failText', 'Go back to twicable and try again.');
+    ok: tr('auth.okText', 'You can close this tab and go back to twincable.'),
+    mismatch: tr('auth.mismatchText', 'This sign-in link doesn’t belong to the sign-in twincable started. Go back to twincable and start again.'),
+    expired: tr('auth.expiredText', 'This sign-in took too long. Go back to twincable and start again.'),
+    none: tr('auth.expiredText', 'This sign-in took too long. Go back to twincable and start again.'),
+    denied: tr('auth.cancelledText', 'You cancelled the sign-in – nothing was shared with twincable. You can close this tab.'),
+    offline: tr('auth.offlineText', 'twincable couldn’t reach the account service. Check your internet connection, then try again in twincable.'),
+    suspended: tr('auth.suspendedText', 'This twincable account is suspended.'),
+  }[result] || tr('auth.failText', 'Go back to twincable and try again.');
   const title = ok ? tr('auth.okTitle', 'You’re signed in') : result === 'denied' ? tr('auth.deniedTitle', 'Sign-in cancelled') : tr('auth.failTitle', 'Signing in didn’t work');
   return `<!doctype html>
 <html lang="${l}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="referrer" content="no-referrer"><title>twicable</title>
+<meta name="referrer" content="no-referrer"><title>twincable</title>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
 html,body{margin:0;height:100%;background:#1b1a1f;color:#ebe6da;font-family:'IBM Plex Sans','Segoe UI',system-ui,sans-serif}

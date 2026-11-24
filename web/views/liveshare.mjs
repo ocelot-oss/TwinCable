@@ -62,7 +62,7 @@ export function ShareButton({ event, small = false }) {
     return html`<button class=${cls} onClick=${() => navigate('settings', settingsLink('discord'))} title=${shareErrorText(err)}><${DiscordGlyph} />${t('live.connectAgain', 'Connect again')}</button>`;
   }
   const blocked = err && ['blocked', 'not-member'].includes(err.error);
-  const hint = event.kind === 'victory' ? t('hof.hint', 'Posts your winning team in #hall-of-fame on the twicable Discord.') : t('live.shareHint', 'Posts a card of this moment in #live-runs on the twicable Discord.');
+  const hint = event.kind === 'victory' ? t('hof.hint', 'Posts your winning team in #hall-of-fame on the twincable Discord.') : t('live.shareHint', 'Posts a card of this moment in #live-runs on the twincable Discord.');
   return html`<button class=${cls} disabled=${busy || blocked} onClick=${go} title=${err ? shareErrorText(err) : hint}>
     <${DiscordGlyph} />${busy ? t('live.sharing', 'Sharing …') : err?.error === 'rate' ? t('live.retryIn', 'Try again in {n} min', { n: Math.max(1, Math.ceil((err.retryAfter || 60) / 60)) }) : t('live.share', 'Share to Discord')}</button>`;
 }
@@ -99,7 +99,7 @@ function useCardPreview(doc, manifest, gen, event, app) {
 
 /**
  * After a won run: "Post to the Hall of Fame" – the run's card with the final team as its own post in #hall-of-fame on
- * the twicable Discord. Opt-in only: nothing is posted until the player presses the button, and only when this app is
+ * the twincable Discord. Opt-in only: nothing is posted until the player presses the button, and only when this app is
  * linked (Live runs); otherwise it says how to link it. `compact`: one line for the board's banner (no preview).
  */
 export function HallOfFame({ status, compact = false, onLeave }) {
@@ -141,13 +141,13 @@ export function HallOfFame({ status, compact = false, onLeave }) {
         ${shared.url && html`<button class="btn small ghost" onClick=${() => openExternal(shared.url)}><${Icon} name="external" size=${12} />${t('live.open', 'Open in Discord')}</button>`}
       </span>`
     : linked
-      ? html`<button class="btn hof-btn ${compact ? 'small' : ''}" disabled=${busy || blocked} onClick=${go} title=${err ? shareErrorText(err) : t('hof.hint', 'Posts your winning team in #hall-of-fame on the twicable Discord.')}>
+      ? html`<button class="btn hof-btn ${compact ? 'small' : ''}" disabled=${busy || blocked} onClick=${go} title=${err ? shareErrorText(err) : t('hof.hint', 'Posts your winning team in #hall-of-fame on the twincable Discord.')}>
           <${Trophy} />${busy ? t('live.sharing', 'Sharing …') : err?.error === 'rate' ? t('live.retryIn', 'Try again in {n} min', { n: Math.max(1, Math.ceil((err.retryAfter || 60) / 60)) }) : t('hof.post', 'Post to the Hall of Fame')}</button>`
       : html`<button class="btn ghost small" onClick=${() => {
         onLeave?.();
         navigate('settings', settingsLink('discord'));
       }}>${t('hof.connect', 'Connect Discord …')}</button>`;
-  const hintText = t('hof.connectHint', 'To share it, link twicable once: type /live connect in the twicable Discord and enter the code in Settings › Online › Discord.');
+  const hintText = t('hof.connectHint', 'To share it, link twincable once: type /live connect in the twincable Discord and enter the code in Settings › Online › Discord.');
   if (compact) {
     return html`<div class="hof-inline">
       ${action}
@@ -159,7 +159,7 @@ export function HallOfFame({ status, compact = false, onLeave }) {
       : html`<div class="hof-preview placeholder" aria-hidden="true"><${Trophy} size=${28} /></div>`}
     <div class="hof-copy">
       <b><${Trophy} /> ${t('hof.title', 'Hall of Fame')}</b>
-      <p class="small muted">${linked || shared ? t('hof.text', 'Show off your winning team in #hall-of-fame on the twicable Discord – for everyone to see. Nothing is posted until you press the button.') : hintText}</p>
+      <p class="small muted">${linked || shared ? t('hof.text', 'Show off your winning team in #hall-of-fame on the twincable Discord – for everyone to see. Nothing is posted until you press the button.') : hintText}</p>
       <div class="row wrap">${action}</div>
       ${err && !['rate'].includes(err.error) && html`<p class="tiny" style="color:var(--bad-ink)" role="alert">${shareErrorText(err)}</p>`}
     </div>
@@ -210,7 +210,7 @@ export function LiveRunsSettings() {
   const l = lr.limits;
   return html`<div class="stack-s live-runs">
     <h3>${t('live.title', 'Live runs')}</h3>
-    <p class="small muted">${t('live.explain2', 'Share big moments – a death, a wipe – as a card with your teams in #live-runs on the twicable Discord, and a won run with your final team in #hall-of-fame. Nothing is posted unless you press the button.')}</p>
+    <p class="small muted">${t('live.explain2', 'Share big moments – a death, a wipe – as a card with your teams in #live-runs on the twincable Discord, and a won run with your final team in #hall-of-fame. Nothing is posted unless you press the button.')}</p>
     ${lr.linked ? html`<div class="row wrap live-linked">
         <span class="chip ok"><${Icon} name="check" size=${12} />${t('live.connectedAs', 'Connected as')} <b class="sm-secret">${lr.user?.name || '?'}</b></span>
         ${l?.left != null && html`<span class="small muted">${t('live.left', '{left} of {perDay} posts left today', { left: l.left, perDay: l.perDay })}${l.nextInSec > 0 ? ` · ${t('live.next', 'next one in {n} min', { n: Math.ceil(l.nextInSec / 60) })}` : ''}</span>`}
@@ -221,7 +221,7 @@ export function LiveRunsSettings() {
     : html`<div class="stack-s">
         ${lr.expired && html`<div class="warning" role="alert">${t('live.expired', 'The link to Discord has ended (disconnected in Discord, or linked on too many devices). Connect again with a new code.')}</div>`}
         <ol class="small muted live-steps">
-          <li>${t('live.step1', 'In the twicable Discord, type /live connect (or press “Connect twicable” in #live-runs).')}</li>
+          <li>${t('live.step1', 'In the twincable Discord, type /live connect (or press “Connect twincable” in #live-runs).')}</li>
           <li>${t('live.step2', 'The bot shows you a code like K7Q-4M2 – only you can see it. Enter it here within 10 minutes.')}</li>
         </ol>
         <div class="row nowrap">

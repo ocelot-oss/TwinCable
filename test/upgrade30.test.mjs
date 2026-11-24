@@ -137,7 +137,7 @@ test('older partner: one log line for them (shown as a notice in their 2.x app),
   const lines = R.feedList(doc).filter((f) => f.about === 'p2');
   assert.equal(lines.length, 1);
   assert.equal(lines[0].slot, 'p1', 'written by me – a 2.x app shows a partner\'s new log line as a notice');
-  assert.match(lines[0].text, /^Tim is on an older twicable – .*twicable 3\.0.*Settings › About/);
+  assert.match(lines[0].text, /^Tim is on an older twincable – .*twincable 3\.0.*Settings › About/);
   assert.equal(lines[0].msg.key, 'feed.olderApp');
   // another 3.0 player of the run (other device) writes the same entry, not a second one
   const b = hubWith({ talks: false, doc });

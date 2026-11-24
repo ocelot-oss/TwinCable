@@ -15,7 +15,7 @@ const reducedMotion = () => {
  * The timer. `isBusy()` is asked when a moment is due (a game running, fullscreen, boot, onboarding): then that one is
  * skipped and the next is planned. Returns `{ fx, clicked }` – fx = { id, at, mon } while one plays, `clicked()`
  * stops them for this session (the button did its job).
- * For trying the variants: `dispatchEvent(new CustomEvent('twicable:coffee-fx', { detail: 'peek' }))`.
+ * For trying the variants: `dispatchEvent(new CustomEvent('twincable:coffee-fx', { detail: 'peek' }))`.
  */
 export function useCoffeeFx(isBusy) {
   const [fx, setFx] = useState(null);
@@ -54,10 +54,10 @@ export function useCoffeeFx(isBusy) {
     };
     plan();
     const onTry = (e) => !reducedMotion() && play(COFFEE_VARIANTS[e.detail] ? e.detail : pickVariant(st.current.last));
-    addEventListener('twicable:coffee-fx', onTry);
+    addEventListener('twincable:coffee-fx', onTry);
     return () => {
       clearTimeout(timer);
-      removeEventListener('twicable:coffee-fx', onTry);
+      removeEventListener('twincable:coffee-fx', onTry);
     };
   }, []);
 

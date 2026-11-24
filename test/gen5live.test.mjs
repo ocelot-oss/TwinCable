@@ -259,7 +259,7 @@ test('held items by name: the game\'s number in Gen 3, 4 and 5 (#15)', async () 
   assert.equal(itemName(0, 5, 'en'), '');
 });
 
-// Gen 5 battle structs as Black 2 keeps them (captured in twicable's fast player, #12): { u32 → the Pokémon in the battle's
+// Gen 5 battle structs as Black 2 keeps them (captured in twincable's fast player, #12): { u32 → the Pokémon in the battle's
 // party copy, u32, u32, u16 species, u16 max HP, u16 HP, u8 ×6, u8 level } – the struct's address is the species'
 function battleStruct(m, addr, { pp, species, maxHp, hp, level }) {
   const b = new Uint8Array(0x0c + 14);

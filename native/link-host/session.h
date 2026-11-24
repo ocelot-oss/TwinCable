@@ -3,8 +3,8 @@
 // local seat's buttons for frame f are taken at frame f − D and sent to the peers (LINPUT), and frame f runs only once
 // every seat's buttons for it are known. Also: the peers' buttons coming in (RINPUT, NEED), the hash every 120 frames,
 // whole-session states for a partner who rejoins, and record / replay of every seat's buttons (tests).
-#ifndef TWICABLE_SESSION_H
-#define TWICABLE_SESSION_H
+#ifndef TWINCABLE_SESSION_H
+#define TWINCABLE_SESSION_H
 
 #include "linkbackend.h"
 

@@ -23,7 +23,7 @@
 //   - "Clock" is a console's session clock: its emulated time since the session began (SysTimestamp minus what it was
 //     at the start). Consoles that join from the players' running games have been on for very different times
 //     (minutes apart, more with fast-forward) – on their own clocks the one on longest would stand still until the
-//     others caught up with it, and its player would see nothing but black (twicable 3.0.0, Union Room trades).
+//     others caught up with it, and its player would see nothing but black (twincable 3.0.0, Union Room trades).
 // run_frame() runs the schedule until every console finished the session frame – or still waits for a packet past
 // another console's frame end (then it simply carries on in the next run_frame; consoles stay within a frame of each
 // other).
@@ -31,7 +31,7 @@
 // No Nintendo BIOS or firmware: melonDS's FreeBIOS and a generated firmware (per seat: own MAC address and nickname –
 // two consoles with one MAC can't talk) – the games' wireless code lives in the cartridge's ARM7 binary.
 //
-// Alone (the twicable engine's solo seat, link_open.solo) the console is set up as the fast player's melonDS DS: the JIT
+// Alone (the twincable engine's solo seat, link_open.solo) the console is set up as the fast player's melonDS DS: the JIT
 // on, the 3D picture drawn on its own thread, melonDS DS's firmware (its default MAC, the nickname "melonDS DS") and the
 // computer's local time. Nothing there has to match another computer; a link session re-forms the consoles from their
 // states with the interpreter and the per-seat firmware before anyone links.
@@ -256,7 +256,7 @@ void seatMain(Seat *s) {
 }
 
 /** A seat's firmware: in a link session its own MAC and nickname; alone, the one melonDS DS (the fast player) generates
- *  with twicable's settings – melonDS's default MAC and the nickname "melonDS DS". */
+ *  with twincable's settings – melonDS's default MAC and the nickname "melonDS DS". */
 Firmware makeFirmware(int seat) {
   Firmware fw(0);
   auto &h = fw.GetHeader();
@@ -264,7 +264,7 @@ Firmware makeFirmware(int seat) {
   if (!solo) h.MacAddr = MacAddress{0x02, 0x50, 0x4b, 0x53, 0x44, static_cast<u8>(0x10 + seat)};
   auto &u = fw.GetEffectiveUserData();
   char name[11];
-  snprintf(name, sizeof name, solo ? "melonDS DS" : "twicable%d", seat + 1);
+  snprintf(name, sizeof name, solo ? "melonDS DS" : "twincable%d", seat + 1);
   memset(u.Nickname, 0, sizeof u.Nickname);
   const size_t n = strlen(name);
   for (size_t i = 0; i < n; i++) u.Nickname[i] = static_cast<char16_t>(name[i]);
@@ -408,7 +408,7 @@ void d_set_input(int seat, link_input in) {
  * One session frame: every console finishes one more frame. A console that waits mid-frame for a packet times out only
  * once every other console passed its horizon – and the one that holds it back may already be at its frame end. That
  * one then starts its next frame right away (with its next buttons if they are queued, else the ones it holds), so the
- * waiting one can go on. (twicable 3.0.0 ended the session frame there instead: in a wireless exchange – the whole Union
+ * waiting one can go on. (twincable 3.0.0 ended the session frame there instead: in a wireless exchange – the whole Union
  * Room – the consoles took turns finishing their frames, the games ran at half speed and the input queue overflowed.)
  * The order of everything the consoles do is the same either way; only the frames are counted out fairly.
  */
@@ -537,7 +537,7 @@ size_t d_state_size(int seat) {
   const u8 *b = static_cast<const u8 *>(ss.Buffer());
   me.stateCache.assign(b, b + ss.Length());
   using namespace mpstate;
-  put(me.stateCache, "LMP2", 4); // (LMP1, twicable 3.0.0: no session clock – the consoles' own clocks were compared)
+  put(me.stateCache, "LMP2", 4); // (LMP1, twincable 3.0.0: no session clock – the consoles' own clocks were compared)
   put<u8>(me.stateCache, me.connected ? 1 : 0);
   put<u32>(me.stateCache, me.cur);
   put<s32>(me.stateCache, lastHost);
@@ -631,15 +631,15 @@ size_t d_audio(int seat, int16_t *out, size_t max) {
   return n > 0 ? static_cast<size_t>(spu.ReadOutput(out, n)) : 0;
 }
 
-// Shared World: the 3D depth of the seat's frame on screen (twicable's patch to melonDS, native/melonds-patch – the
+// Shared World: the 3D depth of the seat's frame on screen (twincable's patch to melonDS, native/melonds-patch – the
 // software renderer keeps it once its rendering is done, before the next frame's starts)
 static int d_depth(int seat, int on, int x, int y, int w, int h, uint32_t *out) {
   if (seat < 0 || seat >= LINK_MAX_SEATS || !seats[seat].nds) return -1;
-  auto *soft = dynamic_cast<melonDS::SoftRenderer3D *>(seats[seat].nds->GPU.GetRenderer().Twicable3D());
+  auto *soft = dynamic_cast<melonDS::SoftRenderer3D *>(seats[seat].nds->GPU.GetRenderer().TwinCable3D());
   if (!soft) return -1;
-  soft->TwicableKeepDepth(on != 0);
+  soft->TwinCableKeepDepth(on != 0);
   if (!on || !out) return 0;
-  return soft->TwicableDepth(x, y, w, h, out);
+  return soft->TwinCableDepth(x, y, w, h, out);
 }
 
 static uint32_t d_frames(int seat) {

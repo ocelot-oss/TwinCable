@@ -1,4 +1,4 @@
-// Screens of the twicable account in the real app (Electron, muted): two twicable servers with scratch data folders
+// Screens of the twincable account in the real app (Electron, muted): two twincable servers with scratch data folders
 // (Robin hosts, Kim joins), both signed in to a fake accounts service (test/fixtures/fakeaccounts.mjs – never the real
 // one) that is filled with friends, presence, requests and stats. Walks through Settings › Account (signed out / in),
 // the own and a friend's profile, the profile editor, Friends, inviting a friend from the new-run wizard and the
@@ -31,7 +31,7 @@ if (!process.versions.electron) {
 } else {
   const { app } = await import('electron');
   app.commandLine.appendSwitch('mute-audio');
-  const scratch = mkdtempSync(join(tmpdir(), 'twicable-social-e2e-'));
+  const scratch = mkdtempSync(join(tmpdir(), 'twincable-social-e2e-'));
   app.setPath('userData', join(scratch, 'electron'));
   app.on('window-all-closed', () => {});
   app.whenReady().then(() => main(scratch)).catch((e) => { console.error(e); app.exit(1); });
@@ -419,7 +419,7 @@ async function main(scratch) {
       await sleep(1500);
       await shot(0, '30-host-everyone-in');
     }
-    // 15 · the editor without twicable+: a twicable+ banner can be tried on, quietly marked, not saved
+    // 15 · the editor without twincable+: a twincable+ banner can be tried on, quietly marked, not saved
     await go(1, '#/profile', '.pf-mast');
     await click(1, '.pf-actions .btn');
     await until('editor (guest)', () => ev(1, '!!document.querySelector(".pe-drawer .pe-pcard")'));

@@ -1,6 +1,6 @@
-// End-to-end test of a raid in the real app (docs/MULTIPLAYER.md › "Raid"): two or three twicable servers with scratch
+// End-to-end test of a raid in the real app (docs/MULTIPLAYER.md › "Raid"): two or three twincable servers with scratch
 // data folders (players on this computer), one SoulLink run (created on A, joined on the others), every page in
-// Electron (hidden, muted) playing its own game in the fast player (the twicable engine). Every game loads the same
+// Electron (hidden, muted) playing its own game in the fast player (the twincable engine). Every game loads the same
 // save state from right before a trainer battle (--state). A starts the raid from the board, the others join from the
 // raid panel in their play view, the countdown runs, every player walks into the battle, and they take turns hitting
 // the trainer's Pokémon: each hit comes off the shared pool and goes into the other games. Checked: the pool every
@@ -12,7 +12,7 @@
 //   --walk red   Red/Blue: the state stands in Oak's lab with the starter – walking down starts the rival's battle
 //   --walk frlg  FireRed/LeafGreen: the state stands at the balls in Oak's lab – round the table to the door: the rival
 //   --skins <dir> the raid panel in colour themes as well (A's page, while fighting and at the end): the default, the
-//                 high-contrast theme and twicable+ skins (<dir>/<id>.css, set the way the app sets one) – light and dark
+//                 high-contrast theme and twincable+ skins (<dir>/<id>.css, set the way the app sets one) – light and dark
 //
 // Never commit ROMs, states or the screenshots.
 import { spawn, spawnSync } from 'node:child_process';
@@ -152,7 +152,7 @@ async function main() {
       writeFileSync(join(out, `${name}-${profiles[i].id}.png`), img.toPNG());
     };
     const all = (name, crop = false) => Promise.all(profiles.map((_, i) => shot(name, i, crop)));
-    // the raid panel in other colours (--skins): the default, a theme, twicable+ skins light and dark
+    // the raid panel in other colours (--skins): the default, a theme, twincable+ skins light and dark
     const SKINS = opt('skins') ? [['classic'], ['contrast', 'theme'], ...['fieldbook', 'sakura', 'cartridge-grey', 'paper-lantern', 'midnight-ink'].map((id) => [id, 'skin', readFileSync(join(resolve(opt('skins')), `${id}.css`), 'utf8')])] : [];
     const skinShots = async (i, name) => {
       for (const [id, kind, css] of SKINS) {

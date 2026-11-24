@@ -1,4 +1,4 @@
-// Nintendo 3DS in twicable's own player: the native host (native/ctr-host) runs Azahar's libretro core with Vulkan and
+// Nintendo 3DS in twincable's own player: the native host (native/ctr-host) runs Azahar's libretro core with Vulkan and
 // speaks a small binary protocol on stdin/stdout (see the header of native/ctr-host/ctrhost.c). This module finds the
 // tools, starts one session at a time and hands the host's output to the player page as it comes (one HTTP stream,
 // the host's messages unchanged); the page's commands (input, speed, save states, which memory to watch, cheats) go
@@ -6,7 +6,7 @@
 //
 // tools/ctr/<platform>-<arch>/ (bundled with the app, or in the data folder's tools):
 //   ctrhost[.exe]                                  the host
-//   azahar_libretro.dylib | .dll | .so             the core – twicable's build reads the game's memory for live data
+//   azahar_libretro.dylib | .dll | .so             the core – twincable's build reads the game's memory for live data
 //                                                   (native/azahar-patch); Azahar's own core runs the game without it
 //   libMoltenVK.dylib (macOS)                      Vulkan on Metal; Windows/Linux use the system's Vulkan loader
 import { spawn } from 'node:child_process';
@@ -38,7 +38,7 @@ export const CTR_WRITE_RANGES = [[0x08000000, 0x10000000], [0x14000000, 0x1c0000
 export const CTR_WRITE_MAX = 256;
 
 /**
- * Is this WRITE payload one twicable's player sends? { u32 id, u32 addr, u32 len, old[len], new[len] }: 1–256 bytes
+ * Is this WRITE payload one twincable's player sends? { u32 id, u32 addr, u32 len, old[len], new[len] }: 1–256 bytes
  * inside one 4 KB page of the game's heaps.
  */
 export function ctrWriteOk(p) {
@@ -88,7 +88,7 @@ export function ctrTools({ azaharApp = null } = {}) {
     else if (systemVulkan()) vulkan = VULKAN;
     else return { ok: false, missing: 'vulkan', dir };
   }
-  return { ok: true, dir, host: join(dir, EXE), core: join(dir, CORE), vulkan, twicableCore: existsSync(join(dir, 'TWICABLE_CORE')) };
+  return { ok: true, dir, host: join(dir, EXE), core: join(dir, CORE), vulkan, twincableCore: ['TWINCABLE_CORE', 'TWICABLE_CORE'].some((stamp) => existsSync(join(dir, stamp))) };
 }
 
 /** Is the 3DS game file an encrypted dump? (Azahar plays decrypted games only.) Unreadable / unknown: false. */
@@ -111,7 +111,7 @@ export function ctrEncrypted(path) {
 const fileReports = new Map(); // path|size|time → ctrFileReport (a game file doesn't change under the same stamp)
 
 /**
- * What twicable knows about a 3DS game file before it starts it – for the start's checks and "Save diagnostics", with
+ * What twincable knows about a 3DS game file before it starts it – for the start's checks and "Save diagnostics", with
  * nothing in it that names the player (no path): { size, magic ('NCSD' | 'NCCH' | the first bytes as hex …), format,
  * encrypted, code, titleId, kind, integrity: { state, why } (server/lib/ctrcheck.mjs) } – or { error } (the file can't
  * be read: its code, ENOENT / EBUSY / EPERM …). Cached per file stamp; ~40 small reads the first time.
@@ -298,7 +298,7 @@ export function redactHome(text, home = homedir()) {
 
 /**
  * The players' log file (data folder › logs › players.log): every host that ended badly, one JSON line each – it
- * survives a restart of twicable (people often restart before they save the diagnostics). Kept small (rotated at 512 KB).
+ * survives a restart of twincable (people often restart before they save the diagnostics). Kept small (rotated at 512 KB).
  */
 export const PLAYER_LOG = join(DATA_DIR, DEV ? 'runs/logs' : 'logs', 'players.log');
 export function appendPlayerLog(record, file = PLAYER_LOG) {
@@ -364,7 +364,7 @@ export class CtrSessions {
     s.recorded = true;
     const error = [...s.events].reverse().find((e) => e?.event === 'error');
     const normal = exit && exit.code === 0 && !exit.signal && !error;
-    if (normal || s.quit) return; // (s.quit: stopped by twicable – the host's _exit after QUIT, or the kill)
+    if (normal || s.quit) return; // (s.quit: stopped by twincable – the host's _exit after QUIT, or the kill)
     this.last = {
       at: new Date().toISOString(),
       exit: exitText(exit) || null,
@@ -518,7 +518,7 @@ export class CtrSessions {
     s.heldErrors = [];
     s.fellBack.push(from);
     this.onRendererFailed?.({ gpu: s.gpu || null, from, to: next });
-    s.log.push(`[twicable] the 3DS host ended in its first seconds with the renderer "${from}" – starting it again with "${next}"\n`);
+    s.log.push(`[twincable] the 3DS host ended in its first seconds with the renderer "${from}" – starting it again with "${next}"\n`);
     s.renderer = next;
     // (back to 1× resolution as well: a higher one asks more of a graphics card that just failed)
     s.scale = 1;

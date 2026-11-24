@@ -85,11 +85,11 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false' # unsigned (no certificate) – README explains SmartScreen
         run: npx electron-builder --win nsis --x64 --publish never
       - name: Smoke test
-        run: node scripts/smoke-app.mjs dist/win-unpacked/twicable.exe
+        run: node scripts/smoke-app.mjs dist/win-unpacked/twincable.exe
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: windows
-          path: dist/twicable-${{ steps.version.outputs.version }}-win-x64-setup.exe
+          path: dist/twincable-${{ steps.version.outputs.version }}-win-x64-setup.exe
           if-no-files-found: error
 
   linux:
@@ -126,13 +126,13 @@ jobs:
       - name: Build the AppImage and the .deb
         run: npx electron-builder --linux AppImage deb --x64 --publish never
       - name: Smoke test
-        run: xvfb-run -a node scripts/smoke-app.mjs dist/linux-unpacked/twicable
+        run: xvfb-run -a node scripts/smoke-app.mjs dist/linux-unpacked/twincable
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: linux
           path: |
-            dist/twicable-*-linux-x86_64.AppImage
-            dist/twicable-*-linux-amd64.deb
+            dist/twincable-*-linux-x86_64.AppImage
+            dist/twincable-*-linux-amd64.deb
           if-no-files-found: error
 
   macos:
@@ -150,7 +150,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - name: The 3DS part (host, Azahar core with the twicable patch, MoltenVK – npm run dist checks it)
+      - name: The 3DS part (host, Azahar core with the twincable patch, MoltenVK – npm run dist checks it)
         run: |
           brew install cmake ninja spirv-tools vulkan-headers git-lfs rgbds # (rgbds: SameBoy's boot ROMs – fast player and link host)
           node scripts/build-ctr.mjs
@@ -163,7 +163,7 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: macos
-          path: dist/twicable-*-arm64.dmg
+          path: dist/twincable-*-arm64.dmg
           if-no-files-found: error
 
   publish:
@@ -192,10 +192,10 @@ jobs:
           RELEASE_KEY: ${{ secrets.SLS_RELEASE_KEY }}
         run: |
           ls -la dist
-          dmg="dist/twicable-$VERSION-arm64.dmg"
-          exe="dist/twicable-$VERSION-win-x64-setup.exe"
-          appimage="dist/twicable-$VERSION-linux-x86_64.AppImage"
-          deb="dist/twicable-$VERSION-linux-amd64.deb"
+          dmg="dist/twincable-$VERSION-arm64.dmg"
+          exe="dist/twincable-$VERSION-win-x64-setup.exe"
+          appimage="dist/twincable-$VERSION-linux-x86_64.AppImage"
+          deb="dist/twincable-$VERSION-linux-amd64.deb"
           update_repo=$(node -p "require('./package.json').updates?.repo || ''")
           if [ -z "$update_repo" ]; then
             assets=("$exe" "$appimage" "$deb")
@@ -218,9 +218,9 @@ jobs:
             rm -f "$key"
             out="dist/release-$VERSION"
             # not a draft or pre-release: the apps read releases/latest/download/latest.json
-            gh release create "v$VERSION" "$out/twicable-$VERSION-arm64.dmg" "$out/twicable-$VERSION-win-x64-setup.exe" \
-              "$out/twicable-$VERSION-linux-x86_64.AppImage" "$out/twicable-$VERSION-linux-amd64.deb" "$out/latest.json" \
-              --repo "$GITHUB_REPOSITORY" --title "twicable $VERSION" --notes-file "$out/notes.md" --verify-tag
+            gh release create "v$VERSION" "$out/twincable-$VERSION-arm64.dmg" "$out/twincable-$VERSION-win-x64-setup.exe" \
+              "$out/twincable-$VERSION-linux-x86_64.AppImage" "$out/twincable-$VERSION-linux-amd64.deb" "$out/latest.json" \
+              --repo "$GITHUB_REPOSITORY" --title "twincable $VERSION" --notes-file "$out/notes.md" --verify-tag
             echo "Published v$VERSION with macOS + Windows + Linux and a signed latest.json." >> "$GITHUB_STEP_SUMMARY"
           else
             [ -f "$dmg" ] && echo "::warning::SLS_RELEASE_KEY is not set – the feed can't be signed, creating a draft instead"
@@ -230,7 +230,7 @@ jobs:
               const notes = changelogSection(readFileSync('CHANGELOG.md', 'utf8'), process.env.VERSION);
               if (notes == null) { console.error('CHANGELOG.md has no ## ' + process.env.VERSION + ' section'); process.exit(1); }
               writeFileSync('notes.md', notes + '\n');"
-            gh release create "v$VERSION" "$exe" "$appimage" "$deb" --draft --repo "$GITHUB_REPOSITORY" --title "twicable $VERSION" --notes-file notes.md --verify-tag
+            gh release create "v$VERSION" "$exe" "$appimage" "$deb" --draft --repo "$GITHUB_REPOSITORY" --title "twincable $VERSION" --notes-file notes.md --verify-tag
             {
               echo "### Draft release v$VERSION created (Windows installer + Linux packages)"
               echo "Installed apps don't see it yet. Finish it on a Mac (docs/DEVELOPMENT.md › Releasing):"
@@ -238,7 +238,7 @@ jobs:
               echo "npm run dist"
               echo "gh release download v$VERSION --pattern '*-win-x64-setup.exe' --pattern '*-linux-*' --dir dist"
               echo "npm run release"
-              echo "gh release upload v$VERSION dist/release-$VERSION/twicable-$VERSION-arm64.dmg dist/release-$VERSION/latest.json"
+              echo "gh release upload v$VERSION dist/release-$VERSION/twincable-$VERSION-arm64.dmg dist/release-$VERSION/latest.json"
               echo "gh release edit v$VERSION --draft=false --latest"
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"

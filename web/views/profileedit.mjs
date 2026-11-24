@@ -3,12 +3,12 @@
 //          room it has, so it never reflows; every editable element gets a calm outline and its name on hover, and a
 //          click opens its picker;
 //   right  the drawer: every part as a card in four groups (Look · About you · Showcase · Privacy) with its current
-//          choice as a small picture, the twicable+ mark on a preview and a dot once it changed. A card opens the part's
+//          choice as a small picture, the twincable+ mark on a preview and a dot once it changed. A card opens the part's
 //          picker in the drawer ("‹ All parts", one dot per part – L / R or ‹ › step, "Back to saved"); banners,
 //          frames, nameplates, the trophy cabinet and the regulars widen it, the profile just scales down a little.
 //          "How friends see you" (your row with the nameplate, your sidebar chip) stays at its foot.
 // One session (lib/profiledraft.mjs): every pick tries itself on at once, the bar says "n changes not saved", Save /
-// Cancel for everything, leaving with unsaved changes asks once. twicable+ for everyone to try on: a locked item shows
+// Cancel for everything, leaving with unsaved changes asks once. twincable+ for everyone to try on: a locked item shows
 // its real art (the preview media), the profile gets a "+ Preview" tag, one quiet gold line explains – and Save is never
 // blocked: it keeps the saved free item for that part and saves the rest. Keyboard and controller: every control is a
 // button, the part dots are a data-pad-tabs tab list (L / R), B / Esc goes back from a picker to the list.
@@ -63,7 +63,7 @@ const accentName = (key) => ({
 const layoutSub = (id) => ({ case: t('pe.layoutCaseSub', 'Full width under your numbers'), lcd: t('pe.layoutLcdSub', 'Your Pokémon on the LCD, beside your runs'), shelf: t('pe.layoutShelfSub', 'A slim column beside your runs') }[id]);
 const visLabel = (v) => ({ friends: t('acct.visFriends', 'My friends'), link: t('acct.visLink', 'Anyone with my handle'), nobody: t('acct.visNobody', 'Only me') }[v]);
 
-// ---- twicable+ art for everyone: live from the pack, else the item's preview picture -----------------------------------
+// ---- twincable+ art for everyone: live from the pack, else the item's preview picture -----------------------------------
 function BannerArt({ id, shade = false, loop = false }) {
   usePreviews();
   if (!id || has('banners', id) || !previewSrc('banners', id)) return html`<${Banner} id=${id || null} size="fill" shade=${shade} intro=${false} animate=${loop ? 'always' : undefined} />`;
@@ -229,7 +229,7 @@ function CosCard({ kind, it, on, locked, onPick, prof, accent }) {
   const name = it ? it.name : t('cos.none', 'None');
   const rarity = it ? RAR()[it.rarity] || it.rarity : '';
   const notEarned = !!it?.earned && !it.owned;
-  const label = [name, it && (notEarned ? t('hh.locked', 'locked') : locked ? t('cos.plus', 'twicable+') : rarity)].filter(Boolean).join(' · ');
+  const label = [name, it && (notEarned ? t('hh.locked', 'locked') : locked ? t('cos.plus', 'twincable+') : rarity)].filter(Boolean).join(' · ');
   return html`<button ref=${ref} type="button" role="radio" aria-checked=${on} aria-label=${label} data-cos-id=${it?.id || 'none'} title=${notEarned ? earnedHow(it) : undefined}
     aria-disabled=${notEarned ? 'true' : undefined} class=${`pe-card k-${kind} ${on ? 'on' : ''} ${locked ? 'locked' : ''} ${notEarned ? 'not-earned' : ''}`} onClick=${() => !notEarned && onPick(it?.id || null)}>
     <span class="pe-art">${!it ? html`<span class="pe-none"></span>`
@@ -238,13 +238,13 @@ function CosCard({ kind, it, on, locked, onPick, prof, accent }) {
           : kind === 'frames' ? html`<span class="pe-frame"><${EdAvatar} user=${{ ...prof, frame: it.id }} size=${56} accent=${accent} /></span>`
             : html`<${PlateArt} id=${it.id} animate=${on ? 'always' : 'hover'} class="pe-plate"><${Avatar} user=${{ ...prof, frame: null }} size=${28} accent=${accent} /><b>${prof.name}</b><//>`}
       ${locked && html`<span class="pe-card-plus"><${PlusMark} /></span>`}</span>
-    <span class="pe-name"><span class="ellipsis">${name}</span>${it && (notEarned ? html`<span class="pe-earned-word">${t('hh.locked', 'locked')}</span>` : locked ? html`<span class="pe-plus-word">${t('cos.plus', 'twicable+')}</span>` : html`<span class=${`cos-rarity r-${it.rarity}`}>${rarity}</span>`)}</span>
+    <span class="pe-name"><span class="ellipsis">${name}</span>${it && (notEarned ? html`<span class="pe-earned-word">${t('hh.locked', 'locked')}</span>` : locked ? html`<span class="pe-plus-word">${t('cos.plus', 'twincable+')}</span>` : html`<span class=${`cos-rarity r-${it.rarity}`}>${rarity}</span>`)}</span>
     ${notEarned && html`<span class="pe-earned-how tiny">${earnedHow(it)}</span>`}
   </button>`;
 }
 
 /**
- * Banners, frames or nameplates: search, the favourites row (All · ★ Favourites · Owned · twicable+ – lib/favourites.mjs),
+ * Banners, frames or nameplates: search, the favourites row (All · ★ Favourites · Owned · twincable+ – lib/favourites.mjs),
  * grouped by collection, the real art. Every card has its star; a favourite stays where it is in its collection.
  */
 function CosPick({ kind, value, onPick, member, prof, accent }) {
@@ -267,7 +267,7 @@ function CosPick({ kind, value, onPick, member, prof, accent }) {
   return html`<div class="pe-pick pe-cos">
     <div class="pe-tools"><${Search} value=${q} onInput=${setQ} placeholder=${noun} />${fav.row}</div>
     <div class="pe-groups">
-      ${groups.map((g, gi) => html`<div class="pe-group" key=${g.id}><span class="pe-glabel">${groupName(g)}<span class="faint">${g.items.length}</span>${!member && g.items.every((i) => i.plus) && html`<span class="pe-gplus"><${PlusMark} />${t('cos.plus', 'twicable+')}</span>`}</span>
+      ${groups.map((g, gi) => html`<div class="pe-group" key=${g.id}><span class="pe-glabel">${groupName(g)}<span class="faint">${g.items.length}</span>${!member && g.items.every((i) => i.plus) && html`<span class="pe-gplus"><${PlusMark} />${t('cos.plus', 'twincable+')}</span>`}</span>
         <div class=${`pe-grid k-${kind}`} role="radiogroup" aria-label=${groupName(g)}>
           ${gi === 0 && !words && fav.filter === 'all' && html`<${CosCard} kind=${kind} it=${null} on=${!value} onPick=${onPick} prof=${prof} accent=${accent} />`}
           ${g.items.map((it) => html`<${FavScope} key=${it.id} kind=${fk} id=${it.id} name=${it.name} known=${known} class=${`pe-fav k-${kind}`}>
@@ -391,7 +391,7 @@ function Regulars({ d, set, lines, runs, share }) {
   </div>`;
 }
 
-/** The favourite game: the games of your runs first, then every game twicable knows; any other title by typing it. */
+/** The favourite game: the games of your runs first, then every game twincable knows; any other title by typing it. */
 function FavPick({ value, onPick, played }) {
   const { library } = useApp();
   const [q, setQ] = useState('');
@@ -465,8 +465,8 @@ export function ProfileEditor({ me, presence, meta, part = null, onExit }) {
 
   const tier = me.entitlement?.tier || 'none';
   const member = isPlus(tier);
-  // a twicable+ pick that can't be kept: the service's catalog says so for this tier (or, without the catalog, the item
-  // is twicable+ and the player isn't a member). What is already saved stays saved.
+  // a twincable+ pick that can't be kept: the service's catalog says so for this tier (or, without the catalog, the item
+  // is twincable+ and the player isn't a member). What is already saved stays saved.
   const lockedPart = (k) => {
     const id = d[k];
     if (!id || id === initial[k]) return false;
@@ -586,12 +586,12 @@ export function ProfileEditor({ me, presence, meta, part = null, onExit }) {
   const lockLine = (parts) => {
     if (!parts.length) return null;
     const names = parts.map((k) => cosCatalog()[k === 'frame' ? 'frames' : 'banners'].find((x) => x.id === d[k])?.name).filter(Boolean).join(', ');
-    const text = parts.length > 1 ? t('pe.lockMany', '{names} come with twicable+. Try them on as long as you like – Save keeps your free ones.', { names })
-      : { banner: t('pe.lockBanner', '{names} comes with twicable+. Try it on as long as you like – Save keeps your free banner.', { names }),
-        frame: t('pe.lockFrame', '{names} comes with twicable+. Try it on as long as you like – Save keeps your free frame.', { names }),
-        nameplate: t('pe.lockPlate', '{names} comes with twicable+. Try it on as long as you like – Save keeps your free nameplate.', { names }) }[parts[0]];
+    const text = parts.length > 1 ? t('pe.lockMany', '{names} come with twincable+. Try them on as long as you like – Save keeps your free ones.', { names })
+      : { banner: t('pe.lockBanner', '{names} comes with twincable+. Try it on as long as you like – Save keeps your free banner.', { names }),
+        frame: t('pe.lockFrame', '{names} comes with twincable+. Try it on as long as you like – Save keeps your free frame.', { names }),
+        nameplate: t('pe.lockPlate', '{names} comes with twincable+. Try it on as long as you like – Save keeps your free nameplate.', { names }) }[parts[0]];
     return html`<div class="pe-lock"><${PlusMark} /><span class="small">${text}</span>
-      <a class="small" href="#/plus" onClick=${(e) => { e.preventDefault(); navigate('plus'); }}>${t('pf.aboutPlus', 'About twicable+')}</a></div>`;
+      <a class="small" href="#/plus" onClick=${(e) => { e.preventDefault(); navigate('plus'); }}>${t('pf.aboutPlus', 'About twincable+')}</a></div>`;
   };
   const card = (id) => {
     const ch = partChanged(initial, d, id);
@@ -599,7 +599,7 @@ export function ProfileEditor({ me, presence, meta, part = null, onExit }) {
     return html`<button type="button" class=${`pe-pcard ${ch ? 'changed' : ''}`} data-card=${id} aria-label=${`${partLabel(id)}: ${value}${ch ? ` · ${t('pe.changedAria', 'changed, not saved yet')}` : ''}`} onClick=${() => setOpen(id)}>
       <${PartThumb} id=${id} d=${d} prof=${prof} accent=${accent} earned=${tr?.achievements} />
       <span class="pe-pcard-txt"><b>${partLabel(id)}</b><span class="small muted ellipsis">${value}</span></span>
-      <span class="pe-pcard-end">${locked.includes(id) && html`<${PlusMark} title=${t('pe.plusPreview', 'twicable+ – a preview')} />`}${ch && html`<i class="pe-dot" title=${t('pe.changedAria', 'changed, not saved yet')}></i>`}<span class="pe-chev" aria-hidden="true"></span></span></button>`;
+      <span class="pe-pcard-end">${locked.includes(id) && html`<${PlusMark} title=${t('pe.plusPreview', 'twincable+ – a preview')} />`}${ch && html`<i class="pe-dot" title=${t('pe.changedAria', 'changed, not saved yet')}></i>`}<span class="pe-chev" aria-hidden="true"></span></span></button>`;
   };
   const picker = (id) => {
     switch (id) {

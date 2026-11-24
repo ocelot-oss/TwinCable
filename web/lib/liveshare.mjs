@@ -319,7 +319,7 @@ function hallOfFame(doc, manifest, status, stats, teamList) {
     boxes: [
       { value: String(stats.dead), label: t('hof.sDeaths', 'death|deaths', { count: stats.dead }), tone: 'dead', icon: 'grave' },
       time || { value: '–', label: t('hof.sPlayTime', 'played'), tone: 'ink', icon: 'clock' },
-      // no badges to show (Alola's trials, a game twicable can't read them in): the catches instead
+      // no badges to show (Alola's trials, a game twincable can't read them in): the catches instead
       stats.badges > 0
         ? { value: String(stats.badges), label: t('live.sBadges', 'badge|badges', { count: stats.badges }), tone: 'gold', icon: 'badge' }
         : { value: String(stats.alive + stats.dead), label: t('hof.sCaught', 'caught'), tone: 'gold', icon: 'ball' },
@@ -440,12 +440,12 @@ export function shareErrorText(r) {
     }
     case 'token': return t('live.eToken', 'The Discord link has ended – connect again in Settings › Online.');
     case 'blocked': return t('live.eBlocked', 'This Discord account can no longer post live runs.');
-    case 'not-member': return t('live.eNotMember', 'Your Discord account is no longer on the twicable server – join it again to post.');
+    case 'not-member': return t('live.eNotMember', 'Your Discord account is no longer on the twincable server – join it again to post.');
     case 'duplicate': return t('live.already', 'Already shared – by you or a partner.');
     case 'invalid': return r.reason === 'word' ? t('live.eWord', 'The server’s word filter refused a nickname or a text on this card.')
       : t('live.eInvalid', 'The server refused the post ({field}).', { field: r.field || '?' });
     case 'unavailable': return t('live.eUnavailable', 'Discord can’t be reached right now – try again in a moment.');
-    case 'offline': return t('live.eOffline', 'No connection to the twicable bot – are you online?');
+    case 'offline': return t('live.eOffline', 'No connection to the twincable bot – are you online?');
     default: return t('live.eServer', 'Sharing didn’t work – try again later.');
   }
 }

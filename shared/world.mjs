@@ -1,5 +1,5 @@
 // Shared World (docs/MULTIPLAYER.md › 9): the partners of a SoulLink walk visibly in your own game when they are on
-// the same map, and you can walk up to them and press A. twicable draws them as an overlay on top of the emulator
+// the same map, and you can walk up to them and press A. twincable draws them as an overlay on top of the emulator
 // picture – nothing is written into the game's memory, no game objects are injected.
 //
 // This module is the part without a browser: which RAM to read per game (shared/data/addresses.json › world, from the
@@ -38,7 +38,7 @@ export const FAMILIES = { rs: 1, e: 2, frlg: 3, rby: 11, gsc: 13, dppt: 21, hgss
 export const GBA_KEY = { A: 1, B: 2, SELECT: 4, START: 8, RIGHT: 16, LEFT: 32, UP: 64, DOWN: 128, R: 256, L: 512 };
 
 /**
- * The Shared World table of a running game, or null where twicable doesn't know its memory (another language, a hack
+ * The Shared World table of a running game, or null where twincable doesn't know its memory (another language, a hack
  * with a moved layout): no overlay then, the board keeps saying where the partner is.
  * `entry`: the addresses.json game (findEntry); `rev`: the ROM's software version (header 0xBC); `code`: its game code
  * (header 0xAC) – one entry can cover several languages that share the RAM but not the ROM (FireRed DE/FR/IT/ES): the
@@ -429,7 +429,7 @@ export function startOnce(fn) {
 }
 
 /**
- * Learns the overworld callback of a game whose revision twicable has no address for: the callback that runs while the
+ * Learns the overworld callback of a game whose revision twincable has no address for: the callback that runs while the
  * camera steps one tile on the same map without a fade is the overworld's (a map change or warp never counts).
  */
 export class OverworldLearner {
@@ -521,7 +521,7 @@ export function changed(a, b) {
 /**
  * The overlay's clock, one tick per game picture: the time a picture belongs to, taken from when the pictures arrive
  * (smoothed – they come a few milliseconds early or late) and the host's frame number in front of their bytes (a
- * picture the page never drew still counts). Everything twicable draws moves with the game's pictures: sampled at
+ * picture the page never drew still counts). Everything twincable draws moves with the game's pictures: sampled at
  * this time, a partner steps exactly when the game's own sprites and background do – on the animation frames between
  * two pictures nothing moves, as nothing in the game does. `at(now)`: the time to draw at; once pictures stop coming
  * (a pause, the A menu) it runs on with the real clock.

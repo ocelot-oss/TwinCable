@@ -51,7 +51,7 @@ test('the leak detector finds German messages and leaves English ones and commen
   assert.equal(germanLines("onLog(`Randomisiere ROM für ${name} …`);").length, 1);
   assert.equal(germanLines("throw new Error('Keine freien Box-Plätze mehr.');").length, 1);
   assert.equal(germanLines("return send(res, 400, { error: 'Datei nicht vorhanden' });").length, 1);
-  assert.equal(germanLines("dialog.showErrorBox(\n  'twicable konnte nicht starten', String(e));").length, 1);
+  assert.equal(germanLines("dialog.showErrorBox(\n  'twincable konnte nicht starten', String(e));").length, 1);
   assert.equal(germanLines("throw httpError(404, 'Run not found', 'runNotFound');").length, 0);
   assert.equal(germanLines("// the old text was 'Run nicht gefunden'\nconst x = 1;").length, 0);
   assert.equal(germanLines("const kein = 1; // a German-looking name in a comment: nicht").length, 0);
@@ -122,7 +122,7 @@ test('every build log line has a code with a text in the page', () => {
 
 test('every code in the page’s tables has a translation in every language', () => {
   const src = read('web/lib/errors.mjs');
-  // (the link session's codes share their texts with the play view's link bar: linkplay.*; the twicable account's have
+  // (the link session's codes share their texts with the play view's link bar: linkplay.*; the twincable account's have
   // their own, acctErr.* – `acct` itself is the account service's code, worded by accountError(); archiveUnsupported
   // shares the library's lib.skipArchive)
   const keys = [...src.matchAll(/\bt\('((?:err|buildLog|linkplay|acctErr)\.[A-Za-z0-9]+)'/g)].map((m) => m[1]);
@@ -144,7 +144,7 @@ test('desktop shell: the app language and its texts come from the page’s dicti
   const de = textsFor('de', join(ROOT, 'web', 'i18n'));
   assert.notEqual(de('menu.settings', 'Settings …'), 'Settings …');
   assert.equal(de('no.such.key', 'Fallback'), 'Fallback');
-  const dir = mkdtempSync(join(tmpdir(), 'twicable-texts-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twincable-texts-'));
   try {
     writeFileSync(join(dir, 'it.json'), '{ broken');
     assert.equal(textsFor('it', dir)('menu.settings', 'Settings …'), 'Settings …');

@@ -1,5 +1,5 @@
 // Pokémon Quetzal (English Alpha 9v1, checked in the running game): an Emerald hack that keeps Emerald's game code and
-// tells itself apart by its header title only. What twicable reads from its ROM and RAM – its own 104-byte party struct
+// tells itself apart by its header title only. What twincable reads from its ROM and RAM – its own 104-byte party struct
 // (HP and status packed in front of an unencrypted data block), SaveBlock1's position 0x470 bytes behind the pointer,
 // place names in several languages, item names in an array of their own, one species table where it keeps two – and
 // what is off for it (link, raids, the randomizer). Synthetic data shaped like what was measured (numbers in comments);
@@ -238,7 +238,7 @@ test('the ROM: place names in several languages per section, one species table o
 });
 
 test('off for Quetzal: link sessions, raids, cheats and gifts, Shared World – the base game\'s addresses would be wrong', () => {
-  assert.equal(linkUnavailable({ system: 'gba', code: 'BPEE', title: 'PKM QUETZAL' }), 'hack', 'a run made before twicable knew the hack');
+  assert.equal(linkUnavailable({ system: 'gba', code: 'BPEE', title: 'PKM QUETZAL' }), 'hack', 'a run made before twincable knew the hack');
   assert.equal(linkUnavailable({ system: 'gba', code: 'BPEE', title: 'POKEMON EMER', hackId: 'quetzal' }), 'hack');
   assert.equal(linkUnavailable({ system: 'gba', code: 'BPEE', title: 'POKEMON EMER' }), null, 'Emerald links');
   assert.equal(linkUnavailable({ system: '3ds' }), 'system');

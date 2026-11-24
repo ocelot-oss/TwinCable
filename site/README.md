@@ -1,14 +1,14 @@
-# twicable website
+# twincable website
 
 The project page for GitHub Pages – static HTML, CSS and vanilla JS, no build step, no frameworks.
 
-- **Home** (`index.html`, `de/index.html`): the twicable site as it was for 2.8 (“the link cable”, `assets/css/site.css`,
+- **Home** (`index.html`, `de/index.html`): the twincable site as it was for 2.8 (“the link cable”, `assets/css/site.css`,
   `assets/js/site.js`) plus one short band near the top that leads to the 3.0 page (`.v3`, styles at the end of
   `site.css`), a “3.0” link in the nav and the privacy / code-signing links in the footer and under the downloads.
-- **twicable 3.0** (`3/index.html`, `de/3/index.html` – https://souldew.app/3/ and /de/3/): its own page, own styles and
+- **twincable 3.0** (`3/index.html`, `de/3/index.html` – https://souldew.app/3/ and /de/3/): its own page, own styles and
   script (`assets/css/site30.css`, `assets/js/site30.js`). Two handhelds lit like the 3.0 film, turned inward and cut by the viewport
-  around the headline; trade and battle as a built, animated sequence of twicable's interface; Shared World; a raid's
-  shared pool with hit chips; friends; twicable+ – the 3D launch scrubbed frame by frame (plays once on phones, one still
+  around the headline; trade and battle as a built, animated sequence of twincable's interface; Shared World; a raid's
+  shared pool with hit chips; friends; twincable+ – the 3D launch scrubbed frame by frame (plays once on phones, one still
   with reduced motion), “Your handheld” as a carousel of every skin with stickers, banners, frames, themes, tiers,
   the thank-you wall. The hero handhelds drift with a gentle parallax (off with reduced motion).
 
@@ -20,14 +20,14 @@ Names on the page are neutral (Sam, Tim, Lena, Kim, Robin, Noor, Finn, Lou) – 
 |---|---|
 | `index.html`, `de/index.html` | Home (2.8 site + the 3.0 band). Change both when content changes. |
 | `3/index.html`, `de/3/index.html` | The 3.0 page. The German one is the English one with the texts swapped – change both. |
-| `privacy.html` | Privacy policy in English (website + app, incl. account, twicable+, thank-you wall). `REVIEW(owner)` comments need the owner's check. |
+| `privacy.html` | Privacy policy in English (website + app, incl. account, twincable+, thank-you wall). `REVIEW(owner)` comments need the owner's check. |
 | `code-signing.html`, `de/code-signing.html` | The code signing policy SignPath Foundation asks for (Windows builds only). |
 | `impressum.html`, `datenschutz.html` | Legal notice and privacy policy (German, binding). |
 | `assets/img/30/hero2/` | The two hero handhelds (`l|r-1400|720.webp`), rendered from the app's scene with the trailer's light rig; also used by the home band. |
 | `assets/img/30/unfold/{1400,760}/` | The 3D launch (DS, Golden Wheat) as 53 frames, transparent – the scrub uses 2…52. |
 | `assets/img/30/hh/` | The skin carousel: a picture of every skin (no stickers, `-1400/-760/-thumb`) and each sticker cut out (difference-matted), positioned in % in the HTML. |
-| `assets/img/30/ui/` | Crops of twicable's real interface (friends, Shared World game view). |
-| `assets/img/30/looks/`, `themes/` | twicable+ public preview media: banners, nameplates, frames, the 16 colour themes. |
+| `assets/img/30/ui/` | Crops of twincable's real interface (friends, Shared World game view). |
+| `assets/img/30/looks/`, `themes/` | twincable+ public preview media: banners, nameplates, frames, the 16 colour themes. |
 | `assets/img/og-30.png`, `og-30-de.png` | Social previews of the 3.0 page (1200×630); the home keeps `og-image.png`. |
 
 Deployment: `.github/workflows/pages.yml` uploads this folder on every push to `main` that touches `site/**`.
@@ -51,8 +51,8 @@ request fails (not deployed, offline, CORS) the static text stays – nothing wa
 
 ## Regenerating the pictures
 
-The 3D renders come from the app itself: `~/twicable-promo/trailer30/tools/hh-studio.mjs` (hidden Electron window,
-scratch data folder, dev twicable+ pack) plus site shots (`site`, `site2` with the trailer's light rig) for the hero,
+The 3D renders come from the app itself: `~/twincable-promo/trailer30/tools/hh-studio.mjs` (hidden Electron window,
+scratch data folder, dev twincable+ pack) plus site shots (`site`, `site2` with the trailer's light rig) for the hero,
 the unfold, the skins and the stickers – the screens show the app's placeholder picture with its roof drawn the right way up;
 the sticker layers are separated by difference matting against two skins. The UI crops come from the screenshots that
 `scripts/whatsnew-media.mjs` uses. Never commit the screenshots or a pack.
@@ -65,8 +65,8 @@ the sticker layers are separated by difference matting against two skins. The UI
   button in the nav (a `<details>`, so it opens without JavaScript too). The download section keeps its three
   platform panels in the same order.
 - `site.js` asks `https://api.github.com/repos/souldewapp/souldew/releases/latest` (cached for 30 minutes in
-  `sessionStorage`) and picks the assets by name: `twicable-<v>-arm64.dmg`, `twicable-<v>-win-x64-setup.exe`,
-  `twicable-<v>-linux-x86_64.AppImage` and `twicable-<v>-linux-amd64.deb`. Tiles, menu and panels then link straight
+  `sessionStorage`) and picks the assets by name: `twincable-<v>-arm64.dmg`, `twincable-<v>-win-x64-setup.exe`,
+  `twincable-<v>-linux-x86_64.AppImage` and `twincable-<v>-linux-amd64.deb`. Tiles, menu and panels then link straight
   to the files and show their size; the version goes next to "Free · open source". A file a release lacks keeps
   its link to the releases page.
 
@@ -81,7 +81,7 @@ the icon sprite (`<use href="assets/img/icons.svg#…">`) needs a server in some
 
 ## Content notes
 
-- Every claim on the page is taken from `CHANGELOG.md` (## 3.0.0), the README and the app's own twicable+ texts – keep
+- Every claim on the page is taken from `CHANGELOG.md` (## 3.0.0), the README and the app's own twincable+ texts – keep
   it in sync when features change. Save import/export is marked as a `TODO(3.0)` in the “also new” list.
 - The screenshots show demo runs and test names (`Robin & Kim`, `Sam`, `Tim`, `Lena`). No box art or official artwork.
 - The privacy policies mention the GitHub API call, the `sessionStorage` cache and the thank-you wall request. If you add anything that contacts a

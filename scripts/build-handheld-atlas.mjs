@@ -2,7 +2,7 @@
 //   stickers.png      the art with its ink outline (RGBA, one pixel per art pixel)
 //   stickers-cut.png  the die-cut border as a distance field (grey, 4 texels per art pixel)
 //   stickers.json     the layout: each sticker's place and die-cut mask
-// Commit the result. The twicable+ stickers are built the same way into the pack (scripts/plus-dev-pack.mjs --handheld).
+// Commit the result. The twincable+ stickers are built the same way into the pack (scripts/plus-dev-pack.mjs --handheld).
 //   node scripts/build-handheld-atlas.mjs [--check]     --check: fail when the committed files are out of date
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';

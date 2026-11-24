@@ -1,4 +1,4 @@
-// 2.8.3: 3DS game updates in twicable's own player ("I have the patch and the game but it just boots the base game"). An
+// 2.8.3: 3DS game updates in twincable's own player ("I have the patch and the game but it just boots the base game"). An
 // update file in the library is recognised by its title ID (0004000E + the game's low half), goes with its game – never
 // a game of its own –, waits for a game that isn't there yet, can be taken off again, and is installed onto the save
 // folder's SD card where Azahar's core finds it (shared/ctr/update.mjs, server/lib/ctrupdate.mjs). Encrypted updates
@@ -94,10 +94,10 @@ test('title IDs: an update is 0004000E + its game\'s low half; versions read as 
   assert.equal(identifyCtrBytes(updateCia(), 'cia').kind, 'update');
   assert.equal(identifyCtrBytes(updateCia(), 'cia').version, 2080);
   assert.equal(identifyCtrBytes(updateNcch(), 'cxi').kind, 'update');
-  // what twicable knows: the latest update of a Pokémon game by name, an older one as such, other games as unknown
+  // what twincable knows: the latest update of a Pokémon game by name, an older one as such, other games as unknown
   assert.deepEqual(updateStatus(US, 2080), { versionText: 'v2.2.0', gameVersion: '1.2', latest: true, tracking: 'known' });
   assert.deepEqual(updateStatus(US, 1040), { versionText: 'v1.1.0', gameVersion: null, latest: false, tracking: 'older' });
-  assert.equal(updateStatus(US, null).tracking, 'known', 'no update: version 1.0, which twicable knows');
+  assert.equal(updateStatus(US, null).tracking, 'known', 'no update: version 1.0, which twincable knows');
   assert.equal(updateStatus('0004000000030800', 1024).tracking, 'unknown');
 });
 
@@ -142,7 +142,7 @@ test('updateLayout: encrypted updates are refused (title key or NCCH crypto), a 
   assert.equal(code(() => updateLayout(readerOf(new Uint8Array(0x10)), 'nds', 0x10)), 'notUpdate');
 });
 
-test('an update as a bare NCCH (.cxi): installed with a TMD twicable writes – Azahar reads the content ID and size from it', () => {
+test('an update as a bare NCCH (.cxi): installed with a TMD twincable writes – Azahar reads the content ID and size from it', () => {
   const n = updateNcch({ payload: 0x800, version: 2080 });
   const l = updateLayout(readerOf(n), 'cxi', n.length);
   assert.deepEqual(l.contents, [{ id: '00000000', offset: 0, size: n.length }]);
@@ -165,7 +165,7 @@ test('an update as a bare NCCH (.cxi): installed with a TMD twicable writes – 
   assert.equal(li.format, 'cci');
 });
 
-test('pickUpdate: the newest one twicable can install; an encrypted one only when there is no other; taken-off ones never', () => {
+test('pickUpdate: the newest one twincable can install; an encrypted one only when there is no other; taken-off ones never', () => {
   const u = (version, extra = {}) => ({ gameTitleId: US, version, name: `u${version}`, ...extra });
   assert.equal(pickUpdate([u(1040), u(2080), u(4000, { encrypted: true })], US).version, 2080);
   assert.equal(pickUpdate([u(2080, { encrypted: true })], US).encrypted, true);
@@ -206,7 +206,7 @@ test('library: an update goes with its game (never a game of its own), waits for
   assert.equal(scanLibrary({}).ctrUpdates.length, 1);
 });
 
-test('library: an encrypted update is listed with why it isn\'t used; removing one deletes twicable\'s copy or marks the player\'s own', () => {
+test('library: an encrypted update is listed with why it isn\'t used; removing one deletes twincable\'s copy or marks the player\'s own', () => {
   const other = join(TMP, 'my-folder');
   mkdirSync(other, { recursive: true });
   writeFileSync(join(other, 'Moon Update.cia'), updateCia({ titleId: '0004000E00175E00', version: 2112, encryptedFlag: true }));
@@ -221,7 +221,7 @@ test('library: an encrypted update is listed with why it isn\'t used; removing o
   assert.ok(existsSync(join(other, 'Moon Update.cia')));
   lib = scanLibrary({ ...config, ctrUpdatesDetached: r1.ctrUpdatesDetached });
   assert.equal(lib.ctrUpdates.find((u) => u.id === enc.id).detached, true);
-  // twicable's copy in the library folder: deleted (the original stays wherever it came from)
+  // twincable's copy in the library folder: deleted (the original stays wherever it came from)
   const copy = lib.ctrUpdates.find((u) => u.gameTitleId === US);
   const r2 = removeCtrUpdate(copy.id, { ...config, ctrUpdatesDetached: r1.ctrUpdatesDetached });
   assert.equal(r2.deleted, true);
@@ -273,7 +273,7 @@ test('unpackUpdate + installUpdate: the TMD and the .app where Azahar\'s core fi
   // the same update again: nothing to do; a second unpack finds the cache
   assert.equal(installUpdate(save, unpacked), false);
   assert.equal((await unpackUpdate(u.file, { cache })).dir, unpacked.dir);
-  // removed – only what twicable installed
+  // removed – only what twincable installed
   assert.equal(removeInstalledUpdate(save, US), true);
   assert.equal(existsSync(join(content, '..')), false);
   assert.equal(removeInstalledUpdate(save, US), false);
@@ -314,7 +314,7 @@ test('prepareUpdate: installs the library\'s update, replaces another, removes i
   writeFileSync(sneaky, updateCia({ contents: [updateNcch({ encrypted: true })] }));
   const sn = await prepareUpdate({ saveDir: save, gameTid: US, update: { file: sneaky, version: 2080 }, cache });
   assert.deepEqual({ installed: sn.installed, why: sn.why }, { installed: false, why: 'encrypted' });
-  // the library has none any more: what twicable installed goes
+  // the library has none any more: what twincable installed goes
   await prepareUpdate({ saveDir: save, gameTid: US, update: u, cache });
   assert.equal(await prepareUpdate({ saveDir: save, gameTid: US, update: null, cache }), null);
   assert.equal(installedUpdate(save, US), null);

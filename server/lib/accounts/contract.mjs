@@ -63,12 +63,12 @@ export const API = {
   joinRequest: (id, action) => `/v1/join-requests/${seg(id)}${action ? `/${action}` : ''}`,
   // §7 reports
   reports: '/v1/reports',
-  // §8 twicable+
+  // §8 twincable+
   entitlements: '/v1/entitlements',
   linkEmail: '/v1/entitlements/link-email',
   unlink: '/v1/entitlements/link',
   trial: '/v1/entitlements/trial',
-  // §14 "Find a SoulLink partner" – the accounts service hands the post to the twicable Discord bot
+  // §14 "Find a SoulLink partner" – the accounts service hands the post to the twincable Discord bot
   lfg: '/v1/lfg',
   // §10 packs
   packs: '/v1/packs',

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>twicable player</title>
+<title>twincable player</title>
 <style>
   html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
   #game { position: absolute; inset: 0; }
@@ -1325,7 +1325,7 @@
     },
     /**
      * Diagnostics: the controller table EmulatorJS really plays with (game button → keyboard code and controller label)
-     * next to the one twicable handed it – EmulatorJS keeps settings of its own, which could win over ours.
+     * next to the one twincable handed it – EmulatorJS keeps settings of its own, which could win over ours.
      */
     padInfo() {
       const table = (set) => Object.fromEntries(Object.entries(set?.[0] || {}).map(([k, v]) => [k, [v?.value ?? null, v?.value2 ?? null]]));
@@ -1458,7 +1458,7 @@
 
   // Controllers beyond what EmulatorJS does itself: the left stick works as the D-pad, ZR/RT/R2 toggles turbo,
   // ZL/LT/L2 and the Home/PS/Guide button pause – those go to the page like the keyboard shortcuts.
-  // Which device plays is twicable's choice (lib/controls.mjs pickPad): the one picked in Settings › Controller, else the
+  // Which device plays is twincable's choice (lib/controls.mjs pickPad): the one picked in Settings › Controller, else the
   // most controller-like one. EmulatorJS gives player 1 to whatever the browser lists first – on Windows that can be a
   // USB microphone (issue #2), and the real controller then pressed nothing. So its gamepad events go through here:
   // only the chosen device's reach the game, always as player 1.
@@ -1487,7 +1487,7 @@
         chosen = name;
         Object.keys(held).forEach((k) => delete held[k]);
       }
-      // player 1 = the chosen device, nothing else (players 2–4 have no buttons in twicable anyway)
+      // player 1 = the chosen device, nothing else (players 2–4 have no buttons in twincable anyway)
       const sel = E()?.gamepadSelection;
       if (Array.isArray(sel)) for (let i = 0; i < sel.length; i++) sel[i] = i === 0 ? (chosen || '') : '';
       return pad;

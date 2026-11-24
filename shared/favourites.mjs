@@ -4,7 +4,7 @@
 // parts live here so the server (which only stores the shape) and the page (web/lib/favourites.mjs: the star, the
 // filter row) share one set of rules, and test/favourites.test.mjs checks them without a page.
 //
-// Rules: a favourite is a wish as much as a choice – twicable+ and locked items can be one too. The lists keep the
+// Rules: a favourite is a wish as much as a choice – twincable+ and locked items can be one too. The lists keep the
 // order things were starred in, but a picker always shows its items in its own order; a favourite is never moved up.
 // Ids the catalog doesn't know (an item retired from the pack, a typo in a hand-edited config) are ignored when a
 // picker filters and pruned quietly the next time that kind is written.
@@ -96,8 +96,8 @@ export function filterCounts(items, opts = {}) {
 }
 
 /**
- * The chips a list's filter row shows: All and Favourites always; Owned and twicable+ only where they narrow the list
- * (a member's "Owned" would be everything, a list without twicable+ items needs no twicable+ chip); Earned only where
+ * The chips a list's filter row shows: All and Favourites always; Owned and twincable+ only where they narrow the list
+ * (a member's "Owned" would be everything, a list without twincable+ items needs no twincable+ chip); Earned only where
  * something in the list is earned. Keeps the row short – it must never outweigh the list.
  */
 export function filterChips(counts) {

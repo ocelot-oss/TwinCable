@@ -1,4 +1,4 @@
-// The fast player (playernative.html) for the DS, GBA and Game Boy: the game runs in twicable's native host
+// The fast player (playernative.html) for the DS, GBA and Game Boy: the game runs in twincable's native host
 // (server/lib/native.mjs, native/retro-host – melonDS DS with its JIT, mGBA, SameBoy) and arrives here as a stream of
 // pictures, sound, memory and battery saves; input, speed, save states and cheats go back. It offers the Play view the
 // same window.__emu as player.html (EmulatorJS) – the live reader, cheats, save states, the battery save, speed,
@@ -21,7 +21,7 @@ const SYSTEM = q.get('system') || 'nds';
 // Seamless (docs/MULTIPLAYER.md › "Seamless"): a running game goes into a link session and back without a restart – its
 // state goes in (linkSnapshot), the page switches its stream to the link host (attachLink) and, once the session is over,
 // back to the fast player started from this console's state as the link host left it (resumeSolo). The canvas stays.
-// The twicable engine (Settings › "twicable engine (beta)": the link host plays the game alone too) does both switches in
+// The twincable engine (Settings › "twincable engine (beta)": the link host plays the game alone too) does both switches in
 // its own process: the session's id stays, the stream goes on, and leaving needs no state to travel (/api/native/unlink).
 // ?link=1&session=<id>: a session the play view opened for a game that wasn't running here (it starts from the save).
 let LINK_SESSION = q.get('link') === '1' ? q.get('session') : null;
@@ -55,7 +55,7 @@ const st = {
   ram: [], ramReady: false, sram: null, bootSave: 'pending', error: null, log: [], ended: false, lr: /left/i.test(q.get('layout') || ''),
   info: null, turboAudio: 'music', switches: [], whole: q.get('px') === 'whole',
   model: q.get('model') || null, // a Game Boy game's console ('dmg' | 'cgb'): its save states only load into that model
-  engine: false, // the twicable engine plays (its loaded event says so): link sessions switch in its own process
+  engine: false, // the twincable engine plays (its loaded event says so): link sessions switch in its own process
 };
 const waiters = { state: [], loaded: [], stepped: [], seatState: [], seatSram: [] };
 // a link session's READs (any seat's bytes – the link battle's result, shared/linkbattle.mjs) and FLUSH's every-seat saves
@@ -292,7 +292,7 @@ new ResizeObserver(layout).observe(document.body);
 })();
 layout();
 
-// ---- sound: the host's samples through twicable's turbo mixer (lib/native-audio-worklet.mjs) ------------------------
+// ---- sound: the host's samples through twincable's turbo mixer (lib/native-audio-worklet.mjs) ------------------------
 // While fast-forwarding the host sends the sound sped up by the real speed, resampled to real time with a steady ratio
 // (native/ctr-host/ffsound.h, as the 3DS host since 2.8.2), and says by how much ("ffrate", right before that sound – the
 // worklet hands the ratio to the mixer when the sound plays); the mixer keeps the music going at normal speed (Settings › sound while fast-forwarding), for DS games synthesized from the
@@ -1095,7 +1095,7 @@ if (!LINK_SESSION) {
     read,
     rect: () => (st.ready ? canvas.getBoundingClientRect() : null),
     /** The DS's 3D depth in a few rectangles of the top screen with every picture: [[x, y, w, h]…] (≤ 8, ≤ 16384
-     *  pixels), [] stops it. Only twicable's melonDS DS core has it (native/melonds-ds-patch); others send nothing. */
+     *  pixels), [] stops it. Only twincable's melonDS DS core has it (native/melonds-ds-patch); others send nothing. */
     depth(rects) {
       const b = new Uint8Array(4 + rects.length * 8);
       const v = new DataView(b.buffer);

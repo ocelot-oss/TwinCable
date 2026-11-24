@@ -326,8 +326,8 @@ export function InviteBody({ manifest, heading = true, autoFriends = [] }) {
     <p class="muted">${t('invite.what', 'The invite is one small file (.soullink.json). It holds the settings and the key to your room – no game data.')}</p>
     <ol class="small muted steps">
       <li>${t('invite.s1', 'Save the invite and send it to {name} – e.g. via Discord, WhatsApp or mail. Or copy it and paste it into the chat.', { name: partner })}</li>
-      <li>${many ? t('invite.s2Group', 'Each of them opens twicable › SoulLink › “Join with code” and opens the file. Their own copy of the game must be in their library.')
-        : t('invite.s2', '{name} opens twicable › SoulLink › “Join with code” and opens the file. Their own copy of the game must be in their library.', { name: partner })}</li>
+      <li>${many ? t('invite.s2Group', 'Each of them opens twincable › SoulLink › “Join with code” and opens the file. Their own copy of the game must be in their library.')
+        : t('invite.s2', '{name} opens twincable › SoulLink › “Join with code” and opens the file. Their own copy of the game must be in their library.', { name: partner })}</li>
       <li>${many ? t('invite.s3Group', 'Their apps build the identical game and connect you all automatically.') : t('invite.s3', 'Their app builds the identical game and connects you both automatically.')}</li>
     </ol>
     <div class="row">
@@ -685,7 +685,7 @@ function EncounterModal({ area, slot, onClose }) {
     : solo ? t('enc.dupeSolo', 'Dupes clause: you already caught this one ({area}) – keep looking.', { area: areaName(doc, manifest, dupe.area) })
       : t('enc.dupe', 'Dupes clause: {name} already owns this evolution line ({area}).', { name: names[dupe.slot].name, area: areaName(doc, manifest, dupe.area) }));
   const shown = species && html`<div class="row"><${Sprite} id=${species} shiny=${outcome === 'caught' && shiny} size=${64} gen=${runData.gen} /><div><h3>${speciesName(species)}</h3><${Types} types=${runData.types(species, slot)} />
-    ${outcome === 'missed' && seen && species === seen.species && html`<p class="tiny faint">${t('enc.missedSeen', 'From the last battle here – twicable saw it live.')}</p>`}</div></div>`;
+    ${outcome === 'missed' && seen && species === seen.species && html`<p class="tiny faint">${t('enc.missedSeen', 'From the last battle here – twincable saw it live.')}</p>`}</div></div>`;
   return html`<${Modal} open=${true} onClose=${onClose} title=${solo ? areaName(doc, manifest, area) : `${areaName(doc, manifest, area)} · ${names[slot].name}`}
     footer=${html`${existing && html`<button class="btn danger" onClick=${() => { setEncounter(doc, manifest, area, slot, null, { by: me }); onClose(); }}>${t('common.delete', 'Delete')}</button>`}<span class="spacer"></span>
       <button class="btn ghost" onClick=${onClose}>${t('common.cancel', 'Cancel')}</button>

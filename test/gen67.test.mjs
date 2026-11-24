@@ -334,7 +334,7 @@ test('the place sign (Gen 7): the zone in the player\'s position, both game pair
 
 // ticket #35 (Pokémon X, 2.8.3): the team stopped changing in the sidebar – the first address that held a party was
 // kept for the session, whatever happened at the other update's address afterwards
-test('runningVersion: the update twicable started the 3DS game with → the version whose address is read first', () => {
+test('runningVersion: the update twincable started the 3DS game with → the version whose address is read first', () => {
   assert.equal(runningVersion(undefined), null); // a player that doesn't say (Azahar over RPC)
   assert.equal(runningVersion(null), '1.0'); // no update installed
   assert.equal(runningVersion({ installed: false, why: 'randomized', gameVersion: '1.5' }), '1.0');
@@ -347,7 +347,7 @@ test('readGen67 (#35): 1.5 holds the live party, 1.0 a copy that stands still �
   const ghost = ramParty([mon({ ec: 1, pid: 11, species: 650, nick: 'Chespin', level: 9 })]);
   const lv = (level, more = []) => ramParty([mon({ ec: 1, pid: 11, species: 650, nick: 'Chespin', level }), ...more]);
   const combee = mon({ ec: 5, pid: 55, species: 415, nick: 'Combee', level: 4, gender: 0 });
-  // the update is known (twicable installed 1.5): its address wins although 1.0 also holds a party that passes
+  // the update is known (twincable installed 1.5): its address wins although 1.0 also holds a party that passes
   const s1 = { ctrVersion: runningVersion({ installed: true, gameVersion: '1.5' }) };
   const r1 = readGen67(xy, memory({ 0x08ce1cf8: lv(12), 0x08ce1ce8: ghost }), s1);
   assert.equal(r1.version, '1.5');

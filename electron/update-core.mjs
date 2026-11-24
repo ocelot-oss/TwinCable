@@ -95,7 +95,7 @@ export async function fetchChecked(url, { allowLocal = false, signal, fetchImpl 
   let current = url;
   for (let hop = 0; ; hop++) {
     if (!isAllowedUrl(current, { allowLocal })) throw fail('INSECURE', hop ? 'The update server redirected to a non-HTTPS URL' : `Refusing non-HTTPS URL: ${current}`);
-    const res = await fetchImpl(current, { signal, redirect: 'manual', cache: 'no-store', headers: { 'User-Agent': 'twicable-updater' } });
+    const res = await fetchImpl(current, { signal, redirect: 'manual', cache: 'no-store', headers: { 'User-Agent': 'twincable-updater' } });
     if (res.url && !isAllowedUrl(res.url, { allowLocal })) throw fail('INSECURE', 'The update server redirected to a non-HTTPS URL');
     if (![301, 302, 303, 307, 308].includes(res.status)) return res;
     await res.body?.cancel?.().catch(() => {});
@@ -340,12 +340,12 @@ export async function stageFromDmg({ dmg, bundle, version, log = () => {} }) {
 
 // ---- Windows: the NSIS installer --------------------------------------------------------------
 // electron-builder's NSIS installer (package.json → build.nsis: one-click, per user, no admin rights) puts
-// "Uninstall twicable.exe" next to twicable.exe. Started with /S --updated it waits for the running app to exit
+// "Uninstall twincable.exe" next to twincable.exe. Started with /S --updated it waits for the running app to exit
 // (and closes it if needed), replaces the program files silently and – with --force-run – starts the new version.
 // Path handling uses path.win32, so this is testable on any OS.
 
 /** Install folder of an app installed by the NSIS installer, or null (unpacked build, portable copy, development). */
-export function nsisInstallDir(exePath, { exists = existsSync, productName = 'twicable' } = {}) {
+export function nsisInstallDir(exePath, { exists = existsSync, productName = 'twincable' } = {}) {
   if (typeof exePath !== 'string' || !win32.isAbsolute(exePath) || !/\.exe$/i.test(exePath)) return null;
   const dir = win32.dirname(exePath);
   return exists(win32.join(dir, `Uninstall ${productName}.exe`)) ? dir : null;
@@ -437,7 +437,7 @@ export function cleanupWorkDir(dir, { keep = null, rm = rmSync, list = readdirSy
 // file. The running app keeps its mount of the old file until it exits – Linux keeps a replaced file alive while it is
 // open. The file keeps its path and name, even when the name still carries the old version number: a desktop entry, an
 // AppImageLauncher integration or a Steam shortcut (Steam Deck: "Add a Non-Steam Game") must keep pointing at it.
-// .deb installs (/opt/twicable, owned by root) and unpacked builds can't do this – they get the download page instead.
+// .deb installs (/opt/twincable, owned by root) and unpacked builds can't do this – they get the download page instead.
 // Path handling uses path.posix, so this is testable on any OS.
 
 /**

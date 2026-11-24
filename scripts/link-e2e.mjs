@@ -1,4 +1,4 @@
-// End-to-end test of link sessions in the real app: two twicable servers with scratch data folders (two players on this
+// End-to-end test of link sessions in the real app: two twincable servers with scratch data folders (two players on this
 // computer), one SoulLink run (created on A, joined on B), each player's battery save in it, both pages in Electron
 // (muted). A invites B over the run's peer channel, B joins; both servers find every seat's game by SHA-1, the saves
 // cross the channel, both play views switch to the link session. The buttons come from a recording of the same trade
@@ -28,7 +28,7 @@
 //        [--relay]           (every peer connection relayed through TURN – the bot's /link/ice must answer)
 //        [--gb-look original|color] [--gb-look1 …] [--gb-look2 …]  (every / one player's Settings › Game Boy look;
 //                            default color, as the recordings were made)
-//        [--engine]          (Settings › "twicable engine (beta)": every fast player is the twicable engine – with
+//        [--engine]          (Settings › "twincable engine (beta)": every fast player is the twincable engine – with
 //                            --seamless the partners join each player's running game in its own process and leave it
 //                            the same way: checks linkedInPlace / aloneInPlace)
 //        [--winner p1|p2|p3,p4]   (a battle: the seat(s) the recording's battle is known to end with as the winners –
@@ -54,7 +54,7 @@
 //        [--show]
 //
 // Two computers (one seat here, the other seat on another computer – Mac ↔ Windows, x64 ↔ arm64): each side runs its
-// own twicable server and page (muted, hidden) with a scratch data folder; the run travels by the app's invite code
+// own twincable server and page (muted, hidden) with a scratch data folder; the run travels by the app's invite code
 // (6 digits over the public relay), the session over the run's real peer channel (direct, or TURN when that fails);
 // each side plays its own seat's column of the SAME recording and prints a RESULT line: the hashes its link host
 // computed (count, first, last and a sha256 over all of them – equal on both sides) and the sha256 of its seat's save
@@ -68,7 +68,7 @@
 //        [--kind trade|battle] [--speed 4] [--frames 7200] (no --script: nothing pressed for that many frames, from
 //        the saves) [--relay] (TURN only) [--no-turn] [--port 7421|7422] [--slot p2] [--engine] [--gb-look …] [--show]
 //   Results: <data>/out/result.json and screenshots. Both sides must use the same recording, the same ROMs (SHA-1) and
-//   the same twicable build (the link host's version is part of the check). docs/MULTIPLAYER.md › "Two computers".
+//   the same twincable build (the link host's version is part of the check). docs/MULTIPLAYER.md › "Two computers".
 //
 // Never commit ROMs, saves or the screenshots.
 import { spawn } from 'node:child_process';
@@ -145,9 +145,9 @@ async function crossMain() {
   const env = { ...process.env, ELECTRON_RUN_AS_NODE: '1', SLS_DATA_DIR: dir, PORT: String(port), NO_OPEN: '1', SLS_E2E: '1', SLS_LINK_TEST_SCRIPT: script,
     SLS_LINK_TEST_RTC: opt('rtc', '1763200000000') };
   // (TURN as the app has it: direct first, relayed when that fails; --relay: relayed only; --no-turn: never relayed)
-  if (flag('relay')) env.TWICABLE_LINK_ICE = 'relay';
-  else if (flag('no-turn')) env.TWICABLE_LINK_ICE = 'off';
-  else delete env.TWICABLE_LINK_ICE;
+  if (flag('relay')) env.TWINCABLE_LINK_ICE = 'relay';
+  else if (flag('no-turn')) env.TWINCABLE_LINK_ICE = 'off';
+  else delete env.TWINCABLE_LINK_ICE;
   const server = spawn(process.execPath, [join(root, 'server', 'index.mjs')], { env, stdio: ['ignore', 'pipe', 'pipe'] });
   server.stderr.on('data', (d) => process.stderr.write(`[server] ${d}`));
   const base = `http://127.0.0.1:${port}`;
@@ -182,7 +182,7 @@ async function crossMain() {
     await until('the server', () => api('/api/status'), 30000);
     const libNow = await api('/api/library');
     const own = libNow.roms.find((r) => basename(r.file || '') === basename(rom)) || libNow.roms[0];
-    if (!own) throw new Error('the game isn\'t in the library (is --rom a game twicable knows?)');
+    if (!own) throw new Error('the game isn\'t in the library (is --rom a game twincable knows?)');
     log('game', own.name, own.gameId, own.system, 'sha1', result.romSha1);
     const win = new BrowserWindow({ width: 1100, height: 780, show: flag('show'), webPreferences: { partition: `link-x-${role}`, backgroundThrottling: false } });
     win.webContents.setAudioMuted(true);
@@ -380,9 +380,9 @@ async function main() {
     const env = { ...process.env, ELECTRON_RUN_AS_NODE: '1', SLS_DATA_DIR: dir, PORT: String(port), NO_OPEN: '1', SLS_E2E: '1', SLS_LINK_TEST_SCRIPT: script,
       // (--seamless --desync: the states differ instead – a game in the middle of a trade may never read its clock)
       SLS_LINK_TEST_RTC: id === 'B' && flag('desync') ? String(Number(rtc) + 86400000 * 3) : rtc,
-      // --relay: every peer connection through Cloudflare TURN (credentials from twicable's bot), never direct; else no
+      // --relay: every peer connection through Cloudflare TURN (credentials from twincable's bot), never direct; else no
       // TURN at all (both players are on this computer – the bot isn't asked)
-      TWICABLE_LINK_ICE: flag('relay') ? 'relay' : 'off' };
+      TWINCABLE_LINK_ICE: flag('relay') ? 'relay' : 'off' };
     const p = spawn(process.execPath, [join(root, 'server', 'index.mjs')], { env, stdio: ['ignore', 'pipe', 'pipe'] });
     p.stderr.on('data', (d) => process.stderr.write(`[${id}] ${d}`));
     servers.push(p);
@@ -705,7 +705,7 @@ async function main() {
       result.frameRect = [];
       for (const i of all) result.frameRect.push(JSON.parse(await ev(i, `JSON.stringify((() => { const r = document.querySelector('iframe[src^="/playernative.html"]').getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height, dpr: devicePixelRatio }; })())`)));
       result.checks.ownGamesRunning = await everyone((i) => ev(i, 'window.__slLink.sessions.ownGame()'));
-      if (flag('engine')) { // (every game in the twicable engine, alone: the process the link will join)
+      if (flag('engine')) { // (every game in the twincable engine, alone: the process the link will join)
         result.engineIds = [];
         for (const i of all) result.engineIds.push((await api(profiles[i], '/api/native/status')).session?.id || null);
         result.checks.engineAlone = await everyone(async (i) => (await emu(i, 'e.perf().info?.engine === true && e.perf().info?.mode === "solo"')) === true);

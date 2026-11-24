@@ -1,6 +1,6 @@
-# web/lib/cosmetics – twicable+ cosmetics
+# web/lib/cosmetics – twincable+ cosmetics
 
-Skins, profile banners, nameplates and avatar frames – and the twicable+ part of "Your handheld" (the 3D launch animation lives in `web/lib/handheld/`). **The engines and runtimes in this folder are app code (open source). The premium content isn't.** Premium content means skin stylesheets and their assets, banner recipes, nameplate windows, frame recipes and the handheld's twicable+ wraps, stickers and launch looks (Gold, Clear shell, Holo label, the Rare start, holo / glitter). It arrives as a signed, per-account encrypted pack, and is only ever decrypted in memory, in the renderer.
+Skins, profile banners, nameplates and avatar frames – and the twincable+ part of "Your handheld" (the 3D launch animation lives in `web/lib/handheld/`). **The engines and runtimes in this folder are app code (open source). The premium content isn't.** Premium content means skin stylesheets and their assets, banner recipes, nameplate windows, frame recipes and the handheld's twincable+ wraps, stickers and launch looks (Gold, Clear shell, Holo label, the Rare start, holo / glitter). It arrives as a signed, per-account encrypted pack, and is only ever decrypted in memory, in the renderer.
 
 Import from `index.mjs` (plain functions) and `components.mjs` (Preact). Treat the names below as a stable interface: the profile / friends UI and the account client depend on them.
 
@@ -12,7 +12,7 @@ Import from `index.mjs` (plain functions) and `components.mjs` (Preact). Treat t
 |---|---|
 | `applySkin(id \| null)` | Commits the player's skin. `null` or `'classic'` is the look the app ships with. Returns `false` while the skin isn't owned yet: the wish is remembered and applied once the pack is loaded and owns it. Persisting the choice is the caller's job (`save({ skin })`, config key `skin`). |
 | `previewSkin(id)` / `endPreview()` | Tries a skin on the whole app without saving it, then puts the committed one back. Settings calls `endPreview()` when it unmounts. `previewSkin` returns `false` when that skin's stylesheet isn't in memory. |
-| `listSkins()` | `[{ id, name, hint, group: 'dark' \| 'light', plus, sw, owned, available }]` – classic and the colour skins (twicable+ themes are colour only; an id the catalog doesn't have, e.g. a 2.x edition still in someone's config, is classic). |
+| `listSkins()` | `[{ id, name, hint, group: 'dark' \| 'light', plus, sw, owned, available }]` – classic and the colour skins (twincable+ themes are colour only; an id the catalog doesn't have, e.g. a 2.x edition still in someone's config, is classic). |
 | `skinState()` / `onSkinChange(fn)` | `{ committed, pending, previewing, visible }`. |
 
 ### Banners, nameplates, frames
@@ -26,9 +26,9 @@ Import from `index.mjs` (plain functions) and `components.mjs` (Preact). Treat t
 
 ### Launch animation
 
-The 2D twicable+ launch animations (13, and the free "Cartridge" as a catalog item) are gone since 3.0: not in the
+The 2D twincable+ launch animations (13, and the free "Cartridge" as a catalog item) are gone since 3.0: not in the
 catalog, the pack, the previews or Settings. The launch is your handheld in 3D (`web/views/launchstage.mjs`,
-`web/lib/handheld/`) for Supporter and twicable+; without a membership the app's own 2D module (`web/views/cartinsert.mjs`)
+`web/lib/handheld/`) for Supporter and twincable+; without a membership the app's own 2D module (`web/views/cartinsert.mjs`)
 plays. What each tier gets: `shared/handheld.mjs` › `launchTier` / `launchRights`. A pack that still carries
 `launch.mjs` (an older one) loads; that file is left alone.
 
@@ -42,7 +42,7 @@ plays. What each tier gets: `shared/handheld.mjs` › `launchTier` / `launchRigh
 | `refreshPack()` / `forgetPack()` | Loads or re-checks the pack, or forgets it right away (sign-out). The app calls `refreshPack()` at boot, and it re-checks every 6 h and at `until`. The app's provider (`web/lib/account.mjs` `cosmeticsPackAccess`) waits until the account is known – while the saved sign-in is still being read, "signed out" never wipes a member's pack. |
 | `onChange(fn)` | Notifies when content or entitlement changes. |
 | `setPackAccessProvider(fn)` / `getPackAccess(opts)` | The account client's hook (see below). |
-| `setPlusHandler(fn)` / `openPlus(info)` | Where "Get twicable+" and "Keep … with twicable+" lead. The default opens the Buy Me a Coffee page. |
+| `setPlusHandler(fn)` / `openPlus(info)` | Where "Get twincable+" and "Keep … with twincable+" lead. The default opens the Buy Me a Coffee page. |
 
 ### Components (`components.mjs`)
 
@@ -51,7 +51,7 @@ plays. What each tier gets: `shared/handheld.mjs` › `launchTier` / `launchRigh
 | `<Banner id size="profile \| friend \| card \| fill" shade intro reducedMotion />` | Sizes are 160 px, 92 px, 54 px, or the parent's height. Use `shade` for the fade under the name: it is mixed from the skin's own `--shell`. This fixes the design's fixed `#1b1a1fcc` gradient, which muddied banners on light skins. Without content (locked, or the pack not loaded) the banner shows its palette as a quiet strip. |
 | `<Frame id size>{img, presence dot…}</Frame>` | An avatar box with the frame drawn round it. Children after the `<img>` paint above the frame. `useFrame(ref, id, size, opts)` does the same for your own markup. |
 | `<Nameplate id>{row content}</Nameplate>` | A row with the nameplate behind it. |
-| `<CosmeticPicker kind="banners \| frames \| nameplates" value onPick none reducedMotion />` | A grid grouped by collection, with Free first and the collection that matches the current skin next. Cards show live previews (mounted only once on screen, animated on hover or while selected), rarity, a "Matches your theme" or "Twin of …" hint, and a quiet twicable+ mark on locked items. `onPick(id, item)` fires for locked items too: check `item.owned` and offer `openPlus()`. |
+| `<CosmeticPicker kind="banners \| frames \| nameplates" value onPick none reducedMotion />` | A grid grouped by collection, with Free first and the collection that matches the current skin next. Cards show live previews (mounted only once on screen, animated on hover or while selected), rarity, a "Matches your theme" or "Twin of …" hint, and a quiet twincable+ mark on locked items. `onPick(id, item)` fires for locked items too: check `item.owned` and offer `openPlus()`. |
 | `<PlusMark />`, `useCosmetics()`, `useVisibleSkin()` | Small helpers. |
 
 Every component destroys its runtime on unmount, so no timer, observer or worker is left behind. Every one pauses off-screen and in hidden tabs, and follows reduced motion.
@@ -62,10 +62,10 @@ Every component destroys its runtime on unmount, so no timer, observer or worker
 
 | Value | Meaning |
 |---|---|
-| `{ packId, version, manifest, signature, keyId, watermark, key, files: [{ path, url }], until }` | purpose `'pack'`: the account owns twicable+ (tier `plus` or `patron`). This is the service's download answer (API.md §10.2) plus the account's pack key (§8.2, base64url). |
+| `{ packId, version, manifest, signature, keyId, watermark, key, files: [{ path, url }], until }` | purpose `'pack'`: the account owns twincable+ (tier `plus` or `patron`). This is the service's download answer (API.md §10.2) plus the account's pack key (§8.2, base64url). |
 | `{ …same…, expiresAt, preview: true }` | purpose `'preview'`: a 15-minute live theme preview (§10.4). `key` is the preview's own key, `keyId` its `pv_…` id. |
 | `{ key, keyId, until, offline: true }` | The service is unreachable. The account client returns the entitlement it kept in safeStorage, so the cached pack keeps working for the 7-day grace period. |
-| `null` | Signed out, or no twicable+. The cache is wiped. |
+| `null` | Signed out, or no twincable+. The cache is wiped. |
 | throw | Counts as offline (without a key, the cache is kept but can't be read). For `'preview'` the error carries `code`: `rate_limited`, `limit_reached`, `none`, `signed_out`. |
 
 The member pack is loaded by `refreshPack()` (boot, every 6 h, at `until`). A preview is never started on its own: Settings calls `startPackPreview()` when a signed-in non-member presses "Try for 15 minutes", and `endPackPreview()` (or the timer at `expiresAt`) drops it. A preview is fetched through the local server without being stored, kept in memory only, and carries skins only.
@@ -94,7 +94,7 @@ envelope       one per file, made by the service per account at download time:
 - *Previews.* A preview pack is just another signed manifest (stylesheets + images ≤ 512 px, no `contents.json`) with
   a key for that preview only – no second container format.
 
-**Files:** `contents.json`, `banners.json` (recipes as data, nameplate windows included), `skins/<id>.css` (colour only today; the format still allows `url('pack:fonts/…')` / `pack:assets/…` with `fonts/*.woff2`, `assets/*.svg`), `frames.mjs` (the part that must stay code: per-pixel recipe functions), `handheld/*` (the wraps, the stickers' atlas and the twicable+ launch looks – see Free vs. pack). Preview pack: `skins/<id>.css` (the service would also take `fonts/*.woff2` and `assets/*.png` ≤ 512 px, but the colour skins need neither).
+**Files:** `contents.json`, `banners.json` (recipes as data, nameplate windows included), `skins/<id>.css` (colour only today; the format still allows `url('pack:fonts/…')` / `pack:assets/…` with `fonts/*.woff2`, `assets/*.svg`), `frames.mjs` (the part that must stay code: per-pixel recipe functions), `handheld/*` (the wraps, the stickers' atlas and the twincable+ launch looks – see Free vs. pack). Preview pack: `skins/<id>.css` (the service would also take `fonts/*.woff2` and `assets/*.png` ≤ 512 px, but the colour skins need neither).
 
 **Verification order (`openPack`):**
 1. Ed25519 over the manifest bytes against a pinned key (`pack/keys.mjs`: the owner's production key – the local server checks it too before it downloads anything; a dev key only when the local server offers one – `SLS_PLUS_DEV_PACK`, or `SLS_PLUS_DEV_KEY` with a service on this computer, never in a packaged build).
@@ -128,13 +128,13 @@ Skin CSS is injected as a `<style>` (allowed by `style-src 'unsafe-inline'`). Fo
 - 16 colour skins (colour only – no fonts, no art);
 - 133 banners (125 at launch plus 8 monthly drops) with their nameplate windows;
 - 71 frames;
-- "Your handheld": `handheld/wraps.json` (the six twicable+ wraps' compositions – their art is the pack's banner recipes),
-  the twicable+ stickers' pre-built atlas `handheld/stickers.png` + `stickers-cut.png` + `stickers.json`, and
-  `handheld/looks.json` – the twicable+ looks of the 3.0 launch: Gold, Clear shell (its plastic and the board inside),
+- "Your handheld": `handheld/wraps.json` (the six twincable+ wraps' compositions – their art is the pack's banner recipes),
+  the twincable+ stickers' pre-built atlas `handheld/stickers.png` + `stickers-cut.png` + `stickers.json`, and
+  `handheld/looks.json` – the twincable+ looks of the 3.0 launch: Gold, Clear shell (its plastic and the board inside),
   Holo label, the Rare start's light and the holo / glitter sticker finishes, as material values, a board recipe, a
   foil pattern and a few lines of fragment code (`contents.json` › `handheld`; built by `scripts/plus-dev-pack.mjs
   --handheld <design/plus/handheld>`, checked by `web/lib/handheld/looks.mjs cleanLooks`). The public scene draws only
-  "Your colours" and vinyl: without this data a twicable+ look, finish or Rare start isn't drawn, whatever a client
+  "Your colours" and vinyl: without this data a twincable+ look, finish or Rare start isn't drawn, whatever a client
   switches on. The fragment code runs on the GPU inside the scene's own shader (no JavaScript, no page access): only
   statements over the variables the shader offers – no `#` lines, no declarations, no texture reads, no loops.
 
@@ -142,7 +142,7 @@ Skin CSS is injected as a `<style>` (allowed by `style-src 'unsafe-inline'`). Fo
 
 Nobody buys what they can't see. Every premium banner, nameplate and frame has a still (PNG, display
 size ×2) and a short loop (animated WebP, native size, ≤ 150 KB), every colour skin a still of the app in it, every
-twicable+ sticker and wrap a product shot (turned a few degrees, resampled, a light sheen – `scripts/handheld/preview-shot.mjs`:
+twincable+ sticker and wrap a product shot (turned a few degrees, resampled, a light sheen – `scripts/handheld/preview-shot.mjs`:
 a sticker IS its pixel art, so a clean ×6 copy would be the sticker itself) – rendered offline from the design sources (`scripts/plus-previews.mjs`, `scripts/plus-skin-shots.mjs`; `plus-dev-pack.mjs
 --previews-source`). Pictures only: no recipe, code or stylesheet, so the accounts service hands them to anyone (API.md
 §10.6, a pack of kind `previews`). The local server (`server/lib/pluspreviews.mjs`) fetches the manifest (no account
@@ -150,13 +150,13 @@ needed), checks its signature against the pinned pack key and every picture's SH
 `/api/plus/previews/file?path=<kind>/<id>.<png|webp>`. In the page: `previewSrc(kind, id, { loop })`, `<PreviewPicture>`.
 The launch looks of "Your handheld" ("Your colours", Gold, Holo label, the Clear shell in each of its four colours) are
 a still and a 3-second loop each (`launch/<name>.png|webp`), drawn by the real launch scene with the pack's looks data
-(`scripts/handheld/launch-shots.mjs`, run by `plus-dev-pack.mjs --previews-source`) – the twicable+ page's launch cards
-(`views/launchlooks.mjs`). The twicable+ wraps' pictures also dress the 3D handheld on the twicable+ page for anyone without
+(`scripts/handheld/launch-shots.mjs`, run by `plus-dev-pack.mjs --previews-source`) – the twincable+ page's launch cards
+(`views/launchlooks.mjs`). The twincable+ wraps' pictures also dress the 3D handheld on the twincable+ page for anyone without
 the pack (`web/lib/handheld/wrap.mjs previewArt`: the picture levelled, read at its art pixels and continued past its
 edges – marked as a preview, never put on the account's handheld).
 Where: a locked card in `<CosmeticPicker>` (the loop while hovered / focused / chosen, never with reduced motion), a
 locked theme for someone who can't try it live (signed out: a still of the app in it – signed-in non-members keep the
-15-minute live preview), and `PlusShowcase` ("What twicable+ holds", Settings › Account, signed in or out).
+15-minute live preview), and `PlusShowcase` ("What twincable+ holds", Settings › Account, signed in or out).
 
 ## Dev pack
 
@@ -164,10 +164,10 @@ locked theme for someone who can't try it live (signed out: a still of the app i
 node scripts/plus-dev-pack.mjs --design <design/plus> --out <dir outside the repo>   # test pack + access.json + dev key
 node scripts/plus-dev-pack.mjs --design <design/plus> --catalog                       # regenerate content/*.mjs
 SLS_PLUS_DEV_PACK=<dir> node server/index.mjs
-localStorage['sl-plus-dev-preview'] = '1'      # try the non-member flow (preview pack, "Keep … with twicable+")
+localStorage['sl-plus-dev-preview'] = '1'      # try the non-member flow (preview pack, "Keep … with twincable+")
 ```
 
-`--source <dir>` / `--preview-source <dir>` write the unsigned pack folders the owner's pack tool signs for production (`node tools/pack-build.mjs <dir> --id twicable-plus --kind mixed …` and `--id skins-preview --kind preview`). `scripts/plus-e2e.mjs` runs the whole chain against the real service in `wrangler dev`.
+`--source <dir>` / `--preview-source <dir>` write the unsigned pack folders the owner's pack tool signs for production (`node tools/pack-build.mjs <dir> --id twincable-plus --kind mixed …` and `--id skins-preview --kind preview`). `scripts/plus-e2e.mjs` runs the whole chain against the real service in `wrangler dev`.
 
 ## Tests
 

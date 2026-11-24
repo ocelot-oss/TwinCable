@@ -2,7 +2,7 @@
 // distance field (one byte per texel, SDF_S texels per art pixel), on one shelf-packed layout. Pure data, no DOM.
 //
 // It is built ONCE, offline, never at run time (≈ 100 ms and 2 MB that way): scripts/build-handheld-atlas.mjs writes the
-// app's own (free + earned stickers) into web/assets/handheld/, scripts/plus-dev-pack.mjs the twicable+ one into the pack.
+// app's own (free + earned stickers) into web/assets/handheld/, scripts/plus-dev-pack.mjs the twincable+ one into the pack.
 // The page (web/lib/handheld/stickers.mjs) decodes the two PNGs and stacks the atlases it has into one texture.
 //
 // A sticker design: { id, outline: '#rrggbb', art: { w, h, rows: ['..ab..', …], map: { a: '#rrggbb', … } } }.
@@ -178,7 +178,7 @@ export function insideCut(rect, lx, ly) {
 
 /**
  * One sticker as a picture, `k` pixels per art pixel: its art on the white die-cut border (soft edge), transparent round
- * it → { w, h, rgba }. The sticker sheet's tiles, and the public preview pictures of the twicable+ ones.
+ * it → { w, h, rgba }. The sticker sheet's tiles, and the public preview pictures of the twincable+ ones.
  */
 export function stickerPicture(atlas, id, k = 6) {
   const r = atlas.rects[id];

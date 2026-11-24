@@ -82,7 +82,7 @@ test('coffee jokes: every language has the same jokes, each names the Pokémon',
   // the species jokes are about legendaries from Gen 1–5
   for (const k of keys) if (/^\d+$/.test(k)) assert.ok(isLegendary(Number(k)) && Number(k) <= 649, k);
   const mewtwo = coffeeTexts({ species: 150, name: 'Mewtwo', lang: 'en' });
-  assert.equal(mewtwo.joke, 'Mewtwo has entered the chat. twicable’s developer has entered the coffee shortage.');
+  assert.equal(mewtwo.joke, 'Mewtwo has entered the chat. twincable’s developer has entered the coffee shortage.');
   assert.equal(mewtwo.kicker, 'Legendary encounter');
   assert.equal(coffeeTexts({ species: 384, name: 'Rayquaza' }).joke, 'This Rayquaza won’t catch itself. The dev’s rent won’t pay itself either.');
   assert.equal(coffeeTexts({ species: 151, name: 'Mew', lang: 'de' }).kicker, 'Mysteriöse Begegnung');
@@ -268,16 +268,16 @@ test('access: pages from this computer, OBS and curl may read; other sites need 
   assert.equal(v1AccessError(req(undefined), url, { token }).status, 401, 'with a token, everyone needs it');
   assert.equal(v1AccessError(req('https://my.layout.example'), new URL(`http://127.0.0.1/api/v1?token=${token}`), { token }), null);
   assert.equal(v1AccessError(req(undefined, { authorization: `Bearer ${token}` }), url, { token }), null);
-  assert.equal(requestToken(req(undefined, { 'x-twicable-token': 'x' }), url), 'x');
+  assert.equal(requestToken(req(undefined, { 'x-twincable-token': 'x' }), url), 'x');
   assert.equal(v1AccessError(req(undefined, { authorization: 'Bearer wrong' }), url, { token }).status, 401);
   assert.deepEqual(streamSettings({}), { token: '', coffee: true, corner: 'bl', localPages: false }, 'pop-up on by default');
   assert.deepEqual(streamSettings({ stream: { token: 'short', coffee: false, corner: 'tr', localPages: 'yes' } }), { token: '', coffee: false, corner: 'tr', localPages: false });
 });
 
-test('access without a token: OBS, scripts and twicable itself always; pages from disk and other localhost pages only when allowed (#21)', () => {
+test('access without a token: OBS, scripts and twincable itself always; pages from disk and other localhost pages only when allowed (#21)', () => {
   const req = (origin, host = '127.0.0.1:47390') => ({ headers: { host, ...(origin === undefined ? {} : { origin }) } });
   const url = new URL('http://127.0.0.1/api/v1');
-  // always: no Origin (OBS URL sources, curl, scripts), OBS "Local file" sources, twicable's own origins
+  // always: no Origin (OBS URL sources, curl, scripts), OBS "Local file" sources, twincable's own origins
   for (const o of [undefined, 'http://absolute', 'http://127.0.0.1:47390', 'http://localhost:47390', 'http://[::1]:47390']) {
     assert.equal(v1AccessError(req(o), url), null, String(o));
     assert.ok(trustedOrigin(o, '127.0.0.1:47390'), String(o));
@@ -306,7 +306,7 @@ test('access without a token: OBS, scripts and twicable itself always; pages fro
 test('Private Network Access is granted only where the request itself may get through (#41)', () => {
   const req = (origin, host = '127.0.0.1:47390') => ({ headers: { host, ...(origin === undefined ? {} : { origin }) } });
   assert.equal(privateNetworkAllowed(req(undefined)), true, 'OBS, curl');
-  assert.equal(privateNetworkAllowed(req('http://127.0.0.1:47390')), true, 'twicable itself');
+  assert.equal(privateNetworkAllowed(req('http://127.0.0.1:47390')), true, 'twincable itself');
   assert.equal(privateNetworkAllowed(req('https://evil.example')), false, 'a website without the token');
   assert.equal(privateNetworkAllowed(req('https://evil.example'), { localPages: true }), false, 'the switch is for local pages only');
   assert.equal(privateNetworkAllowed(req('http://localhost:8080')), false);
@@ -386,11 +386,11 @@ test('server: /api/v1 JSON, CORS, token, read-only, sprites, live events and the
     const runs = await (await fetch(`${url}/api/v1/runs`)).json();
     assert.deepEqual(runs.map((r) => [r.id, r.current, r.players.length]), [['c0ffee02', true, 2]]);
 
-    // a new install starts strict: OBS and twicable yes, a page of another local server or from disk not yet (#21)
+    // a new install starts strict: OBS and twincable yes, a page of another local server or from disk not yet (#21)
     const appSet = (body) => fetch(`${url}/api/stream`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-soullink': '1' }, body: JSON.stringify(body) }).then((x) => x.json());
     assert.equal((await (await fetch(`${url}/api/stream`, { headers: { 'x-soullink': '1' } })).json()).localPages, false);
     assert.equal((await fetch(`${url}/api/v1/runs/current`, { headers: { origin: 'http://absolute' } })).status, 200, 'an OBS local-file layout');
-    assert.equal((await fetch(`${url}/api/v1/runs/current`, { headers: { origin: url } })).status, 200, 'twicable’s own page');
+    assert.equal((await fetch(`${url}/api/v1/runs/current`, { headers: { origin: url } })).status, 200, 'twincable’s own page');
     const strict = await fetch(`${url}/api/v1/runs/current`, { headers: { origin: 'http://localhost:8080' } });
     assert.equal(strict.status, 403);
     assert.equal((await strict.json()).code, 'localPage');

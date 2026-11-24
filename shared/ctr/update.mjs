@@ -2,14 +2,14 @@
 // go on the emulated SD card. Azahar (and its libretro core) loads an installed update by itself whenever the game
 // starts – from the game's code onwards it plays the updated version (src/core/loader/ncch.cpp: the update's NCCH at
 // sdmc/Nintendo 3DS/<id0>/<id1>/title/0004000e/<low>/content/<id>.app, named by the .tmd next to it – the smallest .tmd
-// in that folder is the one it reads, its first content record the .app). twicable installs the update into each
+// in that folder is the one it reads, its first content record the .app). twincable installs the update into each
 // 3DS save folder itself (server/lib/ctrupdate.mjs): the same files Azahar's "Install CIA" writes for a decrypted CIA
 // (the TMD, and each content as it is – Azahar's CIAFile writes an unencrypted NCCH unchanged).
 //
 //   .cia          the usual form: the TMD names the contents (64-byte aligned after it, in TMD order, only those set in
 //                 the CIA header's content index); contents encrypted with the title key (TMD content type bit 0) or an
-//                 NCCH without "NoCrypto" can't be installed without Nintendo's keys – twicable has none
-//   .cxi / .3ds   an update as a bare NCCH (or a cartridge image whose partition 0 is one): installed with a TMD twicable
+//                 NCCH without "NoCrypto" can't be installed without Nintendo's keys – twincable has none
+//   .cxi / .3ds   an update as a bare NCCH (or a cartridge image whose partition 0 is one): installed with a TMD twincable
 //                 writes for it (Azahar reads the content's ID and size from it, no signature or hash is checked)
 //
 // `readAt(offset, length)` returns the bytes there (a Uint8Array, shorter at the end of the file, or null).
@@ -31,7 +31,7 @@ const OPTIONAL = 0x4000;
 const BODY = 0xc4;
 const INFO_RECORDS = 0x900;
 const CHUNK = 0x30;
-/** The most contents twicable takes from one update (real ones have one, some two). */
+/** The most contents twincable takes from one update (real ones have one, some two). */
 const MAX_CONTENTS = 64;
 
 /** Size of a TMD's signature block (type, signature, padding) by its type – 0 for an unknown one. */
@@ -64,7 +64,7 @@ export function gameTitleIdOf(updateTid) {
 
 /**
  * The latest update of each Pokémon 3DS game: its title version (UPR ZX's FullyUpdatedVersionNumber,
- * config/gen6_offsets.ini / gen7_offsets.ini) and the version the game shows on its title screen. twicable's live data
+ * config/gen6_offsets.ini / gen7_offsets.ini) and the version the game shows on its title screen. twincable's live data
  * (shared/data/addresses.json) knows these games in version 1.0 and in their latest update.
  */
 export const CTR_LATEST_UPDATE = {
@@ -79,10 +79,10 @@ export const CTR_LATEST_UPDATE = {
 };
 
 /**
- * What twicable knows about an update of a game: { versionText ("v2.2.0"), gameVersion ("1.2" – only for a known latest
- * update, else null), latest (true / false; null: a game twicable has no list for), tracking: 'known' (twicable's live data
+ * What twincable knows about an update of a game: { versionText ("v2.2.0"), gameVersion ("1.2" – only for a known latest
+ * update, else null), latest (true / false; null: a game twincable has no list for), tracking: 'known' (twincable's live data
  * has this version's addresses: no update, or the latest), 'older' (an update before the latest – the team may not be
- * found), 'unknown' (a game twicable has no update list for) }.
+ * found), 'unknown' (a game twincable has no update list for) }.
  */
 export function updateStatus(gameTid, version) {
   const known = CTR_LATEST_UPDATE[String(gameTid || '').toUpperCase()];
@@ -229,7 +229,7 @@ export function updatePaths(titleId, { optional = false } = {}) {
 
 /**
  * The update a game plays with, from the library's update files (scanLibrary's ctrUpdates: { gameTitleId, version,
- * encrypted, detached, name }): the newest one twicable can install – an encrypted one only when there is no other (it
+ * encrypted, detached, name }): the newest one twincable can install – an encrypted one only when there is no other (it
  * is shown, with why it isn't used). null when the library has none for `gameTid`.
  */
 export function pickUpdate(updates, gameTid) {

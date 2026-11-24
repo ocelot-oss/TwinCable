@@ -10,7 +10,7 @@ export const QUETZAL_HEADER = Object.freeze({ system: 'gba', code: 'BPEE', title
 
 /**
  * Is this header (a ROM's, a run manifest's game, a live bridge's HELLO – { system | platform, code, title }) Pokémon
- * Quetzal? A run made before twicable knew the hack has the same header in its manifest.
+ * Quetzal? A run made before twincable knew the hack has the same header in its manifest.
  */
 export function isQuetzal(h) {
   if (!h) return false;

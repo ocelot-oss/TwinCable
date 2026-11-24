@@ -1,18 +1,18 @@
-# Streaming with twicable
+# Streaming with twincable
 
 OBS overlays, the coffee pop-up, Pokélink themes and the overlay API. Back to the [README](../README.md).
 Building your own layout? The **[open stream API](STREAM_API.md)** has the run's data, live events and sprites.
 
 ## Streamer mode
 
-**Streamer mode** (Stream page): one switch covers invite codes (also in the "copied" toast), folders and file names, the Discord webhook and locks the spoiler tab. A LIVE badge shows next to "twicable".
+**Streamer mode** (Stream page): one switch covers invite codes (also in the "copied" toast), folders and file names, the Discord webhook and locks the spoiler tab. A LIVE badge shows next to "twincable".
 
 ## OBS overlays
 
 Each widget has a live preview, its own URL and **Drag into OBS** (the browser source gets the right size via `layer-width`/`layer-height`).
 
 **One set of links for every run.** By default the links follow the **current run** (`/overlay?run=current&w=…`): the
-run open in twicable, else the one played last. Start a new run, join one or open another and every overlay switches
+run open in twincable, else the one played last. Start a new run, join one or open another and every overlay switches
 by itself within a moment – OBS keeps the same browser sources, nothing to re-import. The **Run** menu on the Stream
 page can pin the links to one run instead (`?run=<id>`); links made before 2.3.1 carry their run ID and keep showing
 that run.
@@ -42,7 +42,7 @@ Options per widget (layout, players, nicknames/HP/area names) and for all (glass
 
 ## Overlay API
 
-The endpoints below feed twicable's own overlays. For your own layout use the versioned [open stream API](STREAM_API.md) (`/api/v1`) – it is documented, stable and has CORS.
+The endpoints below feed twincable's own overlays. For your own layout use the versioned [open stream API](STREAM_API.md) (`/api/v1`) – it is documented, stable and has CORS.
 
 Everything runs on this computer only (`127.0.0.1`), read-only, without room keys, file names, device IDs or spoilers. The app port is normally `47390`; if that's taken the app picks a free one (the Stream page shows the real addresses).
 
@@ -69,13 +69,13 @@ Everything runs on this computer only (`127.0.0.1`), read-only, without room key
 
 ## Pokélink themes
 
-Switch on the **Pokélink bridge** on the Stream page. twicable then also listens on `127.0.0.1:3000` (port configurable) and speaks the socket.io protocol the themes from [pokelink-web-sources](https://github.com/pokelinkapp/pokelink-web-sources) expect (socket.io-client 2.x, Engine.IO 3). Open a theme with the ending shown on the Stream page instead of its own `?user=…`, e.g. `index.html?user=Robin&server=http://127.0.0.1&port=3000`; `user` is the player's name or `p1`–`p4`. Like the overlays it follows the current run, unless a run is pinned in the Stream page's **Run** menu. Events:
+Switch on the **Pokélink bridge** on the Stream page. twincable then also listens on `127.0.0.1:3000` (port configurable) and speaks the socket.io protocol the themes from [pokelink-web-sources](https://github.com/pokelinkapp/pokelink-web-sources) expect (socket.io-client 2.x, Engine.IO 3). Open a theme with the ending shown on the Stream page instead of its own `?user=…`, e.g. `index.html?user=Robin&server=http://127.0.0.1&port=3000`; `user` is the player's name or `p1`–`p4`. Like the overlays it follows the current run, unless a run is pinned in the Stream page's **Run** menu. Events:
 
 - `client:players:list` on connect: `[{ id, username, party: [{ slotId: 1–6, pokemon | null }], trainer: { name, game: { id: "POKEMON HG", friendlyName, generation }, badges: [{ name: "Zephyr", value: 0|1 }] } }]`
 - `client:party:updated` `{ id, username, update: { party } }` and `player:trainer:updated` `{ id, username, trainer }` when something changes for that player
 - `player:party:death` `{ username, pokemon }` when a Pokémon goes to the graveyard
-- `pokemon`: `pid, species, speciesName` (English – themes build the sprite name from it), `nickname, level, hp: { current, max }, isShiny, isEgg, isFemale, isGenderless` (0/1), `heldItem` (the game's item ID), `status: { psn, slp, par, frz, brn }`, `dead, types: [{ label }], move1`–`move4: { name, type }, locationMet` (area name). Values twicable doesn't read (EXP, nature, ability, IVs/EVs, Pokérus) come empty or 0.
+- `pokemon`: `pid, species, speciesName` (English – themes build the sprite name from it), `nickname, level, hp: { current, max }, isShiny, isEgg, isFemale, isGenderless` (0/1), `heldItem` (the game's item ID), `status: { psn, slp, par, frz, brn }`, `dead, types: [{ label }], move1`–`move4: { name, type }, locationMet` (area name). Values twincable doesn't read (EXP, nature, ability, IVs/EVs, Pokérus) come empty or 0.
 
-Allowed are themes opened from disk (`file://`, or OBS's **Local file** – how OBS runs a downloaded or custom theme) and from Pokélink's own sites (`*.pokelink.xyz`, `pokelink.app`, `pokelinkapp.github.io`); other websites get no readable answer. A theme served by another web server on this computer (`http://localhost:<port>`, e.g. a theme you develop with a local dev server) needs the switch **Also themes from another web server on this computer** on the Stream page – off by default, so other programs' local web pages can't read your teams. If Pokélink itself is running, port 3000 is taken – close it or pick another port in twicable.
+Allowed are themes opened from disk (`file://`, or OBS's **Local file** – how OBS runs a downloaded or custom theme) and from Pokélink's own sites (`*.pokelink.xyz`, `pokelink.app`, `pokelinkapp.github.io`); other websites get no readable answer. A theme served by another web server on this computer (`http://localhost:<port>`, e.g. a theme you develop with a local dev server) needs the switch **Also themes from another web server on this computer** on the Stream page – off by default, so other programs' local web pages can't read your teams. If Pokélink itself is running, port 3000 is taken – close it or pick another port in twincable.
 
 What the bridge hands out is meant for the stream: names, teams (in a randomized run that shows what each player got), levels, HP, moves, items, badges and deaths. Never room keys, invite codes, device IDs, file names or folders.

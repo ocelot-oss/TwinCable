@@ -1,5 +1,5 @@
-// The twicable+ launch looks' stills that ship with the app (web/assets/handheld/launch/<name>.webp, 480×300, ≈ 8 KB each):
-// what the twicable+ page's launch cards show to someone without the pack until the previews (the accounts service's
+// The twincable+ launch looks' stills that ship with the app (web/assets/handheld/launch/<name>.webp, 480×300, ≈ 8 KB each):
+// what the twincable+ page's launch cards show to someone without the pack until the previews (the accounts service's
 // launch/<name>.png|webp – a still and a loop) carry them. Pictures only, the same public pictures as the previews.
 // Made from the previews folder plus-dev-pack.mjs writes (--previews-source <dir>, or <out>/previews):
 //   node scripts/handheld/launch-stills.mjs <previews dir>

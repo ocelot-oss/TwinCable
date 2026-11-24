@@ -13,7 +13,7 @@ import { startHost as startLinkHost } from '../scripts/link-drive.mjs';
 
 const host = linkTool();
 const skip = !host && 'link host not built (npm run native)';
-const dir = mkdtempSync(join(tmpdir(), 'twicable-linkhost-'));
+const dir = mkdtempSync(join(tmpdir(), 'twincable-linkhost-'));
 const started = []; // every host a test starts: none outlives the file, also when a test fails halfway
 const startHost = (...a) => { const h = startLinkHost(...a); started.push(h.proc); return h; };
 test.after(() => {
@@ -26,7 +26,7 @@ function gbRom() {
   const r = Buffer.alloc(0x8000);
   r.set([0x00, 0xc3, 0x50, 0x01], 0x100);
   r.set([0xce, 0xed, 0x66, 0x66, 0xcc, 0x0d, 0x00, 0x0b], 0x104); // (the header bytes backend_sameboy.c's probe looks for)
-  r.write('TWICABLELINK', 0x134, 'latin1');
+  r.write('TWINCABLELINK', 0x134, 'latin1');
   r[0x147] = 0x03, r[0x148] = 0x00, r[0x149] = 0x02;
   let x = 0;
   for (let i = 0x134; i <= 0x14c; i++) x = (x - r[i] - 1) & 0xff;
@@ -39,7 +39,7 @@ function gbRom() {
 function gbaRom() {
   const r = Buffer.alloc(0x10000);
   r.writeUInt32LE(0xea00002e, 0); // b 0xC0
-  r.write('TWICABLELINK', 0xa0, 'latin1');
+  r.write('TWINCABLELINK', 0xa0, 'latin1');
   r[0xb2] = 0x96; // the fixed header byte
   let c = 0;
   for (let i = 0xa0; i <= 0xbc; i++) c = (c - r[i]) & 0xff;
@@ -167,7 +167,7 @@ test('link host: NEED answers with the seat\'s buttons it knows', { skip }, asyn
 // ---- the DS (melonDS): a tiny homebrew cartridge – its ARM9 counts a word in main RAM up forever, its ARM7 waits ----------
 function dsRom() {
   const r = Buffer.alloc(0x20000);
-  r.write('TWICABLELINK', 0, 'latin1'), r.write('####', 0x0c, 'latin1'), r.write('00', 0x10, 'latin1');
+  r.write('TWINCABLELINK', 0, 'latin1'), r.write('####', 0x0c, 'latin1'), r.write('00', 0x10, 'latin1');
   const w = (o, v) => r.writeUInt32LE(v >>> 0, o);
   w(0x20, 0x200), w(0x24, 0x02000000), w(0x28, 0x02000000), w(0x2c, 0x100); // ARM9: ROM offset, entry, RAM address, size
   w(0x30, 0x400), w(0x34, 0x02380000), w(0x38, 0x02380000), w(0x3c, 0x100); // ARM7
@@ -185,7 +185,7 @@ const dsFile = join(dir, 'tiny.nds');
 writeFileSync(dsFile, dsRom());
 
 test('link host, DS: consoles that joined from games running for very different times both run from the first frame (3.0.0: the one on longer stood still – black)', { skip }, async () => {
-  // two running games, as the fast player keeps them: one on for 60 frames, the other for 960 (the twicable engine alone
+  // two running games, as the fast player keeps them: one on for 60 frames, the other for 960 (the twincable engine alone
   // writes states in the fast player's format)
   const S = startHost(host, ['--solo', '--rom', dsFile]);
   await S.loaded;

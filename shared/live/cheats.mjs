@@ -48,7 +48,7 @@ export const MAX_REVIVE = { 1: 0x36, 2: 0x28, 3: 25, 4: 29, 5: 29, 6: 29, 7: 29 
  * PokeAPI identifier (its name in the app's language: web/lib/data.mjs itemNameByKey; `en`: the English one, for an
  * app that can't look it up – an older partner's log), and the group a run's rules
  * allow or not (shared/rules.mjs cheatSet). Rare Candies (99: enough for any level cap) and Max Repels (ten: 2500
- * steps) came first and are offered wherever twicable knows the bag; every other cheat (`checked`) only in the games
+ * steps) came first and are offered wherever twincable knows the bag; every other cheat (`checked`) only in the games
  * where it was checked in the running game (checkedLive) – elsewhere it is left out rather than written untried.
  * `money`: the money, added or set to the most the game holds (moneyCheat).
  */
@@ -471,7 +471,7 @@ function ctrTable(L, base, t) {
 
 /**
  * Is the block at `base` the bag? → { ok: true, used, table } or { why } – why not, for the diagnostics: 'unread'
- * (not in the memory twicable sees), 'slot <pocket>#<n> <value>' (a slot that is no item of its pocket), 'pointers'
+ * (not in the memory twincable sees), 'slot <pocket>#<n> <value>' (a slot that is no item of its pocket), 'pointers'
  * (the table behind it points at other pockets), 'empty' (nothing in it and no table that says it is the bag: all
  * zeros would look the same).
  */
@@ -515,7 +515,7 @@ function ctrFind(L, entry, read, state, pocketName, tried = null) {
 }
 
 // ---- the search ----------------------------------------------------------------------------------------------------
-// When the bag isn't at any address twicable knows (an update or a build it hasn't seen), it is searched for near them:
+// When the bag isn't at any address twincable knows (an update or a build it hasn't seen), it is searched for near them:
 // the 3DS player reads windows of 64 KB (CTR_WINDOW, the host's most per region), a few at a time on top of the game's
 // own regions, each overlapping the next by more than a bag, so a bag anywhere in the range lies whole in one window.
 // A game with the pocket table (Sun/Moon, Ultra Sun/Ultra Moon) is found by it alone: the words at T that point at
@@ -854,7 +854,7 @@ async function locateMoneyFor(entry, read, state) {
   }
   const game = gameOfEntry(entry);
   if (!game) return null;
-  // (the bag has to read as a bag first: the game's memory is where twicable expects it)
+  // (the bag has to read as a bag first: the game's memory is where twincable expects it)
   if (L.kind === 'gb' && !gbBag(L, entry.gen, read)) return null;
   if (L.kind === 'ds' && !dsBag(L, entry, read, state, 'items', emptyBagOk(L, entry, state, read))) return null;
   const at = await locateMoney(game, read);

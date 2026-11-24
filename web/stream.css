@@ -8,7 +8,7 @@ html.streamer .disc-body .tiny {
 html.streamer .invite-code { filter: blur(14px); }
 html.streamer .sm-secret:focus { filter: blur(7px); }
 
-/* the LIVE mark: by the twicable name and as a dot on the Stream item */
+/* the LIVE mark: by the twincable name and as a dot on the Stream item */
 .onair { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px 2px 7px; border-radius: 6px; font: 700 11px/1.4 var(--font-body);
   letter-spacing: .1em; text-transform: uppercase; vertical-align: middle; color: var(--ink-3); background: var(--shell-4); }
 .onair::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }

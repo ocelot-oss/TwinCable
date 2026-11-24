@@ -6,7 +6,7 @@ index 33682a9..f189d78 100644
  
  #include <neaacdec.h>
  #include "audio_core/hle/aac_decoder.h"
-+#include "common/twicable_music.h"
++#include "common/twincable_music.h"
  
  namespace AudioCore::HLE {
  
@@ -14,10 +14,10 @@ index 33682a9..f189d78 100644
          data_len -= frame_info.bytesconsumed;
      }
  
-+    // twicable: a frame of a music stream decoded – what it writes is music (common/twicable_music.h)
-+    const u8* const twicable_src =
++    // twincable: a frame of a music stream decoded – what it writes is music (common/twincable_music.h)
++    const u8* const twincable_src =
 +        memory.GetFCRAMPointer(request.decode_aac_request.src_addr - Memory::FCRAM_PADDR);
-+    const u32 twicable_bytes = static_cast<u32>(out_streams[0].size() * sizeof(s16));
++    const u32 twincable_bytes = static_cast<u32>(out_streams[0].size() * sizeof(s16));
 +
      // Transfer the decoded buffer from vector to the FCRAM.
      for (std::size_t ch = 0; ch < out_streams.size(); ch++) {
@@ -26,12 +26,12 @@ index 33682a9..f189d78 100644
                      byte_size);
      }
  
-+    TwicableMusic::NoteDecoded(
-+        twicable_src, request.decode_aac_request.size, request.decode_aac_request.dst_addr_ch0,
++    TwinCableMusic::NoteDecoded(
++        twincable_src, request.decode_aac_request.size, request.decode_aac_request.dst_addr_ch0,
 +        out_streams[0].empty() ? nullptr : reinterpret_cast<const u8*>(out_streams[0].data()),
 +        out_streams[1].empty() ? 0 : static_cast<u32>(request.decode_aac_request.dst_addr_ch1),
 +        out_streams[1].empty() ? nullptr : reinterpret_cast<const u8*>(out_streams[1].data()),
-+        twicable_bytes);
++        twincable_bytes);
 +
      // Set the output frame info.
      response.decode_aac_response.num_samples = static_cast<u32_le>(out_streams[0].size());
@@ -44,7 +44,7 @@ index 05ff9d7..24eb535 100644
  #include <boost/serialization/weak_ptr.hpp>
  #include "audio_core/audio_types.h"
  #include "audio_core/hle/aac_decoder.h"
-+#include "common/twicable_music.h"
++#include "common/twincable_music.h"
  #include "audio_core/hle/common.h"
  #include "audio_core/hle/decoder.h"
  #include "audio_core/hle/hle.h"
@@ -52,12 +52,12 @@ index 05ff9d7..24eb535 100644
  
      std::array<QuadFrame32, 3> intermediate_mixes = {};
  
-+    // twicable: while the frontend asks for it (fast-forward), the frame that goes out leaves the voices playing the
-+    // game's streamed music out (common/twicable_music.h). Everything the game sees – statuses, the aux buses, the final
++    // twincable: while the frontend asks for it (fast-forward), the frame that goes out leaves the voices playing the
++    // game's streamed music out (common/twincable_music.h). Everything the game sees – statuses, the aux buses, the final
 +    // mix in shared memory – stays as it was: the music voices are mixed in as always, and their share is also summed
 +    // apart (exact integer sums) to be taken off the copy that goes out.
 +    bool asked = false;
-+    const bool mute = TwicableMusic::BeginFrame(asked);
++    const bool mute = TwinCableMusic::BeginFrame(asked);
 +    std::array<QuadFrame32, 3> music_mixes = {};
 +    bool muted = false, music = false, onset = false;
 +
@@ -65,7 +65,7 @@ index 05ff9d7..24eb535 100644
      for (std::size_t i = 0; i < HLE::num_sources; i++) {
          write.source_statuses.status[i] =
              sources[i].Tick(read.source_configurations.config[i], read.adpcm_coefficients.coeff[i]);
-+        const bool is_music = TwicableMusic::VoiceFrame(static_cast<u32>(i), sources[i].TwicableEnabled(), onset);
++        const bool is_music = TwinCableMusic::VoiceFrame(static_cast<u32>(i), sources[i].TwinCableEnabled(), onset);
 +        music |= is_music;
 +        if (mute && is_music) {
 +            muted = true;
@@ -88,13 +88,13 @@ index 05ff9d7..24eb535 100644
      }
  
 +    // (an unknown voice streaming queued buffers for long – maybe music nobody named: nothing is left out next frame)
-+    TwicableMusic::EndFrame(asked, muted, music, onset);
++    TwinCableMusic::EndFrame(asked, muted, music, onset);
 +    if (muted) {
 +        for (std::size_t mix = 0; mix < 3; mix++)
 +            for (std::size_t k = 0; k < music_mixes[mix].size(); k++)
 +                for (std::size_t c = 0; c < 4; c++)
 +                    music_mixes[mix][k][c] = intermediate_mixes[mix][k][c] - music_mixes[mix][k][c];
-+        return mixers.TwicableDownmix(music_mixes); // (the mixes without the music)
++        return mixers.TwinCableDownmix(music_mixes); // (the mixes without the music)
 +    }
 +
      return output_frame;
@@ -108,7 +108,7 @@ index 03dab65..d8c79d6 100644
      UNREACHABLE_MSG("Invalid output_format {}", static_cast<std::size_t>(state.output_format));
  }
  
-+StereoFrame16 Mixers::TwicableDownmix(const std::array<QuadFrame32, 3>& input) const {
++StereoFrame16 Mixers::TwinCableDownmix(const std::array<QuadFrame32, 3>& input) const {
 +    StereoFrame16 out{};
 +    for (std::size_t mix = 0; mix < 3; mix++) {
 +        const QuadFrame32& samples =
@@ -141,10 +141,10 @@ index 6950f2d..d2bd8e9 100644
          return current_frame;
      }
  
-+    /// twicable: the final mix of the last Tick as if its intermediate mixes had been `input` (the music voices left
++    /// twincable: the final mix of the last Tick as if its intermediate mixes had been `input` (the music voices left
 +    /// out) – same volumes, same output format; an aux bus the game processes returns what the game sent back. Changes
 +    /// nothing (the frame the game sees is GetOutput()).
-+    StereoFrame16 TwicableDownmix(const std::array<QuadFrame32, 3>& input) const;
++    StereoFrame16 TwinCableDownmix(const std::array<QuadFrame32, 3>& input) const;
 +
  private:
      StereoFrame16 current_frame = {};
@@ -157,7 +157,7 @@ index 4728526..ad658df 100755
  #include "audio_core/interpolate.h"
  #include "common/assert.h"
  #include "common/logging/log.h"
-+#include "common/twicable_music.h"
++#include "common/twincable_music.h"
  #include "core/memory.h"
  
  namespace AudioCore::HLE {
@@ -165,7 +165,7 @@ index 4728526..ad658df 100755
      if (config.reset_flag) {
          config.reset_flag.Assign(0);
          Reset();
-+        TwicableMusic::OnReset(static_cast<uint32_t>(source_id)); // (twicable)
++        TwinCableMusic::OnReset(static_cast<uint32_t>(source_id)); // (twincable)
          LOG_TRACE(Audio_DSP, "source_id={} reset", source_id);
      }
  
@@ -174,7 +174,7 @@ index 4728526..ad658df 100755
      if (config.enable_dirty) {
          config.enable_dirty.Assign(0);
 +        if (!state.enabled && config.enable != 0)
-+            TwicableMusic::OnKeyOn(static_cast<uint32_t>(source_id)); // (twicable: a new sound)
++            TwinCableMusic::OnKeyOn(static_cast<uint32_t>(source_id)); // (twincable: a new sound)
          state.enabled = config.enable != 0;
          LOG_TRACE(Audio_DSP, "source_id={} enable={}", source_id, state.enabled);
      }
@@ -182,7 +182,7 @@ index 4728526..ad658df 100755
                  "addr {:X} length {:X}",
                  static_cast<u32>(config.physical_address), static_cast<u32>(config.length));
          } else {
-+            TwicableMusic::OnKeyOn(static_cast<uint32_t>(source_id)); // (twicable: a new sound)
++            TwinCableMusic::OnKeyOn(static_cast<uint32_t>(source_id)); // (twincable: a new sound)
              state.input_queue.emplace(Buffer{
                  config.physical_address,
                  config.length,
@@ -190,13 +190,13 @@ index 4728526..ad658df 100755
          return true;
      }
  
-+    // twicable: is this voice the game's streamed music? (common/twicable_music.h – only notes it, changes nothing here)
++    // twincable: is this voice the game's streamed music? (common/twincable_music.h – only notes it, changes nothing here)
 +    if (memory) {
 +        const u32 channels = buf.mono_or_stereo == MonoOrStereo::Stereo ? 2 : 1;
 +        const u32 bytes = buf.format == Format::ADPCM ? buf.length / 14 * 8
 +                          : buf.format == Format::PCM16 ? buf.length * 2 * channels
 +                                                        : buf.length * channels;
-+        TwicableMusic::OnBuffer(static_cast<uint32_t>(source_id), memory, bytes,
++        TwinCableMusic::OnBuffer(static_cast<uint32_t>(source_id), memory, bytes,
 +                               buf.physical_address & 0xFFFFFFFC, buf.from_queue, buf.has_played);
 +    }
 +
@@ -211,8 +211,8 @@ index 1223f68..7ccb4be 100755
       */
      void MixInto(QuadFrame32& dest, std::size_t intermediate_mix_id);
  
-+    /// twicable: is this source playing (enabled)?
-+    bool TwicableEnabled() const {
++    /// twincable: is this source playing (enabled)?
++    bool TwinCableEnabled() const {
 +        return state.enabled;
 +    }
 +
@@ -227,42 +227,42 @@ index 6dff945..001bf1e 100644
  #include "core/frontend/image_interface.h"
  #include "core/hle/kernel/kernel.h"
  #include "core/file_sys/ivfc_archive.h"
-+#include "common/twicable_music.h"
++#include "common/twincable_music.h"
  #include "core/hle/kernel/memory.h"
  #include "core/hle/kernel/process.h"
  #include "core/loader/loader.h"
-@@ -789,6 +790,48 @@ RETRO_API uint64_t twicable_romfs_size(uint32_t tag) {
-     return FileSys::Twicable::RomFSSize(tag);
+@@ -789,6 +790,48 @@ RETRO_API uint64_t twincable_romfs_size(uint32_t tag) {
+     return FileSys::TwinCable::RomFSSize(tag);
  }
  
-+// ---- twicable: the game's sound without its streamed music (twicable's sound effects during fast-forward) ------------
-+// common/twicable_music.h: twicable names the music streams in the RomFS, the core recognises the DSP voices that play
++// ---- twincable: the game's sound without its streamed music (twincable's sound effects during fast-forward) ------------
++// common/twincable_music.h: twincable names the music streams in the RomFS, the core recognises the DSP voices that play
 +// them and – while asked – leaves them out of the frame it hands to the audio callback (the game itself still hears
-+// everything). twicable_audio_frame_flags tells, from inside the audio callback, what the frame just handed over is.
++// everything). twincable_audio_frame_flags tells, from inside the audio callback, what the frame just handed over is.
 +
-+/// The music streams of RomFS `tag` (as twicable_romfs_reads tags them): n [start, end) pairs, offsets in its level 3;
++/// The music streams of RomFS `tag` (as twincable_romfs_reads tags them): n [start, end) pairs, offsets in its level 3;
 +/// n = 0 forgets them. Any time; takes effect for the reads that follow.
-+RETRO_API void twicable_audio_music_ranges(uint32_t tag, const uint64_t* pairs, uint32_t n) {
-+    TwicableMusic::SetRanges(tag, pairs, pairs ? n : 0);
++RETRO_API void twincable_audio_music_ranges(uint32_t tag, const uint64_t* pairs, uint32_t n) {
++    TwinCableMusic::SetRanges(tag, pairs, pairs ? n : 0);
 +}
 +
 +/// 1: leave the music voices out of the frames that go to the audio callback (from the next frame on), 0: don't.
-+RETRO_API void twicable_audio_mute_music(uint32_t on) {
-+    TwicableMusic::S().mute.store(on != 0, std::memory_order_relaxed);
++RETRO_API void twincable_audio_mute_music(uint32_t on) {
++    TwinCableMusic::S().mute.store(on != 0, std::memory_order_relaxed);
 +}
 +
-+/// The frame just handed to the audio callback (call it from there): TwicableMusic::F_* bits – 1 a new sound that isn't
++/// The frame just handed to the audio callback (call it from there): TwinCableMusic::F_* bits – 1 a new sound that isn't
 +/// music began, 2 music voices were left out, 4 asked but left in (unsure), 8 asked, 16 a music voice played.
-+RETRO_API uint32_t twicable_audio_frame_flags(void) {
-+    return TwicableMusic::S().flags.load(std::memory_order_relaxed);
++RETRO_API uint32_t twincable_audio_frame_flags(void) {
++    return TwinCableMusic::S().flags.load(std::memory_order_relaxed);
 +}
 +
 +/// Diagnostics into out[0..max): music voices (bit mask), fingerprints noted, buffers recognised, buffers not,
 +/// AAC decodes recognised, RomFS with music streams, unsure (0/1). Returns how many were written.
-+RETRO_API uint32_t twicable_audio_music_state(uint64_t* out, uint32_t max) {
-+    auto& s = TwicableMusic::S();
++RETRO_API uint32_t twincable_audio_music_state(uint64_t* out, uint32_t max) {
++    auto& s = TwinCableMusic::S();
 +    uint64_t mask = 0;
-+    for (uint32_t i = 0; i < TwicableMusic::SOURCES; i++)
++    for (uint32_t i = 0; i < TwinCableMusic::SOURCES; i++)
 +        if (s.voices[i].music)
 +            mask |= 1ull << i;
 +    std::size_t tags;
@@ -285,27 +285,27 @@ index 36101ff..a35d3c3 100644
 --- a/src/citra_libretro/libretro.osx.def
 +++ b/src/citra_libretro/libretro.osx.def
 @@ -22,6 +22,10 @@ _retro_cheat_set
- _twicable_romfs_read
- _twicable_romfs_reads
- _twicable_romfs_size
-+_twicable_audio_music_ranges
-+_twicable_audio_mute_music
-+_twicable_audio_frame_flags
-+_twicable_audio_music_state
+ _twincable_romfs_read
+ _twincable_romfs_reads
+ _twincable_romfs_size
++_twincable_audio_music_ranges
++_twincable_audio_mute_music
++_twincable_audio_frame_flags
++_twincable_audio_music_state
  _retro_load_game
  _retro_load_game_special
  _retro_unload_game
-diff --git a/src/common/twicable_music.h b/src/common/twicable_music.h
+diff --git a/src/common/twincable_music.h b/src/common/twincable_music.h
 new file mode 100644
 index 0000000..17a3f6d
 --- /dev/null
-+++ b/src/common/twicable_music.h
++++ b/src/common/twincable_music.h
 @@ -0,0 +1,311 @@
-+// twicable: which DSP voices play the game's streamed music – so that, while twicable fast-forwards, the core can hand out
-+// the game's sound without its music (twicable then plays the music track itself at normal speed, from the ROM, and the
++// twincable: which DSP voices play the game's streamed music – so that, while twincable fast-forwards, the core can hand out
++// the game's sound without its music (twincable then plays the music track itself at normal speed, from the ROM, and the
 +// game's sound effects on top of it).
 +//
-+// How a voice is known to be music, without knowing the game: twicable tells the core where the music streams are in the
++// How a voice is known to be music, without knowing the game: twincable tells the core where the music streams are in the
 +// RomFS (SetRanges – the stream files it found by their own bytes, BCSTM / ADTS AAC). Every RomFS read the game makes
 +// that touches one of them is fingerprinted (NoteRead: a 64-bit hash of 16 bytes at every 8-byte step of the file – the
 +// DSP-ADPCM frames a voice can start at – and at every ADTS sync word). A DSP voice that starts a buffer whose first 16
@@ -330,7 +330,7 @@ index 0000000..17a3f6d
 +#include <mutex>
 +#include <vector>
 +
-+namespace TwicableMusic {
++namespace TwinCableMusic {
 +
 +constexpr uint32_t SOURCES = 24;           // AudioCore::HLE::num_sources
 +constexpr uint32_t TABLE_BITS = 17;        // fingerprints kept (2 MB): ~14 s of emulated stereo ADPCM, more for AAC
@@ -611,7 +611,7 @@ index 0000000..17a3f6d
 +        S().voices[id] = {};
 +}
 +
-+} // namespace TwicableMusic
++} // namespace TwinCableMusic
 diff --git a/src/core/file_sys/ivfc_archive.cpp b/src/core/file_sys/ivfc_archive.cpp
 index 0a17380..f81de61 100644
 --- a/src/core/file_sys/ivfc_archive.cpp
@@ -619,8 +619,8 @@ index 0a17380..f81de61 100644
 @@ -12,6 +12,7 @@
  #include "common/logging/log.h"
  #include "core/file_sys/ivfc_archive.h"
- #include "core/file_sys/twicable_romfs_ring.h"
-+#include "common/twicable_music.h"
+ #include "core/file_sys/twincable_romfs_ring.h"
++#include "common/twincable_music.h"
  
  SERIALIZE_EXPORT_IMPL(FileSys::IVFCFile)
  SERIALIZE_EXPORT_IMPL(FileSys::IVFCFileInMemory)
@@ -631,7 +631,7 @@ index 0a17380..f81de61 100644
 +void Fingerprint(const std::shared_ptr<RomFSReader>& r, u64 offset, const u8* data, std::size_t length) {
 +    if (own_read || !r || !length)
 +        return;
-+    TwicableMusic::NoteRead(TagOf(r), offset, data, length);
++    TwinCableMusic::NoteRead(TagOf(r), offset, data, length);
 +}
 +
  void Note(const std::shared_ptr<RomFSReader>& r, u64 offset, std::size_t length) {
@@ -640,10 +640,10 @@ index 0a17380..f81de61 100644
 @@ -183,7 +190,9 @@ ResultVal<std::size_t> IVFCFile::Read(const u64 offset, const std::size_t length
                                        u8* buffer) const {
      LOG_TRACE(Service_FS, "called offset={}, length={}", offset, length);
-     Twicable::Note(romfs_file, offset, length); // (twicable)
+     TwinCable::Note(romfs_file, offset, length); // (twincable)
 -    return romfs_file->ReadFile(offset, length, buffer);
 +    const std::size_t got = romfs_file->ReadFile(offset, length, buffer);
-+    Twicable::Fingerprint(romfs_file, offset, buffer, std::min(got, length)); // (twicable: music voices)
++    TwinCable::Fingerprint(romfs_file, offset, buffer, std::min(got, length)); // (twincable: music voices)
 +    return got;
  }
  

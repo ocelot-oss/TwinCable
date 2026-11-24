@@ -1,4 +1,4 @@
-// Security review #3 (exploit 2): twicable+ pack code runs in a module worker inside a sandboxed iframe with an opaque
+// Security review #3 (exploit 2): twincable+ pack code runs in a module worker inside a sandboxed iframe with an opaque
 // origin and connect-src 'none' (web/lib/cosmetics/sandbox.mjs) – it can't read the account (export, entitlements),
 // can't write the app's config, can't reach the sync relays or the internet. The frames host still works in there.
 // Real Chromium (Electron, hidden window, muted); skipped on Linux without a display.
@@ -14,7 +14,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const noDisplay = process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY;
 
 test('pack code in the sandboxed iframe: no account, no config, no network – and the frames host still answers', { skip: noDisplay ? 'no display' : false, timeout: 120000 }, async () => {
-  const data = mkdtempSync(join(tmpdir(), 'twicable-sandbox-'));
+  const data = mkdtempSync(join(tmpdir(), 'twincable-sandbox-'));
   writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'Proof', bootAnimation: false, nagOff: true }));
   const out = join(data, 'result.json');
   const electron = (await import('electron')).default;

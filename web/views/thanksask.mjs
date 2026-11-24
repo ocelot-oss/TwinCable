@@ -13,10 +13,10 @@ import { PersonCard, TIER_TEXT } from './thanks.mjs';
 
 /** The card's title for the tier (the Discord roles' marks). */
 export function askTitle(tier) {
-  if (tier === 'legend') return t('thanks.askLegend', 'Thank you for supporting twicable! 🏆');
-  if (tier === 'plus') return t('thanks.askPlus', 'Thank you for supporting twicable! 🔗');
+  if (tier === 'legend') return t('thanks.askLegend', 'Thank you for supporting twincable! 🏆');
+  if (tier === 'plus') return t('thanks.askPlus', 'Thank you for supporting twincable! 🔗');
   if (tier === 'coffee') return t('thanks.askCoffee', 'Thank you for the coffee! ☕');
-  return t('thanks.askSupporter', 'Thank you for supporting twicable! 💧');
+  return t('thanks.askSupporter', 'Thank you for supporting twincable! 💧');
 }
 
 /** busy(): a game, the welcome tour, the start-up animation … – then the question waits. */

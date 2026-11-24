@@ -438,21 +438,9 @@ export function Icon({ name, size, title }) {
 }
 
 
-/** The app icon in small: handheld with the two linked rings (build/icon.svg, without the buttons). */
+/** Compact TwinCable mark for navigation and dialogs. */
 export function AppMark({ size = 32 }) {
-  return html`<svg class="app-mark" viewBox="100 100 824 824" width=${size} height=${size} aria-hidden="true">
-    <defs>
-      <linearGradient id="am-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34323f" /><stop offset="1" stop-color="#0c0b10" /></linearGradient>
-      <filter id="am-glow" filterUnits="userSpaceOnUse" x="150" y="150" width="724" height="560"><feGaussianBlur stdDeviation="22" /></filter>
-    </defs>
-    <rect x="100" y="100" width="824" height="824" rx="190" fill="url(#am-body)" />
-    <rect x="160" y="170" width="704" height="560" rx="70" fill="#060508" />
-    <rect x="190" y="200" width="644" height="500" rx="44" fill="#13201a" />
-    <g filter="url(#am-glow)"><g transform="translate(272 330) scale(15)"><path fill="#6f9bff" d="M4 2h6v2H4zM2 4h2v8H2zM10 4h2v2h-2zM10 10h2v2h-2zM4 12h6v2H4z" /><path fill="#ff74d4" d="M22 2h6v2h-6zM28 4h2v8h-2zM20 4h2v2h-2zM20 10h2v2h-2zM22 12h6v2h-6z" /></g></g>
-    <g shape-rendering="crispEdges" transform="translate(272 330) scale(15)"><path fill="#8cb0ff" d="M4 2h6v2H4zM2 4h2v8H2zM10 4h2v2h-2zM10 10h2v2h-2zM4 12h6v2H4z" /><path fill="#ff8fdc" d="M22 2h6v2h-6zM28 4h2v8h-2zM20 4h2v2h-2zM20 10h2v2h-2zM22 12h6v2h-6z" /><path fill="#f2ffdc" d="M12 6h8v4h-8z" /></g>
-    <circle cx="300" cy="820" r="30" fill="#ff4a3d" />
-    <circle cx="640" cy="820" r="40" fill="#ff74d4" opacity=".7" /><circle cx="760" cy="790" r="40" fill="#6f9bff" opacity=".7" />
-  </svg>`;
+  return html`<img class="app-mark" src="/twincable-icon.png" width=${size} height=${size} alt="" aria-hidden="true" />`;
 }
 
 // Fine line icons for the main navigation (24 px grid, 1.6 px strokes) – each one has its own small hover motion
