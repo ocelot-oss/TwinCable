@@ -1,6 +1,6 @@
 # Third-party notices
 
-souldew itself is licensed under the GNU General Public License v3.0 or later ([LICENSE](LICENSE)). It includes, or
+twicable itself is licensed under the GNU General Public License v3.0 or later ([LICENSE](LICENSE)). It includes, or
 bundles into the built app, the following third-party components under their own licenses. License texts that ship in
 this repository are linked; the others are available at the linked projects.
 
@@ -16,7 +16,7 @@ this repository are linked; the others are available at the linked projects.
 | EmulatorJS helpers (archive extraction incl. libunrar, nipplejs, socket.io client) | as shipped with EmulatorJS 4.2.3 | their own licenses (unRAR license for libunrar; MIT for nipplejs and socket.io-client) | `web/vendor/emulatorjs/compression/`, `web/vendor/emulatorjs/src/` | https://github.com/EmulatorJS/EmulatorJS |
 | three.js (core, module build and the `RoomEnvironment` addon, minified) | r180 | MIT ([text](web/vendor/three/LICENSE)) | `web/vendor/three/` – loaded only for the launch animation and "Your handheld" | https://github.com/mrdoob/three.js |
 | Trystero (Nostr strategy, bundled build incl. noble-secp256k1) | bundled build | MIT | `web/vendor/trystero-nostr.min.js` | https://github.com/dmotz/trystero, https://github.com/paulmillr/noble-secp256k1 |
-| Universal Pokémon Randomizer ZX | 4.6.1 | GPL-3.0 | `tools/upr/PokeRandoZX.jar` (Gen 1–7, also the 3DS games); two of its classes in a modified form, source next to them: `tools/upr-bridge/com/dabomstew/pkrandom/pokemon/Effectiveness.java` (EnumMap instead of HashMap) and `tools/upr-bridge/com/dabomstew/pkrandom/SysConstants.java` (`-Dsouldew.upr.root` working folder) | https://github.com/Ajarmar/universal-pokemon-randomizer-zx (corresponding source: tag v4.6.1) |
+| Universal Pokémon Randomizer ZX | 4.6.1 | GPL-3.0 | `tools/upr/PokeRandoZX.jar` (Gen 1–7, also the 3DS games); two of its classes in a modified form, source next to them: `tools/upr-bridge/com/dabomstew/pkrandom/pokemon/Effectiveness.java` (EnumMap instead of HashMap) and `tools/upr-bridge/com/dabomstew/pkrandom/SysConstants.java` (`-Dtwicable.upr.root` working folder) | https://github.com/Ajarmar/universal-pokemon-randomizer-zx (corresponding source: tag v4.6.1) |
 | Pixelify Sans (font) | – | SIL OFL 1.1 ([text](web/assets/fonts/OFL-PixelifySans.txt)) | `web/assets/fonts/PixelifySans-*` | https://github.com/eifetx/Pixelify-Sans |
 | IBM Plex Sans / Plex Mono (fonts) | – | SIL OFL 1.1 ([text](web/assets/fonts/OFL-IBMPlex.txt)) | `web/assets/fonts/IBMPlex*` | https://github.com/IBM/plex |
 | libretro API headers (`libretro.h`, `libretro_vulkan.h`) | from libretro-common | MIT (in the files) | `native/ctr-host/` | https://github.com/libretro/libretro-common |
@@ -42,7 +42,7 @@ Chromium's and Node.js's own notices), electron-builder (MIT), ESLint (MIT).
 | Component | License | Notes |
 |---|---|---|
 | Eclipse Temurin JRE 17 (macOS arm64, Windows x64) | GPL-2.0 with Classpath Exception | Downloaded by `scripts/fetch-jre.mjs` from the Adoptium API into `tools/jre/` (not in the repository) and bundled into the DMG / the Windows installer with its `legal/` folder. https://adoptium.net |
-| Azahar libretro core (Nintendo 3DS) | GPL-2.0-or-later | Built by `scripts/build-ctr.mjs` from Azahar's source (tag 2126.2) with souldew's patches `native/azahar-patch/souldew-memory.patch` (it lets the core read the game's memory for live data) and `native/azahar-patch/souldew-romfs.patch` (it tells souldew which RomFS files the game reads, for the music from the ROM) and `native/azahar-patch/souldew-sfx.patch` (it recognises the voices that play the game's streamed music and can leave them out of the sound the core hands out, for the sound effects during fast-forward) into `tools/ctr/` and bundled into the DMG. The corresponding source is that Azahar tag plus the patches. https://github.com/azahar-emu/azahar |
+| Azahar libretro core (Nintendo 3DS) | GPL-2.0-or-later | Built by `scripts/build-ctr.mjs` from Azahar's source (tag 2126.2) with twicable's patches `native/azahar-patch/twicable-memory.patch` (it lets the core read the game's memory for live data) and `native/azahar-patch/twicable-romfs.patch` (it tells twicable which RomFS files the game reads, for the music from the ROM) and `native/azahar-patch/twicable-sfx.patch` (it recognises the voices that play the game's streamed music and can leave them out of the sound the core hands out, for the sound effects during fast-forward) into `tools/ctr/` and bundled into the DMG. The corresponding source is that Azahar tag plus the patches. https://github.com/azahar-emu/azahar |
 | melonDS DS libretro core (fast player, DS) | GPL-3.0 | Built unmodified by `scripts/build-native.mjs` from tag v1.4.0 into `tools/native/` and bundled with the app (its license text alongside as `LICENSE-melonds-ds-GPL-3.0.txt`). The corresponding source is that tag. https://github.com/JesseTG/melonds-ds |
 | mGBA libretro core (fast player, GBA) | MPL-2.0 | Built unmodified by `scripts/build-native.mjs` from commit d58ea8a of mGBA's master – the link host's libmgba commit, so both share one save-state format (`LICENSE-mgba-MPL-2.0.txt` alongside). The corresponding source is that commit. https://github.com/mgba-emu/mgba |
 | SameBoy libretro core and boot ROMs (fast player, Game Boy / Color) | Expat (MIT) | Built unmodified by `scripts/build-native.mjs` from tag v1.0.5 – the link host's SameBoy – with its boot ROMs assembled from `BootROMs/` with RGBDS (the Game Boy Color one is SameBoy's `cgb_boot_fast.asm`) (`LICENSE-sameboy-MIT.txt` alongside). https://github.com/LIJI32/SameBoy |
@@ -66,7 +66,7 @@ Chromium's and Node.js's own notices), electron-builder (MIT), ESLint (MIT).
   and community documentation of the supported ROM hacks.
 - Box art in `web/assets/covers/` comes from [libretro-thumbnails](https://github.com/libretro-thumbnails) and is ©
   its respective owners (Nintendo / The Pokémon Company). It is used only to identify the games in a player's library.
-- Pokémon and all related names are trademarks of Nintendo, Game Freak, Creatures Inc. and The Pokémon Company. souldew
+- Pokémon and all related names are trademarks of Nintendo, Game Freak, Creatures Inc. and The Pokémon Company. twicable
   is not affiliated with or endorsed by them.
 
 ## Sounds

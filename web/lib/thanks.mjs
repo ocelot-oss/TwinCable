@@ -48,7 +48,7 @@ export function tierGroups(thanks) {
   }).filter((g) => g.count > 0);
 }
 
-/** Named people who weren't on `prev` – or are in a higher tier now (Lena went from souldew+ to Legend). */
+/** Named people who weren't on `prev` – or are in a higher tier now (Lena went from twicable+ to Legend). */
 export function arrivals(prev, next) {
   if (!prev?.people || !next?.people) return [];
   const before = new Map(prev.people.map((p) => [p.name, p.tier]));

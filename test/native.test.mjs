@@ -38,7 +38,7 @@ test('the tools: the host and whichever cores are there', () => {
   assert.equal(nativeTools({ dirs: ['/t/a'], exists: (p) => p.endsWith(EXE) }).ok, false);
 });
 
-test('the host\'s arguments: the core, the RAM the live reader needs, souldew\'s core options', () => {
+test('the host\'s arguments: the core, the RAM the live reader needs, twicable\'s core options', () => {
   const a = hostArgs({ system: 'nds', core: '/c/melon', rom: '/r/p.nds', saveDir: '/s', systemDir: '/y', sram: '/s/boot.sav' });
   const pairs = [];
   for (let i = 0; i < a.length; i += 2) pairs.push([a[i], a[i + 1]]);
@@ -46,6 +46,10 @@ test('the host\'s arguments: the core, the RAM the live reader needs, souldew\'s
   assert.deepEqual(pairs.filter(([k]) => k === '--ram').map(([, v]) => v), ['0x2000000:0x400000']);
   const opts = Object.fromEntries(pairs.filter(([k]) => k === '--option').map(([, v]) => v.split('=')));
   assert.equal(opts.melonds_jit_enable, 'enabled');
+  const capped = hostArgs({ system: 'nds', core: 'c', rom: 'r', saveDir: 's', systemDir: 'y', hgssCap: 13 });
+  assert.deepEqual(capped.slice(-2), ['--hgss-cap', '13']);
+  assert.ok(capped.includes('melonds_jit_enable=disabled'));
+  assert.ok(!capped.includes('melonds_jit_enable=enabled'));
   assert.equal(opts.melonds_network_mode, 'disabled'); // never online through the core
   assert.equal(opts.melonds_console_mode, 'ds');
   // GBA: EWRAM and IWRAM, as player.html maps them
@@ -73,6 +77,8 @@ test('the commands a page may send: known types, sane sizes, nothing left over',
   const ok = Buffer.concat([command(NCMD.INPUT, Buffer.alloc(17)), command(NCMD.SPEED, Buffer.from(new Float32Array([2]).buffer)), command(NCMD.WRITE, Buffer.concat([u32(0x02000000), Buffer.from([1, 2])])), command(NCMD.STEP, u32(10)), command(NCMD.RESYNC),
     command(NCMD.DEPTH, Buffer.concat([u32(1), Buffer.alloc(8)])), command(NCMD.DEPTH, u32(0))]); // (the DS's depth for Shared World: rectangles, or none)
   assert.equal(checkNativeCommands(ok), ok);
+  const cap = command(NCMD.LEVEL_CAP, Buffer.from([13]));
+  assert.equal(checkNativeCommands(cap), cap);
   const bad = [
     command(99), // unknown
     command(NCMD.INPUT, Buffer.alloc(3)), // too short
@@ -82,6 +88,8 @@ test('the commands a page may send: known types, sane sizes, nothing left over',
     command(NCMD.SRAM, Buffer.alloc(0)), // an empty save
     command(NCMD.QUIT, Buffer.alloc(1)),
     command(NCMD.DEPTH, Buffer.alloc(4 + 9 * 8)), // more than 8 rectangles
+    command(NCMD.LEVEL_CAP, Buffer.from([0])),
+    command(NCMD.LEVEL_CAP, Buffer.from([101])),
     Buffer.concat([command(NCMD.RESET), Buffer.from([1, 2, 3])]), // a cut-off message after it
     Buffer.alloc(0),
   ];
@@ -140,9 +148,9 @@ test('a battery save that comes after the page has gone is stored where the play
   out.write(msg(9, Buffer.alloc(8, 0xff))); // a blank cartridge: never
   assert.deepEqual(written, [{ target: { path: '/s/red.sav', runId: null }, bytes: [1, 2, 3] }]);
   // the host gets a trimmed environment (nothing the app was started with beyond what it needs)
-  process.env.SOULDEW_TEST_SECRET = 'x';
-  assert.equal('SOULDEW_TEST_SECRET' in s.hostEnv(), false);
-  delete process.env.SOULDEW_TEST_SECRET;
+  process.env.TWICABLE_TEST_SECRET = 'x';
+  assert.equal('TWICABLE_TEST_SECRET' in s.hostEnv(), false);
+  delete process.env.TWICABLE_TEST_SECRET;
   // a session started without a save target (the save on disk couldn't be read) stores nothing
   s.startNative({ rom: '/r/red.gb', key: 'k', system: 'gb', tools });
   calls[1].child.stdout.write(msg(9, Buffer.from([4])));
@@ -170,7 +178,7 @@ const BOOT_FRAMES = 120; // SameBoy runs its (fast) Game Boy Color boot ROM befo
 function testRom() {
   const r = Buffer.alloc(0x8000);
   r.set([0x00, 0xc3, 0x50, 0x01], 0x100); // nop; jp 0x0150
-  r.write('SOULDEWTEST', 0x134, 'latin1');
+  r.write('TWICABLETEST', 0x134, 'latin1');
   r[0x147] = 0x03; // MBC1 + RAM + battery
   r[0x148] = 0x00; // 32 KB
   r[0x149] = 0x02; // 8 KB RAM
@@ -294,7 +302,7 @@ test('the real host: RAM mirror, exact steps, cheats, save states, the battery s
     h.send(NCMD.SPEED, Buffer.from(new Float32Array([1000]).buffer));
     await h.until(() => h.events.some((e) => e.event === 'stats' && e.speed > 1.5), 15000);
 
-    // a header that announces more than the host takes: it ends cleanly (as when souldew goes away)
+    // a header that announces more than the host takes: it ends cleanly (as when twicable goes away)
     h.p.stdin.write(Buffer.concat([u32(1), u32(0x7fffffff)]));
     assert.equal(await exitOf(h.p, h.exit), 0);
   } finally {

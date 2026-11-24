@@ -1,10 +1,10 @@
 // Settings › Play › Launch animation – what it holds follows the membership (shared/handheld.mjs launchRights):
 // - free (signed out, or no paid tier): the 2D animation – the module slides into the console (views/cartinsert.mjs) –
-//   On / Off (it has no Quick form), a preview, and one quiet line that the 3D one comes with Supporter or souldew+;
-// - Supporter and souldew+ (design round 6): the launch family – "Your colours" and the souldew+ shells, Gold, Clear
+//   On / Off (it has no Quick form), a preview, and one quiet line that the 3D one comes with Supporter or twicable+;
+// - Supporter and twicable+ (design round 6): the launch family – "Your colours" and the twicable+ shells, Gold, Clear
 //   shell (four colours) and Holo label – with Full / Quick / Off, and under the choice the device it plays with: "Your
 //   handheld" – a still of it, its sticker counts per device, "Dress your handheld" (the editor, web/views/handheld.mjs)
-//   and "Preview". Rare start isn't a pick and has no switch: one start in 64 is one, for souldew+ members.
+//   and "Preview". Rare start isn't a pick and has no switch: one start in 64 is one, for twicable+ members.
 // A membership that ends keeps every choice here; what plays is what the tier allows now.
 import { html, useState, useEffect, useRef } from '/vendor/htm-preact.mjs';
 import { t } from '../../lib/i18n.mjs';
@@ -65,23 +65,23 @@ function LaunchSetting2D({ cfg, save }) {
         <span class="small muted">${t('launch.cartridgeHint2', 'The module drops into the console’s slot and clicks in while the game starts – it never makes the game wait. A click or any key skips it.')}</span>
         <span class="small faint">${animsOff ? t('launch.off', 'Animations are switched off (General › Play animations) – the game starts without one.')
           : !on ? t('launch.offHint', 'Off: the game starts without an animation.') : t('launch.reduced2d', 'With reduced motion (your system’s setting) it doesn’t play – the module just clicks in when the game appears.')}</span>
-        <span class="small faint plus-note"><${PlusMark} /> ${t('launch.threeFree', 'Your own handheld in 3D as the launch animation comes with Supporter or souldew+.')}
+        <span class="small faint plus-note"><${PlusMark} /> ${t('launch.threeFree', 'Your own handheld in 3D as the launch animation comes with Supporter or twicable+.')}
           ${' '}<a href="#/plus" onClick=${(e) => { e.preventDefault(); navigate('plus'); }}>${t('launch.seeTiers', 'What each tier gets')}</a></span>
       </div>
       <div class="launch-stage">
         <div class="launch-screen" aria-hidden="true"><canvas ref=${screen}></canvas>
-          ${playing > 0 && html`<${CartInsert} key=${playing} target=${{ system: 'gba', label: 'souldew', params: {} }} sound=${false} onDone=${() => setPlaying(0)} />`}</div>
+          ${playing > 0 && html`<${CartInsert} key=${playing} target=${{ system: 'gba', label: 'twicable', params: {} }} sound=${false} onDone=${() => setPlaying(0)} />`}</div>
         <button type="button" class="btn small ghost" onClick=${() => setPlaying((n) => n + 1)}><${Icon} name="play" size=${14} />${t('launch.preview', 'Preview')}</button>
       </div>
     </div>
   </div>`;
 }
 
-/** Supporter and souldew+: the 3D launch family and "Your handheld". */
+/** Supporter and twicable+: the 3D launch family and "Your handheld". */
 function LaunchSetting3D({ cfg, save, R }) {
   const member = R.plus;
   const L = launchConfig(cfg);
-  // the look that plays: a souldew+ look kept from a membership that ended waits – "Your colours" plays and is marked
+  // the look that plays: a twicable+ look kept from a membership that ended waits – "Your colours" plays and is marked
   const shown = playableLookFor(L.look, R);
   const names = launchNames();
   const [sys, setSys] = useState('nds');
@@ -111,9 +111,9 @@ function LaunchSetting3D({ cfg, save, R }) {
     <span class="small faint">${animsOff ? t('launch.off', 'Animations are switched off (General › Play animations) – the game starts without one.')
       : L.pace === 'off' ? t('launch.offHint', 'Off: the game starts without an animation.')
         : t('launch.hint3', 'Plays over the game screen while the game starts – it never makes the game wait, and it is silent. A click or any key skips it. With reduced motion (your system’s setting) it is a short fade, with your handheld in it.')}</span>
-    ${shown !== L.look && !packState().loading && html`<span class="small faint">${t('launch.waits', '{look} is kept for when you have souldew+ – until then “Your colours” plays.', { look: names[L.look][0] })}</span>`}
-    ${member ? html`<span class="small faint">${t('launch.rare', 'souldew+: one start in 64 is a Rare start – golden light, glints and a little dust.')}</span>`
-      : html`<span class="small faint plus-note"><${PlusMark} /> ${t('launch.more3', 'Gold, Clear shell, Holo label and the Rare start come with souldew+.')}</span>`}
+    ${shown !== L.look && !packState().loading && html`<span class="small faint">${t('launch.waits', '{look} is kept for when you have twicable+ – until then “Your colours” plays.', { look: names[L.look][0] })}</span>`}
+    ${member ? html`<span class="small faint">${t('launch.rare', 'twicable+: one start in 64 is a Rare start – golden light, glints and a little dust.')}</span>`
+      : html`<span class="small faint plus-note"><${PlusMark} /> ${t('launch.more3', 'Gold, Clear shell, Holo label and the Rare start come with twicable+.')}</span>`}
     <${HandheldRow} cfg=${cfg} R=${R} sys=${sys} setSys=${setSys} play=${playing} onPreview=${() => setPlaying((n) => n + 1)} />
   </div>`;
 }
@@ -124,10 +124,10 @@ function HandheldRow({ cfg, R, sys, setSys, play, onPreview }) {
   const { navigate } = useApp();
   const doc = useHandheld();
   const L = launchConfig(cfg);
-  const V = launchLook(playableLookFor(L.look, R)); // a souldew+ shell without souldew+: the still shows what the launch plays
+  const V = launchLook(playableLookFor(L.look, R)); // a twicable+ shell without twicable+: the still shows what the launch plays
   const shellOnly = V.look === 'clear' || V.look === 'gold';
-  // what it wears right now (a Supporter: the free skin, the free and the earned stickers; souldew+ items only with
-  // souldew+) – the handheld keeps the rest, and says so when a souldew+ skin or sticker waits
+  // what it wears right now (a Supporter: the free skin, the free and the earned stickers; twicable+ items only with
+  // twicable+) – the handheld keeps the rest, and says so when a twicable+ skin or sticker waits
   const own = ownedLook(doc, R);
   const skin = wrapById(own.skin);
   const withPlus = R.plus ? own : ownedLook(doc, { ...R, plus: true });
@@ -150,7 +150,7 @@ function HandheldRow({ cfg, R, sys, setSys, play, onPreview }) {
       ${doc.designs.length > 0 && html`<span class="small faint">${t('hh.designCount', 'one saved design|{count} saved designs', { count: doc.designs.length })}${R.surprise && doc.surprise && doc.designs.length > 1
         ? ` · ${t('hh.surpriseOn', 'Surprise me at start: a different one each launch')}` : active ? ` · ${t('hh.wearing', 'wearing “{name}”', { name: active.name })}` : ''}</span>`}
       ${!R.plus && R.tier === 'supporter' && html`<span class="small faint">${t('hh.supporterHas', 'With Supporter: the Plain Dusk skin, the {n} free stickers, the earned ones and one saved design.', { n: STICKERS.filter((s) => s.tier === 'free').length })}</span>`}
-      ${kept && !packState().loading && html`<span class="small faint">${t('hh.keptPlus', 'Your souldew+ skin and stickers are kept – they’re back on it as soon as souldew+ is active on this computer again.')}</span>`}
+      ${kept && !packState().loading && html`<span class="small faint">${t('hh.keptPlus', 'Your twicable+ skin and stickers are kept – they’re back on it as soon as twicable+ is active on this computer again.')}</span>`}
       ${shellOnly && skin && html`<span class="small faint">${t('hh.shellNote2', '{skin} shows with “Your colours” and Holo label; with {shell}, your stickers do.', { skin: skin.name, shell: lookName(V.id) })}</span>`}
       <div class="hhs-btns"><button type="button" class="btn primary" onClick=${() => navigate('handheld', { sys })}>${t('hh.dress', 'Dress your handheld')}</button>
         <button type="button" class="btn ghost" disabled=${L.off && cfg.bootAnimation === false} onClick=${onPreview}><${Icon} name="play" size=${14} />${t('launch.preview', 'Preview')}</button></div>

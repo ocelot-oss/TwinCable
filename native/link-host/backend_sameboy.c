@@ -18,7 +18,7 @@
 // scripts/build-native.mjs) to the session's start time plus emulated seconds, the RTC (MBC3: Gold/Silver/Crystal) runs
 // on emulated cycles (GB_RTC_MODE_ACCURATE), power-on RAM is filled from a fixed seed per seat, no threads.
 //
-// Alone (the souldew engine's solo seat, link_open.solo) a console is set up as the fast player's SameBoy: the cartridge
+// Alone (the twicable engine's solo seat, link_open.solo) a console is set up as the fast player's SameBoy: the cartridge
 // clock follows the computer's, the Game Boy Color boots with the fast boot ROM; its states are that core's.
 #include "linkbackend.h"
 #include "../common/hostio.h"
@@ -50,7 +50,7 @@ static struct sseat {
   bool bit_out;            // the bit this console (as master) is shifting out
   uint32_t back[160 * 144];  // SameBoy draws here…
   uint32_t front[160 * 144]; // …and every finished frame is copied here (no half-drawn pictures)
-  size_t ram_size;         // battery RAM size (the save souldew keeps: the RAM, then a clock cartridge's footer)
+  size_t ram_size;         // battery RAM size (the save twicable keeps: the RAM, then a clock cartridge's footer)
   bool has_rtc;
   bool vblank;             // a frame ended (solo frames run vblank to vblank)
 } seats[2];
@@ -108,7 +108,7 @@ static bool s_probe(const char *rom) {
 }
 
 /**
- * An RTC cartridge's save without the clock behind it (older souldew saves: the battery RAM only) gets
+ * An RTC cartridge's save without the clock behind it (older twicable saves: the battery RAM only) gets
  * a clock that starts at day 0, 00:00:00 now – SameBoy would otherwise flag a reset clock and the game would ask for
  * the time. A save with a clock footer (VBA-M/SameBoy layout) keeps its own and catches up to the session's start.
  */
@@ -142,7 +142,7 @@ static void on_sample(GB_gameboy_t *gb, GB_sample_t *sample) {
   a->w++;
 }
 static double s_sample_rate(void) { return SAMPLE_RATE; }
-/** A clock cartridge's save as souldew keeps it: the battery RAM + the 48-byte VBA-M clock footer (its time: the
+/** A clock cartridge's save as twicable keeps it: the battery RAM + the 48-byte VBA-M clock footer (its time: the
  *  session clock, sbl_time) – retrohost reads that footer back into the fast player's clock (SameBoy's libretro core). */
 static size_t s_battery(int seat, void **out) {
   struct sseat *st = &seats[seat];

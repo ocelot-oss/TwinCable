@@ -1,6 +1,6 @@
 // The Java check (server/lib/toolchain.mjs detectJava, #40): on macOS 27 with System Integrity Protection off, every
 // HotSpot JVM on Apple Silicon dies at start (SIGBUS in CodeHeap::allocate) – the bundled one and any the player
-// installs. souldew said "Java wasn't found" and the player reinstalled Java in vain. Now a Java that starts and crashes
+// installs. twicable said "Java wasn't found" and the player reinstalled Java in vain. Now a Java that starts and crashes
 // is told apart (the page says what to do), every candidate's answer goes into "Save diagnostics", and a check that
 // runs out of time (a first start that XProtect scans) is tried once more with a longer limit.
 import { test } from 'node:test';

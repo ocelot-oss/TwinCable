@@ -1,8 +1,8 @@
-// The souldew+ pack from the design sources, in the ONE pack format (souldew-accounts docs/API.md §10: a signed manifest +
+// The twicable+ pack from the design sources, in the ONE pack format (twicable-accounts docs/API.md §10: a signed manifest +
 // one encrypted envelope per file, web/lib/cosmetics/pack/format.mjs).
 //
 //   node scripts/plus-dev-pack.mjs --design <design/plus> --source <dir> [--preview-source <dir>] [--previews-source <dir>]
-//        the pack SOURCE folders, unsigned: the input of the owner's pack tool (souldew-accounts tools/pack-build.mjs),
+//        the pack SOURCE folders, unsigned: the input of the owner's pack tool (twicable-accounts tools/pack-build.mjs),
 //        which signs them offline with the production key – the app never sees that key.
 //          <source>          contents.json, banners.json, frames.mjs, skins/*.css, fonts/*.woff2, assets/*
 //          <preview-source>  the live theme preview pack (--kind preview): the skin stylesheets – nothing else (the
@@ -17,13 +17,13 @@
 //        media (previews/, access-previews.json; public, so not sealed). Then start the
 //        server with SLS_PLUS_DEV_PACK=<dir>; the app trusts that key only then.
 //   node scripts/plus-dev-pack.mjs --design <design/plus> --catalog        + the public catalog and the free content
-//   --handheld <dir>   "Your handheld"'s souldew+ sources (default <design>/handheld: stickers.mjs PLUS_DESIGNS, wraps.mjs
+//   --handheld <dir>   "Your handheld"'s twicable+ sources (default <design>/handheld: stickers.mjs PLUS_DESIGNS, wraps.mjs
 //                      PLUS_WRAPS, looks.mjs LOOKS) → handheld/stickers.png + stickers-cut.png + stickers.json (the atlas,
 //                      pre-built), handheld/wraps.json and handheld/looks.json (Gold, Clear shell, Holo label, the Rare
 //                      start, the holo / glitter finishes – web/lib/handheld/looks.mjs) in the pack, and a picture of
-//                      every souldew+ sticker and wrap in the previews (a tilted, glossy product shot – never the art 1:1),
+//                      every twicable+ sticker and wrap in the previews (a tilted, glossy product shot – never the art 1:1),
 //                      and the launch looks' still + loop (launch/<name>.png|webp, drawn by the real launch scene in
-//                      Electron: scripts/handheld/launch-shots.mjs – the souldew+ page's launch cards)
+//                      Electron: scripts/handheld/launch-shots.mjs – the twicable+ page's launch cards)
 //
 // --catalog rewrites web/lib/cosmetics/content/{catalog,banners-free,frames-free}.mjs: the PUBLIC part (names,
 // collections, rarities, swatches, pairings – what a locked card shows) and the free banners and frames.
@@ -73,7 +73,7 @@ const enc = new TextEncoder();
 const imp = (p) => import(pathToFileURL(join(DESIGN, p)).href);
 
 // ------------------------------------------------------------------ sources
-// souldew+ themes are COLOUR skins only (the owner's decision for 3.0): the rich "editions" of the design sources
+// twicable+ themes are COLOUR skins only (the owner's decision for 3.0): the rich "editions" of the design sources
 // (kind "rich": Fieldbook, Clearshell, Woodgrain & Brass, Enamel) are not part of the app, the catalog or any pack.
 const SKINS_ALL = JSON.parse(readFileSync(join(DESIGN, 'themes', 'skins.json'), 'utf8'));
 const SKINS = SKINS_ALL.filter((s) => s.kind === 'classic' || s.kind === 'colour');
@@ -82,7 +82,7 @@ const DROPPED_SKINS = new Set(SKINS_ALL.filter((s) => !SKINS.includes(s)).map((s
 const livePairs = (list) => [].concat(list || []).filter((id) => !DROPPED_SKINS.has(id));
 const B = await imp('banners/recipes/index.mjs');
 const F = await imp('frames/recipes/index.mjs');
-// The 2D launch animations of the design sources (launch/) are no longer part of souldew (3.0: the launch is your
+// The 2D launch animations of the design sources (launch/) are no longer part of twicable (3.0: the launch is your
 // handheld in 3D, web/lib/handheld) – not in the catalog, the pack or the previews.
 // the Theme Matches banners of the dropped editions stay, as ordinary banners in the collection closest to their art
 const BANNER_REHOME = {
@@ -115,7 +115,7 @@ const plusBanners = B.BANNERS.filter((b) => b.set !== 'basics');
 const freeFrames = F.FRAMES.filter((f) => f.set === 'basics');
 const plusFrames = F.FRAMES.filter((f) => f.set !== 'basics');
 
-// ------------------------------------------------------------------ "Your handheld": the souldew+ stickers and wraps
+// ------------------------------------------------------------------ "Your handheld": the twicable+ stickers and wraps
 // The catalog (names, tiers) is public (shared/handheld.mjs); the art is here. The atlas is built now, once – the app
 // never builds it at run time.
 const HH = existsSync(join(HANDHELD, 'stickers.mjs')) ? {
@@ -124,7 +124,7 @@ const HH = existsSync(join(HANDHELD, 'stickers.mjs')) ? {
   looks: existsSync(join(HANDHELD, 'looks.mjs')) ? (await import(pathToFileURL(join(HANDHELD, 'looks.mjs')).href)).LOOKS : null,
 } : null;
 if (HH) {
-  // the design sources and this checkout must name the same souldew+ stickers and wraps – else they are from different
+  // the design sources and this checkout must name the same twicable+ stickers and wraps – else they are from different
   // rounds (exit 3: test/skin-proof.test.mjs skips on that, naming the difference)
   const want = (list) => list.filter((x) => x.tier === 'plus').map((x) => x.id).sort();
   const mismatch = (what, have, need) => {
@@ -134,11 +134,11 @@ if (HH) {
     process.exit(3);
   };
   const ids = (list) => list.map((x) => x.id).sort();
-  if (ids(HH.stickers).join(',') !== want(HH_STICKERS).join(',')) mismatch('handheld/stickers.mjs PLUS_DESIGNS (souldew+ stickers)', ids(HH.stickers), want(HH_STICKERS));
-  if (ids(HH.wraps).join(',') !== want(HH_WRAPS).join(',')) mismatch('handheld/wraps.mjs PLUS_WRAPS (souldew+ wraps)', ids(HH.wraps), want(HH_WRAPS));
+  if (ids(HH.stickers).join(',') !== want(HH_STICKERS).join(',')) mismatch('handheld/stickers.mjs PLUS_DESIGNS (twicable+ stickers)', ids(HH.stickers), want(HH_STICKERS));
+  if (ids(HH.wraps).join(',') !== want(HH_WRAPS).join(',')) mismatch('handheld/wraps.mjs PLUS_WRAPS (twicable+ wraps)', ids(HH.wraps), want(HH_WRAPS));
   for (const w of HH.wraps) {
     assertData(w, `wrap ${w.id}`);
-    if (!B.BANNERS.some((b) => b.id === w.banner && b.set !== 'basics')) throw new Error(`wrap ${w.id}: its banner ${w.banner} is not a souldew+ banner`);
+    if (!B.BANNERS.some((b) => b.id === w.banner && b.set !== 'basics')) throw new Error(`wrap ${w.id}: its banner ${w.banner} is not a twicable+ banner`);
   }
   if (HH.looks) {
     // the app takes a look only whole: refuse a source the app would drop (looks.mjs cleanLooks)
@@ -148,7 +148,7 @@ if (HH) {
   } else console.warn(`no handheld/looks.mjs at ${HANDHELD} – the pack goes without Gold, Clear shell, Holo label, the Rare start and the holo / glitter finishes`);
   HH.atlas = buildAtlas(HH.stickers);
   HH.files = await atlasFiles(HH.atlas);
-} else console.warn(`no handheld sources at ${HANDHELD} – the pack goes without the souldew+ stickers and wraps`);
+} else console.warn(`no handheld sources at ${HANDHELD} – the pack goes without the twicable+ stickers and wraps`);
 
 // ------------------------------------------------------------------ bundling code recipes into one module
 // Frames are code (per-pixel functions). Each becomes ONE module whose imports point at the app's
@@ -174,7 +174,7 @@ function bundle(files, specMap, exportName, filterExpr) {
   });
   const head = [...imports].map(([from, names]) => `import { ${[...names].sort().join(', ')} } from '${from}';`).join('\n');
   const list = files.map((_, i) => `...(Array.isArray(__m${i}) ? __m${i} : [__m${i}])`).join(', ');
-  return `// souldew+ pack module (generated by scripts/plus-dev-pack.mjs – do not edit)\n${head}\n\n${parts.join('\n\n')}\n\nexport const ${exportName} = [${list}].filter(${filterExpr});\n`;
+  return `// twicable+ pack module (generated by scripts/plus-dev-pack.mjs – do not edit)\n${head}\n\n${parts.join('\n\n')}\n\nexport const ${exportName} = [${list}].filter(${filterExpr});\n`;
 }
 
 const FRAME_FILES = readdirSync(join(DESIGN, 'frames', 'recipes')).filter((f) => f.endsWith('.mjs') && !['index.mjs', '_lib.mjs', 'basics.mjs'].includes(f)).sort();
@@ -234,7 +234,7 @@ if (CATALOG) {
   const head = (what) => `// ${what} – generated by scripts/plus-dev-pack.mjs --catalog from the design sources. Do not edit by hand.\n`;
   const cat = catalogData();
   assertData(cat, 'catalog');
-  writeFileSync(join(dir, 'catalog.mjs'), `${head('The PUBLIC souldew+ catalog: what every card shows, owned or not (no art, no recipes)')}export default ${JSON.stringify(cat)};\n`);
+  writeFileSync(join(dir, 'catalog.mjs'), `${head('The PUBLIC twicable+ catalog: what every card shows, owned or not (no art, no recipes)')}export default ${JSON.stringify(cat)};\n`);
   for (const b of freeBanners) assertData(b, b.id);
   writeFileSync(join(dir, 'banners-free.mjs'), `${head('The free banners (Basics) – shipped with the app')}export default ${JSON.stringify(freeBanners, null, 1)};\n`);
   let ff = readFileSync(join(DESIGN, 'frames', 'recipes', 'basics.mjs'), 'utf8');
@@ -270,7 +270,7 @@ function packFiles() {
 
 /** An SVG → PNG of at most `max` px per side, rendered by Electron's Chromium (the app's own dev dependency). */
 function rasterize(svgFile, max) {
-  const out = join(mkdtempSync(join(tmpdir(), 'souldew-raster-')), `${basename(svgFile)}.png`);
+  const out = join(mkdtempSync(join(tmpdir(), 'twicable-raster-')), `${basename(svgFile)}.png`);
   const electron = join(ROOT, 'node_modules', '.bin', process.platform === 'win32' ? 'electron.cmd' : 'electron');
   const r = spawnSync(electron, [join(ROOT, 'scripts', 'svg-raster.mjs'), svgFile, out, String(max)], { stdio: ['ignore', 'pipe', 'inherit'], timeout: 60000, env: { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'ELECTRON_RUN_AS_NODE')) } });
   if (r.status !== 0 || !existsSync(out)) throw new Error(`could not rasterize ${svgFile}`);
@@ -349,7 +349,7 @@ async function previewsMedia(dir) {
 }
 
 /**
- * "Your handheld"'s preview pictures: every souldew+ sticker on its die-cut border and a window onto every souldew+ wrap
+ * "Your handheld"'s preview pictures: every twicable+ sticker on its die-cut border and a window onto every twicable+ wrap
  * (the skin card's picture) – what a non-member's sheet shows. Pictures only, and never the art pixel for pixel: the
  * previews are public (anyone may fetch them, no account), and a sticker IS its pixel art – an exact ×6 copy would be the
  * sticker itself, ready for a patched client's atlas. So each is a product shot (scripts/handheld/preview-shot.mjs):
@@ -412,13 +412,13 @@ if (OUT) {
     }
     const access = {
       packId: id, version, manifest: b64url(manifestBytes), signature: b64url(signature), keyId: kid, watermark: 'wm_dev', key: b64url(key),
-      files: manifest.files.map((f) => ({ path: f.path, url: `souldew-dev:${dir}/${f.path}` })), publicKey: b64url(signer.publicKey), ...extra,
+      files: manifest.files.map((f) => ({ path: f.path, url: `twicable-dev:${dir}/${f.path}` })), publicKey: b64url(signer.publicKey), ...extra,
     };
     writeFileSync(join(OUT, accessFile), JSON.stringify(access, null, 2) + '\n', { mode: 0o600 });
     console.log(`${kind} pack ${id}@${version}: ${files.length} files, ${kb(size)} sealed → ${join(OUT, `sealed-${dir}`)}`);
   };
   const { files, contents } = packFiles();
-  await seal({ id: 'souldew-plus', kind: 'mixed', title: 'souldew+ (dev)', files, dir: 'pack', accessFile: 'access.json', kid: '1',
+  await seal({ id: 'twicable-plus', kind: 'mixed', title: 'twicable+ (dev)', files, dir: 'pack', accessFile: 'access.json', kid: '1',
     extra: { until: new Date(Date.now() + DAYS * 86400e3).toISOString() } });
   await seal({ id: 'skins-preview', kind: 'preview', title: 'Skin preview (dev)', files: previewFiles(), dir: 'preview', accessFile: 'access-preview.json',
     kid: `pv_${b64url(globalThis.crypto.getRandomValues(new Uint8Array(16))).slice(0, 22)}`, extra: { preview: true } });
@@ -427,7 +427,7 @@ if (OUT) {
     const pdir = join(OUT, 'previews');
     if (existsSync(pdir)) rmSync(pdir, { recursive: true, force: true });
     const media = await previewsMedia(pdir);
-    const { manifestBytes } = await buildManifest({ id: 'souldew-previews', version, kind: 'previews', title: 'souldew+ previews (dev)', files: media });
+    const { manifestBytes } = await buildManifest({ id: 'twicable-previews', version, kind: 'previews', title: 'twicable+ previews (dev)', files: media });
     writeFileSync(join(OUT, 'access-previews.json'), JSON.stringify({ manifest: b64url(manifestBytes), signature: b64url(await signer.sign(manifestBytes)), publicKey: b64url(signer.publicKey) }, null, 2) + '\n');
   }
   console.log(`  skins ${contents.skins.length} · banners ${plusBanners.length} · frames ${plusFrames.length}${HH ? ` · handheld: ${HH.stickers.length} stickers, ${HH.wraps.length} wraps` : ''}`);

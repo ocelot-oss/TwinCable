@@ -1,5 +1,5 @@
 /* "What's new in 3.0" (web/views/whatsnew.mjs): the cards inside the app's own dialog – its colours come from the
-   dialog, so every theme and souldew+ skin carries over. The picture is a screenshot of the app (dark by nature, like a
+   dialog, so every theme and twicable+ skin carries over. The picture is a screenshot of the app (dark by nature, like a
    screen), framed so it sits well on light skins too. */
 dialog.modal:has(.wn) { width: min(640px, calc(100vw - 32px)); }
 .wn { display: flex; flex-direction: column; gap: 14px; }

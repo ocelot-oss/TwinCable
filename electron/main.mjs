@@ -1,6 +1,6 @@
-// souldew – desktop app shell (macOS, Windows and Linux).
+// twicable – desktop app shell (macOS, Windows and Linux).
 // Starts the local server in-process on a free port and shows the UI in a native window.
-import { app, BrowserWindow, Menu, dialog, ipcMain, shell, nativeTheme, session, powerSaveBlocker, screen, safeStorage } from 'electron';
+import { app, BrowserWindow, Menu, desktopCapturer, dialog, ipcMain, shell, nativeTheme, session, powerSaveBlocker, screen, safeStorage } from 'electron';
 import { join, dirname, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync, mkdirSync } from 'node:fs';
@@ -23,7 +23,7 @@ if (app.isPackaged) for (const k of ['SLS_ACCOUNTS_URL', 'SLS_PLUS_DEV_PACK', 'S
 const MAC = process.platform === 'darwin';
 const WIN = process.platform === 'win32';
 const LINUX = process.platform === 'linux';
-app.setName('souldew');
+app.setName('twicable');
 // Windows: the same id as the installer's shortcuts (package.json → build.appId), so the taskbar groups the window
 // with a pinned shortcut and shows the app's own name and icon.
 if (WIN) app.setAppUserModelId('studio.soullink.app');
@@ -92,7 +92,7 @@ if (primary) {
   if (applied) console.log('installer choices applied:', JSON.stringify(applied));
 }
 
-// Graphics backend (Settings › General, shared/gpu.mjs) plus the power-user flags from SOULDEW_CHROMIUM_FLAGS. Only
+// Graphics backend (Settings › General, shared/gpu.mjs) plus the power-user flags from TWICABLE_CHROMIUM_FLAGS. Only
 // the first instance counts its start – a second one quits right away. A start that never shows the window with a
 // chosen backend is remembered (gpuStart); after a few of them the backend goes back to "Automatic".
 // A safe start (--safe-graphics, shared/gpu.mjs) draws without the graphics card and leaves the setting and its start
@@ -107,7 +107,7 @@ if (primary) {
     gpu.backend = backend;
     gpu.pending = backend !== 'auto';
   }
-  gpu.switches = chromiumSwitches({ backend: gpu.backend, platform: process.platform, envFlags: process.env.SOULDEW_CHROMIUM_FLAGS || '', safe: gpu.safe });
+  gpu.switches = chromiumSwitches({ backend: gpu.backend, platform: process.platform, envFlags: process.env.TWICABLE_CHROMIUM_FLAGS || '', safe: gpu.safe });
   for (const [name, value] of gpu.switches) {
     if (value == null) app.commandLine.appendSwitch(name);
     else app.commandLine.appendSwitch(name, value);
@@ -137,13 +137,13 @@ app.on('child-process-gone', (e, details) => {
 
 let win = null;
 let serverUrl = null;
-let goOffline = null; // the souldew account's "I'm offline now" (server/lib/accounts) – awaited once before quitting
+let goOffline = null; // the twicable account's "I'm offline now" (server/lib/accounts) – awaited once before quitting
 
 async function boot() {
   const { startServer } = await import('../server/app.mjs');
   // A fixed port keeps the page origin stable, so localStorage and EmulatorJS' IndexedDB survive
   // restarts; only if it's taken fall back to a random one.
-  // the window's per-launch secret for the account and souldew+ routes (server/lib/guard.mjs rendererSecretError): an
+  // the window's per-launch secret for the account and twicable+ routes (server/lib/guard.mjs rendererSecretError): an
   // HttpOnly, SameSite=Strict cookie in the window's own cookie jar – the server never serves it, so another program on
   // this computer that talks HTTP to 127.0.0.1 can't learn it
   const rendererSecret = randomBytes(32).toString('base64url');
@@ -161,7 +161,7 @@ async function boot() {
 }
 
 /**
- * The souldew account's tokens are kept only where the OS encrypts them (server/lib/accounts/store.mjs): macOS Keychain,
+ * The twicable account's tokens are kept only where the OS encrypts them (server/lib/accounts/store.mjs): macOS Keychain,
  * Windows DPAPI, the Secret Service / KWallet on Linux. Electron's "basic_text" fallback on a Linux desktop without a
  * keyring is plain text in disguise – that counts as no keychain (the session then lives in memory only).
  * The store asks only when there is a saved sign-in to read or a sign-in to keep – never at start for a player who
@@ -272,7 +272,7 @@ function createWindow() {
   ui.sent = '';
   win = new BrowserWindow({
     ...size,
-    title: 'souldew',
+    title: 'twicable',
     backgroundColor: '#1b1a1f',
     ...windowChrome(ui.applied),
     // the window / taskbar icon when running from source (`npm run app`) – and always on Linux, where X11 window
@@ -461,7 +461,7 @@ function buildMenu(labels = {}) {
   const settings = { label: l('settings', t('menu.settings', 'Settings …')), accelerator: 'CmdOrCtrl+,', click: nav('settings') };
   const template = [
     ...(MAC ? [{
-      label: 'souldew',
+      label: 'twicable',
       submenu: [
         { role: 'about' },
         { type: 'separator' },
@@ -537,7 +537,7 @@ handle('pick-files', async (e, opts) => {
   if (!opts || typeof opts !== 'object') opts = {};
   const t = mainTexts();
   const r = await dialog.showOpenDialog(win, {
-    title: typeof opts.title === 'string' && opts.title ? opts.title.slice(0, 200) : t('lib.addTitle', 'Add games to souldew'),
+    title: typeof opts.title === 'string' && opts.title ? opts.title.slice(0, 200) : t('lib.addTitle', 'Add games to twicable'),
     properties: opts.folder ? ['openDirectory'] : ['openFile', 'multiSelections'],
     filters: opts.folder ? undefined : [
       { name: t('dialog.fileTypes', 'ROMs, patches & archives'), extensions: ['gb', 'gbc', 'sgb', 'gba', 'nds', '3ds', 'cci', 'cxi', 'cia', '3dsx', 'zcci', 'zcxi', 'z3dsx', 'zip', 'xdelta', 'vcdiff', 'bps', 'ups', 'ips', 'json'] },
@@ -573,7 +573,7 @@ handle('gpu-info', async () => {
 });
 // "Restart now" (e.g. after changing the graphics backend): quit as usual – the unsaved-progress question may still
 // keep the game open – and start again once quitting is final. Linux: the AppImage file, as the updater does. After a
-// safe start the new one is a normal start (the same arguments without --safe-graphics; SOULDEW_SAFE_GRAPHICS isn't
+// safe start the new one is a normal start (the same arguments without --safe-graphics; TWICABLE_SAFE_GRAPHICS isn't
 // passed on either).
 let relaunching = false;
 handle('relaunch', () => {
@@ -586,7 +586,7 @@ app.on('sls-quit-cancelled', () => {
 app.on('will-quit', () => {
   if (!relaunching) return;
   const appImage = app.isPackaged && LINUX ? appImageFromEnv() : null;
-  if (gpu.safe) delete process.env.SOULDEW_SAFE_GRAPHICS;
+  if (gpu.safe) delete process.env.TWICABLE_SAFE_GRAPHICS;
   const argv = gpu.safe ? withoutSafeGraphics(process.argv) : process.argv;
   if (appImage) app.relaunch(appImageRelaunch(appImage, argv));
   else app.relaunch(gpu.safe ? { args: argv.slice(1) } : undefined);
@@ -643,10 +643,33 @@ app.on('activate', () => {
  */
 function setupPermissions() {
   const ses = session.defaultSession;
+  const canCapture = (wc, origin) => !!win && wc === win.webContents && sameOrigin(origin, serverUrl);
   ses.setPermissionRequestHandler((wc, permission, callback, details) => {
-    callback(permissionAllowed(permission, details?.requestingUrl || wc?.getURL?.() || '', serverUrl));
+    const origin = details?.requestingUrl || wc?.getURL?.() || '';
+    callback(permissionAllowed(permission, origin, serverUrl) || (permission === 'display-capture' && details?.isMainFrame && canCapture(wc, origin)));
   });
-  ses.setPermissionCheckHandler((wc, permission, requestingOrigin) => permissionAllowed(permission, requestingOrigin, serverUrl));
+  ses.setPermissionCheckHandler((wc, permission, origin) => permissionAllowed(permission, origin, serverUrl)
+    || (permission === 'display-capture' && canCapture(wc, origin)));
+  ses.setDisplayMediaRequestHandler(async (request, reply) => {
+    const owner = win;
+    if (!owner || request.frame !== owner.webContents.mainFrame || !canCapture(owner.webContents, request.securityOrigin)
+      || !request.userGesture || !request.videoRequested || request.audioRequested) return reply({});
+    try {
+      const sources = await desktopCapturer.getSources({ types: ['window'], thumbnailSize: { width: 0, height: 0 } });
+      const windows = sources.filter((source) => /\bmelonDS\b/i.test(source.name));
+      if (!windows.length || win !== owner || owner.isDestroyed()) return reply({});
+      if (windows.length === 1) return reply({ video: windows[0] });
+      const cancelId = windows.length;
+      const { response } = await dialog.showMessageBox(owner, {
+        message: 'melonDS', buttons: [...windows.map((source) => source.name), readConfig().lang === 'fr' ? 'Annuler' : 'Cancel'],
+        cancelId, defaultId: cancelId, noLink: true,
+      });
+      if (win === owner && !owner.isDestroyed() && windows[response]) return reply({ video: windows[response] });
+    } catch {
+      // The compositor can deny window capture.
+    }
+    reply({});
+  });
   ses.setDevicePermissionHandler(() => false);
 }
 
@@ -660,7 +683,7 @@ app.whenReady().then(async () => {
   } catch (e) {
     gpuStartOk(); // not the graphics backend's fault – it doesn't count as a failed start
     const t = mainTexts();
-    dialog.showErrorBox(t('app.startFailed', 'souldew couldn’t start'), String(e?.stack || e));
+    dialog.showErrorBox(t('app.startFailed', 'twicable couldn’t start'), String(e?.stack || e));
     app.quit();
   }
 });

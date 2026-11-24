@@ -1,4 +1,4 @@
-// Builds souldew's fast player part into tools/native/<platform>-<arch>/ (bundled with the app like the 3DS part, see
+// Builds twicable's fast player part into tools/native/<platform>-<arch>/ (bundled with the app like the 3DS part, see
 // package.json and server/lib/native.mjs):
 //   retrohost[.exe]              native/retro-host/retrohost.c – the host that runs a libretro core for the player page
 //   melondsds_libretro.*         DS: melonDS DS (JesseTG/melonds-ds) – software 3D on its own thread, the JIT on
@@ -148,7 +148,7 @@ function cmakeTarget() {
 }
 
 /**
- * souldew's patches to a checkout (native/<dir>/*.patch, in name order), each applied once: one whose reverse applies is
+ * twicable's patches to a checkout (native/<dir>/*.patch, in name order), each applied once: one whose reverse applies is
  * in already. melonDS: the depth of the 3D frame on screen for Shared World (native/melonds-patch); melonDS DS: the
  * function that hands it out (native/melonds-ds-patch).
  */
@@ -171,11 +171,11 @@ function license(key, src) {
 function buildNds() {
   const src = source('nds');
   applyPatches(src, 'melonds-ds-patch');
-  // its melonDS: the link host's checkout (the pinned commit of the fork's branch melonDS DS fetches), with souldew's patch
+  // its melonDS: the link host's checkout (the pinned commit of the fork's branch melonDS DS fetches), with twicable's patch
   const melon = source('melonds');
   applyPatches(melon, 'melonds-patch');
   const build = join(src, `build-${plat}`);
-  // no OpenGL (the page draws the picture), no Wi-Fi (souldew never goes online through the core), the JIT on
+  // no OpenGL (the page draws the picture), no Wi-Fi (twicable never goes online through the core), the JIT on
   run('cmake', [...cmakeTarget(), '-DENABLE_OPENGL=OFF', '-DENABLE_JIT=ON', '-DENABLE_LTO_RELEASE=OFF', '-DBUILD_TESTING=OFF', '-DTRACY_ENABLE=OFF',
     `-DFETCHCONTENT_SOURCE_DIR_MELONDS=${melon}`, '-S', src, '-B', build]);
   run('cmake', ['--build', build, '--parallel', jobs]);
@@ -215,7 +215,7 @@ function buildGb() {
   const bin = join(src, `build-libretro-${plat}`);
   mkdirSync(bin, { recursive: true });
   const extra = os === 'darwin' ? [`ARCHFLAGS=-arch ${arch === 'arm64' ? 'arm64' : 'x86_64'} -mmacosx-version-min=11.0`] : os === 'linux' ? ['LDFLAGS=-static-libgcc -lm'] : []; // (a LDFLAGS on make's command line replaces the Makefile's, -lm included)
-  const mk = ['-C', join(src, 'libretro'), `platform=${platform}`, `BOOTROMS_DIR=${boot}`, `BIN=${bin}`, `CC=${cc}`, 'GIT_VERSION=" souldew"', ...extra];
+  const mk = ['-C', join(src, 'libretro'), `platform=${platform}`, `BOOTROMS_DIR=${boot}`, `BIN=${bin}`, `CC=${cc}`, 'GIT_VERSION=" twicable"', ...extra];
   run('make', [...mk, 'clean'], { stdio: 'ignore' }); // (its objects sit next to the sources: none of another platform's)
   run('make', [...mk, `-j${jobs}`]);
   copyFileSync(join(bin, SOURCES.gb.file), join(out, SOURCES.gb.file));
@@ -245,7 +245,7 @@ function buildLink() {
     : ['-static', '-static-libgcc', '-static-libstdc++', '-lshlwapi', '-lshell32', '-luuid', '-lws2_32', '-lole32', '-lwinmm', '-lm'];
   const sb = buildSameBoy(flags);
   const ds = buildMelonDS();
-  const obj = join(build, 'souldew');
+  const obj = join(build, 'twicable');
   mkdirSync(obj, { recursive: true });
   const objects = [];
   // the engine (seats, session, picture/sound, the frame loop), its backends, and native/common (shared with retrohost)
@@ -272,7 +272,7 @@ function ninjaDefines(build, re) {
 
 /**
  * melonDS's core library for the link host's DS backend (native/link-host/backend_melonds.cpp): no frontend, no OpenGL,
- * no GDB stub. The JIT is built in for a game played alone (the souldew engine's solo mode, as fast as the fast player's
+ * no GDB stub. The JIT is built in for a game played alone (the twicable engine's solo mode, as fast as the fast player's
  * melonDS DS); link sessions switch it off per console (its timing differs from the interpreter's, and every peer must
  * compute the same). Returns the flags to compile against it (the same definitions – its classes change shape with
  * them) and the static libraries.
@@ -299,7 +299,7 @@ function buildMelonDS() {
  */
 function buildSameBoy(flags) {
   const src = source('sameboy');
-  const obj = join(src, `build-souldew-${plat}`);
+  const obj = join(src, `build-twicable-${plat}`);
   mkdirSync(obj, { recursive: true });
   // (pb12 is a build-time helper: host compiler)
   run('make', ['-C', src, 'build/bin/BootROMs/cgb_boot.bin', 'build/bin/BootROMs/cgb_boot_fast.bin', 'build/bin/BootROMs/dmg_boot.bin', `CC=${process.env.HOST_CC || 'cc'}`]);
@@ -313,7 +313,7 @@ function buildSameBoy(flags) {
   // the core's time() → the session clock: a header included first (time.h, then the macro) – not -Dtime=…, which on
   // Windows would rename MinGW's inline time() in <time.h> and leave the wall clock in place
   const timeH = join(obj, 'sbl_time.h');
-  writeFileSync(timeH, '/* souldew: SameBoy\'s clock is the link session\'s (backend_sameboy.c) */\n#include <time.h>\ntime_t sbl_time(time_t *t);\n#define time(t) sbl_time(t)\n');
+  writeFileSync(timeH, '/* twicable: SameBoy\'s clock is the link session\'s (backend_sameboy.c) */\n#include <time.h>\ntime_t sbl_time(time_t *t);\n#define time(t) sbl_time(t)\n');
   const defs = ['-DGB_INTERNAL', '-DGB_DISABLE_TIMEKEEPING', '-DGB_DISABLE_REWIND', '-DGB_DISABLE_DEBUGGER', '-DGB_DISABLE_CHEATS', '-DGB_DISABLE_CHEAT_SEARCH',
     '-D_GNU_SOURCE', '-D_USE_MATH_DEFINES', '-DNDEBUG', `-DGB_VERSION="${SOURCES.sameboy.ref.replace(/^v/, '')}"`];
   const files = ['gb', 'sgb', 'apu', 'memory', 'mbc', 'timing', 'display', 'camera', 'sm83_cpu', 'joypad', 'save_state', 'random', 'rumble'];
@@ -356,6 +356,6 @@ if (!has('host-only')) {
 }
 const lines = Object.entries(SOURCES).filter(([, s]) => existsSync(join(out, s.file || SOURCES.link.file))).map(([, s]) => `${s.file || SOURCES.link.file}: ${s.name} ${s.ref} – ${s.repo.replace(/\.git$/, '')}`);
 const prev = existsSync(join(out, 'SOURCES.txt')) ? readFileSync(join(out, 'SOURCES.txt'), 'utf8') : '';
-writeFileSync(join(out, 'SOURCES.txt'), `${[`${HOST}: souldew native/retro-host/retrohost.c`, ...lines].join('\n')}\n`);
+writeFileSync(join(out, 'SOURCES.txt'), `${[`${HOST}: twicable native/retro-host/retrohost.c`, ...lines].join('\n')}\n`);
 if (prev && prev !== readFileSync(join(out, 'SOURCES.txt'), 'utf8')) console.log('SOURCES.txt updated');
 console.log(`fast player part: ${out}`);

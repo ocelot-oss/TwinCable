@@ -1,6 +1,6 @@
 // The profile editor's session (web/lib/profiledraft.mjs, views/profileedit.mjs – design 3.0 "B · Parts drawer"): one
 // draft for the whole edit, "n changes not saved", "Back to saved" per part, the trophy cabinet's places, Save sending
-// only what changed – and never blocked by a souldew+ item tried on (that part stays as saved). Plus the leave guard
+// only what changed – and never blocked by a twicable+ item tried on (that part stays as saved). Plus the leave guard
 // (web/lib/leaveguard.mjs): leaving with unsaved changes asks once.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -84,7 +84,7 @@ test('Save sends only what changed, in the page’s shape (layout and privacy in
   assert.equal(D.savePatch(old, { ...old, fav: 'Crystal' }).showcase.trustedText, 'Breloom', 'kept as it was');
 });
 
-test('souldew+ tried on without the membership never blocks Save: that part keeps the saved free item, the rest saves', () => {
+test('twicable+ tried on without the membership never blocks Save: that part keeps the saved free item, the rest saves', () => {
   const initial = D.draftFrom(me);
   const d = { ...initial, banner: 'night-train', frame: 'brass-ring', accent: 'ember' };
   assert.deepEqual(D.savePatch(initial, d, { locked: ['banner', 'frame'] }), { accent: 'ember' });

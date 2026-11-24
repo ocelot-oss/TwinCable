@@ -29,7 +29,7 @@ export function itemText(gen, item, n = 1) {
 export function giftWhyText(why, name) {
   return {
     off: t('gift.off', 'Gifts are off in this run’s rules.'),
-    old: t('gift.old', '{name}’s souldew can’t take gifts yet – it needs an update.', { name }),
+    old: t('gift.old', '{name}’s twicable can’t take gifts yet – it needs an update.', { name }),
     offline: t('gift.offline', '{name} isn’t online.', { name }),
     nogame: t('gift.nogame', 'Start your game here to give items.'),
     busy: t('gift.busy', 'A gift with {name} is still on its way.', { name }),
@@ -37,7 +37,7 @@ export function giftWhyText(why, name) {
     overworld: t('gift.overworld', 'Only while walking around in the game – close menus and texts first.'),
     link: t('gift.link', 'Not during a link.'),
     waiting: t('gift.waiting', 'Available once live tracking has found your team.'),
-    unsupported: t('gift.unsupported', 'souldew doesn’t know where this game keeps its bag.'),
+    unsupported: t('gift.unsupported', 'twicable doesn’t know where this game keeps its bag.'),
     gen: t('gift.gen', '{name} plays a game of another generation – its items are numbered differently.', { name }),
     game: t('gift.game', '{name} plays another version – this item may not exist in their game.', { name }),
     full: t('gift.full', '{name}’s bag has no room for it.', { name }),
@@ -217,7 +217,7 @@ export function BattleStrip({ slot, variant = 'panel' }) {
       <${Sprite} id=${foe.species} shiny=${foe.shiny} gen=${gen} size=${56} form=${foe.form || 0} />
       <div class="stack-s grow"><b class="small">${speciesName(foe.species)}${foe.level ? html` <span class="tiny muted">${t('common.lv', 'Lv')} ${foe.level}</span>` : ''}</b>
         ${foe.maxHp > 0 && foe.hp !== null ? html`<${HpBar} hp=${foe.hp} max=${foe.maxHp} /><span class="tiny mono muted">${foe.hp}/${foe.maxHp}</span>`
-          : html`<span class="tiny faint">${t('tg.noHp', 'HP shows once {name} updates souldew', { name: nameOf(doc, manifest, slot) })}</span>`}</div>
+          : html`<span class="tiny faint">${t('tg.noHp', 'HP shows once {name} updates twicable', { name: nameOf(doc, manifest, slot) })}</span>`}</div>
     </div>
   </div>`;
 }

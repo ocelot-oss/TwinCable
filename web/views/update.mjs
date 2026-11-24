@@ -46,7 +46,7 @@ const REASONS = () => ({
   minVersion: t('upd.reasonMinVersion', 'Your version is too old to update automatically.'),
   'copy-failed': t('upd.reasonCopy', 'Copying the new app failed.'),
   signature: t('upd.reasonSignature', 'The new version’s signature could not be verified, so it was not installed automatically.'),
-  portable: t('upd.reasonPortable', 'This copy of souldew wasn’t installed with the installer (it runs from an unpacked folder), so it can’t update itself.'),
+  portable: t('upd.reasonPortable', 'This copy of twicable wasn’t installed with the installer (it runs from an unpacked folder), so it can’t update itself.'),
   'launch-failed': t('upd.reasonLaunch', 'The installer could not be started automatically.'),
 });
 
@@ -54,7 +54,7 @@ const STEPS = () => ({
   verify: t('upd.stepVerify', 'Checking the download'),
   mount: t('upd.stepMount', 'Opening the disk image'),
   copy: t('upd.stepCopy', 'Copying the new app'),
-  launch: t('upd.stepLaunch', 'Starting the installer – souldew closes and opens again by itself'),
+  launch: t('upd.stepLaunch', 'Starting the installer – twicable closes and opens again by itself'),
 });
 
 // A failed check or update by its code (electron/update-core.mjs fail, electron/updater.mjs) – the main process' own
@@ -69,7 +69,7 @@ const ERRORS = () => ({
   INSECURE: t('upd.errInsecure', 'The update server pointed to an insecure address, so the update was stopped.'),
   CHECKSUM: t('upd.errChecksum', 'The download is damaged or was changed – try again.'),
   NO_STAGED: t('upd.errNoStaged', 'The downloaded update is missing – download it again.'),
-  BAD_DMG: t('upd.errDmg', 'The disk image doesn’t contain the expected version of souldew.'),
+  BAD_DMG: t('upd.errDmg', 'The disk image doesn’t contain the expected version of twicable.'),
   SIGNATURE: t('upd.errCodeSignature', 'The new version’s code signature doesn’t verify, so it wasn’t installed.'),
   INSTALLER: t('upd.errInstaller', 'The installer couldn’t be started.'),
   SAME_VERSION: t('upd.errSameVersion', 'This update isn’t newer than the installed version.'),
@@ -107,22 +107,22 @@ function ManualModal({ s, open, onClose }) {
       <button class="btn primary" onClick=${onClose}>${t('common.close', 'Close')}</button>`}>
     ${s.reason && REASONS()[s.reason] && html`<p class="small muted">${REASONS()[s.reason]}</p>`}
     ${isWin(s) ? html`<ol class="small">
-      <li>${t('upd.manual1Win', 'Quit souldew ({keys}).', { keys: shortcut('Alt+F4') })}</li>
-      <li>${t('upd.manual2Win', 'In the Explorer window that opened, double-click {file}. It installs the new version and keeps your data.', { file: s.update?.asset?.name || 'souldew-setup.exe' })}</li>
-      <li>${t('upd.manual3', 'Open souldew again.')}</li>
+      <li>${t('upd.manual1Win', 'Quit twicable ({keys}).', { keys: shortcut('Alt+F4') })}</li>
+      <li>${t('upd.manual2Win', 'In the Explorer window that opened, double-click {file}. It installs the new version and keeps your data.', { file: s.update?.asset?.name || 'twicable-setup.exe' })}</li>
+      <li>${t('upd.manual3', 'Open twicable again.')}</li>
     </ol>
     <p class="small muted">${t('upd.dataSafeWin', 'Your runs, saves and settings are kept: they live in your user folder (AppData), not inside the app.')}</p>
-    <p class="small muted">${t('upd.smartscreen', 'If Windows SmartScreen says it protected your PC, click “More info” › “Run anyway”. That is needed because souldew is not signed with a paid certificate.')}</p>`
+    <p class="small muted">${t('upd.smartscreen', 'If Windows SmartScreen says it protected your PC, click “More info” › “Run anyway”. That is needed because twicable is not signed with a paid certificate.')}</p>`
     : isLinux(s) ? html`<ol class="small">
-      <li>${t('upd.manual1Win', 'Quit souldew ({keys}).', { keys: shortcut('Ctrl+Q') })}</li>
-      <li>${t('upd.manual2Linux', 'In the folder that opened is {file}, already executable. Replace your old souldew AppImage with it – under the old file name if a Steam or desktop shortcut points to it.', { file: s.update?.asset?.name || 'souldew.AppImage' })}</li>
-      <li>${t('upd.manual3', 'Open souldew again.')}</li>
+      <li>${t('upd.manual1Win', 'Quit twicable ({keys}).', { keys: shortcut('Ctrl+Q') })}</li>
+      <li>${t('upd.manual2Linux', 'In the folder that opened is {file}, already executable. Replace your old twicable AppImage with it – under the old file name if a Steam or desktop shortcut points to it.', { file: s.update?.asset?.name || 'twicable.AppImage' })}</li>
+      <li>${t('upd.manual3', 'Open twicable again.')}</li>
     </ol>
     <p class="small muted">${t('upd.dataSafeLinux', 'Your runs, saves and settings are kept: they live in ~/.config/SoulLink Studio, not inside the app.')}</p>`
     : html`<ol class="small">
-      <li>${t('upd.manual1', 'Quit souldew (⌘Q).')}</li>
-      <li>${t('upd.manual2', 'In the Finder window that opened, drag souldew onto Applications and choose “Replace”.')}</li>
-      <li>${t('upd.manual3', 'Open souldew again.')}</li>
+      <li>${t('upd.manual1', 'Quit twicable (⌘Q).')}</li>
+      <li>${t('upd.manual2', 'In the Finder window that opened, drag twicable onto Applications and choose “Replace”.')}</li>
+      <li>${t('upd.manual3', 'Open twicable again.')}</li>
     </ol>
     <p class="small muted">${t('upd.dataSafe', 'Your runs, saves and settings are kept: they live in your Library folder, not inside the app.')}</p>`}
   <//>`;
@@ -154,7 +154,7 @@ export function UpdateBanner() {
     if (s.updatedFrom || (last && last !== s.current)) updatedToastShown = true;
     // the update to 3.0: the "What's new" cards say it (views/whatsnew.mjs) – no toast on top of them
     if (updatedToastShown && skipUpdatedToast(status?.config)) return;
-    if (updatedToastShown) toast({ kind: 'ok', title: t('upd.updatedTitle', 'Updated'), text: t('upd.updated', 'souldew is now on version {version}.', { version: s.current }) });
+    if (updatedToastShown) toast({ kind: 'ok', title: t('upd.updatedTitle', 'Updated'), text: t('upd.updated', 'twicable is now on version {version}.', { version: s.current }) });
   }, [s?.current]);
   useEffect(() => {
     if (s?.phase === 'manual') setManual(true);
@@ -196,7 +196,7 @@ export function UpdateBanner() {
     text = STEPS()[s.step] || '';
   } else if (s.phase === 'ready') {
     title = t('upd.ready', 'Update ready');
-    text = `${isWin(s) ? t('upd.readyTextWin', 'Restart to install version {version} – it takes a few seconds, then souldew opens again. Your runs, saves and settings stay as they are.', { version: u.version })
+    text = `${isWin(s) ? t('upd.readyTextWin', 'Restart to install version {version} – it takes a few seconds, then twicable opens again. Your runs, saves and settings stay as they are.', { version: u.version })
       : t('upd.readyText', 'Restart to use version {version}. Your runs, saves and settings stay as they are.', { version: u.version })}${session ? ` ${t('upd.saveFirst', 'Save in the game first – restarting closes it.')}` : ''}`;
     actions = html`<button class="btn small primary" onClick=${() => b.restart()}>${t('upd.restart', 'Restart now')}</button>
       <button class="btn small ghost" title=${t('upd.laterHint', 'The update is installed when you quit the app.')} onClick=${later}>${t('upd.later', 'Later')}</button>`;

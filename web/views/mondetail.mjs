@@ -1,5 +1,5 @@
 // A Pokémon of the board's live teams, opened from its party panel: level, held item and moves, and – where the game's
-// data holds them and souldew read them – nature, ability, Hidden Power, IVs and EVs (Game Boy: DVs and stat
+// data holds them and twicable read them – nature, ability, Hidden Power, IVs and EVs (Game Boy: DVs and stat
 // experience, shared/monstats.mjs). "Copy for damage calc" puts it on the clipboard as a Pokémon Showdown set.
 import { html } from '/vendor/htm-preact.mjs';
 import { useApp, Sprite, Types, Modal, copy } from '../lib/ui.mjs';
@@ -11,7 +11,7 @@ import { shownLevel } from './party.mjs';
 const statLabels = () => [t('mon.hp', 'HP'), t('mon.atk', 'Atk'), t('mon.def', 'Def'), t('mon.spa', 'SpA'), t('mon.spd', 'SpD'), t('mon.spe', 'Spe')];
 const gbLabels = () => [t('mon.hp', 'HP'), t('mon.atk', 'Atk'), t('mon.def', 'Def'), t('mon.spe', 'Spe'), t('mon.spc', 'Spc')];
 
-/** The held item's name in a language ('' when it has none souldew can name). */
+/** The held item's name in a language ('' when it has none twicable can name). */
 function heldName(mon, gen, lang) {
   if (!mon.item) return '';
   if (typeof mon.item === 'string') return mon.item;
@@ -35,7 +35,7 @@ function StatRow({ label, values, mark, total }) {
     ${total !== undefined && html`<td class="mon-total">${total}</td>`}</tr>`;
 }
 
-/** The stats block: nature, ability, Hidden Power and the IV / EV table – only the lines souldew read. */
+/** The stats block: nature, ability, Hidden Power and the IV / EV table – only the lines twicable read. */
 export function MonStats({ mon, gen }) {
   const s = cleanSummary(mon?.summary);
   if (!s) return null;

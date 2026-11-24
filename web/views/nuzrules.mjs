@@ -20,7 +20,7 @@ const areaOptions = () => [['area', t('nzr.optArea', 'Count as the area')], ['fr
 
 // the dupes clause's switch – one text for the SoulLink rules (MissedDupesRule) and the solo ones (ruleDefs)
 const missedDupesLabel = () => t('rules.missedDupes', 'Fled or knocked-out encounters count as dupes');
-const missedDupesHint = () => t('rules.missedDupesHint', 'Like a catch, once it’s known which Pokémon it was – souldew notes it when it sees the battle.');
+const missedDupesHint = () => t('rules.missedDupesHint', 'Like a catch, once it’s known which Pokémon it was – twicable notes it when it sees the battle.');
 
 /**
  * Every rule once: `check` = on/off, `choice` = one of `options`. `section` groups them on the board; `honour`
@@ -42,14 +42,14 @@ const ruleDefs = () => [
     options: [['off', t('rules.off', 'Off')], ['party', t('nzr.typeParty', 'In the team')]] },
   { key: 'nicknames', kind: 'check', section: 'clauses', label: t('nzr.nicknames', 'Nickname every catch'), hint: t('nz.nicknamesHint', 'A gentle reminder while a team member still has its species name.') },
   { key: 'cheats', kind: 'check', section: 'clauses', label: t('nzr.cheatsAll', 'Allow cheats'), hint: t('nz.cheatsHintAll', 'From the play screen’s cheats menu: items into your bag (Rare Candies, Max Repels, Poké Balls, healing items) and money. Pick which ones below. Every use is written to the log.') },
-  { key: 'levelCaps', kind: 'choice', section: 'hardcore', label: t('nzr.caps', 'Level caps'), hint: t('nz.capsHint', 'The next boss’s ace level. Strict: going over is a rule break, not a hint.'),
-    options: [[false, t('rules.off', 'Off')], ['warn', t('nzr.capsWarn', 'Warn')], ['strict', t('nzr.capsStrict', 'Strict')]] },
+  { key: 'levelCaps', kind: 'choice', section: 'hardcore', label: t('nzr.caps', 'Level caps'), hint: t('rules.hardCapHint', 'Battle XP stops at the next boss’s ace level in supported games.'),
+    options: [[false, t('rules.off', 'Off')], ['strict', t('rules.capXp', 'Cap battle XP')]] },
   { key: 'noBattleItems', kind: 'check', section: 'hardcore', honour: true, label: t('nzr.noItems', 'No items in battle'), hint: t('nz.noItemsHint', 'Poké Balls and held items are fine.') },
   { key: 'setMode', kind: 'check', section: 'hardcore', honour: true, label: t('nzr.setMode', '“Set” battle style'), hint: t('nz.setModeHint', 'Battle style “Set” in the game options: no free switch after a knockout.') },
 ];
 
-// stored values that mean the same as an option ('levelCaps: true' is the old name of 'strict')
-const shown = (key, v) => (key === 'levelCaps' ? (v === true ? 'strict' : v || false) : key === 'typeClause' ? (v === 'off' ? 'off' : 'party') : v);
+// Existing runs can store true, warn or strict for an enabled cap.
+const shown = (key, v) => (key === 'levelCaps' ? (v ? 'strict' : false) : key === 'typeClause' ? (v === 'off' ? 'off' : 'party') : v);
 
 const Honour = () => html`<span class="honour" title=${t('nz.honourHint', 'The app can’t check this – it only reminds you. Keep it yourself.')}>${t('nz.honour', 'honour rule')}</span>`;
 
@@ -98,7 +98,7 @@ export function CheatSetRule({ value: r, onChange, disabled = false, partners = 
   return html`<div class="cheat-set" role="group" aria-label=${t('rules.cheatSet', 'Allowed cheats')}>
     ${CHEAT_GROUPS.map((g) => html`<label class=${`check small ${disabled ? 'locked' : ''}`} key=${g}><input type="checkbox" checked=${on.includes(g)} disabled=${disabled}
       onChange=${(e) => set(g, e.target.checked)} /><span>${cheatGroupLabel(g)}</span></label>`)}
-    ${partners && on.length < CHEAT_GROUPS.length && html`<span class="tiny faint cheat-set-note">${t('rules.cheatSetOld', 'A partner on souldew 2.x can’t see this choice: their app offers its own cheats (Rare Candies) whenever cheats are on – each use still shows up in the log.')}</span>`}
+    ${partners && on.length < CHEAT_GROUPS.length && html`<span class="tiny faint cheat-set-note">${t('rules.cheatSetOld', 'A partner on twicable 2.x can’t see this choice: their app offers its own cheats (Rare Candies) whenever cheats are on – each use still shows up in the log.')}</span>`}
   </div>`;
 }
 
@@ -221,10 +221,10 @@ export function TypeHelpRule({ value, onChange, locked, hostName, solo, note = t
  */
 export function BallsRule({ value, onChange, players: n = 1, disabled = false }) {
   const hint = n < 2
-    ? t('rules.ballsHintSolo', 'Until you have Poké Balls in your bag, a Pokémon that faints doesn’t die, a blackout doesn’t end the run and no area is used up – reset or play on. The rules start the moment souldew sees your first Poké Balls (or your first catch).')
+    ? t('rules.ballsHintSolo', 'Until you have Poké Balls in your bag, a Pokémon that faints doesn’t die, a blackout doesn’t end the run and no area is used up – reset or play on. The rules start the moment twicable sees your first Poké Balls (or your first catch).')
     : n > 2
-      ? t('rules.ballsHintGroup', 'Each of you starts with your own first Poké Balls: until then your Pokémon don’t die, a blackout doesn’t end the run and no area is used up. When someone whose rules have started loses a Pokémon, the linked ones still die with it. Everyone needs souldew 2.8.3 or newer.')
-      : t('rules.ballsHint', 'Each of you starts with your own first Poké Balls: until then your Pokémon don’t die, a blackout doesn’t end the run and no area is used up. When your partner’s rules have started and they lose a Pokémon, yours still dies with it. Both of you need souldew 2.8.3 or newer.');
+      ? t('rules.ballsHintGroup', 'Each of you starts with your own first Poké Balls: until then your Pokémon don’t die, a blackout doesn’t end the run and no area is used up. When someone whose rules have started loses a Pokémon, the linked ones still die with it. Everyone needs twicable 2.8.3 or newer.')
+      : t('rules.ballsHint', 'Each of you starts with your own first Poké Balls: until then your Pokémon don’t die, a blackout doesn’t end the run and no area is used up. When your partner’s rules have started and they lose a Pokémon, yours still dies with it. Both of you need twicable 2.8.3 or newer.');
   return html`<${RuleCheck} checked=${!!value} onChange=${(v) => !disabled && onChange(v)} disabled=${disabled}
     label=${t('rules.balls', 'Nothing counts before your first Poké Balls')} hint=${hint} />`;
 }
@@ -319,7 +319,7 @@ export function SoulLinkRules({ value: r, onChange, players: n = 2, variant = 'b
     check('failKillsPair', n > 2 ? t('rules.failGroup', 'A missed encounter costs the whole group') : t('rules.fail', 'A missed encounter costs the whole pair'),
       variant === 'wizard' ? (n > 2 ? t('rules.failHintGroup', 'Fled or knocked out: the others’ Pokémon from that area may not be used either.') : t('rules.failHint', 'Fled or knocked out: your partner’s Pokémon from that area may not be used either.')) : null),
     check('shinyClause', t('rules.shiny', 'Shiny clause: shinies may always be caught and stay unlinked')),
-    check('levelCaps', t('rules.caps', 'Check level caps'), variant === 'wizard' ? t('rules.capsHint', 'Warns when a Pokémon is above the next boss’s ace level.') : null),
+    check('levelCaps', t('rules.capXp', 'Cap battle XP'), variant === 'wizard' ? t('rules.hardCapHint', 'Battle XP stops at the next boss’s ace level in supported games.') : null),
     html`<div class="stack-s"><${RuleCheck} checked=${r.cheats} onChange=${(v) => set(cheatsSwitch(r, v))} disabled=${disabled} label=${t('rules.cheatsAll', 'Allow cheats')} hint=${n > 2
       ? t('rules.cheatsHintGroupAll', 'From the play screen’s cheats menu: items into the bag and money – pick which ones. Every use shows up in the log for all of you.')
       : t('rules.cheatsHintAll', 'From the play screen’s cheats menu: items into the bag and money – pick which ones. Every use shows up in the log for both of you.')} />

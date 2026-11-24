@@ -266,7 +266,7 @@ export const plainCombo = (c) => !!c && !MODS.some((m) => c[m]);
 /** The same key with the same modifiers (Tab and Shift+Tab are two shortcuts). */
 export const sameCombo = (a, b) => !!a && !!b && a.keyCode === b.keyCode && MODS.every((m) => !!a[m] === !!b[m]);
 
-// What the system or souldew's own menu does with a combo – refused for the shortcuts (Settings › Controls says why).
+// What the system or twicable's own menu does with a combo – refused for the shortcuts (Settings › Controls says why).
 // mac: ⌘Q / ⌘W / ⌘H / ⌘M / ⌘Tab / ⌘Space …; Windows and Linux: Alt+F4, Alt+Tab, Ctrl+Alt+Del, Ctrl+Esc, the Windows /
 // Super key … – and the app menu's own (⌘, settings, ⌘1–5, ⌘O, ⌘B, ⌘/, the edit menu's ⌘Z / X / C / V / A, fullscreen) and
 // the play view's ⌘I (the dock).
@@ -293,7 +293,7 @@ const MENU = (mac) => [
 ];
 const listed = (list, c) => list.some(([m, keys]) => keys.includes(c.keyCode) && MODS.every((k) => !!m[k] === !!c[k]));
 /**
- * Why a combo can't be a shortcut: 'system' (the system's own – ⌘Q, Alt+F4, any Windows-key combo …), 'menu' (souldew's
+ * Why a combo can't be a shortcut: 'system' (the system's own – ⌘Q, Alt+F4, any Windows-key combo …), 'menu' (twicable's
  * menu has it) or null = free.
  */
 export function reservedCombo(c, mac = isMac()) {
@@ -337,7 +337,7 @@ export function resolveHotkeys(saved, lay = current, mac = isMac()) {
 }
 
 /**
- * The keys the player set for a shortcut that it can't have here – one souldew's menu or the system has (a 2.8.1
+ * The keys the player set for a shortcut that it can't have here – one twicable's menu or the system has (a 2.8.1
  * fast-forward key on F11, Windows / Linux fullscreen) – while it plays on another key now: [{ id, key, why }] (why:
  * 'menu' / 'system'). Settings › Controls says so under the row, instead of the key quietly going back to Tab.
  */
@@ -634,7 +634,7 @@ export const padLabel = (label, family = 'generic', names = {}) => (label
 // ---- which connected device plays ---------------------------------------------------------------------------------
 // The Gamepad API lists more than controllers: on Windows a USB microphone or headset with its own buttons (a player's
 // "DGM20 USB Microphone", issue #2) shows up as a gamepad too – often before the real one, which then never got to
-// play. So souldew picks the controller itself: the one chosen in Settings › Controller (config.pads.device, the id
+// play. So twicable picks the controller itself: the one chosen in Settings › Controller (config.pads.device, the id
 // the browser reports, remembered across starts) when it is connected, else the most controller-like device. A device
 // that doesn't look like a controller at all is never picked on its own – only when the player chooses it.
 
@@ -690,7 +690,7 @@ export function pickPad(pads, wanted = null) {
  */
 export function appHasPad(win = globalThis) {
   try {
-    return win.parent !== win && !!win.parent?.__souldewPad?.mute;
+    return win.parent !== win && !!win.parent?.__twicablePad?.mute;
   } catch {
     return false;
   }

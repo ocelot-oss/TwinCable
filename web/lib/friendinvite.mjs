@@ -1,4 +1,4 @@
-// Play with friends (souldew account): invite friends into a SoulLink, and let them in.
+// Play with friends (twicable account): invite friends into a SoulLink, and let them in.
 //
 // The run itself keeps working exactly as before – peer to peer, with the run pack handed over by the invite-code
 // handshake (lib/invitecode.mjs). The accounts service only delivers the invite: run name, game, mode and a code. For

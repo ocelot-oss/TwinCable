@@ -8,21 +8,21 @@
   var started = false;
   addEventListener('message', function (e) {
     var d = e.data;
-    if (started || e.source !== parent || !d || d.op !== 'souldew-sandbox' || typeof d.source !== 'string' || !e.ports || !e.ports[0]) return;
+    if (started || e.source !== parent || !d || d.op !== 'twicable-sandbox' || typeof d.source !== 'string' || !e.ports || !e.ports[0]) return;
     started = true;
     var port = e.ports[0];
     // a data: URL – a blob: URL made in an opaque origin can't start a worker in Chromium; the worker gets an opaque
     // origin of its own either way
     var url = 'data:text/javascript;charset=utf-8,' + encodeURIComponent(d.source);
-    var worker = new Worker(url, { type: 'module', name: typeof d.name === 'string' ? d.name.slice(0, 40) : 'souldew-cosmetics' });
+    var worker = new Worker(url, { type: 'module', name: typeof d.name === 'string' ? d.name.slice(0, 40) : 'twicable-cosmetics' });
     worker.onmessage = function (m) { port.postMessage(m.data); };
     worker.onerror = function (err) {
-      port.postMessage({ op: '__souldew_error', message: String((err && err.message) || 'worker error') });
+      port.postMessage({ op: '__twicable_error', message: String((err && err.message) || 'worker error') });
       if (err && err.preventDefault) err.preventDefault();
     };
     port.onmessage = function (m) {
       var x = m.data;
-      if (x && x.op === '__souldew_terminate') {
+      if (x && x.op === '__twicable_terminate') {
         worker.terminate();
         port.close();
         return;
@@ -30,5 +30,5 @@
       worker.postMessage(x);
     };
   });
-  parent.postMessage({ op: 'souldew-sandbox-ready' }, '*');
+  parent.postMessage({ op: 'twicable-sandbox-ready' }, '*');
 })();

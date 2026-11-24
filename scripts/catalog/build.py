@@ -49,7 +49,7 @@ for h in H:
     out["uprCompatible"]=h["uprCompatible"]; out["uprNote"]=h["uprNote"]
     # No url/links on purpose: the app never links to ROM hacks or their download pages.
     out["color"]=h["color"]
-    # how far souldew reads the hack live (docs/TESTED_GAMES.md) – shown in the library's hack details
+    # how far twicable reads the hack live (docs/TESTED_GAMES.md) – shown in the library's hack details
     if h.get("live"): out["live"]=h["live"]
     if h.get("liveNote"): out["liveNote"]=h["liveNote"]
     if h.get("notes"): out["notes"]=h["notes"]

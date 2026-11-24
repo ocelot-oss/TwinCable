@@ -1,7 +1,7 @@
-// The souldew+ looks of the 3.0 launch animation – Gold, Clear shell, Holo label, the Rare start and the holo / glitter
-// sticker finishes – arrive as DATA in the souldew+ pack (handheld/looks.json, like the banner recipes): material values,
+// The twicable+ looks of the 3.0 launch animation – Gold, Clear shell, Holo label, the Rare start and the holo / glitter
+// sticker finishes – arrive as DATA in the twicable+ pack (handheld/looks.json, like the banner recipes): material values,
 // the board recipe, the foil pattern and a few lines of fragment code. The public scene (scene.mjs, surface.mjs) only knows
-// "Your colours" and vinyl; without this data a souldew+ look simply isn't there – switching a flag in a patched client
+// "Your colours" and vinyl; without this data a twicable+ look simply isn't there – switching a flag in a patched client
 // draws "Your colours". The data is checked strictly here before the scene sees any of it (it is signed and verified with
 // the pack, but it is still data from outside).
 //
@@ -144,7 +144,7 @@ export function cleanLooks(raw) {
   return out.gold || out.clear || out.holo || out.rare || out.finishes.holo || out.finishes.glitter ? out : null;
 }
 
-/** The shell the scene can draw: a souldew+ shell only with its data, else "Your colours". */
+/** The shell the scene can draw: a twicable+ shell only with its data, else "Your colours". */
 export const effectiveLook = (look, L) => (look === 'gold' && L?.gold ? 'gold' : look === 'clear' && L?.clear ? 'clear' : 'theme');
 /** The cartridge the scene can draw: the gold one only with Gold's data, the holo label only with its data. */
 export const effectiveCart = (cart, L) => (cart === 'gold' && L?.gold ? 'gold' : cart === 'holo' && L?.holo ? 'holo' : undefined);

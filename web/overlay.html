@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>souldew overlay</title>
+  <title>twicable overlay</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/assets/fonts/fonts.css" />
   <style>
     /* Stream overlay (OBS browser source). One widget per URL – ?w=team|card|counters|where|alerts|stats – built in
-       the app under Stream. Transparent by default; souldew's palette and type, readable over any game. */
+       the app under Stream. Transparent by default; twicable's palette and type, readable over any game. */
     :root {
       --ink: #ebe6da; --ink-2: #b9b5ab; --ink-3: #8f8b83; --tri: #6fb39b; --cir: #dc7268; --warn: #e1b05a; --gold: #f0c75e;
       --p1: #7f9ddb; --p2: #c98bbf; --p3: #b3c770; --p4: #a993e6;
@@ -81,7 +81,7 @@
     .t-minimal .grp { background: none; box-shadow: none; }
     .grp .mon { height: var(--cell); align-content: center; }
     .team.v .grp .mon { height: auto; }
-    /* the soul link between the members of a column: souldew's two rings, in the colours of the two players */
+    /* the soul link between the members of a column: twicable's two rings, in the colours of the two players */
     .lk { position: relative; height: 0; align-self: stretch; flex: none; z-index: 1; }
     .grp.multi { gap: 8px; }
     .lk::before {
@@ -998,8 +998,8 @@
       // the app's builder preview: a test alert without the server round trip
       window.addEventListener('message', (e) => {
         if (e.origin !== location.origin) return;
-        if (e.data?.souldewTest) announce([sample(e.data.souldewTest)]);
-        if (e.data?.souldewCoffee && (showsPopups || (showsAlerts && !e.data.souldewCoffee.layer))) showCoffee(e.data.souldewCoffee);
+        if (e.data?.twicableTest) announce([sample(e.data.twicableTest)]);
+        if (e.data?.twicableCoffee && (showsPopups || (showsAlerts && !e.data.twicableCoffee.layer))) showCoffee(e.data.twicableCoffee);
       });
     }
   </script>

@@ -4,7 +4,7 @@
 // What the backup holds: runs (run.json, the shared doc, battery saves, the host key, logs), save states, settings
 // (config.json, the browser storage with each run's doc copy and which player you are), trophies, intro saves, live-run
 // link, custom covers, the 3DS saves – not the ROMs (the library, the games built into run folders: a randomized one is
-// built again from its seed), not caches, downloaded tools or installed 3DS game updates (souldew installs them again
+// built again from its seed), not caches, downloaded tools or installed 3DS game updates (twicable installs them again
 // from the library). It goes next to the data, into backups/pre-<major>.0-<date>/, once per major version: the config
 // remembers it (upgradeBackups), also when it was skipped – a backup made later wouldn't be from before the update.
 import { copyFileSync, constants, lstatSync, mkdirSync, readdirSync, renameSync, rmSync, statfsSync, chmodSync } from 'node:fs';
@@ -14,7 +14,7 @@ import { join, extname } from 'node:path';
 const SKIP_TOP = new Set(['backups', 'Library', 'library', 'cache', 'tools', 'plus', 'logs', 'Cache', 'Code Cache', 'GPUCache', 'DawnCache',
   'DawnGraphiteCache', 'DawnWebGPUCache', 'GrShaderCache', 'GraphiteDawnCache', 'ShaderCache', 'blob_storage', 'Shared Dictionary',
   'Service Worker', 'Crashpad', 'SingletonLock', 'SingletonSocket', 'SingletonCookie', 'DevToolsActivePort']);
-/** Never copied, wherever they are (relative paths with `/`): caches and copies souldew makes again by itself. */
+/** Never copied, wherever they are (relative paths with `/`): caches and copies twicable makes again by itself. */
 const SKIP_PATH = [/^ctr\/updates(\/|$)/, /^runs\/\.(trash|cache)(\/|$)/, /\/shaders(\/|$)/, /\/title\/0004000e(\/|$)/i, /^runs\/[^/]+\/backups\/.*\.tmp$/];
 /** Games and archives: the player's own files, kept where they are (and big). */
 const ROM_EXT = new Set(['.gb', '.gbc', '.gba', '.nds', '.dsi', '.srl', '.3ds', '.cci', '.cxi', '.cia', '.3dsx', '.zip', '.7z', '.rar']);
@@ -157,7 +157,7 @@ function dropPartials(dataDir) {
   for (const n of names) if (/^\.pre-.+\.partial$/.test(n)) rmSync(join(dataDir, 'backups', n), { recursive: true, force: true });
 }
 
-/** Has souldew run on this data folder before? What every 2.x start leaves: the library's index, runs, trophies, states. */
+/** Has twicable run on this data folder before? What every 2.x start leaves: the library's index, runs, trophies, states. */
 export const ranBefore = (dataDir) => ['library-index.json', 'runs', 'trophies.json', 'Saves', 'Local Storage'].some((n) => exists(join(dataDir, n)));
 
 /**

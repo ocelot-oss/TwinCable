@@ -1,4 +1,4 @@
-# Azahar (Nintendo 3DS) – how souldew talks to it
+# Azahar (Nintendo 3DS) – how twicable talks to it
 
 Researched 2026-11-11 against github.com/azahar-emu/azahar (release 2126.2 and master). Code: `server/lib/azahar.mjs`,
 `shared/ctr.mjs`, `shared/live/gen67.mjs`.
@@ -9,18 +9,18 @@ Researched 2026-11-11 against github.com/azahar-emu/azahar (release 2126.2 and m
   master (2127) adds SetFreeCam 8, SaveState 9, LoadState 10, SetInput 11. Version-1 clients (old Citra scripts) get
   no answer.
 - **It binds 0.0.0.0** (`udp::endpoint(udp::v4(), 45987)`): reachable from the LAN while Azahar runs, read and write.
-  souldew switches it on only after saying so (play view), never silently.
+  twicable switches it on only after saying so (play view), never silently.
 - **Reads are not synchronised with emulation** unless built with ENABLE_SCRIPTING_SYNC – the PK6/PK7 checksum and the
   "shrink only after two reads" rule in gen67.mjs cover torn reads. Without a selected process reads go to the
-  current one; souldew selects the game's (process list → title ID 00040000…, or 0 for `.3dsx` homebrew).
+  current one; twicable selects the game's (process list → title ID 00040000…, or 0 for `.3dsx` homebrew).
 - **The RPC server only runs while a game runs** (System::Load) – Azahar open without a game doesn't answer.
 - **macOS UDP**: datagrams > 9216 bytes need bigger socket buffers; Azahar 2126.2 raises its own (EnsureBufferSize),
-  souldew's client raises its receive buffer.
+  twicable's client raises its receive buffer.
 - **Settings folder**: portable `user/` next to azahar.exe (Windows) or next to Azahar.app (macOS – LaunchQtFrontend
   makes the .app's folder the working directory, then SetUserPath looks for ./user); otherwise
   %APPDATA%\Azahar, ~/Library/Application Support/Azahar (or the XDG folders if an older setup made them),
   $XDG_CONFIG_HOME/azahar-emu (Flathub: ~/.var/app/org.azahar_emu.Azahar). No command-line option for it.
-- **macOS `open -a`** with Azahar already running only activates it – the game isn't passed on. souldew refuses a
+- **macOS `open -a`** with Azahar already running only activates it – the game isn't passed on. twicable refuses a
   second start with a message instead.
 - **Files**: Azahar starts .3ds/.cci/.cxi/.3dsx/.app/.elf/.axf and its compressed .zcci/.zcxi/.z3dsx ("Z3DS" header,
   Zstandard); a .cia is installed (File › Install CIA, or `-i` which shows a dialog and exits).
@@ -32,7 +32,7 @@ Researched 2026-11-11 against github.com/azahar-emu/azahar (release 2126.2 and m
 - **Wild opponent** (not used yet): X/Y 0x081FF744, ORAS 0x081FFA6C, SM 0x3002F7B8, USUM 0x3002F9A0 (PokeReader) – a
   start for a 3DS battle panel.
 
-## The libretro core in souldew's own player
+## The libretro core in twicable's own player
 
 Checked 2026-11-11 with the real US images of Omega Ruby, Y, Sun and Ultra Sun (`native/ctr-host`, `server/lib/ctr.mjs`,
 `web/lib/ctrplayer.mjs`).
@@ -41,8 +41,8 @@ Checked 2026-11-11 with the real US images of Omega Ruby, Y, Sun and Ultra Sun (
   (the context negotiation interface, `create_device`). The software renderer manages ~20 fps. Frames come through
   `set_image` (SHADER_READ_ONLY layout); the host copies them back and sends BGRA to the page (WebGL swizzles).
 - **Memory**: `RETRO_ENVIRONMENT_SET_MEMORY_MAPS` is sent once at load, before the game makes its heaps – the party
-  (0x08Cxxxxx in Gen 6, 0x33Fxxxxx/0x3419xxxx in Gen 7) is not in it. The patch exports `souldew_read_memory(addr, out,
-  size)` (the current process's memory, page by page through `IsValidVirtualAddress`) and `souldew_title_id()`. The
+  (0x08Cxxxxx in Gen 6, 0x33Fxxxxx/0x3419xxxx in Gen 7) is not in it. The patch exports `twicable_read_memory(addr, out,
+  size)` (the current process's memory, page by page through `IsValidVirtualAddress`) and `twicable_title_id()`. The
   host reads up to 16 regions of 64 KB every 6 frames; `__emu.watch()` adds regions for research (heap scans).
 - **New 3DS mode** (`citra_is_new_3ds`, the default) – Old 3DS mode works too, but states don't cross: loading an
   Old 3DS state in New 3DS mode hits a memory assertion and ends the core.
@@ -56,7 +56,7 @@ Checked 2026-11-11 with the real US images of Omega Ruby, Y, Sun and Ultra Sun (
   the "saved in the game" indicator watches.
 - **Zones** (place sign): Gen 6 keeps the current zone at a fixed address (X/Y 0x081828EC, ORAS 0x08187BD4 –
   PKMN-NTR's `mapidoff`); the ROM's zone table turns it into a met-location ID (pk3DS: XY/ORAS 56 bytes per zone, the
-  place at +0x1C, 9 bits; SM/USUM `a/0/7/7` file 0, LZ11, 0x54 bytes, u32 at +0x1C). Gen 7 (found by souldew with
+  place at +0x1C, 9 bits; SM/USUM `a/0/7/7` file 0, LZ11, 0x54 bytes, u32 at +0x1C). Gen 7 (found by twicable with
   heap scans through `__emu.watch` across house → outside → house): the player's position { u16, u16 zone, f32 x, y, z }
   – Ultra Sun 0x33F6D74A (a copy of the previous position 0x48 after it), Sun 0x34183CC6; fixed addresses (the same
   after a fresh start). The bytes before the party in RAM are not the save file's layout (no Situation block).

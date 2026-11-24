@@ -1,4 +1,4 @@
-// The game's memory for souldew's live tracking – see ramstream.h.
+// The game's memory for twicable's live tracking – see ramstream.h.
 #include "ramstream.h"
 #include "hostio.h"
 #include "protocol.h"

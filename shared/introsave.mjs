@@ -19,7 +19,7 @@ const u16be = (b, o) => (b[o] << 8) | b[o + 1];
 const u32 = (b, o) => (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24)) >>> 0;
 const hex8 = (n) => n.toString(16).padStart(8, '0');
 
-/** The systems an intro save works for – every one souldew plays (3DS: in souldew's own 3DS player). */
+/** The systems an intro save works for – every one twicable plays (3DS: in twicable's own 3DS player). */
 export const INTRO_SYSTEMS = ['gb', 'gbc', 'gba', 'nds', '3ds'];
 
 /** All bytes alike (a cartridge never written: 0xFF or 0x00) – trailing emulator data (a clock, ≤ 256 bytes) aside. */

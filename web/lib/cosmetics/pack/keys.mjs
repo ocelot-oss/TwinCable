@@ -1,4 +1,4 @@
-// The public keys a souldew+ pack must be signed with (Ed25519, raw 32 bytes as base64). Pinned in the app: a pack signed
+// The public keys a twicable+ pack must be signed with (Ed25519, raw 32 bytes as base64). Pinned in the app: a pack signed
 // with any other key is refused before a single byte of it is used.
 //
 // PRODUCTION_KEYS: the owner's pack signing key (souldew-accounts tools/keygen.mjs pack – the same key whose public half

@@ -7,8 +7,8 @@ import { startServer } from './app.mjs';
 const port = Number(process.env.PORT || 7373);
 try {
   const { url, goOffline } = await startServer({ port });
-  console.log(`\n  souldew is running at ${url}\n  (Ctrl+C stops the server)\n`);
-  // Ctrl+C / kill: the souldew account says "offline" first (bounded), so friends don't see this computer for 3 minutes
+  console.log(`\n  twicable is running at ${url}\n  (Ctrl+C stops the server)\n`);
+  // Ctrl+C / kill: the twicable account says "offline" first (bounded), so friends don't see this computer for 3 minutes
   for (const sig of ['SIGINT', 'SIGTERM']) {
     process.once(sig, () => {
       const t = setTimeout(() => process.exit(0), 2000);
@@ -28,7 +28,7 @@ try {
   }
 } catch (e) {
   if (e.code === 'EADDRINUSE') {
-    console.log(`Port ${port} is taken – is souldew already running? Open http://localhost:${port}`);
+    console.log(`Port ${port} is taken – is twicable already running? Open http://localhost:${port}`);
     process.exit(1);
   }
   throw e;

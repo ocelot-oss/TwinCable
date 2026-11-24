@@ -1,8 +1,8 @@
-// The Thank you page (#/thanks): the people who keep souldew free – Legends, souldew+ members, Supporters and the ones
+// The Thank you page (#/thanks): the people who keep twicable free – Legends, twicable+ members, Supporters and the ones
 // who bought a coffee – live from the accounts service's public wall (API.md §13, through the local server). Only people
 // who said yes appear by name, wearing their own banner and frame; everyone else is a number ("and 12 more"). Asked when
 // the page opens and every minute while it is visible (lib/thanks.mjs); someone new arrives with a short, quiet moment.
-// Offline it shows the last wall this computer saw, "as of …". Reached from Help, Settings › About and the souldew+ page.
+// Offline it shows the last wall this computer saw, "as of …". Reached from Help, Settings › About and the twicable+ page.
 import { html, useState, useEffect } from '/vendor/htm-preact.mjs';
 import { t, currentLang } from '../lib/i18n.mjs';
 import { Icon } from '../lib/icons.mjs';
@@ -20,18 +20,18 @@ import { BannerLook, FramedAvatar } from './plus.mjs';
 /** Each tier's mark, name and words. Legend = the patron tier (its id stays "patron" elsewhere). */
 export const TIER_TEXT = () => ({
   legend: { icon: 'crown', name: t('acct.patron', 'Legend'), title: t('thanks.hLegend', 'Legends'), line: t('thanks.lLegend', 'The ones who give the most, every month.') },
-  plus: { icon: 'plus', name: t('rail.plus', 'souldew+'), title: t('thanks.hPlus', 'souldew+ members'), line: t('thanks.lPlus', 'Every month, for the servers and the time.') },
+  plus: { icon: 'plus', name: t('rail.plus', 'twicable+'), title: t('thanks.hPlus', 'twicable+ members'), line: t('thanks.lPlus', 'Every month, for the servers and the time.') },
   supporter: { icon: 'heart', name: t('acct.supporter', 'Supporter'), title: t('thanks.hSupporter', 'Supporters'), line: t('thanks.lSupporter', 'A little every month, and it adds up.') },
-  coffee: { icon: 'coffee', name: t('thanks.coffee', 'Coffee'), title: t('thanks.hCoffee', 'Bought souldew a coffee'), line: t('thanks.lCoffee', 'One coffee at a time – each one counted.') },
+  coffee: { icon: 'coffee', name: t('thanks.coffee', 'Coffee'), title: t('thanks.hCoffee', 'Bought twicable a coffee'), line: t('thanks.lCoffee', 'One coffee at a time – each one counted.') },
 });
 
 /** "New: Lena joined the Legends 🏆" – the moment for someone who just arrived (or moved up). */
 export function arrivalText(a) {
   const vars = { name: a.name };
   if (a.tier === 'legend') return t('thanks.newLegend', 'New: {name} joined the Legends 🏆', vars);
-  if (a.tier === 'plus') return t('thanks.newPlus', 'New: {name} joined souldew+ 🔗', vars);
+  if (a.tier === 'plus') return t('thanks.newPlus', 'New: {name} joined twicable+ 🔗', vars);
   if (a.tier === 'supporter') return t('thanks.newSupporter', 'New: {name} became a Supporter 💧', vars);
-  return t('thanks.newCoffee', 'New: {name} bought souldew a coffee ☕', vars);
+  return t('thanks.newCoffee', 'New: {name} bought twicable a coffee ☕', vars);
 }
 
 const monthYear = (since) => {
@@ -134,11 +134,11 @@ function SupportCta({ signedIn, listed, navigate }) {
   return html`<section class="ty-cta">
     <div class="ty-cta-words">
       <h2>${t('thanks.ctaT', 'Want to help too?')}</h2>
-      <p class="small muted">${t('thanks.ctaText', 'souldew stays free either way. If you’d like to chip in – monthly or a single coffee – it goes into the servers, the signing certificates and the time. Your name appears here only if you say so.')}</p>
+      <p class="small muted">${t('thanks.ctaText', 'twicable stays free either way. If you’d like to chip in – monthly or a single coffee – it goes into the servers, the signing certificates and the time. Your name appears here only if you say so.')}</p>
     </div>
     <div class="ty-cta-actions">
-      <button type="button" class="btn" onClick=${() => openExternal(LINKS.membership)}><${Icon} name="external" size=${14} />${t('thanks.ctaBtn', 'Support souldew')}</button>
-      <button type="button" class="btn ghost" onClick=${() => navigate('plus')}>${t('thanks.ctaPlus', 'What souldew+ adds')}</button>
+      <button type="button" class="btn" onClick=${() => openExternal(LINKS.membership)}><${Icon} name="external" size=${14} />${t('thanks.ctaBtn', 'Support twicable')}</button>
+      <button type="button" class="btn ghost" onClick=${() => navigate('plus')}>${t('thanks.ctaPlus', 'What twicable+ adds')}</button>
       ${signedIn && html`<a href="#" class="small" onClick=${(e) => { e.preventDefault(); navigate('settings', settingsLink('account-privacy')); }}>${listed ? t('thanks.manageMine', 'Your name is on this page – change it in Settings') : t('thanks.showMine', 'Supporting already? Show your name here')}</a>`}
     </div>
   </section>`;
@@ -167,10 +167,10 @@ export function ThanksView() {
   return html`<div class="ty-page">
     <header class="ty-hero">
       <span class="plus-kicker">${t('thanks.kicker', 'Thank you')}</span>
-      <h1 class="ty-h1">${t('thanks.h1', 'souldew is free because of these people.')}</h1>
-      <p class="ty-lede">${t('thanks.lede', 'Every name and every number here helps pay for the servers, the signing certificates and the time that keep souldew free for everyone. Thank you.')}</p>
+      <h1 class="ty-h1">${t('thanks.h1', 'twicable is free because of these people.')}</h1>
+      <p class="ty-lede">${t('thanks.lede', 'Every name and every number here helps pay for the servers, the signing certificates and the time that keep twicable free for everyone. Thank you.')}</p>
       <div class="ty-sum">
-        ${s.thanks ? html`<span class="ty-total"><b>${total.toLocaleString(currentLang())}</b><span>${t('thanks.total', 'person supports souldew right now|people support souldew right now', { count: total })}</span></span>` : null}
+        ${s.thanks ? html`<span class="ty-total"><b>${total.toLocaleString(currentLang())}</b><span>${t('thanks.total', 'person supports twicable right now|people support twicable right now', { count: total })}</span></span>` : null}
         <${LiveState} s=${s} />
         <${Moments} queue=${queue} onDone=${() => setQueue((q) => q.slice(1))} />
       </div>
@@ -178,7 +178,7 @@ export function ThanksView() {
     ${!s.thanks && !s.loading && html`<div class="ty-empty panel"><p class="muted">${s.error === 'thanksMissing' ? t('thanks.missing', 'The Thank you page isn’t available yet.') : t('thanks.offlineNone', 'Offline – the list shows up once you’re online.')}</p></div>`}
     ${s.thanks && !groups.length && html`<div class="ty-empty panel"><p class="muted">${t('thanks.none', 'No supporters yet – the first name here could be yours.')}</p></div>`}
     ${groups.map((g) => html`<${TierSection} key=${g.tier} g=${g} fresh=${fresh} />`)}
-    <p class="ty-privacy small faint">${t('thanks.privacy', 'Only people who chose to be listed appear by name – with the name, picture, banner and frame they show in souldew anyway. Everyone else is counted, never named.')}</p>
+    <p class="ty-privacy small faint">${t('thanks.privacy', 'Only people who chose to be listed appear by name – with the name, picture, banner and frame they show in twicable anyway. Everyone else is counted, never named.')}</p>
     <${SupportCta} signedIn=${!!acct.session?.signedIn} listed=${listed} navigate=${navigate} />
   </div>`;
 }

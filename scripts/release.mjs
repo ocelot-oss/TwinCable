@@ -6,8 +6,8 @@
 // Usage: npm run release -- [--notes "text" | --notes-file file] [--repo owner/name] [--dmg path] [--win-exe path | --no-win]
 //                           [--appimage path | --no-linux] [--deb path] [--min-version x.y.z] [--out dir] [--key file]
 // Without --notes/--notes-file the notes come from the "## <version>" section of CHANGELOG.md.
-// Without --win-exe the installer is picked up from dist/souldew-<version>-win-x64-setup.exe when it is there; likewise
-// dist/souldew-<version>-linux-x86_64.AppImage and dist/souldew-<version>-linux-amd64.deb. The .deb is only uploaded –
+// Without --win-exe the installer is picked up from dist/twicable-<version>-win-x64-setup.exe when it is there; likewise
+// dist/twicable-<version>-linux-x86_64.AppImage and dist/twicable-<version>-linux-amd64.deb. The .deb is only uploaded –
 // it isn't in the feed, because a package installed as root can't replace itself (those apps link to the release page).
 // latest.json is signed (Ed25519) with the private key from --key, $SLS_RELEASE_KEY or ~/.config/soullink-studio/release-key.pem.
 //
@@ -62,7 +62,7 @@ export function loadReleaseKey(keyPath, expectedPublicKey) {
 }
 
 /**
- * The unsigned feed: the DMG at the top level (all that souldew ≤ 2.0 reads), every other platform under `assets`.
+ * The unsigned feed: the DMG at the top level (all that twicable ≤ 2.0 reads), every other platform under `assets`.
  * dmg / win / linux: { sha256, size } of the files as they will be uploaded (named dmgAssetName / winAssetName /
  * linuxAssetName – the AppImage).
  */
@@ -131,9 +131,9 @@ async function stage(src, out, name) {
 async function main() {
   const a = args(process.argv.slice(2));
   const keyPath = keyPathFrom(a);
-  // souldew+ release gate: never publish a build whose pinned pack / entitlement keys are placeholders
+  // twicable+ release gate: never publish a build whose pinned pack / entitlement keys are placeholders
   const unpinned = a['init-key'] ? [] : pinnedKeyProblems();
-  if (unpinned.length) throw new Error(`souldew+ keys are not pinned:\n  ${unpinned.join('\n  ')}`);
+  if (unpinned.length) throw new Error(`twicable+ keys are not pinned:\n  ${unpinned.join('\n  ')}`);
   if (a['init-key']) {
     const r = initKey({ keyPath, pkgPath: join(root, 'package.json') });
     console.log(`Release key created: ${r.keyPath} (only you can read it)

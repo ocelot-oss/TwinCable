@@ -5,13 +5,13 @@ import { t } from './i18n.mjs';
 
 export const authTexts = () => ({
   okTitle: t('auth.okTitle', 'You’re signed in'),
-  okText: t('auth.okText', 'You can close this tab and go back to souldew.'),
+  okText: t('auth.okText', 'You can close this tab and go back to twicable.'),
   failTitle: t('auth.failTitle', 'Signing in didn’t work'),
-  failText: t('auth.failText', 'Go back to souldew and try again.'),
+  failText: t('auth.failText', 'Go back to twicable and try again.'),
   deniedTitle: t('auth.deniedTitle', 'Sign-in cancelled'),
-  deniedText: t('auth.cancelledText', 'You cancelled the sign-in – nothing was shared with souldew. You can close this tab.'),
-  mismatchText: t('auth.mismatchText', 'This sign-in link doesn’t belong to the sign-in souldew started. Go back to souldew and start again.'),
-  expiredText: t('auth.expiredText', 'This sign-in took too long. Go back to souldew and start again.'),
-  offlineText: t('auth.offlineText', 'souldew couldn’t reach the account service. Check your internet connection, then try again in souldew.'),
-  suspendedText: t('auth.suspendedText', 'This souldew account is suspended.'),
+  deniedText: t('auth.cancelledText', 'You cancelled the sign-in – nothing was shared with twicable. You can close this tab.'),
+  mismatchText: t('auth.mismatchText', 'This sign-in link doesn’t belong to the sign-in twicable started. Go back to twicable and start again.'),
+  expiredText: t('auth.expiredText', 'This sign-in took too long. Go back to twicable and start again.'),
+  offlineText: t('auth.offlineText', 'twicable couldn’t reach the account service. Check your internet connection, then try again in twicable.'),
+  suspendedText: t('auth.suspendedText', 'This twicable account is suspended.'),
 });

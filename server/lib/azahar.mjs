@@ -3,15 +3,15 @@
 // Azahar answers UDP requests on port 45987 when "Enable RPC server" is on (Settings › Debug, config key
 // [Debugging] enable_rpc_server). Protocol (src/core/rpc/packet.h, dist/scripting/AzaharRPC.py – version 2 since
 // Azahar 2126): a 16-byte header { u32 version = 2, u32 id, u32 type, u32 data size } and up to 32 KiB of data, all
-// little-endian; the reply repeats the header with its own data. Requests used here – souldew only ever reads:
+// little-endian; the reply repeats the header with its own data. Requests used here – twicable only ever reads:
 //   1 ReadMemory      { u32 address, u32 size }        → the bytes (of the selected process)
 //   3 ProcessList     { u32 start, u32 max }           → { u32 count, count × { u32 pid, u64 title ID, char[8] name } }
 //   4 SetGetProcess   { u32 0 = get / 1 = set, u32 pid } → get: { u32 pid }
 // The server listens on every network interface, not only this computer: while it is on, anyone on the same network
-// can read and change the running game's memory. souldew therefore switches it on only when asked to (the button
+// can read and change the running game's memory. twicable therefore switches it on only when asked to (the button
 // in the play view explains that), never by itself.
 //
-// AzaharBridge polls it: which title runs (the process list), and for a game souldew knows (shared/data/addresses.json,
+// AzaharBridge polls it: which title runs (the process list), and for a game twicable knows (shared/data/addresses.json,
 // platform '3ds') the memory regions of its party – emitted as the same 'live' frames the mGBA bridge sends, so the
 // page parses them with the same code.
 import { createSocket } from 'node:dgram';
@@ -199,7 +199,7 @@ export function configCandidates({ platform = process.platform, env = process.en
  * Azahar's portable mode: a "user" folder next to the program holds everything (settings, saves). Windows looks next
  * to azahar.exe; macOS next to Azahar.app (Azahar makes the .app's folder its working directory at start-up,
  * src/citra_qt/citra_qt.cpp LaunchQtFrontend, and then looks for ./user). Linux only looks in the working directory a
- * launcher started it in – not something souldew can know. `emuPath` = the .app / the executable.
+ * launcher started it in – not something twicable can know. `emuPath` = the .app / the executable.
  */
 export function portableUserDir(emuPath, platform = process.platform) {
   if (!emuPath || typeof emuPath !== 'string') return null;
@@ -296,7 +296,7 @@ export function enableRpc(opts = {}) {
 
 // ---- the bridge -------------------------------------------------------------------------------------------------
 
-const POLL_LIVE = 500; // a game souldew reads: twice a second
+const POLL_LIVE = 500; // a game twicable reads: twice a second
 const POLL_IDLE = 2000; // Azahar running, no game / an unknown one
 const POLL_OFF = 3000; // no answer
 

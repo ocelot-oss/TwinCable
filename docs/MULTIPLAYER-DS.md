@@ -10,7 +10,7 @@ local wireless in Diamond/Pearl/Platinum, HeartGold/SoulSilver, Black/White and 
   melonDS DS v1.4.0 builds) and supplies melonDS's `Platform::` layer itself.
   - Up to 4 `melonDS::NDS` instances run in one process.
   - Each console uses FreeBIOS and a generated firmware: no Nintendo files.
-  - Per seat, the firmware gets its own MAC address (`02:50:4B:53:44:1x`) and nickname (`souldewN`). Two consoles
+  - Per seat, the firmware gets its own MAC address (`02:50:4B:53:44:1x`) and nickname (`twicableN`). Two consoles
     with the same MAC can't talk to each other.
 - **The local-wireless layer is deterministic.** melonDS's own `LocalMP` lets instances run freely on threads and
   blocks the Wi-Fi chip for up to 25 ms of *wall clock* while it waits for MP replies or host frames. That is fine on
@@ -131,12 +131,12 @@ DS adds nothing over GBA link sessions.
   - Link `libcore.a libteakra.a` with `c++` (+ `-framework CoreFoundation` on macOS).
   - The binary is about 3.7 MB, and no enet or slirp is needed.
   - Every peer must run the same melonDS commit and the same JIT setting.
-- **JIT.** Not in the link host (the spike's `SOULDEW_DS_JIT` / `_DEBUG` / `_STATS` switches are gone). A JIT session
+- **JIT.** Not in the link host (the spike's `TWICABLE_DS_JIT` / `_DEBUG` / `_STATS` switches are gone). A JIT session
   would have to be a real option every peer agrees on, and only between peers of the same architecture.
   - JIT across CPU architectures (arm64 Mac ↔ x64 Windows) is **untested**. Default to the interpreter for mixed
     sessions until a cross-arch net test passes.
 - **RTC.** `--rtc` must be the shared session epoch. With the default (`time(NULL)`), two runs differ.
-- **Live tracking.** `mem()` maps main RAM (0x02000000–0x023FFFFF), so souldew's Gen 4/5 RAM readers work on the
+- **Live tracking.** `mem()` maps main RAM (0x02000000–0x023FFFFF), so twicable's Gen 4/5 RAM readers work on the
   local seat as they do in retrohost.
 - **4 players.** Seats 0–3 are supported (`LINK_MAX_SEATS`).
   - The Union Room shows every console, and the scheduler is N-way.
@@ -167,8 +167,8 @@ DS adds nothing over GBA link sessions.
     Python 2.7) is dormant.
   - **Emulator use** reportedly works (melonDS has a built-in access point). The services' emulator and bundling
     rules are unverified: ask Wiimmfi and Kaeru before shipping a default DNS.
-  - **Every user would share melonDS's default MAC** unless souldew randomises it per install. Bans are per
+  - **Every user would share melonDS's default MAC** unless twicable randomises it per install. Bans are per
     identifier.
-  - **The core needs network mode.** souldew's retrohost sets `melonds_network_mode=disabled`. An opt-in would turn
+  - **The core needs network mode.** twicable's retrohost sets `melonds_network_mode=disabled`. An opt-in would turn
     on indirect (libslirp) mode for that session only.
   - It is not a substitute for partner-to-partner trades in a SoulLink: it is a different feature (the GTS, strangers).

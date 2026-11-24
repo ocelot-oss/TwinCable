@@ -52,7 +52,7 @@ test('nag window: always closable, never claims payment is required, own artwork
     const keys = Object.keys(j).filter((k) => k.startsWith('nag.') || k === 'set.nag' || k === 'set.nagHint');
     assert.equal(keys.length, 16, `${lang}: all nag texts`);
     for (const k of keys) assert.doesNotMatch(j[k], /winrar/i, `${lang} ${k}`);
-    assert.match(j['nag.free'], /souldew/);
+    assert.match(j['nag.free'], /twicable/);
   }
   const app = readFileSync(new URL('../web/app.mjs', import.meta.url), 'utf8');
   assert.match(app, /sessionStorage\.getItem\('sl-nag-counted'\)/, 'a reload is no new launch');

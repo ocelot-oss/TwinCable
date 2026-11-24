@@ -28,7 +28,7 @@ export function backendSwitches(backend, platform) {
 }
 
 /**
- * SOULDEW_CHROMIUM_FLAGS for power users: space-separated `name` or `name=value`, with or without leading dashes.
+ * TWICABLE_CHROMIUM_FLAGS for power users: space-separated `name` or `name=value`, with or without leading dashes.
  * Underscores in the name become dashes (`use_angle=vulkan` → `use-angle`, as some guides write it). Anything that
  * isn't a plausible switch name is skipped. Returns [name, value | null] pairs, the last one of a name winning.
  */
@@ -46,18 +46,18 @@ export function parseChromiumFlags(text) {
 }
 
 /**
- * Safe graphics: a start without the graphics card, for a PC where souldew opens with a blank window. Asked for with
- * `--safe-graphics` (the Windows Start menu's "souldew (safe graphics)", or on the command line) or
- * SOULDEW_SAFE_GRAPHICS=1 (e.g. Steam's launch options). Chromium then draws in software – slower, but the window
+ * Safe graphics: a start without the graphics card, for a PC where twicable opens with a blank window. Asked for with
+ * `--safe-graphics` (the Windows Start menu's "twicable (safe graphics)", or on the command line) or
+ * TWICABLE_SAFE_GRAPHICS=1 (e.g. Steam's launch options). Chromium then draws in software – slower, but the window
  * shows, and Settings › General can switch the graphics backend for the next normal start.
  */
 export const SAFE_GRAPHICS_ARG = '--safe-graphics';
 export function safeGraphicsRequested(argv = [], env = {}) {
-  return (Array.isArray(argv) && argv.includes(SAFE_GRAPHICS_ARG)) || env?.SOULDEW_SAFE_GRAPHICS === '1';
+  return (Array.isArray(argv) && argv.includes(SAFE_GRAPHICS_ARG)) || env?.TWICABLE_SAFE_GRAPHICS === '1';
 }
 /** The switches of a safe start: no GPU at all, WebGL (the emulator's picture) through SwiftShader on the CPU. */
 export const SAFE_SWITCHES = [['disable-gpu', null], ['disable-gpu-compositing', null], ['enable-unsafe-swiftshader', null]];
-/** Switches that would bring the graphics card back – dropped from SOULDEW_CHROMIUM_FLAGS in a safe start. */
+/** Switches that would bring the graphics card back – dropped from TWICABLE_CHROMIUM_FLAGS in a safe start. */
 const GPU_FLAG_NAMES = new Set(['use-angle', 'use-gl', 'use-vulkan', 'enable-gpu', 'ignore-gpu-blocklist', 'ignore-gpu-blacklist', 'enable-gpu-rasterization', 'enable-zero-copy']);
 
 /** The arguments for starting again normally after a safe start (the same ones without --safe-graphics). */
@@ -75,7 +75,7 @@ export function chromiumSwitches({ backend, platform, envFlags = '', safe = fals
   return [...parseChromiumFlags(envFlags).filter(([name]) => !mine.has(name)), ...own];
 }
 
-/** Starts in a row with a chosen backend that never showed the window before souldew goes back to 'auto'. */
+/** Starts in a row with a chosen backend that never showed the window before twicable goes back to 'auto'. */
 export const MAX_FAILED_STARTS = 2;
 /** GPU process crashes within one session with a chosen backend before the next start uses 'auto'. */
 export const MAX_GPU_CRASHES = 3;

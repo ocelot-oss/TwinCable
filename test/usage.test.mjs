@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createUsage, pingFor, isoWeek, localDay, firstUseOf } from '../server/lib/usage.mjs';
 
-const dir = () => mkdtempSync(join(tmpdir(), 'souldew-usage-'));
+const dir = () => mkdtempSync(join(tmpdir(), 'twicable-usage-'));
 const at = (y, m, d, h = 12) => new Date(y, m - 1, d, h);
 
 function setup({ on = true, allowed = true, start = at(2026, 11, 22), answer = () => new Response('{"ok":true}', { status: 200 }), config = null } = {}) {
@@ -18,7 +18,7 @@ function setup({ on = true, allowed = true, start = at(2026, 11, 22), answer = (
   const sent = [];
   const u = createUsage({
     enabled: () => on, allowed, file: join(d, 'usage.json'), configPath, platform: 'darwin', arch: 'arm64', version: () => '3.0.1',
-    env: { SOULDEW_LIVE_URL: 'http://127.0.0.1:9/mock' }, now: () => clock,
+    env: { TWICABLE_LIVE_URL: 'http://127.0.0.1:9/mock' }, now: () => clock,
     fetchImpl: async (url, init) => { sent.push({ url, body: JSON.parse(init.body) }); return answer(); },
   });
   return { u, sent, d, setClock: (c) => { clock = c; }, setOn: (v) => { on = v; } };

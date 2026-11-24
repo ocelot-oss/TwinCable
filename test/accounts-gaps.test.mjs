@@ -1,4 +1,4 @@
-// souldew 3.0 account gaps: offline at once when the app quits (bounded), "Unlink membership" (pack cache wiped, the
+// twicable 3.0 account gaps: offline at once when the app quits (bounded), "Unlink membership" (pack cache wiped, the
 // verified tier gone), the session list with "sign out this device", the own badges from the verified token only.
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createServer } from 'node:http';
 
-process.env.SLS_DATA_DIR = mkdtempSync(join(tmpdir(), 'souldew-gaps-'));
+process.env.SLS_DATA_DIR = mkdtempSync(join(tmpdir(), 'twicable-gaps-'));
 const { startFakeAccounts } = await import('./fixtures/fakeaccounts.mjs');
 const fake = await startFakeAccounts();
 process.env.SLS_ACCOUNTS_URL = fake.base;
@@ -104,7 +104,7 @@ test('unlink membership: the service unlinks, the pack cache goes at once, the v
 test('the own badges never come from the profile JSON: an unverifiable token shows none', async () => {
   const u = fake.addUser({ handle: 'pretender', entitlement: { tier: 'plus', until: null, badges: ['plus'] } });
   const a = await start();
-  fake.entClaims = { aud: 'souldew-app' }; // a token the app can't accept (from the first look on)
+  fake.entClaims = { aud: 'twicable-app' }; // a token the app can't accept (from the first look on)
   try {
     await a.signIn(u);
     const { warn } = console;
@@ -144,6 +144,6 @@ test('sessions: the list marks this computer; another device is signed out; this
   assert.equal((await a.call('GET', '/api/account')).body.session.signedIn, false);
   // cleaning
   assert.equal(cleanSession({ id: 'nope' }), null);
-  assert.deepEqual(cleanSession({ id: 'ses_abc', device_name: 'souldew on a Mac<script>', platform: 'amiga', created_at: 'x', current: false }, 'ses_abc'),
-    { id: 'ses_abc', device: 'souldew on a Mac<script>'.slice(0, 40), platform: null, createdAt: null, lastUsedAt: null, current: true });
+  assert.deepEqual(cleanSession({ id: 'ses_abc', device_name: 'twicable on a Mac<script>', platform: 'amiga', created_at: 'x', current: false }, 'ses_abc'),
+    { id: 'ses_abc', device: 'twicable on a Mac<script>'.slice(0, 40), platform: null, createdAt: null, lastUsedAt: null, current: true });
 });

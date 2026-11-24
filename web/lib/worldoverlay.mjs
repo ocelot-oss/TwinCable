@@ -1,7 +1,7 @@
 // Shared World, the player page's half (docs/MULTIPLAYER.md › 9): the partners drawn over the game's picture, their
 // names, the Pokémon following each of them (and you), the emote bubbles, and the little menu when you walk up to a
 // partner and press A (Trade / Battle / Wave / Rock-paper-scissors / emotes) – with the rock-paper-scissors picker.
-// Nothing is written into the game: souldew reads where the camera is (every picture: the native player sends those
+// Nothing is written into the game: twicable reads where the camera is (every picture: the native player sends those
 // few bytes with each frame, web/lib/nativeplayer.mjs WATCH; the browser player reads its memory directly) and draws
 // the partners' sprites – taken from this computer's ROM – on a canvas exactly on top of the picture.
 //
@@ -64,7 +64,7 @@ export function installWorld(host) {
     together: (data) => st?.together?.(data),
     /** Can this page show a rock-paper-scissors game right now (Shared World on, the overworld on screen)? */
     canPresent: () => !!st?.canPresent?.(),
-    /** Does this game get souldew's follower for you? (HeartGold/SoulSilver walk your Pokémon themselves) */
+    /** Does this game get twicable's follower for you? (HeartGold/SoulSilver walk your Pokémon themselves) */
     ownFollower: () => st?.ownFollower !== false,
     /** nativeplayer: the WATCHED bytes of the picture that comes next */
     onWatched: (bytes) => st?.onWatched(bytes),

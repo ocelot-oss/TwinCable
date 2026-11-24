@@ -28,7 +28,7 @@ library/
 *.ips
 *.bps
 *.xdelta
-souldew-diagnostics-*.json
+twicable-diagnostics-*.json
 
 # Downloaded or built tools (fetched by scripts/fetch-jre.mjs / the app)
 tools/emulator/
@@ -45,6 +45,6 @@ tools/jre/
 .idea/
 *.log
 
-# souldew's 3DS part, built by scripts/build-ctr.mjs
+# twicable's 3DS part, built by scripts/build-ctr.mjs
 tools/ctr/
 tools/native/

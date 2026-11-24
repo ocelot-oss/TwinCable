@@ -53,8 +53,8 @@ function verdictLine(check, system) {
   if (v === 'match') return { tone: 'ok', text: t('simp.match', 'A save of {game} – it fits this game.', { game: familyName(check.found) }) };
   if (v === 'mismatch') return { tone: 'warn', text: t('simp.mismatch', 'This looks like a save of {found}, not of {want}. The game may not load it – or start a new game over it.', { found: familyName(check.found), want: familyName(check.want) }) };
   if (v === 'size') return { tone: 'warn', text: t('simp.sizeOff', 'A save of {game}, but not the size the game writes. It may not load.', { game: familyName(check.found) }) };
-  return { tone: 'muted', text: system === '3ds' ? t('simp.unknown3ds', 'souldew can’t tell which game this backup is from – it goes in as it is.')
-    : t('simp.unknown', 'souldew can’t tell which game this save is from (a ROM hack, another language or another game) – it goes in as it is.') };
+  return { tone: 'muted', text: system === '3ds' ? t('simp.unknown3ds', 'twicable can’t tell which game this backup is from – it goes in as it is.')
+    : t('simp.unknown', 'twicable can’t tell which game this save is from (a ROM hack, another language or another game) – it goes in as it is.') };
 }
 
 /** A folder the player picked (Checkpoint / JKSM backup): its files as the server takes them. */
@@ -204,7 +204,7 @@ export function SaveImportDialog({ target, onClose, onDone }) {
   return html`<${Modal} open=${true} onClose=${onClose} title=${t('simp.title', 'Import a save file')} footer=${footer}>
     <div class="stack save-import">
       <p class="muted">${isCtr
-        ? t('simp.intro3ds', 'A backup from Checkpoint or JKSM – the folder, or a zip of it – goes into this game’s save in souldew’s own 3DS player.')
+        ? t('simp.intro3ds', 'A backup from Checkpoint or JKSM – the folder, or a zip of it – goes into this game’s save in twicable’s own 3DS player.')
         : inRun ? t('simp.introRun', 'A save from another emulator, a flash cart or a cartridge dump (.sav, .srm, .dsv …) replaces your save in the run “{run}”.', { run: target.label || '' })
           : t('simp.intro', 'A save from another emulator, a flash cart or a cartridge dump (.sav, .srm, .dsv …) replaces the save of {game}.', { game: target.label || '' })}</p>
       ${!allowed.ok && html`<div class="warning" role="alert">${t('simp.hostOnly', 'The host hasn’t allowed importing saves in this run. They can switch it on in the run’s rules.')}</div>`}
@@ -227,7 +227,7 @@ export function SaveImportDialog({ target, onClose, onDone }) {
         ${(check.notes || []).map(noteText).filter(Boolean).map((n) => html`<div class="small muted">${n}</div>`)}
         ${check.check?.party > 0 && html`<div class="small muted">${t('simp.party', 'Its team: {n} Pokémon.', { n: check.check.party })}</div>`}
         ${isCtr && check.missing?.length > 0 && html`<div class="small muted">${t('simp.missing3ds', 'Files the game has now that the backup doesn’t: {list} – they are removed.', { list: check.missing.slice(0, 4).join(', ') })}</div>`}
-        ${isCtr && !check.current?.exists && html`<div class="warning">${t('simp.ctrStart', 'Start this game in souldew once and save in it first – then its save can be replaced.')}</div>`}
+        ${isCtr && !check.current?.exists && html`<div class="warning">${t('simp.ctrStart', 'Start this game in twicable once and save in it first – then its save can be replaced.')}</div>`}
         <div class="small muted">${check.current?.exists
           ? t('simp.backup', 'Your current save{when} is backed up first – Undo brings it back.', { when: check.current.at ? ` (${t('simp.savedAgo', 'saved {ago}', { ago: ago(check.current.at) })})` : '' })
           : isCtr ? '' : t('simp.noSave', 'The game has no save yet.')}</div>

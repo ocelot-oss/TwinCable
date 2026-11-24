@@ -1,5 +1,5 @@
 // What each membership gets for the launch animation, in plain words (owner's decision 18.11.26, shared/handheld.mjs
-// launchRights) – on the souldew+ page and in "What souldew+ holds" (Settings › Account). `current`: the viewer's
+// launchRights) – on the twicable+ page and in "What twicable+ holds" (Settings › Account). `current`: the viewer's
 // launch tier ('free' | 'supporter' | 'member'), marked "Yours".
 import { html } from '/vendor/htm-preact.mjs';
 import { t } from '../lib/i18n.mjs';
@@ -13,7 +13,7 @@ export function launchTierRows() {
   return [
     ['free', t('launch.tierFree', 'Free'), t('launch.tierFreeWhat', 'The cartridge slides into the console (2D) – on or off.')],
     ['supporter', t('acct.supporter', 'Supporter'), t('launch.tierSupWhat', 'Your own handheld in 3D, in your theme’s colours – Full, Quick or Off. Dress it with the Plain Dusk skin, the {n} free stickers and the ones you earn; one saved design.', { n: freeStickers })],
-    ['member', t('launch.tierPlus', 'souldew+ and Legend'), t('launch.tierPlusWhat', 'Everything: Gold, Clear shell and Holo label, {skins} more skins, {stickers} more stickers, holo and glitter, up to 12 designs, Surprise me at start – and now and then a Rare start.', { skins: plusSkins, stickers: plusStickers })],
+    ['member', t('launch.tierPlus', 'twicable+ and Legend'), t('launch.tierPlusWhat', 'Everything: Gold, Clear shell and Holo label, {skins} more skins, {stickers} more stickers, holo and glitter, up to 12 designs, Surprise me at start – and now and then a Rare start.', { skins: plusSkins, stickers: plusStickers })],
   ];
 }
 

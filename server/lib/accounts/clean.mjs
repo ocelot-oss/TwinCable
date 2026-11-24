@@ -11,10 +11,10 @@ import {
 import { SPECIES_MAX, TRUSTED_NOTE_MAX } from '../../../shared/trustedlines.mjs';
 
 const KINDS = ['banner', 'frame', 'nameplate', 'title', 'trophy'];
-// API.md §8.0: supporter = badge only; plus and patron = souldew+ (patron adds its own badge, nothing else)
+// API.md §8.0: supporter = badge only; plus and patron = twicable+ (patron adds its own badge, nothing else)
 const TIERS = ['none', 'supporter', 'plus', 'patron'];
 const BADGES = ['supporter', 'plus', 'patron'];
-/** souldew+ is tier plus OR patron (never decided from anything else). */
+/** twicable+ is tier plus OR patron (never decided from anything else). */
 export const isPlusTier = (tier) => tier === 'plus' || tier === 'patron';
 const obj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : null);
 const arr = (v, max) => (Array.isArray(v) ? v.slice(0, max) : []);
@@ -252,7 +252,7 @@ export function cleanCatalog(v) {
 }
 
 const B64URL = /^[A-Za-z0-9_-]+$/;
-/** §8.6: the 7-day souldew+ trial – available | running (until) | used (until) | unavailable (reason); null when absent. */
+/** §8.6: the 7-day twicable+ trial – available | running (until) | used (until) | unavailable (reason); null when absent. */
 export function cleanTrial(v) {
   const t = obj(v);
   const state = oneOf(t?.state, ['available', 'running', 'used', 'unavailable'], null);

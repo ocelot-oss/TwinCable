@@ -1,4 +1,4 @@
-// Pokélink bridge: existing Pokélink themes (github.com/pokelinkapp/pokelink-web-sources) show souldew's live
+// Pokélink bridge: existing Pokélink themes (github.com/pokelinkapp/pokelink-web-sources) show twicable's live
 // teams. A theme is a browser source that connects with socket.io-client 2.x to <server>:<port> (its URL params,
 // default http://localhost:3000) and listens for client:players:list (everybody, on connect),
 // client:party:updated, player:trainer:updated and player:party:death. It never sends anything we need, so this
@@ -17,7 +17,7 @@ export const POKELINK_PORT = 3000; // what the themes connect to unless their UR
 //  - themes opened from disk: file:// → Origin "null", and OBS's "Local file" sources, which it serves as
 //    http://absolute/<path> – how custom and downloaded themes run in OBS;
 //  - Pokélink's own hosting (*.pokelink.xyz, pokelink.app, the pokelinkapp GitHub pages);
-//  - souldew's own pages and the bridge's own address;
+//  - twicable's own pages and the bridge's own address;
 //  - other pages served from this computer (localhost on any port) only when the Stream page's "themes from another
 //    local web server" switch is on – a local dev server or another program's web page is not a theme by default.
 // Any other website gets no CORS answer and no handshake, so it can't read what the bridge sends. Requests without
@@ -25,7 +25,7 @@ export const POKELINK_PORT = 3000; // what the themes connect to unless their UR
 const POKELINK_HOSTS = [/^https:\/\/([a-z0-9-]+\.)*pokelink\.(xyz|app)$/, /^https:\/\/pokelinkapp\.github\.io$/];
 const LOCAL_ORIGIN = /^(https?):\/\/(localhost|127\.0\.0\.1|\[::1\])(?::(\d+))?$/;
 
-/** May a page of origin `o` read the bridge? ports: souldew's own (app, bridge); localPages: any localhost port. */
+/** May a page of origin `o` read the bridge? ports: twicable's own (app, bridge); localPages: any localhost port. */
 export function originAllowed(o, { ports = [], localPages = false } = {}) {
   if (o === undefined) return true;
   const s = String(o).toLowerCase();
@@ -35,7 +35,7 @@ export function originAllowed(o, { ports = [], localPages = false } = {}) {
   return localPages || ports.includes(Number(m[3] || (m[1] === 'https' ? 443 : 80)));
 }
 
-// Pokélink's game ids are the cartridge's header titles (its badges.js); souldew's catalog ids → those
+// Pokélink's game ids are the cartridge's header titles (its badges.js); twicable's catalog ids → those
 const GAME_IDS = [ // the longer names first: "heartgold" contains "gold", "firered" contains "red"
   [/heartgold/, 'POKEMON HG'], [/soulsilver/, 'POKEMON SS'], [/firered/, 'POKEMON FIRE'], [/leafgreen/, 'POKEMON LEAF'],
   [/black-?2/, 'POKEMON B2'], [/white-?2/, 'POKEMON W2'], [/black/, 'POKEMON B'], [/white/, 'POKEMON W'],
@@ -178,7 +178,7 @@ export function startPokelinkBridge({ port = POKELINK_PORT, players, access = ()
     // Chrome asks before a public page (a theme hosted by Pokélink) may reach this computer
     if (req.headers['access-control-request-private-network'] && allowed(req.headers.origin)) res.setHeader('Access-Control-Allow-Private-Network', 'true');
     if (String(req.url).startsWith('/socket.io/')) return engine.handleRequest(req, res);
-    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' }).end('souldew · Pokélink bridge\n');
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' }).end('twicable · Pokélink bridge\n');
   });
   http.on('upgrade', (req, socket, head) => {
     if (!String(req.url).startsWith('/socket.io/') || !hostAllowed(req.headers.host)) return socket.destroy();

@@ -60,7 +60,7 @@ export function pairNote(c) {
   if (c.why === 'gen') return t('pt.noteGen', 'Different generations don’t meet in the games’ link rooms – you can still chat, raid, give items and play rock-paper-scissors.');
   if (c.why === 'system') return t('pt.noteSystem', 'These two consoles can’t link with each other – you can still chat, raid and play rock-paper-scissors.');
   if (c.why === 'hack') return t('pt.noteHack', 'This ROM hack changed its link too much to be sure it works.');
-  if (c.trade === 'untested') return t('pt.noteTimeCapsule', 'Game Boy and Game Boy Color games meet in the Time Capsule (trades only) – souldew hasn’t tried that yet.');
+  if (c.trade === 'untested') return t('pt.noteTimeCapsule', 'Game Boy and Game Boy Color games meet in the Time Capsule (trades only) – twicable hasn’t tried that yet.');
   if (!c.world) return t('pt.noteWorld', 'Seeing each other walk needs two games with the same maps (Ruby and Sapphire, FireRed and LeafGreen, Gold, Silver and Crystal …).');
   return null;
 }
@@ -252,7 +252,7 @@ function PlayersTab() {
         return html`<li key=${`${p.a}${p.b}`}><span class="pt-pair-who"><b class=${`who-${p.a}`}>${names[p.a]?.name}</b> ↔ <b class=${`who-${p.b}`}>${names[p.b]?.name}</b></span>
           <${PairChips} c=${p} />${note && html`<span class="tiny muted pt-pair-note">${note}</span>`}</li>`;
       })}</ul>
-      <p class="tiny faint">${t('pt.romsNote', 'For a trade or battle each of you needs the other’s game in the library too – souldew never sends games, only the buttons.')}</p>
+      <p class="tiny faint">${t('pt.romsNote', 'For a trade or battle each of you needs the other’s game in the library too – twicable never sends games, only the buttons.')}</p>
     </section>`}
   </div>`;
 }

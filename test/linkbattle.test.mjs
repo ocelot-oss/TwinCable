@@ -335,10 +335,10 @@ function memStore() {
   const m = new Map();
   return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)) };
 }
-/** Both sides' entries as their souldew writes them – `own` (for WagerPay): what this computer read itself. */
+/** Both sides' entries as their twicable writes them – `own` (for WagerPay): what this computer read itself. */
 const ownOf = (e = entry({})) => (sid) => (sid === e.sid ? e : null);
 
-test('wager: only when every seat\'s souldew knows wagers (capability), lowered to every accept, the rule\'s cap and the money', () => {
+test('wager: only when every seat\'s twicable knows wagers (capability), lowered to every accept, the rule\'s cap and the money', () => {
   const base = { offer: 5000, seats: ['p1', 'p2'], host: 'p1', accepts: { p2: 5000 }, caps: { p1: true, p2: true } };
   assert.equal(W.agreedWager(base), 5000);
   assert.equal(W.agreedWager({ ...base, caps: { p1: true } }), 0, 'a partner on an older 3.0 build: no wager');
@@ -381,7 +381,7 @@ test('wager: a result counts once every seat read the same; a desync, a dropout 
 test('wager: money only follows this computer\'s own result – never entries a partner wrote, under any slot', async () => {
   const store = memStore();
   const doc = Object.assign(memDoc(), { runId: 'run1' });
-  // p1's souldew was changed: it writes a matching pair – p2 lost ₽999,999 – under its own slot and under p2's
+  // p1's twicable was changed: it writes a matching pair – p2 lost ₽999,999 – under its own slot and under p2's
   const forged = (o) => W.resultEntry({ sid: 'f00d01', seats: ['p1', 'p2'], host: 'p1', kind: 'battle', found: won, wager: 999999, money: { p1: 999999, p2: 999999 }, ...o });
   doc.set('lb:f00d01:p1', forged({}));
   doc.set('lb:f00d01:p2', forged({}));

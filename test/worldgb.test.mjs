@@ -460,8 +460,8 @@ test('a hack built from the disassembly with moved WRAM: the world table follows
   assert.equal(t.ram.landmarkSign, 0xc2da, 'bank 0 stays');
 });
 
-// ---- the real ROMs (SOULDEW_TEST_ROMS: a folder with red.gb, blue.gb, yellow.gb, gold.gbc, silver.gbc, crystal.gbc) ----
-const ROMS = process.env.SOULDEW_TEST_ROMS;
+// ---- the real ROMs (TWICABLE_TEST_ROMS: a folder with red.gb, blue.gb, yellow.gb, gold.gbc, silver.gbc, crystal.gbc) ----
+const ROMS = process.env.TWICABLE_TEST_ROMS;
 test('the real ROMs: every table where the symbol files say, the sheets and icons drawn', { skip: !ROMS }, async () => {
   const { identifyRom } = await import('../shared/romid.mjs');
   for (const f of ['red.gb', 'blue.gb', 'yellow.gb', 'gold.gbc', 'silver.gbc', 'crystal.gbc']) {

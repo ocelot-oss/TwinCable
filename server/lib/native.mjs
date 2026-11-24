@@ -1,4 +1,4 @@
-// The DS, GBA and Game Boy in souldew's fast player: the native host (native/retro-host) runs a libretro core – melonDS
+// The DS, GBA and Game Boy in twicable's fast player: the native host (native/retro-host) runs a libretro core – melonDS
 // DS with its JIT, mGBA, SameBoy – as a native program and speaks the 3DS host's protocol (server/lib/ctr.mjs) with a
 // few more messages (see the header of native/retro-host/retrohost.c). Sessions, the page's stream and the command
 // checks are the 3DS ones (CtrSessions); this module knows the cores, their memory and their settings.
@@ -8,11 +8,11 @@
 //   melondsds_libretro.dylib | .dll | .so             DS
 //   mgba_libretro.*                                   GBA
 //   sameboy_libretro.*                                Game Boy / Game Boy Color
-//   linkhost[.exe]                                    the souldew engine (native/link-host): link sessions – and, with
-//                                                     Settings › "souldew engine (beta)", the fast player itself
+//   linkhost[.exe]                                    the twicable engine (native/link-host): link sessions – and, with
+//                                                     Settings › "twicable engine (beta)", the fast player itself
 // When the host or a core is missing, the play view uses the built-in browser emulator (player.html) as before.
 //
-// The souldew engine (config.nativeEngine): ONE native player for these systems – the link host alone (`--solo`) runs
+// The twicable engine (config.nativeEngine): ONE native player for these systems – the link host alone (`--solo`) runs
 // the game on the emulators' own APIs, speaks retrohost's protocol (the same page, the same save-state format), and a
 // trade or battle links the running game in place: the server hands the session to the same process (CMD_LINK, every
 // seat from the agreed states), and back (CMD_SOLO) when it ends. retrohost stays the fallback while the engine is beta.
@@ -35,7 +35,7 @@ const LIB_EXT = process.platform === 'win32' ? 'dll' : process.platform === 'dar
 export const NMSG = { ...MSG, RAM: LINK_MSG.RAM, SRAM: LINK_MSG.SRAM, LINPUT: LINK_MSG.LINPUT, SEATSRAM: LINK_MSG.SEATSRAM, SEATSTATE: LINK_MSG.SEATSTATE, WATCHED: 16 };
 /** Commands the page may send it. */
 // (WATCH: a few RAM bytes with every picture – the Shared World overlay's camera, web/lib/worldoverlay.mjs)
-export const NCMD = { INPUT: 1, SPEED: 2, SAVE: 3, LOAD: 4, QUIT: 6, RESET: 7, WRITE: 9, FLUSH: 10, SRAM: 11, RESYNC: 12, STEP: 13, WATCH: 14, DEPTH: 15 };
+export const NCMD = { INPUT: 1, SPEED: 2, SAVE: 3, LOAD: 4, QUIT: 6, RESET: 7, WRITE: 9, FLUSH: 10, SRAM: 11, RESYNC: 12, STEP: 13, WATCH: 14, DEPTH: 15, LEVEL_CAP: 16 };
 
 /** Commands a page may send a link session (native/link-host/linkhost.c): no states, cheats, steps or memory writes.
  *  SEATSTATE: the player's own console for the fast player once the session is over (it goes on alone from there).
@@ -53,7 +53,7 @@ export const MAX_STATE = 64 * 1024 * 1024; // a save state (a DS console with it
 
 /**
  * Per system: the core, the memory the live reader reads (bus address, length – what player.html's read() maps:
- * DS main RAM, GBA EWRAM + IWRAM, Game Boy WRAM banks 0 and 1) and the core options souldew sets. `id` names the
+ * DS main RAM, GBA EWRAM + IWRAM, Game Boy WRAM banks 0 and 1) and the core options twicable sets. `id` names the
  * core for save states (a state of the browser emulator's core can't be loaded here, and the other way round).
  */
 export const NATIVE_CORES = {
@@ -131,7 +131,7 @@ export function nativeTools({ dirs = nativeDirs(), exists = existsSync } = {}) {
   return { ok: Object.values(cores).some(Boolean), dir, host: join(dir, EXE), cores };
 }
 
-/** The core folder of a game / run slot (cores keep a few files there; the battery save itself goes through souldew). */
+/** The core folder of a game / run slot (cores keep a few files there; the battery save itself goes through twicable). */
 export function nativeSaveDir(key) {
   const h = createHash('sha1').update(String(key)).digest('hex').slice(0, 16);
   return join(DATA_DIR, DEV ? 'runs/.native' : 'native', 'saves', h);
@@ -199,14 +199,14 @@ export function checkLinkCommands(body) {
 
 /** Server → engine only (never accepted from a page, see check()): partners join the running game / it goes on alone. */
 export const ENGINE_CMD = { LINK: 27, SOLO: 28 };
-/** Systems the souldew engine plays alone (the link host's: its backends are the fast player's emulators). */
+/** Systems the twicable engine plays alone (the link host's: its backends are the fast player's emulators). */
 export const ENGINE_SYSTEMS = LINK_SYSTEMS;
 
 /** Arguments as the engine reads them in CMD_LINK / CMD_SOLO: the command line's words, NUL-separated. */
 export const engineWords = (args) => Buffer.from(args.map((a) => `${a}\0`).join(''), 'utf8');
 
 /**
- * The souldew engine alone (`linkhost --solo`): the game, its battery save, a state to go on from, the Game Boy model,
+ * The twicable engine alone (`linkhost --solo`): the game, its battery save, a state to go on from, the Game Boy model,
  * and the RAM the live reader needs – the fast player's settings are the engine's own (native/link-host).
  */
 export function engineArgs({ system, rom, sram = null, state = null, model = null }) {
@@ -221,14 +221,15 @@ export function engineArgs({ system, rom, sram = null, state = null, model = nul
 }
 
 /** The host's arguments for `system` (the paths are the server's own – nothing here comes from the page). */
-export function hostArgs({ system, core, rom, saveDir, systemDir, sram = null, state = null, model = null }) {
+export function hostArgs({ system, core, rom, saveDir, systemDir, sram = null, state = null, model = null, hgssCap = null }) {
   const c = NATIVE_CORES[system];
   if (!c) throw httpError(400, 'The fast player doesn’t play this system', 'nativeSystem');
   const args = ['--core', core, '--rom', rom, '--system', systemDir, '--save', saveDir];
   if (sram) args.push('--sram', sram);
   if (state) args.push('--state', state);
   for (const [addr, len] of c.ram) args.push('--ram', `0x${addr.toString(16)}:0x${len.toString(16)}`);
-  for (const [k, v] of Object.entries(c.options)) args.push('--option', `${k}=${v}`);
+  for (const [k, v] of Object.entries(c.options)) args.push('--option', `${k}=${hgssCap && k === 'melonds_jit_enable' ? 'disabled' : v}`);
+  if (hgssCap) args.push('--hgss-cap', String(hgssCap));
   if (system === 'gb' || system === 'gbc') args.push('--option', `sameboy_model=${SAMEBOY_MODEL[model === 'dmg' && system === 'gb' ? 'dmg' : 'cgb']}`);
   return args;
 }
@@ -243,11 +244,12 @@ export function checkNativeCommands(body) {
   const limits = {
     [NCMD.INPUT]: [17, 32], [NCMD.SPEED]: [4, 4], [NCMD.SAVE]: [0, 0], [NCMD.LOAD]: [1, 64 * 1024 * 1024], [NCMD.QUIT]: [0, 0],
     [NCMD.RESET]: [0, 0], [NCMD.WRITE]: [5, 4 + 65536], [NCMD.FLUSH]: [0, 0], [NCMD.SRAM]: [1, MAX_SAVE], [NCMD.RESYNC]: [0, 0], [NCMD.STEP]: [4, 4],
-    [NCMD.WATCH]: [4, 4 + 8 * 16], [NCMD.DEPTH]: [4, 4 + 8 * 8],
+    [NCMD.WATCH]: [4, 4 + 8 * 16], [NCMD.DEPTH]: [4, 4 + 8 * 8], [NCMD.LEVEL_CAP]: [1, 1],
   };
   for (const m of messages) {
     const l = limits[m.type];
     if (!l || m.payload.length < l[0] || m.payload.length > l[1]) throw httpError(400, 'Invalid command', 'badCommand');
+    if (m.type === NCMD.LEVEL_CAP && (m.payload[0] < 1 || m.payload[0] > 100)) throw httpError(400, 'Invalid level cap', 'badCommand');
   }
   return body;
 }
@@ -309,12 +311,12 @@ export class NativeSessions extends CtrSessions {
   }
 
   /**
-   * Start `rom` (a path) on `system` with the core folder of `key`; `save` = the battery save souldew has for it
-   * (bytes) or null. Ends a session that still runs. `engine`: the souldew engine's link host plays it (else retrohost
+   * Start `rom` (a path) on `system` with the core folder of `key`; `save` = the battery save twicable has for it
+   * (bytes) or null. Ends a session that still runs. `engine`: the twicable engine's link host plays it (else retrohost
    * with the system's libretro core). Coming back from a link session the engine already runs (`state` given, the same
    * game): the game goes on alone in that process (CMD_SOLO) – no new player; then a promise of the id.
    */
-  startNative({ rom, key, system, tools, save = null, saveFile = null, state = null, model = null, engine = null }) {
+  startNative({ rom, key, system, tools, save = null, saveFile = null, state = null, model = null, engine = null, hgssCap = null }) {
     if (engine && state?.length && this.engineLinked(rom)) return this.soloInPlace({ key, system, save, saveFile, state, model });
     const core = engine ? engine : tools.cores?.[system];
     if (!core) throw httpError(409, 'The fast player is missing for this system', 'nativeMissing');
@@ -325,7 +327,7 @@ export class NativeSessions extends CtrSessions {
     mkdirSync(saveDir, { recursive: true });
     mkdirSync(systemDir, { recursive: true });
     const { sram, stateFile } = this.startFiles(saveDir, save, state);
-    const args = engine ? engineArgs({ system, rom, sram, state: stateFile, model }) : hostArgs({ system, core, rom, saveDir, systemDir, sram, state: stateFile, model });
+    const args = engine ? engineArgs({ system, rom, sram, state: stateFile, model }) : hostArgs({ system, core, rom, saveDir, systemDir, sram, state: stateFile, model, hgssCap });
     const id = this.launch(engine || tools.host, args, saveDir);
     Object.assign(this.current, { saveFile, rom, engine: !!engine, system, model, key });
     return id;

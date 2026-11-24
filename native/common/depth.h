@@ -1,10 +1,10 @@
 // The DS's 3D depth for Shared World, shared by both native hosts: the page names a few rectangles of the top screen
 // (DEPTH: where it draws partners) and gets their depths with every picture (MSG_DEPTH, right before WATCHED), so a
 // partner hides where the map is nearer – houses, trees, people – as the game's own sprites do. The depth comes from
-// melonDS's software renderer with souldew's patch (native/melonds-patch): the frame on screen, kept when its rendering
+// melonDS's software renderer with twicable's patch (native/melonds-patch): the frame on screen, kept when its rendering
 // is done.
-#ifndef SOULDEW_DEPTH_H
-#define SOULDEW_DEPTH_H
+#ifndef TWICABLE_DEPTH_H
+#define TWICABLE_DEPTH_H
 
 #include <stdint.h>
 

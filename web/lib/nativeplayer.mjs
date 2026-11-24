@@ -1,4 +1,4 @@
-// The fast player (playernative.html) for the DS, GBA and Game Boy: the game runs in souldew's native host
+// The fast player (playernative.html) for the DS, GBA and Game Boy: the game runs in twicable's native host
 // (server/lib/native.mjs, native/retro-host – melonDS DS with its JIT, mGBA, SameBoy) and arrives here as a stream of
 // pictures, sound, memory and battery saves; input, speed, save states and cheats go back. It offers the Play view the
 // same window.__emu as player.html (EmulatorJS) – the live reader, cheats, save states, the battery save, speed,
@@ -21,13 +21,13 @@ const SYSTEM = q.get('system') || 'nds';
 // Seamless (docs/MULTIPLAYER.md › "Seamless"): a running game goes into a link session and back without a restart – its
 // state goes in (linkSnapshot), the page switches its stream to the link host (attachLink) and, once the session is over,
 // back to the fast player started from this console's state as the link host left it (resumeSolo). The canvas stays.
-// The souldew engine (Settings › "souldew engine (beta)": the link host plays the game alone too) does both switches in
+// The twicable engine (Settings › "twicable engine (beta)": the link host plays the game alone too) does both switches in
 // its own process: the session's id stays, the stream goes on, and leaving needs no state to travel (/api/native/unlink).
 // ?link=1&session=<id>: a session the play view opened for a game that wasn't running here (it starts from the save).
 let LINK_SESSION = q.get('link') === '1' ? q.get('session') : null;
 // (retrohost's messages – the link host speaks the same ones plus its own, shared/link.mjs)
 const MSG = { VIDEO: 2, AUDIO: 3, STATE: 5, LOG: 6, EVENT: 7, RAM: 8, SRAM: 9, MEM: LINK_MSG.MEM, LINPUT: LINK_MSG.LINPUT, SEATSRAM: LINK_MSG.SEATSRAM, SEATSTATE: LINK_MSG.SEATSTATE, WATCHED: 16, DEPTH: 17 };
-const CMD = { INPUT: 1, SPEED: 2, SAVE: 3, LOAD: 4, QUIT: 6, RESET: 7, WRITE: 9, FLUSH: 10, SRAM: 11, RESYNC: 12, STEP: 13, WATCH: 14, DEPTH: 15, SEATSTATE: LINK_CMD.SEATSTATE, READ: LINK_CMD.READ };
+const CMD = { INPUT: 1, SPEED: 2, SAVE: 3, LOAD: 4, QUIT: 6, RESET: 7, WRITE: 9, FLUSH: 10, SRAM: 11, RESYNC: 12, STEP: 13, WATCH: 14, DEPTH: 15, LEVEL_CAP: 16, SEATSTATE: LINK_CMD.SEATSTATE, READ: LINK_CMD.READ };
 const post = (m) => window.parent?.postMessage(m, location.origin);
 // ?debug=1 (the ROM matrix): what arrives from the host – events, picture sizes, saves – on the console
 const DEBUG = q.get('debug') === '1';
@@ -55,7 +55,7 @@ const st = {
   ram: [], ramReady: false, sram: null, bootSave: 'pending', error: null, log: [], ended: false, lr: /left/i.test(q.get('layout') || ''),
   info: null, turboAudio: 'music', switches: [], whole: q.get('px') === 'whole',
   model: q.get('model') || null, // a Game Boy game's console ('dmg' | 'cgb'): its save states only load into that model
-  engine: false, // the souldew engine plays (its loaded event says so): link sessions switch in its own process
+  engine: false, // the twicable engine plays (its loaded event says so): link sessions switch in its own process
 };
 const waiters = { state: [], loaded: [], stepped: [], seatState: [], seatSram: [] };
 // a link session's READs (any seat's bytes – the link battle's result, shared/linkbattle.mjs) and FLUSH's every-seat saves
@@ -292,7 +292,7 @@ new ResizeObserver(layout).observe(document.body);
 })();
 layout();
 
-// ---- sound: the host's samples through souldew's turbo mixer (lib/native-audio-worklet.mjs) ------------------------
+// ---- sound: the host's samples through twicable's turbo mixer (lib/native-audio-worklet.mjs) ------------------------
 // While fast-forwarding the host sends the sound sped up by the real speed, resampled to real time with a steady ratio
 // (native/ctr-host/ffsound.h, as the 3DS host since 2.8.2), and says by how much ("ffrate", right before that sound – the
 // worklet hands the ratio to the mixer when the sound plays); the mixer keeps the music going at normal speed (Settings › sound while fast-forwarding), for DS games synthesized from the
@@ -503,7 +503,8 @@ function onEvent(p) {
       st.ramReady = false;
     }
     audioRate(e.sampleRate); // (the link host's rate may be another)
-  } else if (e.event === 'audioRate') audioRate(e.sampleRate); // (a GBA game switched its sound hardware's rate)
+  } else if (e.event === 'levelCap') st.hardCap = e.active === true;
+  else if (e.event === 'audioRate') audioRate(e.sampleRate); // (a GBA game switched its sound hardware's rate)
   else if (e.event === 'stats') {
     st.fps = e.fps;
     st.hostSpeed = e.speed;
@@ -807,6 +808,12 @@ window.__emu = {
   read,
   write,
   writeChecked,
+  setLevelCap(cap) {
+    if (!q.has('hgssCap')) return;
+    q.set('hgssCap', String(cap));
+    if (!LINK_SESSION) cmd(CMD.LEVEL_CAP, Uint8Array.of(cap));
+  },
+  levelCapActive: () => st.hardCap === true,
   fresh,
   paused: () => st.paused,
   pause() {
@@ -1088,7 +1095,7 @@ if (!LINK_SESSION) {
     read,
     rect: () => (st.ready ? canvas.getBoundingClientRect() : null),
     /** The DS's 3D depth in a few rectangles of the top screen with every picture: [[x, y, w, h]…] (≤ 8, ≤ 16384
-     *  pixels), [] stops it. Only souldew's melonDS DS core has it (native/melonds-ds-patch); others send nothing. */
+     *  pixels), [] stops it. Only twicable's melonDS DS core has it (native/melonds-ds-patch); others send nothing. */
     depth(rects) {
       const b = new Uint8Array(4 + rects.length * 8);
       const v = new DataView(b.buffer);
@@ -1182,7 +1189,8 @@ async function startSolo({ state, save }) {
   st.switching = true;
   const res = await fetch('/api/native/start', {
     method: 'POST', headers: { 'content-type': 'application/json', 'x-soullink': '1' },
-    body: JSON.stringify({ rom: q.get('rom'), key: q.get('key'), system: SYSTEM, save: save?.length ? b64(save) : null, saveUrl: q.get('save'), state: b64(state), model: st.model }),
+    body: JSON.stringify({ rom: q.get('rom'), key: q.get('key'), system: SYSTEM, save: save?.length ? b64(save) : null, saveUrl: q.get('save'), state: b64(state), model: st.model,
+      ...(q.has('hgssCap') ? { hgssCap: Number(q.get('hgssCap')) } : {}) }),
   }).catch(() => null);
   const j = await res?.json().catch(() => ({}));
   if (!res?.ok) {
@@ -1227,7 +1235,8 @@ async function start() {
     method: 'POST', headers: { 'content-type': 'application/json', 'x-soullink': '1' },
     // (saveUrl: where the server keeps a last battery save that comes after this page has gone – never when the save on
     // disk couldn't be read: the game started without it, and its save must not replace the real one)
-    body: JSON.stringify({ rom: q.get('rom'), key: q.get('key'), system: SYSTEM, save: save.bytes ? b64(save.bytes) : null, saveUrl: save.state === 'failed' ? null : q.get('save') }),
+    body: JSON.stringify({ rom: q.get('rom'), key: q.get('key'), system: SYSTEM, save: save.bytes ? b64(save.bytes) : null, saveUrl: save.state === 'failed' ? null : q.get('save'),
+      ...(q.has('hgssCap') ? { hgssCap: Number(q.get('hgssCap')) } : {}) }),
   });
   const j = await res.json().catch(() => ({}));
   if (!res.ok) return fail(serverErrorText(j, res.status));

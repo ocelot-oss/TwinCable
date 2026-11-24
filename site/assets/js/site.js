@@ -1,4 +1,4 @@
-/* souldew website – progressive enhancement only: without JS every link still works and every text is visible. */
+/* twicable website – progressive enhancement only: without JS every link still works and every text is visible. */
 (() => {
   'use strict';
   const $ = (s, el = document) => el.querySelector(s);
@@ -173,7 +173,7 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.open) { close(); $('summary', menu).focus(); } });
     for (const a of $$('a', menu)) a.addEventListener('click', close);
   }
-  const CACHE_KEY = 'souldew-release-v3'; // v3: with the Linux assets
+  const CACHE_KEY = 'twicable-release-v3'; // v3: with the Linux assets
   const load = async () => {
     try {
       const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
@@ -184,8 +184,8 @@
     const data = await res.json();
     const assets = Array.isArray(data.assets) ? data.assets : [];
     const find = (re) => { const x = assets.find((a) => re.test(a.name)); return x ? { url: x.browser_download_url, size: x.size, name: x.name } : null; };
-    const rel = { version: String(data.tag_name || '').replace(/^v/, ''), mac: find(/^souldew-.+-arm64\.dmg$/i), win: find(/^souldew-.+-win-x64-setup\.exe$/i),
-      linux: find(/^souldew-.+-linux-x86_64\.AppImage$/i), deb: find(/^souldew-.+-linux-amd64\.deb$/i) };
+    const rel = { version: String(data.tag_name || '').replace(/^v/, ''), mac: find(/^twicable-.+-arm64\.dmg$/i), win: find(/^twicable-.+-win-x64-setup\.exe$/i),
+      linux: find(/^twicable-.+-linux-x86_64\.AppImage$/i), deb: find(/^twicable-.+-linux-amd64\.deb$/i) };
     try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), rel })); } catch { /* fine */ }
     return rel;
   };

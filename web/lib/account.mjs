@@ -1,4 +1,4 @@
-// The souldew account on the page: one shared store (signed in or not, the own profile, the pending counters) fed by
+// The twicable account on the page: one shared store (signed in or not, the own profile, the pending counters) fed by
 // the local server (/api/account – server/lib/accounts/index.mjs), plus the friends and invite lists while a screen
 // shows them. The page never holds a token: every call goes to the local server, which talks to the service.
 // Signed out, nothing here polls or reports anything.
@@ -9,7 +9,7 @@ import { ACCENTS } from '/shared/social.mjs';
 
 // loaded: the local server answered once. known: its answer is final – the server has read the saved sign-in
 // (session.loaded). Until then "signed out" only means "not read yet" (the keychain may still be asking), and nothing
-// may act on it: no souldew+ pack is removed, no "signed out" decision is made (cosmeticsPackAccess waits for it).
+// may act on it: no twicable+ pack is removed, no "signed out" decision is made (cosmeticsPackAccess waits for it).
 let state = { loaded: false, known: false, session: { signedIn: false, persistent: true, condition: null, pending: false, account: null }, me: null, pending: null, service: '' };
 let inflight = null;
 let again = null; // a reload asked for while one was on its way – its answer may be older than what changed
@@ -157,14 +157,14 @@ export async function linkEmail(email) {
 }
 /** The VERIFIED entitlement (the local server checked the service's signed token – server/lib/accounts/enttoken.mjs). */
 export const entitlements = () => api.get('/api/account/entitlements');
-/** Start the 7-day souldew+ trial (§8.6: once per Discord account, nothing to pay or cancel). Errors carry vars.code
+/** Start the 7-day twicable+ trial (§8.6: once per Discord account, nothing to pay or cancel). Errors carry vars.code
  * ('trial_used', 'trial_unavailable' with vars.reason). */
 export async function startTrial() {
   const r = await api.post('/api/account/trial');
   await reloadAccount();
   return r;
 }
-/** "Find a SoulLink partner" (§14): the post goes up in the souldew Discord's #find-a-partner → { url }. Errors carry
+/** "Find a SoulLink partner" (§14): the post goes up in the twicable Discord's #find-a-partner → { url }. Errors carry
  * vars.code ('lfg_active' with vars.url, 'lfg_not_member', 'lfg_unavailable', 'text_rejected', 'rate_limited'). */
 export const findPartner = (post) => api.post('/api/account/lfg', post);
 /** Unlink every membership from this account (§8.5): the pack key rotates, the local pack cache is wiped. */
@@ -270,8 +270,8 @@ export function reportPresence(p) {
   api.put('/api/account/presence', p).catch(() => {});
 }
 
-// ---- souldew+ packs (web/lib/cosmetics/ uses this) -------------------------------------------------------------------
-/** souldew+ = tier plus or patron (API.md §8.0); supporter is a badge only. */
+// ---- twicable+ packs (web/lib/cosmetics/ uses this) -------------------------------------------------------------------
+/** twicable+ = tier plus or patron (API.md §8.0); supporter is a badge only. */
 export const isPlus = (tier) => tier === 'plus' || tier === 'patron';
 const PREVIEW_MAX_MS = 15 * 60000 + 60000; // 15 minutes and a minute of clock difference
 const isoOf = (ms) => (Number.isFinite(ms) ? new Date(ms).toISOString() : null);
@@ -282,10 +282,10 @@ const accessOf = (dl, key, until) => ({
 
 /**
  * The cosmetics module's pack access provider (web/lib/cosmetics: setPackAccessProvider, API.md §8.2 / §10):
- *   purpose 'pack'    – a souldew+ account: the service's download answer for its pack + the account's pack key
+ *   purpose 'pack'    – a twicable+ account: the service's download answer for its pack + the account's pack key
  *                       ({ packId, version, manifest, signature, keyId, watermark, key, files, until }); offline (the
  *                       service can't be reached) the kept entitlement's key: { key, keyId, until, offline: true };
- *                       null when signed out or without souldew+.
+ *                       null when signed out or without twicable+.
  *   purpose 'preview' – a 15-minute live theme preview (§10.4) of the service's preview pack, with a key for this
  *                       preview only: { …, expiresAt, preview: true }. Throws with e.code ('rate_limited',
  *                       'limit_reached', 'none') when the service says no; null when signed out.
@@ -315,7 +315,7 @@ export async function cosmeticsPackAccess({ purpose = 'pack', signedOut = null }
   const until = isoOf(ent.until);
   if (ent.offline) return { key: ent.packKey, keyId: ent.packKeyId, until, offline: true };
   const packs = await api.get('/api/account/packs');
-  // the members' pack: the one souldew+ pack (kind "mixed" first), never the preview pack
+  // the members' pack: the one twicable+ pack (kind "mixed" first), never the preview pack
   const items = (packs.items || []).filter((p) => p.entitled && !p.previewable);
   const pack = items.find((p) => p.kind === 'mixed') || items[0];
   if (!pack) return null;

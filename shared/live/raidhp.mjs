@@ -3,7 +3,7 @@
 //
 //   view(read)        → null outside a trainer battle the raid can use, else { trainer, quiet, key, trainerId, foes,
 //                       active, hud }: the opponent's whole party (idx, hp, maxHp, species, level), who is out, whether
-//                       the game waits for the player's action right now (`quiet` – the only time souldew writes), and
+//                       the game waits for the player's action right now (`quiet` – the only time twicable writes), and
 //                       whether the HP bar on screen shows the HP the game holds (`hud`: false = draw it again)
 //   writes(v, idx, hp) → [{ addr, bytes }]: the battle copy of the one out, the party copy, and the HP bar where the
 //                       game keeps it in RAM (Game Boy: the tile map and its saved copy)
@@ -33,7 +33,7 @@ const same = (a, b) => a && b && a.length === b.length && a.every((x, i) => x ==
 // The battle copy (wEnemyMon) is what the battle uses: damage is taken off it, the faint check reads it, the HUD is
 // drawn from it. The party copy (wEnemyMons / wOTPartyMons) is what the next one sent out starts with – and a 0 there
 // is a Pokémon the trainer can't send out any more. The HP bar is tiles in the tile map (wTileMap / wTilemap): the
-// game draws it there from the battle copy at the start of every turn's menu, and souldew draws the same tiles
+// game draws it there from the battle copy at the start of every turn's menu, and twicable draws the same tiles
 // (DrawHPBar / DrawBattleHPBar: "HP:", six 8-pixel tiles, the end) when it writes – so the bar shows the new value at
 // once instead of at the next hit.
 //
@@ -82,8 +82,8 @@ GB_TABLES.crystal = {
   gen: 2, inBattle: 0xd22d, link: 0xc2dc, enemyHp: 0xd216, enemyMaxHp: 0xd218, enemySpecies: 0xd206, enemyLevel: 0xd213,
   partyPos: 0xc663, partyCount: 0xd280, party: 0xd288, size: 0x30, pHp: 0x22, pMax: 0x24, pLevel: 0x1f, pSpecies: 0,
   trainerClass: 0xd22f, trainerNo: 0xd231,
-  // wTilemap at hlcoord 2, 2 – the saved screen (wTempTilemap) is in WRAM bank 2, which souldew can't reach: the move
-  // menu brings back the bar of the turn's start, and souldew draws it again while the menu waits (typeBox)
+  // wTilemap at hlcoord 2, 2 – the saved screen (wTempTilemap) is in WRAM bank 2, which twicable can't reach: the move
+  // menu brings back the bar of the turn's start, and twicable draws it again while the menu waits (typeBox)
   bar: [0xc4a0 + 2 * 20 + 2],
   menu2d: 0xcfa1, // w2DMenuCursorInitY, w2DMenuCursorInitX, w2DMenuNumRows, w2DMenuNumCols
   // the move menu's "TYPE/" box (hlcoord 1, 9) – only there while the move menu waits for the player
@@ -166,7 +166,7 @@ function writesGB(T, v, idx, hp) {
 // The opponent's HP bar is a sprite the game redraws only when HP changes in a move – it animates from the party
 // struct's HP to the new value. So a pool written while the game waits shows on the bar with that Pokémon's next HP
 // change (the animation starts from the shared value); the bar never ends on a wrong value (checked in FireRed:
-// written 10/19, Scratch → the bar went to 6/19, the game's own numbers). souldew's raid bar shows the pool meanwhile.
+// written 10/19, Scratch → the bar went to 6/19, the game's own numbers). twicable's raid bar shows the pool meanwhile.
 //
 // Quiet: gBattleMainFunc is HandleTurnActionSelectionState and the player's battler waits in HandleInputChooseAction /
 // HandleInputChooseMove (the player controller's, or FireRed's Oak / old man controller in the first rival battle) –
@@ -270,10 +270,10 @@ function viewGBA(entry, read, state, T) {
   const main = read(T.mainFunc, 4);
   const ctl = read(T.controllerFuncs, 16);
   const mf = main ? le32(main) & ~1 : 0;
-  // (and every opponent controller idle: not in the middle of an HP bar update – also one souldew asked for)
+  // (and every opponent controller idle: not in the middle of an HP bar update – also one twicable asked for)
   const idle = !!ctl && active.every((pi) => !!T.barCmd[le32(ctl, foes[pi].battler * 4) & ~1]);
   const quiet = T.actionSelection.includes(mf) && !!ctl && T.choose.includes(le32(ctl) & ~1) && idle;
-  // (a revision souldew has no address for never reads as waiting: no writes at all – raidhp's callers notice)
+  // (a revision twicable has no address for never reads as waiting: no writes at all – raidhp's callers notice)
   if (T.actionSelection.includes(mf)) state.g3known = true;
   const opp = read(T.opponent, 2);
   return {
@@ -351,7 +351,7 @@ function driverOf(entry) {
 
 /**
  * Can this game take part in a raid? { ok: true } or { ok: false, why } – why: 'gen5' | 'ctr' | 'version' | 'hack' | 'unknown'
- * (the reasons the UI explains: a generation souldew can't write cleanly, another language / revision not checked).
+ * (the reasons the UI explains: a generation twicable can't write cleanly, another language / revision not checked).
  */
 export function raidSupport(entry) {
   if (!entry) return { ok: false, why: 'unknown' };

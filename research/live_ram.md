@@ -157,7 +157,7 @@ Absolute GBA bus addresses. EWRAM `0x02000000` (256 KiB), IWRAM `0x03000000` (32
 
 **Revisions:** Ruby/Sapphire rev 0, 1 and 2 have identical addresses for every symbol used here, and so do FRLG rev 0 and 1. The generator asserts this across all sym files. German R/S are shifted by +0x10. There are **no German Emerald/FRLG symbols**: the pokeemerald `multi-language` branch has only `rom_es/fr/it.sha1`, and pokefirered has no German build. Use the scan fallback below for those.
 
-**Other-language FireRed/LeafGreen** (`firered_eu` / `leafgreen_eu`, souldew 2.3.1): two trackers that run on those ROMs
+**Other-language FireRed/LeafGreen** (`firered_eu` / `leafgreen_eu`, twicable 2.3.1): two trackers that run on those ROMs
 list the same layout – EWRAM exactly as in the English game, IWRAM from `gMain` on `0xB0` lower:
 - pokebot-gen3 `modules/data/symbols/patches/language/pokefirered.yml` / `pokeleafgreen.yml` override, for D/F/I/S, only
   IWRAM symbols: `gMain` `0x03003040`, `gSaveBlock1Ptr` `0x03004F58`, `gSaveBlock2Ptr` `0x03004F5C`,
@@ -413,7 +413,7 @@ Gen 4/5 find SaveData through the party reader: its `saveBase` (pointer chain) o
 8 − `partyMonsOffset`. A bag with nothing in it is refused (zeros pass every other check). Rare Candy is in the
 Items pocket in Gen 1–3 and in the Medicine pocket in Gen 4–7.
 
-**Gen 6/7 (3DS, souldew's own player – researched 2026-11-15).** The bag is the save data's MyItem block, kept at a
+**Gen 6/7 (3DS, twicable's own player – researched 2026-11-15).** The bag is the save data's MyItem block, kept at a
 fixed address in the game process per game and update (the 3DS game's virtual memory; `addresses.json`
 `partyAddrs[].bag`). Pockets per PKHeX `PlayerBag6XY/6AO/7SM/7USUM.cs`; Gen 6 slots { u16 id, u16 count }, Gen 7 slots
 one u32 (`InventoryItem7.cs`): id bits 0–9, count 10–19, place in the Free Space pocket 20–29 (0 = not in it), NEW
@@ -444,7 +444,7 @@ required, none.) The place found is kept for the session; the diagnostics log ev
 bag (`unread`, `empty`, `pointers`, `slot <pocket>#<n> <value>`) and how the search went.
 The 3DS host writes through the core's FCRAM block (the stack page in the libretro memory map points into it; the page
 is found by content and only kept where the change shows at the game's address – `native/ctr-host/ctrhost.c`
-`mem_write`), only inside the heaps and only while the bytes are still what souldew read.
+`mem_write`), only inside the heaps and only while the bytes are still what twicable read.
 
 ---
 

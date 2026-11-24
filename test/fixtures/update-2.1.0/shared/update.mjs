@@ -1,14 +1,14 @@
-// Verbatim copy of shared/update.mjs as released in souldew 2.1.0 (tag v2.1.0, commit ff9d041) – never edit it: test/update.test.mjs proves
+// Verbatim copy of shared/update.mjs as released in twicable 2.1.0 (tag v2.1.0, commit ff9d041) – never edit it: test/update.test.mjs proves
 // with it that the feeds published today still verify and validate in the Mac and Windows apps people already have installed.
 // Update feed: version comparison and validation of latest.json. Pure functions, no Node or DOM APIs,
 // shared by the Electron updater, scripts/release.mjs and the tests.
 //
 // Feed format (latest.json, published next to the DMG and the Windows installer of each GitHub release):
-//   { version: '2.1.0', notes: '…', url: 'https://…/souldew-2.1.0-arm64.dmg',
+//   { version: '2.1.0', notes: '…', url: 'https://…/twicable-2.1.0-arm64.dmg',
 //     sha256: '<64 hex>', size: 123456789, minVersion?: '2.0.0', page?: 'https://…', pubDate?: '…',
-//     assets?: { 'win32-x64': { name: 'souldew-2.1.0-win-x64-setup.exe', url: 'https://…', sha256: '<64 hex>', size: 98765432 } },
+//     assets?: { 'win32-x64': { name: 'twicable-2.1.0-win-x64-setup.exe', url: 'https://…', sha256: '<64 hex>', size: 98765432 } },
 //     sig?: '<base64 Ed25519 signature of canonicalFeed(feed)>' }
-// The top-level url/sha256/size are the macOS DMG – that is all souldew ≤ 2.0 knows. Other platforms live in
+// The top-level url/sha256/size are the macOS DMG – that is all twicable ≤ 2.0 knows. Other platforms live in
 // `assets` (added in 2.1): older apps ignore unknown fields, and the signature covers every field, `assets` included,
 // so the same signed latest.json serves both (test/update.test.mjs runs the 2.0.0 code against such a feed).
 
@@ -210,7 +210,7 @@ export function canonicalFeed(feed) {
 }
 
 /** Release asset name without spaces (GitHub would turn them into dots and break the URL in the feed). */
-export const dmgAssetName = (version, arch = 'arm64') => `souldew-${version}-${arch}.dmg`;
+export const dmgAssetName = (version, arch = 'arm64') => `twicable-${version}-${arch}.dmg`;
 
 /** The Windows installer of a release (package.json → build.win.artifactName builds exactly this name). */
-export const winAssetName = (version, arch = 'x64') => `souldew-${version}-win-${arch}-setup.exe`;
+export const winAssetName = (version, arch = 'x64') => `twicable-${version}-win-${arch}-setup.exe`;

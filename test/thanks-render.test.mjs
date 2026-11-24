@@ -1,6 +1,6 @@
 // The Thank you page rendered in the real app (test/fixtures/thanks-runner.mjs: Electron, hidden, muted, a scratch data
 // folder, the fake accounts service): the one-time ask for a new supporter (and never again), only opted-in people by
-// name, "and N more", the live moment for someone new, and "Offline – as of …". With a souldew+ dev pack
+// name, "and N more", the live moment for someone new, and "Offline – as of …". With a twicable+ dev pack
 // (SLS_PLUS_DEV_PACK) also two light and two dark skins and a bigger interface size; THANKS_SHOTS=<folder> keeps PNGs.
 // Without a display on Linux: skipped.
 import { test } from 'node:test';
@@ -15,7 +15,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const noDisplay = process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY;
 
 test('Thank you page: ask once, opted-in names only, the live moment, offline "as of"', { skip: noDisplay ? 'no display' : false, timeout: 300000 }, async (t) => {
-  const data = mkdtempSync(join(tmpdir(), 'souldew-thanks-'));
+  const data = mkdtempSync(join(tmpdir(), 'twicable-thanks-'));
   t.after(() => rmSync(data, { recursive: true, force: true }));
   writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'Robin', bootAnimation: false, nagOff: true, whatsNew: null }));
   const out = join(data, 'result.json');
@@ -29,7 +29,7 @@ test('Thank you page: ask once, opted-in names only, the live moment, offline "a
   const s = res.steps;
 
   // asked once, with a preview and two equal answers
-  assert.equal(s.ask.title, 'Thank you for supporting souldew! 💧');
+  assert.equal(s.ask.title, 'Thank you for supporting twicable! 💧');
   assert.match(s.ask.preview, /Robin/);
   assert.deepEqual(s.ask.buttons, ['Yes, show me', 'No thanks']);
   assert.equal(s.answered, true, '"Yes" reached the service');

@@ -1,6 +1,6 @@
 // Raids (docs/MULTIPLAYER.md › "Raid"): the players of a run fight the same trainer together, each in their own game,
 // and the trainer's Pokémon share ONE health pool. Every hit in anybody's game takes its share (a percentage of that
-// game's max HP, so randomized games with other Pokémon work too) off the pool, and souldew writes the pool back into
+// game's max HP, so randomized games with other Pokémon work too) off the pool, and twicable writes the pool back into
 // every game. The trainer is beaten when the pool is empty – in everyone's game at once, not once per player.
 //
 // This module has no browser in it (tests drive it directly):
@@ -358,7 +358,7 @@ export class RaidPlayer {
         if (f.hp === 0) continue; // down in this game: never brought back
         const isActive = active.includes(f.idx);
         let want = hpFor(pool.pools[f.idx], f.maxHp);
-        // the one out never goes to 0 by souldew: 1 HP, the game's next hit knocks it out itself
+        // the one out never goes to 0 by twicable: 1 HP, the game's next hit knocks it out itself
         if (isActive && want === 0) want = 1;
         if (want === f.hp) continue;
         // (a heal in the pool never lifts this game above what the pool says, and a write that would bring a

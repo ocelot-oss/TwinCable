@@ -698,7 +698,7 @@ export class SyncLink {
       if (this.stopped) return;
       this.trysteroMod = mod;
       const { joinRoom } = mod;
-      // TURN (souldew's bot hands out short-lived credentials, docs/MULTIPLAYER.md › "Transport"): players behind strict
+      // TURN (twicable's bot hands out short-lived credentials, docs/MULTIPLAYER.md › "Transport"): players behind strict
       // NATs then still get a data channel, relayed – the direct path is tried first. Without an answer in time: STUN only.
       const ice = this.getIceServers ? await Promise.race([this.getIceServers().catch(() => null), new Promise((r) => setTimeout(() => r(null), 2500))]) : null;
       if (this.stopped) return;

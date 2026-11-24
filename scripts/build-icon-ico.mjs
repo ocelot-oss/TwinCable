@@ -83,7 +83,7 @@ function bmpEntry({ width, height, rgba }) {
   return Buffer.concat([header, pixels, mask]);
 }
 
-const tmp = mkdtempSync(join(tmpdir(), 'souldew-ico-'));
+const tmp = mkdtempSync(join(tmpdir(), 'twicable-ico-'));
 try {
   const cropped = join(tmp, 'cropped.png');
   execFileSync('sips', ['-c', String(CROP), String(CROP), join(build, 'icon.png'), '--out', cropped], { stdio: 'ignore' });

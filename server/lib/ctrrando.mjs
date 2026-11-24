@@ -3,7 +3,7 @@
 // with UPR ZX's Gen6/Gen7RomHandler. What goes in and comes out:
 //
 //   in   a decrypted .3ds / .cci (cartridge image), .cxi or .cia from the library. UPR reads the game's NCCH
-//        partition; an encrypted dump it can't read (souldew has no Nintendo keys and decrypts nothing) ends in
+//        partition; an encrypted dump it can't read (twicable has no Nintendo keys and decrypts nothing) ends in
 //        the error code 'ctrEncrypted' – the player needs a decrypted dump.
 //   out  one rebuilt, self-contained .cxi (~3 GB for Sun) in the run folder: the built-in player (Azahar's libretro
 //        core) and Azahar itself start it like any other 3DS game file – no LayeredFS mod folder to install, and two
@@ -82,7 +82,7 @@ export function checkCtrSpace(dir, ncchSize, count = 1, { free = freeBytes(dir) 
 export function ctrRandoError(e, opts) {
   if (e?.status) return e;
   if (e?.code === 'encrypted') {
-    return httpError(422, 'This 3DS game is encrypted. The randomizer needs a decrypted copy (.3ds/.cci/.cxi) – souldew doesn’t decrypt games.', 'ctrEncrypted');
+    return httpError(422, 'This 3DS game is encrypted. The randomizer needs a decrypted copy (.3ds/.cci/.cxi) – twicable doesn’t decrypt games.', 'ctrEncrypted');
   }
   if (e?.code === 'memory') return httpError(507, 'Not enough memory for the 3DS randomizer (it needs up to 4.5 GB)', 'ctrMemory');
   if (e?.code === 'timeout') return httpError(504, 'The 3DS randomizer took too long and was stopped', 'ctrTimeout');

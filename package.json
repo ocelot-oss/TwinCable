@@ -1,8 +1,8 @@
 {
-  "name": "souldew",
+  "name": "twicable",
   "version": "3.0.1",
   "private": true,
-  "description": "souldew – Pokémon SoulLinks (2–4 players) and Nuzlockes with a built-in emulator, live sync and a game library",
+  "description": "twicable – Pokémon SoulLinks (2–4 players) and Nuzlockes with a built-in emulator, live sync and a game library",
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/souldewapp/souldew",
   "repository": {
@@ -33,7 +33,7 @@
     "matrix": "node scripts/rom-matrix.mjs --live"
   },
   "updates": {
-    "repo": "souldewapp/souldew",
+    "repo": "",
     "feed": "https://github.com/{repo}/releases/latest/download/latest.json",
     "publicKey": "MCowBQYDK2VwAyEANG4Ng/ROJT1UWYJ0XQ0k3ZfY3mYKKmiiF0tunuAzlBA="
   },
@@ -54,12 +54,12 @@
     "globals": "14.0.0"
   },
   "main": "electron/main.mjs",
-  "desktopName": "souldew.desktop",
-  "author": "souldew",
+  "desktopName": "twicable.desktop",
+  "author": "twicable",
   "build": {
     "appId": "studio.soullink.app",
-    "productName": "souldew",
-    "copyright": "souldew",
+    "productName": "twicable",
+    "copyright": "twicable",
     "asar": false,
     "directories": {
       "output": "dist",
@@ -109,9 +109,9 @@
       "hardenedRuntime": false,
       "darkModeSupport": true,
       "extendInfo": {
-        "NSDownloadsFolderUsageDescription": "souldew sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac.",
-        "NSDesktopFolderUsageDescription": "souldew sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac.",
-        "NSDocumentsFolderUsageDescription": "souldew sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac."
+        "NSDownloadsFolderUsageDescription": "twicable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac.",
+        "NSDesktopFolderUsageDescription": "twicable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac.",
+        "NSDocumentsFolderUsageDescription": "twicable sucht hier nach deinen Spieldateien (ROMs), wenn du in der Bibliothek „Mac durchsuchen“ wählst. Es werden nur Dateinamen und Datei-Header gelesen – nichts verlässt deinen Mac."
       },
       "extraResources": [
         {
@@ -136,7 +136,7 @@
       ]
     },
     "dmg": {
-      "title": "souldew",
+      "title": "twicable",
       "background": "build/background.png",
       "iconSize": 96,
       "window": {
@@ -167,7 +167,7 @@
           ]
         }
       ],
-      "artifactName": "souldew-${version}-win-${arch}-setup.${ext}",
+      "artifactName": "twicable-${version}-win-${arch}-setup.${ext}",
       "extraResources": [
         {
           "from": "tools/jre/win32-x64",
@@ -197,9 +197,9 @@
       "runAfterFinish": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "souldew",
+      "shortcutName": "twicable",
       "include": "build/installer.nsh",
-      "uninstallDisplayName": "souldew",
+      "uninstallDisplayName": "twicable",
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico"
@@ -209,9 +209,9 @@
       "category": "Game",
       "synopsis": "Pokémon SoulLinks and Nuzlockes with a built-in emulator",
       "description": "Pokémon SoulLinks for 2–4 players and solo Nuzlockes: built-in emulator, live tracking from game memory, randomizer, real-time sync and OBS overlays.",
-      "maintainer": "souldew <https://github.com/souldewapp/souldew>",
-      "vendor": "souldew",
-      "executableName": "souldew",
+      "maintainer": "twicable <https://github.com/souldewapp/souldew>",
+      "vendor": "twicable",
+      "executableName": "twicable",
       "syncDesktopName": true,
       "target": [
         {
@@ -227,7 +227,7 @@
           ]
         }
       ],
-      "artifactName": "souldew-${version}-linux-${arch}.${ext}",
+      "artifactName": "twicable-${version}-linux-${arch}.${ext}",
       "desktop": {
         "entry": {
           "Keywords": "Pokemon;Pokémon;SoulLink;Nuzlocke;Emulator;Randomizer;"

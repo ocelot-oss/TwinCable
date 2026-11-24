@@ -73,7 +73,7 @@ export const ART = {
   mark: ['.aaa......bbb.', 'a...a....b...b', 'a....cccc....b', 'a....cccc....b', 'a...a....b...b', '.aaa......bbb.'],
 };
 
-// The "souldew" wordmark, condensed from the app's pixel face (Pixelify Sans) to 7 rows: 2 ascender + 5 x-height.
+// The "twicable" wordmark, condensed from the app's pixel face (Pixelify Sans) to 7 rows: 2 ascender + 5 x-height.
 const GLYPH = {
   s: ['...', '...', '.##', '#..', '.#.', '..#', '##.'],
   o: ['....', '....', '.##.', '#..#', '#..#', '#..#', '.##.'],
@@ -88,5 +88,5 @@ export function word(text, ch = 'w') {
   [...text].forEach((c, i) => { const g = GLYPH[c]; for (let y = 0; y < 7; y++) rows[y] += (i ? '.' : '') + g[y].replace(/#/g, ch); });
   return rows;
 }
-ART.wordmark = word('souldew');
+ART.wordmark = word('twicable');
 

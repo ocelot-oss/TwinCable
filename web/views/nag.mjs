@@ -1,5 +1,5 @@
 // A parody of the old shareware "please buy a license" window – deliberately in an old-Windows look on every platform.
-// souldew is free: the window says thanks, jokes a bit and offers the coffee link. Esc, the × , the backdrop and both
+// twicable is free: the window says thanks, jokes a bit and offers the coffee link. Esc, the × , the backdrop and both
 // footer buttons close it; Settings › About switches it off. When it shows up: lib/nag.mjs.
 import { html, useEffect, useRef } from '/vendor/htm-preact.mjs';
 import { openExternal } from '../lib/ui.mjs';
@@ -33,7 +33,7 @@ const BALL = [
 ];
 
 /**
- * souldew's own parody icon: three Poké Balls (Poké, Great, Ultra) in a wobbly stack, strapped together with a
+ * twicable's own parody icon: three Poké Balls (Poké, Great, Ultra) in a wobbly stack, strapped together with a
  * leather belt and a brass buckle. Built once as a character grid.
  */
 function buildIcon() {
@@ -72,7 +72,7 @@ const SMALL_BALL_COLORS = { K: '#17151c', T: '#e0453b', H: '#ffb0a5', W: '#f4f1e
 const CHECK = ['.......G', '......GG', 'G....GG.', 'GG..GG..', '.GGGG...', '..GG....'];
 const CROSS = ['XX....XX', '.XX..XX.', '..XXXX..', '...XX...', '..XXXX..', '.XX..XX.', 'XX....XX'];
 
-/** The window. `launches`: how often souldew was opened (for the joke). */
+/** The window. `launches`: how often twicable was opened (for the joke). */
 export function LicenseNag({ open, launches = 5, onClose }) {
   const ref = useRef(null);
   useEffect(() => {
@@ -100,16 +100,16 @@ export function LicenseNag({ open, launches = 5, onClose }) {
     <div class="nag-win">
       <div class="nag-titlebar">
         <${Pixels} rows=${BALL} colors=${SMALL_BALL_COLORS} scale=${1.25} className="nag-titleicon" />
-        <span class="nag-titletext">${t('nag.titlebar', 'Please purchase souldew license')}</span>
+        <span class="nag-titletext">${t('nag.titlebar', 'Please purchase twicable license')}</span>
         <button type="button" class="nag-x" onClick=${close} aria-label=${t('common.close', 'Close')} title=${t('common.close', 'Close')}>
           <${Pixels} rows=${CROSS} colors=${{ X: '#000' }} scale=${1} /></button>
       </div>
       <div class="nag-body">
         <div class="nag-icon"><${Pixels} rows=${ICON} colors=${ICON_COLORS} scale=${3} /></div>
         <div class="nag-main">
-          <h2 class="nag-h" id="nag-title">${t('nag.thanks', 'Thank you for using souldew!')}</h2>
-          <p class="nag-free" id="nag-free"><b>${t('nag.free', 'souldew IS a free software.')}</b> <i>${t('nag.seriously', '(Seriously.)')}</i></p>
-          <p class="nag-trial">${t('nag.trial', 'You’ve opened souldew {n} time. Your free trial ends: never. Nothing gets locked – this window is the entire business model.|You’ve opened souldew {n} times. Your free trial ends: never. Nothing gets locked – this window is the entire business model.', { n: launches, count: launches })}</p>
+          <h2 class="nag-h" id="nag-title">${t('nag.thanks', 'Thank you for using twicable!')}</h2>
+          <p class="nag-free" id="nag-free"><b>${t('nag.free', 'twicable IS a free software.')}</b> <i>${t('nag.seriously', '(Seriously.)')}</i></p>
+          <p class="nag-trial">${t('nag.trial', 'You’ve opened twicable {n} time. Your free trial ends: never. Nothing gets locked – this window is the entire business model.|You’ve opened twicable {n} times. Your free trial ends: never. Nothing gets locked – this window is the entire business model.', { n: launches, count: launches })}</p>
           <ul class="nag-list">${checks.map((c) => html`<li><${Pixels} rows=${CHECK} colors=${{ G: '#1d9a2c' }} scale=${2} className="nag-check" /><span>${c}</span></li>`)}</ul>
           <div class="nag-price"><s class="nag-was">${t('nag.was', '$34.22')}</s>
             <span class="nag-pay">${t('nag.pay', 'You pay:')} <b>${t('nag.payWhat', 'whatever a coffee costs')}</b></span></div>

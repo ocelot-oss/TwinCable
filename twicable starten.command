@@ -1,5 +1,5 @@
 #!/bin/bash
-# Doppelklick startet souldew (macOS).
+# Doppelklick startet twicable (macOS).
 cd "$(dirname "$0")"
 if ! command -v node >/dev/null 2>&1; then
   echo "Node.js fehlt. Installiere es von https://nodejs.org (LTS) und starte dann erneut."

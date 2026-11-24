@@ -60,7 +60,7 @@ export class SlowWatch {
  * What helps, best first, for a game that runs too slowly in the built-in emulator:
  * - 'native'   – the fast player is there but off (or this game runs in the browser emulator): it runs the same
  *                melonDS / mGBA / SameBoy natively, DS games with the JIT – far faster, with live sync kept
- * - 'external' – a DS game: the standalone melonDS (souldew installs it and syncs the run on every in-game save) has
+ * - 'external' – a DS game: the standalone melonDS (twicable installs it and syncs the run on every in-game save) has
  *                a just-in-time compiler and runs DS games at full speed on computers where the built-in one can't
  * - 'graphics' – Windows and Linux: another graphics backend (Settings › About › Troubleshooting) – it helped players whose emulator
  *                stuttered with one of them

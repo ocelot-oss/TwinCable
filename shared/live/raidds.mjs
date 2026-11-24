@@ -1,7 +1,7 @@
 // Raid drivers for the DS games (shared/live/raidhp.mjs, docs/MULTIPLAYER.md › "Raid"): Gen 4 (Platinum, HeartGold)
 // and Gen 5 (Black 2). Same contract as the Game Boy / GBA drivers: view → the opponent's party, who is out, whether
 // the game waits for the player (quiet); writes → the battle's HP, the party copy, the HP bar. Everything here was
-// measured in the running games (the souldew engine, melonDS) – Gen 4 with the pret/pokeplatinum and pokeheartgold
+// measured in the running games (the twicable engine, melonDS) – Gen 4 with the pret/pokeplatinum and pokeheartgold
 // decompilations, Gen 5 without one (its heap blocks name their source files: btl_main, btl_client, btlv_gauge …).
 // Only main RAM (0x02000000 + 4 MB) is read or written – what the app mirrors.
 

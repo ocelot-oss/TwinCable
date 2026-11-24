@@ -1,4 +1,4 @@
-// Where the souldew account's tokens live (the session itself: ./session.mjs).
+// Where the twicable account's tokens live (the session itself: ./session.mjs).
 //
 // Only ever encrypted by the operating system: the desktop app hands the local server Electron's safeStorage (macOS
 // Keychain, Windows DPAPI, the Secret Service / KWallet on Linux) as `secure`. The tokens are written as one encrypted
@@ -8,7 +8,7 @@
 // write anything: the session stays in memory until the app closes, and the page says so (Settings › Account).
 //
 // The keychain is asked only when there is something to ask it for: a saved sign-in to read (account.bin exists) or a
-// sign-in to keep. A player who never signs in never makes souldew read or create its keychain item – on macOS every
+// sign-in to keep. A player who never signs in never makes twicable read or create its keychain item – on macOS every
 // update of an unsigned build is a "new app" to that item, and touching it means a password prompt. Every keychain call
 // may take as long as such a prompt stays open, so all of them are awaited (never at server start – ./session.mjs load).
 import { readFileSync, mkdirSync, chmodSync, rmSync, existsSync } from 'node:fs';

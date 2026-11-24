@@ -1,5 +1,5 @@
-// Playing a DS game with the melonDS app (2.8.2, a player's report on Discord: "even after saving souldew wouldn't
-// update my team"). melonDS can't share the running game's memory, so souldew reads the battery save it writes after
+// Playing a DS game with the melonDS app (2.8.2, a player's report on Discord: "even after saving twicable wouldn't
+// update my team"). melonDS can't share the running game's memory, so twicable reads the battery save it writes after
 // every in-game save – but only HeartGold/SoulSilver saves were ever read: for Diamond, Pearl, Platinum, Black, White,
 // Black 2 and White 2 nothing watched the file at all. Every DS game the live readers know is read now
 // (shared/live/parse.mjs readSaveFile – the games keep their save in RAM in the layout of the file, so the same
@@ -223,7 +223,7 @@ function watcherFor(dir) {
 }
 
 test('melonDS rewriting the .sav in place, through a temp file, in two pieces, and the first save of a new game', async (t) => {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-savewatch-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-savewatch-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const sav = join(dir, 'p1.sav');
   const { w, events, saves, teams, last } = watcherFor(dir);
@@ -264,7 +264,7 @@ test('melonDS rewriting the .sav in place, through a temp file, in two pieces, a
 });
 
 test('melonDS with its own save folder: the newest of the places is read; a save it can\'t read says why', async (t) => {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-savewatch-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-savewatch-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const next = join(dir, 'run', 'p1.sav');
   const own = join(dir, 'melon saves', 'p1.sav');
@@ -293,11 +293,11 @@ test('melonDS with its own save folder: the newest of the places is read; a save
 // thread pool: a save written between watch() and that stat became the baseline and was never reported – the test
 // above failed every time in a busy full test run. The thread pool is kept busy here, so that stat comes late.
 test('a save written the moment the watch starts (a busy moment) is still read – a new file and a changed one', async (t) => {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-savewatch-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-savewatch-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const busy = () => {
     const jobs = [];
-    for (let i = 0; i < Number(process.env.UV_THREADPOOL_SIZE || 4); i++) jobs.push(new Promise((r) => pbkdf2('souldew', 'busy', 200000, 64, 'sha512', r)));
+    for (let i = 0; i < Number(process.env.UV_THREADPOOL_SIZE || 4); i++) jobs.push(new Promise((r) => pbkdf2('twicable', 'busy', 200000, 64, 'sha512', r)));
     return Promise.all(jobs);
   };
   // 1) melonDS's own folder has no save yet; the first one is written right after the watch starts
@@ -333,7 +333,7 @@ test('a save written the moment the watch starts (a busy moment) is still read �
 });
 
 test('melonDS\'s settings: the save folder from melonDS.toml (1.x, per instance) or melonDS.ini (0.9.x)', (t) => {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-melonconf-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-melonconf-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const toml = join(dir, 'melonDS.toml');
   writeFileSync(toml, '[Instance0]\nSaveFilePath = "C:\\\\Users\\\\Ana\\\\Saves"\nSavestatePath = ""\n\n[Instance1]\nSaveFilePath = ""\n');
@@ -379,12 +379,12 @@ test('a Platinum save from melonDS reaches the run: the team, and a catch filed 
   assert.equal(R.snapshotFromSave(noPc).boxes, null);
 });
 
-// #43: a new game prepares its flash during the intro (Blaze Black 2 Redux, Black 2: the fast player hands souldew a
+// #43: a new game prepares its flash during the intro (Blaze Black 2 Redux, Black 2: the fast player hands twicable a
 // battery save half a minute in) – that file holds no save yet, and "Save file unreadable" at the intro of every new
 // run only alarmed players. A save that was readable and then isn't, or one that was there when the watch started and
 // can't be read, still says so.
 test('a new game\'s prepared flash (no save in it yet) is no error message; the first in-game save is read as always', async (t) => {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-savewatch-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-savewatch-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const sav = join(dir, 'p1.sav');
   const { w, events, last } = watcherFor(dir);
@@ -403,7 +403,7 @@ test('a new game\'s prepared flash (no save in it yet) is no error message; the 
   writeFileSync(sav, prepared);
   assert.ok(await until(() => events.some((e) => e.ev === 'save-error')));
   // a file there from the start that holds no save (a broken save of an older session): said too
-  const dir2 = mkdtempSync(join(tmpdir(), 'souldew-savewatch-'));
+  const dir2 = mkdtempSync(join(tmpdir(), 'twicable-savewatch-'));
   t.after(() => rmSync(dir2, { recursive: true, force: true }));
   const sav2 = join(dir2, 'p1.sav');
   writeFileSync(sav2, prepared);

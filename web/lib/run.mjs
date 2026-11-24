@@ -634,7 +634,7 @@ const switchLabels = (n) => ({
   missedDupes: msg('rules.missedDupes', 'Fled or knocked-out encounters count as dupes'),
   failKillsPair: n > 2 ? msg('rules.failGroup', 'A missed encounter costs the whole group') : msg('rules.fail', 'A missed encounter costs the whole pair'),
   shinyClause: msg('rules.shiny', 'Shiny clause: shinies may always be caught and stay unlinked'),
-  levelCaps: msg('rules.caps', 'Check level caps'),
+  levelCaps: msg('rules.capXp', 'Cap battle XP'),
   autoAssign: msg('rules.autoAssign', 'Enter new catches automatically'),
   autoDeath: n > 2 ? msg('rules.autoDeathGroup', 'A linked Pokémon that faints (live) kills its whole group automatically')
     : msg('rules.autoDeath', 'A linked Pokémon that faints (live) kills the pair automatically'),
@@ -706,7 +706,7 @@ export function markMissed(doc, manifest, area, slot, { species = null, by, aske
 export const beforeBalls = (doc, manifest, slot) => !!doc && !!rules(doc, manifest).startAtBalls && !doc.get(`balls:${slot}`, null);
 
 /**
- * `slot`'s rules start now: souldew saw Poké Balls in their bag (`how` 'bag'), or – where it can't read the bag – they
+ * `slot`'s rules start now: twicable saw Poké Balls in their bag (`how` 'bag'), or – where it can't read the bag – they
  * caught a Pokémon ('catch'). Logged once per player (a fixed log id – two computers write one line). `down`: the keys
  * of their Pokémon at 0 HP right now – knocked out before the rules started, they only die once they were healed and
  * go down again. false when the rule doesn't hold (any more) for `slot`.
@@ -1718,7 +1718,7 @@ export function applySnapshot(doc, manifest, gen, slot, snap, { auto = true, rd 
   for (const [k, v] of Object.entries(writes)) if (k.startsWith(HELD_PREFIX) && !doc.get(k, null)) late[k] = v;
   if (Object.keys(late).length) doc.batch(late);
   // the held deaths the play view has shown by now – all of them where nothing holds any (a save file, an emulator
-  // outside souldew, an older caller)
+  // outside twicable, an older caller)
   if (snap.source === 'live' || !held) deaths.push(...revealHeld(doc, manifest, slot, { keep: held }).deaths);
   // the first catch starts the rules where the bag couldn't tell (play view: startRules with the bag)
   if (caughtNew && beforeBalls(doc, manifest, slot)) startRules(doc, manifest, slot, 'catch');

@@ -1,8 +1,8 @@
 // The pictures of the "What's new in 3.0" cards (web/views/whatsnew.mjs → web/assets/whatsnew/<card>.webp): crops of
 // real screenshots of the app, laid out on a plain backdrop. The screenshots come from the end-to-end scripts' --out
-// folders (link-e2e, world-e2e, raid-e2e, social-e2e, the souldew+ handheld editor); copy them into one folder under
-// the names below. Only souldew's own interface may be cropped – never the game's picture, box art or a sprite read
-// from a ROM: those aren't ours to hand out (each crop below is a panel of souldew's UI, its rounded corners cut so
+// folders (link-e2e, world-e2e, raid-e2e, social-e2e, the twicable+ handheld editor); copy them into one folder under
+// the names below. Only twicable's own interface may be cropped – never the game's picture, box art or a sprite read
+// from a ROM: those aren't ours to hand out (each crop below is a panel of twicable's UI, its rounded corners cut so
 // nothing behind it shows).
 //
 //   node scripts/whatsnew-media.mjs <screenshots folder> [--out web/assets/whatsnew] [--png]   (needs cwebp, --png keeps the PNGs)
@@ -87,11 +87,11 @@ if (!process.versions.electron) {
   mkdirSync(out, { recursive: true });
   app.commandLine.appendSwitch('mute-audio');
   app.commandLine.appendSwitch('force-device-scale-factor', '1');
-  app.setPath('userData', join(tmpdir(), 'souldew-whatsnew-media'));
+  app.setPath('userData', join(tmpdir(), 'twicable-whatsnew-media'));
   app.whenReady().then(async () => {
     const win = new BrowserWindow({ show: false, width: W, height: H, useContentSize: true, webPreferences: { offscreen: true, webSecurity: false } });
     for (const card of Object.keys(CARDS)) {
-      const html = join(tmpdir(), `souldew-whatsnew-${card}.html`);
+      const html = join(tmpdir(), `twicable-whatsnew-${card}.html`);
       writeFileSync(html, page(card, dir));
       await win.loadFile(html);
       await win.webContents.executeJavaScript('Promise.all([...document.images].map((i) => i.decode().catch(() => {})))');

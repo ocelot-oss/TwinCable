@@ -1,14 +1,14 @@
-// The souldew+ page's launch animations (owner's round on 3.0, 19.11.26): ONE row of cards – the free 2D Cartridge,
-// "Your colours" (Supporter) and the souldew+ shells Gold, Clear shell and Holo label – each showing the animation
+// The twicable+ page's launch animations (owner's round on 3.0, 19.11.26): ONE row of cards – the free 2D Cartridge,
+// "Your colours" (Supporter) and the twicable+ shells Gold, Clear shell and Holo label – each showing the animation
 // instead of describing it, its tier on the card, and exactly one of them selected. Selected first is the one that plays
 // for you now; picking another shows it (the loop plays in its card) and says what it is for you: in use, "Use it" (you
-// may: Supporter / souldew+ – it is the same setting as Settings › Play › Launch animation), or what it comes with. The
+// may: Supporter / twicable+ – it is the same setting as Settings › Play › Launch animation), or what it comes with. The
 // Clear shell's four colours are its own small choice under its card. The tiers used to be a second row of cards
-// (launchtiers.mjs – still in "What souldew+ holds"); here every card carries its tier instead.
+// (launchtiers.mjs – still in "What twicable+ holds"); here every card carries its tier instead.
 //
 // What a card shows, best first: the previews' loop and still of that look (launch/<id>.webp|png – public pictures,
 // rendered from the real launch code: scripts/handheld/launch-shots.mjs); else the real launch scene where this computer
-// can draw it ("Your colours" always, the souldew+ shells with the pack): a still, and the launch itself playing in the
+// can draw it ("Your colours" always, the twicable+ shells with the pack): a still, and the launch itself playing in the
 // selected card; else the still that ships with the app (web/assets/handheld/launch/ – the same public pictures, until
 // the previews carry the looks); the 2D Cartridge is its own module, live. Reduced motion: stills only.
 import { html, useEffect, useRef, useState } from '/vendor/htm-preact.mjs';
@@ -29,7 +29,7 @@ import { HandheldStillImg } from './handheldtile.mjs';
 import { CartInsert } from './cartinsert.mjs';
 import { LaunchPreview } from './launchstage.mjs';
 
-const tierName = (tier) => ({ free: t('launch.tierFree', 'Free'), supporter: t('acct.supporter', 'Supporter'), plus: t('rail.plus', 'souldew+') })[tier];
+const tierName = (tier) => ({ free: t('launch.tierFree', 'Free'), supporter: t('acct.supporter', 'Supporter'), plus: t('rail.plus', 'twicable+') })[tier];
 const clearName = (k) => ({ atomic: t('launch.clearAtomic', 'Atomic purple'), smoke: t('launch.clearSmoke', 'Smoke'), ice: t('launch.clearIce', 'Ice'), jungle: t('launch.clearJungle', 'Jungle') })[k];
 
 /** The 2D module: the console screen, and the cartridge clicking in again and again while `playing`. */
@@ -46,7 +46,7 @@ function CartridgeArt({ playing }) {
   useEffect(() => { if (!playing) setN(0); else if (!n) setN(1); }, [playing]);
   const again = () => setTimeout(() => setN((x) => (x ? x + 1 : 0)), 1100);
   // still: the same module held at the moment it is home (plus.css .plus-look-cart.still)
-  const target = { system: 'gba', label: 'souldew', params: {} };
+  const target = { system: 'gba', label: 'twicable', params: {} };
   return html`<div class=${`launch-screen plus-look-cart ${playing && n > 0 ? '' : 'still'}`} aria-hidden="true"><canvas ref=${ref}></canvas>
     ${playing && n > 0 ? html`<${CartInsert} key=${n} target=${target} sound=${false} onDone=${again} />` : html`<${CartInsert} key="still" target=${target} sound=${false} onDone=${() => {}} />`}</div>`;
 }
@@ -107,7 +107,7 @@ export function LaunchLooks() {
     : inUse ? html`<span class="plus-look-use"><${Icon} name="check" size=${12} />${t('plus.lookInUse', 'Plays when your games start')}</span>`
     : usable ? html`<button type="button" class="btn small" onClick=${save}>${t('plus.lookUse', 'Use it for my games')}</button>`
       : sel === 'cartridge' ? html`<span class="small muted">${t('plus.lookCartFor', 'What plays without a membership')}</span>`
-        : html`<span class="small muted">${tier === 'plus' ? t('plus.lookPlusPreview', 'Comes with souldew+ – this is a preview') : t('plus.lookSupPreview', 'Comes with Supporter and souldew+ – this is a preview')}</span>`;
+        : html`<span class="small muted">${tier === 'plus' ? t('plus.lookPlusPreview', 'Comes with twicable+ – this is a preview') : t('plus.lookSupPreview', 'Comes with Supporter and twicable+ – this is a preview')}</span>`;
   return html`<div class="plus-looks-wrap">
     <div class="plus-looks" role="radiogroup" aria-label=${t('plus.kLaunch', 'Launch animations')}>
       ${LOOK_CARDS.map(([id, tr]) => {
@@ -128,6 +128,6 @@ export function LaunchLooks() {
     </div>
     <div class="plus-look-line" aria-live="polite"><b>${names[sel][0]}${sel === 'clear-shell' ? ` · ${clearName(tint)}` : ''}</b>
       <span class="small muted">${names[sel][1]}</span>${status1}</div>
-    <p class="small faint plus-look-rare"><${Icon} name="star" size=${11} /> ${t('plus.lookRare', 'With souldew+, one start in 64 is a Rare start – golden light, glints and a little dust. It isn’t a pick: it just happens.')}</p>
+    <p class="small faint plus-look-rare"><${Icon} name="star" size=${11} /> ${t('plus.lookRare', 'With twicable+, one start in 64 is a Rare start – golden light, glints and a little dust. It isn’t a pick: it just happens.')}</p>
   </div>`;
 }

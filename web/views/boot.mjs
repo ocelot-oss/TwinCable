@@ -30,7 +30,7 @@ export function BootScreen({ onDone, sound = true }) {
   return html`<div class=${`boot ${phase === 'out' ? 'run out' : 'run'}`} onClick=${onDone} role="presentation">
     <div class="boot-screen">
       <div class="boot-logo">
-        <span class="word">souldew</span>
+        <span class="word">twicable</span>
         <!-- the app icon's two rings: player 1 blue, player 2 pink, glowing on the LCD -->
         <svg class="boot-rings" viewBox="0 0 32 16" shape-rendering="crispEdges" aria-hidden="true">
           <path fill="#8cb0ff" d="M4 2h6v2H4zM2 4h2v8H2zM10 4h2v2h-2zM10 10h2v2h-2zM4 12h6v2H4z" />

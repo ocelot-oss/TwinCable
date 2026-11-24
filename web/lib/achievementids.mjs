@@ -1,4 +1,4 @@
-// Titles and showcase trophies of the souldew profile are the app's own achievements (shared/trophies.mjs). The
+// Titles and showcase trophies of the twicable profile are the app's own achievements (shared/trophies.mjs). The
 // accounts service's catalog names them in kebab case (kind "title" / "trophy"): winSoulLink ↔ win-soul-link,
 // badges16 ↔ badges16. Only achievements this computer has unlocked are offered.
 import { achIds } from './trophytexts.mjs';

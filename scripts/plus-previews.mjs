@@ -1,4 +1,4 @@
-// souldew+ PREVIEW MEDIA: what someone without souldew+ sees of every premium item before buying it – pictures only,
+// twicable+ PREVIEW MEDIA: what someone without twicable+ sees of every premium item before buying it – pictures only,
 // rendered offline with the same engines from the design sources. No recipe, no code, no stylesheet: a PNG still and
 // a short, low-resolution animated WebP loop per item, plus a still of the app in every colour skin. They are free to
 // give away: the accounts service serves them to anyone (GET /v1/previews), signed like every pack, so the app still
@@ -30,7 +30,7 @@ function upscale(w, h, src, k) {
 
 /** an animated WebP from RGBA frames (img2webp: lossless first – pixel art packs small – lossy when that is too big) */
 function loopWebp(frames, w, h, encodePNG, file) {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-loop-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-loop-'));
   try {
     const names = frames.map((f, i) => {
       const p = join(dir, `f${String(i).padStart(3, '0')}.png`);
@@ -53,11 +53,11 @@ function loopWebp(frames, w, h, encodePNG, file) {
 /**
  * The launch looks of "Your handheld" (launch/<name>.png – a 640×400 still – and launch/<name>.webp – a 3 s loop at
  * 288×180, 10 fps): "Your colours", Gold, Holo label and the Clear shell in each of its four colours, drawn by the real launch
- * scene in Electron (scripts/handheld/launch-shots.mjs) with the souldew+ looks' data `looks` (the design source's
- * handheld/looks.mjs LOOKS). The souldew+ page shows them on its launch cards to everyone (views/launchlooks.mjs).
+ * scene in Electron (scripts/handheld/launch-shots.mjs) with the twicable+ looks' data `looks` (the design source's
+ * handheld/looks.mjs LOOKS). The twicable+ page shows them on its launch cards to everyone (views/launchlooks.mjs).
  */
 export function renderLaunchPreviews({ looks, out, log = console.log }) {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-launchshots-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-launchshots-'));
   try {
     writeFileSync(join(dir, 'looks.json'), JSON.stringify(looks));
     const electron = join(ROOT, 'node_modules', '.bin', process.platform === 'win32' ? 'electron.cmd' : 'electron');
@@ -160,7 +160,7 @@ export async function renderItemPreviews({ design, banners, frames, out, log = c
 
 /** The app in every colour skin (Electron: scripts/plus-skin-shots.mjs) → skins/<id>.webp, 960×600. */
 export function renderSkinPreviews({ skins, out, log = console.log }) {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-skinshots-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-skinshots-'));
   try {
     writeFileSync(join(dir, 'skins.json'), JSON.stringify(skins.map((s) => ({ id: s.id, css: s.css }))));
     const electron = join(ROOT, 'node_modules', '.bin', process.platform === 'win32' ? 'electron.cmd' : 'electron');

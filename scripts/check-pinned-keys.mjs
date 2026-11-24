@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// Release gate: a packaged build must carry the REAL pinned public keys of souldew+ – the pack signing key
+// Release gate: a packaged build must carry the REAL pinned public keys of twicable+ – the pack signing key
 // (web/lib/cosmetics/pack/keys.mjs PRODUCTION_KEYS) and the entitlement key (server/lib/accounts/enttoken.mjs
-// PRODUCTION_ENTITLEMENT_KEYS). Placeholders fail closed in the app (nobody gets souldew+), which is safe but means a
+// PRODUCTION_ENTITLEMENT_KEYS). Placeholders fail closed in the app (nobody gets twicable+), which is safe but means a
 // broken release – so `npm run dist*` and `npm run release` stop here until the owner pasted both keys.
 //
 //   node scripts/check-pinned-keys.mjs            exit 1 while a placeholder is pinned
-//   SOULDEW_UNPINNED_TEST_BUILD=1 npm run dist      an internal test build anyway (loud warning; never for release.mjs)
+//   TWICABLE_UNPINNED_TEST_BUILD=1 npm run dist      an internal test build anyway (loud warning; never for release.mjs)
 import { PRODUCTION_KEYS } from '../web/lib/cosmetics/pack/keys.mjs';
 import { PRODUCTION_ENTITLEMENT_KEYS, publicKey } from '../server/lib/accounts/enttoken.mjs';
 
@@ -25,8 +25,8 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split(/[\\/]/).p
   const problems = pinnedKeyProblems();
   const forRelease = process.argv.includes('--release');
   if (problems.length) {
-    const allow = !forRelease && process.env.SOULDEW_UNPINNED_TEST_BUILD === '1';
-    console.error(`${allow ? 'WARNING' : 'ERROR'}: souldew+ keys are not pinned – this build gives nobody souldew+:\n  ${problems.join('\n  ')}`);
+    const allow = !forRelease && process.env.TWICABLE_UNPINNED_TEST_BUILD === '1';
+    console.error(`${allow ? 'WARNING' : 'ERROR'}: twicable+ keys are not pinned – this build gives nobody twicable+:\n  ${problems.join('\n  ')}`);
     console.error('Paste the public halves (souldew-accounts: node tools/keygen.mjs pack / entitlement) into those files first.');
     if (!allow) process.exit(1);
   }

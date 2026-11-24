@@ -1,4 +1,4 @@
-// End-to-end test of Shared World in the real app (docs/MULTIPLAYER.md › 9): two or three souldew servers with scratch
+// End-to-end test of Shared World in the real app (docs/MULTIPLAYER.md › 9): two or three twicable servers with scratch
 // data folders (players on this computer), one SoulLink run (created on A, joined on the others), each player's
 // battery save in it, every page in Electron (muted) playing its own game in the fast player. The players stand on the
 // same map; B walks around while A's page draws B over A's game – screenshots and a strip of frames go to --out. Then A
@@ -17,7 +17,7 @@
 //                              [--frames]    (A's game run frame by frame while A walks a step each way: the camera the
 //                                             overlay read against the picture's background, frames.json)
 //                              [--browser]   (A plays in the browser player, EmulatorJS, instead of the fast player)
-//                              [--engine]    (every fast player is the souldew engine – Settings › "souldew engine (beta)")
+//                              [--engine]    (every fast player is the twicable engine – Settings › "twicable engine (beta)")
 //                              [--occlusion] (Emerald, three saves in the Oldale Pokémon Center 2F: instead of the walk and
 //                                             the menu, the players line up behind the potted plants, then walk out to a
 //                                             tree top in Oldale Town, then A walks into Route 101 while B stands under
@@ -111,7 +111,7 @@ async function occlusion({ world, hold, shot, log, sleep, until, out, emu }) {
   const all = (name) => Promise.all([0, 1, 2].map((i) => shot(name, i, true)));
 
   // 1. behind the potted plants (2F row 8: the leaves are top layer and walkable) – A's own sprite at (6,8) shows what
-  //    the game does, B at (5,8) and C at (9,8) are drawn by souldew
+  //    the game does, B at (5,8) and C at (9,8) are drawn by twicable
   await Promise.all([goto(0, 6, 7, true).then(() => goto(0, 6, 8)), goto(1, 5, 7, true).then(() => goto(1, 5, 8)), goto(2, 9, 7, true).then(() => goto(2, 9, 8))]);
   await Promise.all([face(0, 'down'), face(1, 'down'), face(2, 'down')]);
   await sleep(1200);
@@ -217,7 +217,7 @@ async function clip({ world, log, sleep, out, wins, gameRect, ds, hold }) {
 }
 
 /**
- * Smooth motion (--smooth): every sprite souldew draws – B on A's picture, B's follower, A's own follower – must walk
+ * Smooth motion (--smooth): every sprite twicable draws – B on A's picture, B's follower, A's own follower – must walk
  * like the game's own: the overlay's trace (per drawn picture, web/lib/worldoverlay.mjs trace()) while B walks off
  * after standing, stops, turns and runs, while A and B walk side by side, and while A walks alone with the follower.
  * The traces go to out/trace-A.json and out/trace-B.json with the scenarios marked, the metrics (scripts/world-motion.mjs)

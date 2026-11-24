@@ -1,6 +1,6 @@
 // Location data read from the ROM itself (shared/live/romloc.mjs) and its use by readLocation (ctx.rom).
 // Synthetic files check the formats; real ROMs – when present – check the result against the tables:
-//   SOULDEW_TEST_ROMS=/folder/with/roms node --test test/romloc.test.mjs
+//   TWICABLE_TEST_ROMS=/folder/with/roms node --test test/romloc.test.mjs
 // (any .gb/.gbc/.gba/.nds in the folder; never commit ROMs). Without the variable those tests are skipped.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -272,7 +272,7 @@ test('readLocation with ROM data: Black/White read the copy of the zone header, 
     ram.put16(a + 0x30, z);
   };
 
-  // Black US as captured in souldew's players: Juniper's lab at 0x0225929C (the zone itself at 0x022592B2, the static
+  // Black US as captured in twicable's players: Juniper's lab at 0x0225929C (the zone itself at 0x022592B2, the static
   // address NDS-Ironmon-Tracker has) – the lab's own name is Nuvema Town's
   const us = mainRam();
   inZone(us, 0x0225929c, 396);
@@ -523,14 +523,14 @@ test('Gen 2 map headers: the group table found by its structure; its maps must b
 
 // ---------------------------------------------------------------- real ROMs (optional)
 
-const DIR = process.env.SOULDEW_TEST_ROMS;
+const DIR = process.env.TWICABLE_TEST_ROMS;
 const roms = DIR && existsSync(DIR) ? readdirSync(DIR).filter((f) => /\.(nds|gba)$/i.test(f)).map((f) => join(DIR, f)) : [];
 const gbRoms = DIR && existsSync(DIR) ? readdirSync(DIR).filter((f) => /\.gbc?$/i.test(f)).map((f) => join(DIR, f)) : [];
 // only retail dumps can be compared with the tables (a hack or a randomized game is checked in test/romdata.test.mjs)
 const RETAIL = new Set(json('catalog.json').games.flatMap((g) => g.crc32 || []).map((c) => String(c).toUpperCase()));
 const retail = (bytes) => RETAIL.has(romCrc(bytes));
 
-test('real ROMs: the ROM-derived locations match the tables', { skip: roms.length ? false : 'set SOULDEW_TEST_ROMS to a folder with ROMs' }, () => {
+test('real ROMs: the ROM-derived locations match the tables', { skip: roms.length ? false : 'set TWICABLE_TEST_ROMS to a folder with ROMs' }, () => {
   const table4 = { hgss: maps.tables.gen4.hgss, pt: maps.tables.gen4.pt, dp: maps.tables.gen4.dp };
   for (const f of roms) {
     const bytes = new Uint8Array(readFileSync(f));
@@ -571,7 +571,7 @@ test('real ROMs: the ROM-derived locations match the tables', { skip: roms.lengt
   }
 });
 
-test('real Game Boy ROMs: the map headers are where pret\'s symbols put them, and are the tables\' maps', { skip: gbRoms.length ? false : 'set SOULDEW_TEST_ROMS to a folder with ROMs' }, () => {
+test('real Game Boy ROMs: the map headers are where pret\'s symbols put them, and are the tables\' maps', { skip: gbRoms.length ? false : 'set TWICABLE_TEST_ROMS to a folder with ROMs' }, () => {
   // pret: pokered.sym 00:01AE MapHeaderPointers, 03:423D MapHeaderBanks; pokeyellow 3F:41F2 / 3F:43E4;
   // pokecrystal.sym 25:4000 MapGroupPointers, pokegold/pokesilver.sym 25:40ED
   const at = (bank, a) => bank * 0x4000 + (a - 0x4000);
@@ -603,7 +603,7 @@ test('real Game Boy ROMs: the map headers are where pret\'s symbols put them, an
   assert.ok(checked > 0, 'a retail Game Boy ROM was checked');
 });
 
-test('real GBA ROMs: every map header’s events pointer names one section', { skip: roms.length ? false : 'set SOULDEW_TEST_ROMS to a folder with ROMs' }, () => {
+test('real GBA ROMs: every map header’s events pointer names one section', { skip: roms.length ? false : 'set TWICABLE_TEST_ROMS to a folder with ROMs' }, () => {
   for (const f of roms.filter((x) => /\.gba$/i.test(x))) {
     const bytes = new Uint8Array(readFileSync(f));
     if (!retail(bytes)) continue;

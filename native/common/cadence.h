@@ -1,9 +1,9 @@
-// The rhythm of a native host's frame loop, shared by both hosts: frame pacing at the speed souldew asked for (1× … 4×,
+// The rhythm of a native host's frame loop, shared by both hosts: frame pacing at the speed twicable asked for (1× … 4×,
 // "Max" = as fast as it goes), a picture about 60 times a second while fast-forwarding (not one per emulated frame),
 // the RAM ten times a second whatever the speed, the battery save once it settled, and the real speed four times a
 // second (the page measures it – the speed bar, the turbo mixer, the slow-computer hint).
-#ifndef SOULDEW_CADENCE_H
-#define SOULDEW_CADENCE_H
+#ifndef TWICABLE_CADENCE_H
+#define TWICABLE_CADENCE_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -42,10 +42,10 @@ bool cadence_stats(struct cadence *c, double now, double *fps, double *speed);
  * written save must never reach the run), or right away when forced (FLUSH, QUIT).
  */
 struct sram_watch {
-  uint64_t sent; // what souldew has
+  uint64_t sent; // what twicable has
   uint64_t seen; // what the last look saw
 };
-/** souldew has these bytes (the save given at the start, the one a state carried). */
+/** twicable has these bytes (the save given at the start, the one a state carried). */
 void sram_known(struct sram_watch *w, const void *p, size_t n);
 /** True: send these bytes now. */
 bool sram_due(struct sram_watch *w, const void *p, size_t n, bool force);

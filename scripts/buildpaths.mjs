@@ -1,7 +1,7 @@
 // Native builds without the build machine's paths: compilers write the source paths into the binaries (__FILE__ in
 // asserts and log lines, debug info) – on a Mac that's /Users/<account name>/…, the account name often the owner's own
 // name. scripts/build-native.mjs and scripts/build-ctr.mjs compile with -ffile-prefix-map (clang and gcc, MinGW too),
-// so the home folder reads /build and the checkout /souldew; their --check fails when a built file still holds the
+// so the home folder reads /build and the checkout /twicable; their --check fails when a built file still holds the
 // home folder (a part built before this, or a build step that ignored the flags).
 import { homedir } from 'node:os';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -10,7 +10,7 @@ import { join } from 'node:path';
 /** The compiler flags that map the checkout and the home folder away (the longer prefix first – it wins either way). */
 export function prefixMapFlags(root, home = homedir()) {
   const maps = [];
-  if (root) maps.push(`-ffile-prefix-map=${root}=/souldew`);
+  if (root) maps.push(`-ffile-prefix-map=${root}=/twicable`);
   if (home && home !== '/' && !(root && root === home)) maps.push(`-ffile-prefix-map=${home}=/build`);
   return maps;
 }

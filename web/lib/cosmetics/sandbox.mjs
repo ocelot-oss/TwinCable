@@ -1,4 +1,4 @@
-// Where code from a souldew+ pack runs: a module worker inside a SANDBOXED iframe (sandbox="allow-scripts", no
+// Where code from a twicable+ pack runs: a module worker inside a SANDBOXED iframe (sandbox="allow-scripts", no
 // allow-same-origin) – never the page itself and never the Node / main process. The iframe (/cosmetics-sandbox.html,
 // served with its own CSP: connect-src 'none', no images, no styles) has an opaque origin: whatever runs there is
 // cross-origin to the app, so it can't call the local API (the server refuses Origin: null and the app window's
@@ -24,9 +24,9 @@ export function workerSource({ hostModule, freeModule = null, packText = null, p
   // first: the canvas stand-ins (canvas-proxy.mjs) – imports run in order, before the host takes its messages
   lines.push(`import '${engineUrl('canvas-proxy.mjs')}';`);
   if (packText) lines.push(packText.replaceAll(SPEC, `'${engineUrl('')}`));
-  lines.push(`import { host as __souldewHost } from '${engineUrl(hostModule)}';`);
-  if (freeModule) lines.push(`import __souldewFree from '${engineUrl(freeModule)}';`);
-  lines.push(`__souldewHost([...${freeModule ? '__souldewFree' : '[]'}, ...${packText && packExport ? packExport : '[]'}]);`);
+  lines.push(`import { host as __twicableHost } from '${engineUrl(hostModule)}';`);
+  if (freeModule) lines.push(`import __twicableFree from '${engineUrl(freeModule)}';`);
+  lines.push(`__twicableHost([...${freeModule ? '__twicableFree' : '[]'}, ...${packText && packExport ? packExport : '[]'}]);`);
   return lines.join('\n');
 }
 
@@ -51,21 +51,21 @@ class SandboxedWorker {
     this.canvases = new Map(); // id → { c, ctx } – the page's canvases the worker draws into (canvas-proxy.mjs)
     this.port.onmessage = (e) => {
       const d = e.data;
-      if (d && d.op === '__souldew_canvas') this.paint(d);
-      else if (d && d.op === '__souldew_error') this.emit('error', { message: String(d.message || 'worker error') });
+      if (d && d.op === '__twicable_canvas') this.paint(d);
+      else if (d && d.op === '__twicable_error') this.emit('error', { message: String(d.message || 'worker error') });
       else this.emit('message', { data: d });
     };
     const frame = document.createElement('iframe');
     frame.setAttribute('sandbox', 'allow-scripts');
     frame.setAttribute('aria-hidden', 'true');
     frame.tabIndex = -1;
-    frame.title = 'souldew+';
+    frame.title = 'twicable+';
     frame.style.cssText = 'position:fixed;width:0;height:0;border:0;visibility:hidden;pointer-events:none';
     this.onReady = (e) => {
-      if (e.source !== frame.contentWindow || e.data?.op !== 'souldew-sandbox-ready' || this.ready || this.dead) return;
+      if (e.source !== frame.contentWindow || e.data?.op !== 'twicable-sandbox-ready' || this.ready || this.dead) return;
       removeEventListener('message', this.onReady);
       // the iframe's origin is opaque ('null'), so '*' is the only target – the message goes to this iframe's window only
-      frame.contentWindow.postMessage({ op: 'souldew-sandbox', source, name }, '*', [ch.port2]);
+      frame.contentWindow.postMessage({ op: 'twicable-sandbox', source, name }, '*', [ch.port2]);
       this.ready = true;
       for (const [m, t] of this.queue.splice(0)) this.port.postMessage(m, t);
     };
@@ -81,7 +81,7 @@ class SandboxedWorker {
       fn?.(ev);
       for (const l of this.listeners[type]) l(ev);
     } catch (e) {
-      console.error('souldew sandbox listener failed', e);
+      console.error('twicable sandbox listener failed', e);
     }
   }
 
@@ -104,7 +104,7 @@ class SandboxedWorker {
       const id = ++this.canvasSeq;
       this.canvases.set(id, { c: m.canvas, ctx: m.canvas.getContext('2d') });
       transfer = transfer.filter((t) => t !== m.canvas);
-      m = { ...m, canvas: { __souldewCanvas: id } };
+      m = { ...m, canvas: { __twicableCanvas: id } };
     }
     if (this.ready) this.port.postMessage(m, transfer);
     else this.queue.push([m, transfer]);
@@ -125,7 +125,7 @@ class SandboxedWorker {
     this.queue.length = 0;
     this.canvases.clear();
     try {
-      this.port.postMessage({ op: '__souldew_terminate' });
+      this.port.postMessage({ op: '__twicable_terminate' });
     } catch {
       // closed already
     }
@@ -141,5 +141,5 @@ export function setWorkerFactory(fn) {
 }
 
 export function startWorker(opts) {
-  return factory(workerSource(opts), opts.name || 'souldew-cosmetics');
+  return factory(workerSource(opts), opts.name || 'twicable-cosmetics');
 }

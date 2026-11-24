@@ -1,6 +1,6 @@
 /* The Thank you page (web/views/thanks.mjs) and the one-time ask (views/thanksask.mjs). Only the app's own tokens, so
    every skin colours it and changes no box (test/skin-proof.test.mjs); the tier marks are the one fixed accent each –
-   the souldew+ gold of .plus-box for souldew+ and Legend, the dew blue of Supporter, the warm copper of a coffee. */
+   the twicable+ gold of .plus-box for twicable+ and Legend, the dew blue of Supporter, the warm copper of a coffee. */
 
 .ty-page { --ty-gold: #d9ad4f; --ty-dew: var(--crs); --ty-copper: #c98a55;
   display: flex; flex-direction: column; gap: 56px; padding-bottom: 24px; }
@@ -59,7 +59,7 @@
 .ty-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .ty-since { font-size: 12px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Legend and souldew+: a card on the person's own banner */
+/* Legend and twicable+: a card on the person's own banner */
 .ty-legend, .ty-plus { position: relative; overflow: hidden; border-radius: var(--r-l); background: var(--shell-2);
   border: 1px solid color-mix(in srgb, var(--ty-c) 38%, var(--sk-line, #0f0e12)); box-shadow: inset 0 1px 0 #ffffff08, 0 10px 26px -16px #000b; }
 .ty-legend { border-radius: var(--r-xl); }
@@ -110,7 +110,7 @@
 .ty-cta-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; justify-content: flex-end; }
 .ty-cta-actions a { flex-basis: 100%; text-align: right; }
 
-/* ---- the souldew+ page's way here ---- */
+/* ---- the twicable+ page's way here ---- */
 .plus-thanks-link { display: inline-flex; align-items: center; gap: 7px; margin-top: 16px; color: var(--ink-2); }
 .plus-thanks-link:hover { color: var(--ink); }
 .plus-thanks-link svg { display: block; flex: none; }

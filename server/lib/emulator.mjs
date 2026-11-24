@@ -17,7 +17,7 @@ export const EMULATORS = {
     name: 'melonDS',
     systems: ['nds'],
     repo: 'melonDS-emu/melonDS',
-    live: 'save', // reads the .sav after every in-game save
+    live: 'arm9', // optional ARM9 debugger, with battery save fallback
     assets: { darwin: /macOS-universal\.zip$/i, win32: { x64: /windows-x86_64\.zip$/i, arm64: /windows-aarch64\.zip$/i }, linux: { x64: /appimage-x86_64\.zip$/i, arm64: /appimage-aarch64\.zip$/i } },
     app: /^melonDS.*\.app$/i,
     exe: /^(?:melonDS(?:\.exe)?|melonDS[\w.+-]*\.AppImage|net\.kuribo64\.melonDS)$/i,
@@ -201,7 +201,7 @@ export function detectEmulator(id, customPath) {
 }
 
 /**
- * Download and install the latest release of an emulator into souldew's tools folder. Every failure is an httpError
+ * Download and install the latest release of an emulator into twicable's tools folder. Every failure is an httpError
  * with a code (web/lib/errors.mjs shows it in the player's language) – the English text is only the fallback.
  */
 export async function installEmulator(id, { fetchImpl = fetch } = {}) {
@@ -211,7 +211,7 @@ export async function installEmulator(id, { fetchImpl = fetch } = {}) {
   const offline = (e) => httpError(502, `GitHub can’t be reached: ${e.message}`, 'emuOffline', { ...vars, detail: String(e.cause?.code || e.message).slice(0, 200) });
   let rel;
   try {
-    const relRes = await fetchImpl(`https://api.github.com/repos/${emu.repo}/releases/latest`, { headers: { 'User-Agent': 'souldew' } });
+    const relRes = await fetchImpl(`https://api.github.com/repos/${emu.repo}/releases/latest`, { headers: { 'User-Agent': 'twicable' } });
     if (!relRes.ok) throw httpError(502, `GitHub answered ${relRes.status} – try again later`, 'emuGithub', { ...vars, status: relRes.status });
     rel = await relRes.json();
   } catch (e) {
@@ -385,7 +385,7 @@ export function revealInFileManager(path) {
 
 /**
  * Is an external emulator process running? (It would overwrite edits to the .sav.) `names`: which program names
- * count (default: every emulator souldew knows).
+ * count (default: every emulator twicable knows).
  */
 export function emulatorRunning(names = /melonDS|NooDS|DeSmuME|desmume|mGBA|azahar/i) {
   try {

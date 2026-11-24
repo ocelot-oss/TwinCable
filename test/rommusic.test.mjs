@@ -56,7 +56,7 @@ test('the RomFS of a .3ds, a .cxi and a .cia: every file with its place from lev
   const cia = ciaAround(ncch);
   assert.ok(ncchOffset(reader(cia)) > 0);
   assert.deepEqual(romfsOfFile(reader(cia)).files, a.files);
-  // encrypted contents: no RomFS (souldew decrypts nothing)
+  // encrypted contents: no RomFS (twicable decrypts nothing)
   const enc = cci.slice();
   enc[0x4000 + 0x18f] = 0;
   assert.equal(romfsOfFile(reader(enc)), null);
@@ -590,7 +590,7 @@ test('the page reads tables, headers and the track through the core and hands th
 });
 
 // ---- the core's read log (C++, from the Azahar patch) ---------------------------------------------------------------
-const patch = readFileSync(new URL('../native/azahar-patch/souldew-romfs.patch', import.meta.url), 'utf8');
+const patch = readFileSync(new URL('../native/azahar-patch/twicable-romfs.patch', import.meta.url), 'utf8');
 /** A file the patch adds, as it will be in the Azahar tree. */
 function addedFile(name) {
   const at = patch.indexOf(`+++ b/${name}`);
@@ -604,17 +604,17 @@ const cxx = ['c++', 'g++', 'clang++'].find((c) => spawnSync(c, ['--version']).st
 test('the core\'s RomFS read log: many writers, one reader, nothing torn, overflow drops the oldest', { skip: !cxx && 'no C++ compiler' }, () => {
   const dir = mkdtempSync(join(tmpdir(), 'sls-ring-'));
   try {
-    writeFileSync(join(dir, 'souldew_romfs_ring.h'), addedFile('src/core/file_sys/souldew_romfs_ring.h'));
+    writeFileSync(join(dir, 'twicable_romfs_ring.h'), addedFile('src/core/file_sys/twicable_romfs_ring.h'));
     writeFileSync(join(dir, 'ring_test.cpp'), `
-#include "souldew_romfs_ring.h"
+#include "twicable_romfs_ring.h"
 #include <atomic>
 #include <cstdio>
 #include <thread>
 #include <vector>
-using SouldewRomfs::Read;
+using TwicableRomfs::Read;
 int main() {
   {
-    SouldewRomfs::Ring<256> r;
+    TwicableRomfs::Ring<256> r;
     for (uint64_t i = 0; i < 1000; i++) r.Push(i * 7, (uint32_t)i, 3);
     Read out[300];
     uint32_t n = r.Drain(out, 300);
@@ -625,7 +625,7 @@ int main() {
     if (r.Drain(out, 1) != 1 || out[0].serial != 1000) return 1;
   }
   {
-    static SouldewRomfs::Ring<256> r;
+    static TwicableRomfs::Ring<256> r;
     const int P = 4;
     const uint64_t M = 200000;
     std::atomic<int> done{0};
@@ -678,12 +678,12 @@ int main() {
 });
 
 test('the patch: IVFCFile::Read notes every game read, the core exports the calls (Windows: RETRO_API, macOS: .def)', () => {
-  assert.match(patch, /^\+ {4}Souldew::Note\(romfs_file, offset, length\); \/\/ \(souldew\)$/m);
-  for (const s of ['souldew_romfs_reads(uint64_t* out, uint32_t max)', 'souldew_romfs_read(uint32_t tag, uint64_t offset, void* out, uint32_t size)', 'souldew_romfs_size(uint32_t tag)']) assert.ok(new RegExp(`^\\+RETRO_API uint\\d+_t ${s.replace(/[()*]/g, '\\$&')}`, 'm').test(patch), s);
-  for (const s of ['_souldew_romfs_read', '_souldew_romfs_reads', '_souldew_romfs_size']) assert.match(patch, new RegExp(`^\\+${s}$`, 'm'));
+  assert.match(patch, /^\+ {4}Twicable::Note\(romfs_file, offset, length\); \/\/ \(twicable\)$/m);
+  for (const s of ['twicable_romfs_reads(uint64_t* out, uint32_t max)', 'twicable_romfs_read(uint32_t tag, uint64_t offset, void* out, uint32_t size)', 'twicable_romfs_size(uint32_t tag)']) assert.ok(new RegExp(`^\\+RETRO_API uint\\d+_t ${s.replace(/[()*]/g, '\\$&')}`, 'm').test(patch), s);
+  for (const s of ['_twicable_romfs_read', '_twicable_romfs_reads', '_twicable_romfs_size']) assert.match(patch, new RegExp(`^\\+${s}$`, 'm'));
   assert.match(patch, /thread_local bool own_read/); // (its own reads aren't the game's)
   const host = readFileSync(new URL('../native/ctr-host/ctrhost.c', import.meta.url), 'utf8');
-  for (const s of ['souldew_romfs_reads', 'souldew_romfs_read', 'souldew_romfs_size']) assert.match(host, new RegExp(`${s} = dlsym\\(lib, "${s}"\\)`));
+  for (const s of ['twicable_romfs_reads', 'twicable_romfs_read', 'twicable_romfs_size']) assert.match(host, new RegExp(`${s} = dlsym\\(lib, "${s}"\\)`));
   assert.match(host, /send_msg\(9, romfs_buf, 16 \+ romfs_n \* 32\)/);
   assert.match(host, /case 10: \/\/ ROMREAD/);
   // sent before the frame's sound (the page lines the music up with it)
@@ -691,7 +691,7 @@ test('the patch: IVFCFile::Read notes every game read, the core exports the call
   // the CI builds the Windows and Linux core with every patch and checks the exports
   const ci = readFileSync(new URL('../.github/workflows/ctr.yml', import.meta.url), 'utf8');
   assert.match(ci, /for p in native\/azahar-patch\/\*\.patch/);
-  assert.match(ci, /souldew_romfs_reads souldew_romfs_read souldew_romfs_size/);
+  assert.match(ci, /twicable_romfs_reads twicable_romfs_read twicable_romfs_size/);
 });
 
 test('the server takes ROMREAD only with its exact size and a sane length', async () => {

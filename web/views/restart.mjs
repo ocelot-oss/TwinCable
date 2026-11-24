@@ -125,7 +125,7 @@ export function RestartModal({ r, rules, onClose }) {
     ${waiting ? html`
       <p>${t('restart.waitText', '{name} is already building the new attempt. The invite shows up here in a moment – so you play the same new run together.', { name: who(plan.by, plan.byName) })}</p>
       ${lost && html`<p class="small muted">${t('restart.lostText', '{name} started at the same moment. Their new run is the one to play – yours was set aside.', { name: who(plan.by, plan.byName) })}</p>`}
-      <p class="small muted restart-wait" role="status"><${Led} on color="amber" blink />${t('restart.waitHint', 'Keep souldew open – you don’t need to do anything else.')}</p>`
+      <p class="small muted restart-wait" role="status"><${Led} on color="amber" blink />${t('restart.waitHint', 'Keep twicable open – you don’t need to do anything else.')}</p>`
     : html`
     <p>${t('restart.text', 'This creates the new run “{name}”:', { name: next })}</p>
     <ul class="restart-list">

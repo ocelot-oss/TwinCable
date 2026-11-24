@@ -1,10 +1,10 @@
 // A native host's sound out, frame by frame (AUDIO): as the console made it at normal speed; while fast-forwarding
 // sped up by the speed really reached and resampled to exactly real time with a steady ratio – the 3DS host's
 // fast-forward sound (native/ctr-host/ffsound.h, since 2.8.2), announced with EVENT ffrate {k} right before the first
-// sound made with a new ratio, so souldew's turbo mixer (web/lib/turboaudio.mjs) slows it down again by exactly that
+// sound made with a new ratio, so twicable's turbo mixer (web/lib/turboaudio.mjs) slows it down again by exactly that
 // ratio, or plays the game's music instead (Settings › sound while fast-forwarding).
-#ifndef SOULDEW_FFAUDIO_H
-#define SOULDEW_FFAUDIO_H
+#ifndef TWICABLE_FFAUDIO_H
+#define TWICABLE_FFAUDIO_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -33,7 +33,7 @@ void ffa_init(struct ff_audio *fa, double sample_rate);
 void ffa_rate(struct ff_audio *fa, double sample_rate);
 /**
  * One emulated frame's sound (`frames` interleaved stereo frames) out as AUDIO. `turbo`: fast-forwarding at `asked`
- * (the speed souldew asked for: where the ratio starts, and the most it follows). `now`: host_now().
+ * (the speed twicable asked for: where the ratio starts, and the most it follows). `now`: host_now().
  */
 void ffa_frame(struct ff_audio *fa, const int16_t *s, size_t frames, bool turbo, double asked, double now);
 /** No frame ran (paused, a link's wait): that time is no time the fast-forward sound owes. */

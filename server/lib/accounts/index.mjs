@@ -1,4 +1,4 @@
-// The souldew account in the local server: the page's /api/account/* routes, the sign-in hand-off page
+// The twicable account in the local server: the page's /api/account/* routes, the sign-in hand-off page
 // (/auth/done), the avatar proxy, the presence heartbeat and the opt-in stats upload. The page never talks to the
 // accounts service itself and never sees a token; this module checks what the page sends, calls the service through
 // the session (./session.mjs) and cleans every answer (./clean.mjs).
@@ -103,7 +103,7 @@ export async function readCapped(r, max) {
 /**
  * secure: Electron's safeStorage wrapper (./store.mjs) or null; port(): this server's port; emit(event, data): the
  * page's event stream; openExternal(url): the system browser (desktop app) – without it the page opens the URL;
- * focus(): bring the app window forward. onPackKeyChange(): the souldew+ pack key changed or went away (tier dropped, key
+ * focus(): bring the app window forward. onPackKeyChange(): the twicable+ pack key changed or went away (tier dropped, key
  * rotated, signed out) – the encrypted pack cache must go (server/lib/pluspack.mjs wipe). packaged: an installed build (no
  * dev entitlement key, ./enttoken.mjs). fetchImpl / env / now / stats / entKeys: for tests.
  */
@@ -140,7 +140,7 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
     try {
       onPackKeyChange();
     } catch (e) {
-      console.warn('souldew+ pack wipe failed –', e.message);
+      console.warn('twicable+ pack wipe failed –', e.message);
     }
   }
 
@@ -149,8 +149,8 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
     return m ? { id: m.id, handle: m.handle, name: m.name, avatar: m.avatar, tier: own?.tier || 'none' } : null;
   }
 
-  // ---- souldew+: the VERIFIED entitlement ---------------------------------------------------------------------------
-  // Every souldew+ decision (pack key → pack access, the preview offer, the own badges) comes from the entitlement
+  // ---- twicable+: the VERIFIED entitlement ---------------------------------------------------------------------------
+  // Every twicable+ decision (pack key → pack access, the preview offer, the own badges) comes from the entitlement
   // token's verified claims (./enttoken.mjs). The JSON fields next to the token – and the entitlement inside /v1/me –
   // are never trusted for any of it.
   let own = null; // { tier, badges, until, graceUntil, packKeyId, at } – the last verified claims (memory)
@@ -163,7 +163,7 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
     const ent = cleanEntitlements(body);
     const nowS = serviceClock(headers) ?? Math.floor(now() / 1000);
     const v = verifyEntitlementToken(ent.token, { keys: trusted, iss: service, sub: accountId(), sid: session.sid, now: nowS });
-    if (!v.ok) console.warn('souldew+ entitlement token not accepted –', v.reason);
+    if (!v.ok) console.warn('twicable+ entitlement token not accepted –', v.reason);
     return viewOf(v.ok ? v.claims : null, ent, v.ok ? null : v.reason);
   }
   /** Verified claims (or null: not verified) + the answer's other fields → the page's entitlement. */
@@ -172,14 +172,14 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
     return {
       tier: c ? c.tier : 'none', badges: c ? c.badges : [], until: c ? ms(c.until) : null, graceUntil: c ? ms(c.graceUntil) : null,
       packKeyId: c?.packKeyId || null,
-      // the pack key only for a verified souldew+ tier, and only the key the token names
+      // the pack key only for a verified twicable+ tier, and only the key the token names
       packKey: plus && ent.packKey && ent.packKeyId === c.packKeyId ? ent.packKey : null,
       sources: c ? ent.sources : [], offlineGraceDays: ent.offlineGraceDays,
       preview: ent.preview, verified: !!c, ...(reason ? { unverified: reason } : {}),
       trial: c ? trialOf(ent, plus) : null,
     };
   }
-  /** §8.6: the trial for the page – `only`: souldew+ comes from the running trial alone (no paid membership beside it). */
+  /** §8.6: the trial for the page – `only`: twicable+ comes from the running trial alone (no paid membership beside it). */
   function trialOf(ent, plus) {
     if (!ent.trial) return null;
     const paid = (ent.sources || []).some((x) => x.kind !== 'trial' && isPlusTier(x.tier));
@@ -204,7 +204,7 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
     const kept = session.extra('entitlement');
     if (r.status === 200) {
       const view = verifiedView(r.body, r.headers);
-      // §8.2: the tier dropped below souldew+ or pack_key_id changed (sign out everywhere, unlink, takeover) – or the
+      // §8.2: the tier dropped below twicable+ or pack_key_id changed (sign out everywhere, unlink, takeover) – or the
       // token didn't verify → the cached pack can't be used any more: wipe
       if (kept?.packKey && (!view.packKey || kept.packKeyId !== view.packKeyId)) {
         dropPackKey();
@@ -226,12 +226,12 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
       if (v.ok) {
         if (nowS > (kept.seen || 0)) session.setExtra('entitlement', { ...kept, seen: nowS });
         const view = { ...viewOf(v.claims, { packKey: kept.packKey, packKeyId: kept.packKeyId, sources: [], offlineGraceDays: kept.offlineGraceDays, preview: null }), offline: true, preview: null, lastPack: session.extra('pack'),
-          // a trial-only souldew+ stays a trial offline (the page says "Trial · ends …", not "thank you")
+          // a trial-only twicable+ stays a trial offline (the page says "Trial · ends …", not "thank you")
           trial: kept.trial?.only && kept.trial.until > now() ? kept.trial : null };
         setOwn(view);
         return view;
       }
-      // the grace is over (or the kept token no longer verifies): no souldew+ offline – the cache goes
+      // the grace is over (or the kept token no longer verifies): no twicable+ offline – the cache goes
       if (kept.packKey) dropPackKey();
       session.setExtra('entitlement', null);
       session.setExtra('pack', null);
@@ -718,7 +718,7 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
     return { ok: true };
   });
 
-  // souldew+ – only the verified token counts (readEntitlement above); kept with the session (encrypted) for the
+  // twicable+ – only the verified token counts (readEntitlement above); kept with the session (encrypted) for the
   // offline grace, where the kept token is verified again until its grace_until
   route('GET', '/entitlements', async () => {
     signedIn();
@@ -754,13 +754,13 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
     session.setExtra('pack', null);
     session.setExtra('entitlement', null);
     const after = await readEntitlement().catch(() => {
-      setOwn({ ...NO_ENT, graceUntil: null, packKeyId: null }); // offline right after: no souldew+ until the service says so
+      setOwn({ ...NO_ENT, graceUntil: null, packKeyId: null }); // offline right after: no twicable+ until the service says so
       return null;
     });
     await loadMe(true).catch(() => null);
     return { ok: true, tier: after?.tier || 'none' };
   });
-  // §8.6: the 7-day souldew+ trial (once per Discord account; nothing to pay or cancel) – then the entitlement as after
+  // §8.6: the 7-day twicable+ trial (once per Discord account; nothing to pay or cancel) – then the entitlement as after
   // any change (token, pack key)
   route('POST', '/trial', async () => {
     signedIn();
@@ -769,7 +769,7 @@ export function createAccounts({ secure = null, port, emit = () => {}, openExter
     await loadMe(true).catch(() => null);
     return { ok: true, tier: view.tier, until: view.until, trial: view.trial };
   });
-  // §14 "Find a SoulLink partner": the post goes up in the souldew Discord's #find-a-partner as this player's Discord
+  // §14 "Find a SoulLink partner": the post goes up in the twicable Discord's #find-a-partner as this player's Discord
   // account – the answer is its link (opened by the page)
   route('POST', '/lfg', async (req) => {
     signedIn();

@@ -1,6 +1,6 @@
 // The sticker atlas on the page: the app's own (free + earned, pre-built in web/assets/handheld/) stacked with the
-// souldew+ pack's (handheld/stickers.*, when it is loaded) into one texture – decoded once per pack generation, never
-// built here. Plus the sheet's pictures: a souldew+ sticker without the pack shows its public preview picture.
+// twicable+ pack's (handheld/stickers.*, when it is loaded) into one texture – decoded once per pack generation, never
+// built here. Plus the sheet's pictures: a twicable+ sticker without the pack shows its public preview picture.
 import { decodeLayout, stackAtlases, stickerPicture } from './atlas.mjs';
 import { content, state } from '../cosmetics/state.mjs';
 import { previewSrc } from '../cosmetics/previews.mjs';
@@ -55,7 +55,7 @@ export function loadAtlas() {
       try {
         plus = await part(hh.layout, new Blob([hh.art], { type: 'image/png' }), new Blob([hh.cut], { type: 'image/png' }));
       } catch (e) {
-        console.warn('souldew+ stickers', e);
+        console.warn('twicable+ stickers', e);
       }
     }
     const atlas = stackAtlases([own, plus]);
@@ -72,7 +72,7 @@ export const atlasNow = () => (cache.gen === state.generation ? cache.atlas : nu
 const thumbs = new Map();
 /**
  * A sticker's picture for the sheet (data: URL), k css px per art px: from the atlas when its art is here, else the
- * public preview picture of a souldew+ one (or null – the card shows its name only).
+ * public preview picture of a twicable+ one (or null – the card shows its name only).
  */
 export function stickerThumb(id, k = 6) {
   const A = atlasNow();

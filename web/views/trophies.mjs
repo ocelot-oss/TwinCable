@@ -48,7 +48,7 @@ function stateOf(e, id) {
 function DexCell({ id, e, on, onPick }) {
   const st = stateOf(e, id);
   const name = speciesName(id);
-  const label = `${pad(id)} ${name} – ${{ caught: t('dex.caught', 'caught'), seen: t('dex.seen', 'seen'), unknown: t('dex.unknown', 'not seen yet'), locked: t('dex.locked', 'not in souldew’s games yet') }[st]}`;
+  const label = `${pad(id)} ${name} – ${{ caught: t('dex.caught', 'caught'), seen: t('dex.seen', 'seen'), unknown: t('dex.unknown', 'not seen yet'), locked: t('dex.locked', 'not in twicable’s games yet') }[st]}`;
   return html`<button type="button" class=${`dex-cell ${st} ${on ? 'on' : ''}`} onClick=${() => onPick(id)} aria-pressed=${on} aria-label=${label} title=${label} data-id=${id}>
     <span class="dex-no">${pad(id)}</span>
     <span class="dex-art"><img class="pixel" src=${sprite(id)} alt="" loading="lazy" decoding="async" width="68" height="68"
@@ -91,7 +91,7 @@ function DexDetail({ id, e, navigate, runs }) {
     </div>
     <div class="dd-types">${st !== 'unknown' ? html`<${Types} types=${types} />` : html`<span class="faint tiny">${t('dex.typesUnknown', 'Types: ???')}</span>`}</div>
     <div class=${`dd-status ${st}`}><span class="dd-dot"></span>${status}</div>
-    ${st === 'locked' && html`<p class="dd-note">${t('dex.lockedText', 'Gen {gen} isn’t in any game souldew plays yet (it plays Gen 1–7). This Pokémon is listed for completeness – it becomes catchable once souldew supports its generation.', { gen: ROMAN[gen?.gen || 0] })}</p>`}
+    ${st === 'locked' && html`<p class="dd-note">${t('dex.lockedText', 'Gen {gen} isn’t in any game twicable plays yet (it plays Gen 1–7). This Pokémon is listed for completeness – it becomes catchable once twicable supports its generation.', { gen: ROMAN[gen?.gen || 0] })}</p>`}
     ${st === 'unknown' && html`<p class="dd-note">${t('dex.unknownText', 'Meet it in one of your runs – in battle, as a catch, or on your partner’s side – and it shows up here.')}</p>`}
     ${st === 'seen' && html`<p class="dd-note">${t('dex.seenText', 'You’ve met it, but it never joined your team.')}</p>`}
     ${first && html`<dl class="dd-facts">
@@ -195,7 +195,7 @@ function Pokedex({ tr }) {
       ${GENERATIONS.map((g) => {
         const p = per[g.gen];
         return html`<button type="button" class=${`gen-chip ${gen === g.gen ? 'on' : ''} ${p?.supported ? '' : 'locked'}`} aria-pressed=${gen === g.gen} onClick=${() => setGen(gen === g.gen ? 0 : g.gen)}
-          title=${p?.supported ? `${g.region} · #${g.from}–#${g.to}` : t('dex.genLocked', 'Gen {gen} isn’t in souldew’s games yet', { gen: ROMAN[g.gen] })}>
+          title=${p?.supported ? `${g.region} · #${g.from}–#${g.to}` : t('dex.genLocked', 'Gen {gen} isn’t in twicable’s games yet', { gen: ROMAN[g.gen] })}>
           <b>${ROMAN[g.gen]}</b><span>${p?.supported ? `${p.caught}/${p.total}` : html`<${Icon} name="lock" size=${11} />`}</span>
           <i class="gen-bar"><i style=${`width:${p?.supported ? Math.round((p.caught / p.total) * 100) : 0}%`}></i></i></button>`;
       })}
@@ -211,7 +211,7 @@ function Pokedex({ tr }) {
               <span class="faint tiny">#${g.from}–#${g.to}</span>
               <span class="spacer"></span>
               ${p?.supported ? html`<span class="dex-count"><b>${p.caught}</b>/${p.total}</span>`
-                : html`<span class="chip"><${Icon} name="lock" size=${11} />${t('dex.genSoon', 'Not in souldew’s games yet')}</span>`}
+                : html`<span class="chip"><${Icon} name="lock" size=${11} />${t('dex.genSoon', 'Not in twicable’s games yet')}</span>`}
             </header>
             <div class="dex-grid">${g.ids.map((id) => html`<${DexCell} key=${id} id=${id} e=${dex[id]} on=${pick === id} onPick=${(x) => { setPick(x); if (narrow) setSheet(true); }} />`)}</div>
           </section>`;

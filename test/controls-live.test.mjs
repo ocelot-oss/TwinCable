@@ -70,7 +70,7 @@ Object.assign(globalThis, {
   location: { search: '?system=nds&rom=%2From&key=k&name=Platinum', origin: 'http://127.0.0.1' },
   document: Object.assign(any(), { visibilityState: 'visible', getElementById: () => any(), body: any(), documentElement: any() }),
   window: globalThis,
-  parent: { postMessage() {}, __souldewPad: { mute: false } }, // the app, its menus don't have the controller
+  parent: { postMessage() {}, __twicablePad: { mute: false } }, // the app, its menus don't have the controller
   addEventListener: page.addEventListener.bind(page),
   removeEventListener: page.removeEventListener.bind(page),
   dispatchEvent: page.dispatchEvent.bind(page),

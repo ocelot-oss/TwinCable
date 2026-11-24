@@ -1,4 +1,4 @@
-// The souldew engine (native/link-host as the fast player, docs/MULTIPLAYER.md › "The souldew engine"): the server's
+// The twicable engine (native/link-host as the fast player, docs/MULTIPLAYER.md › "The twicable engine"): the server's
 // engine sessions (arguments, the in-place link and back, a desync that doesn't stop the game) with a stand-in host –
 // and, when the native part is built (npm run native), the real engine on tiny ROMs made here: everything the fast
 // player's tests check on retrohost (RAM mirror, exact steps, cheats, save states, battery saves, the cartridge clock),
@@ -141,7 +141,7 @@ function gbRom(mbc = 0x03) {
   const r = Buffer.alloc(0x8000);
   r.set([0x00, 0xc3, 0x50, 0x01], 0x100);
   r.set([0xce, 0xed, 0x66, 0x66, 0xcc, 0x0d, 0x00, 0x0b], 0x104);
-  r.write('SOULDEWTEST', 0x134, 'latin1');
+  r.write('TWICABLETEST', 0x134, 'latin1');
   r[0x147] = mbc, r[0x148] = 0x00, r[0x149] = 0x02;
   let x = 0;
   for (let i = 0x134; i <= 0x14c; i++) x = (x - r[i] - 1) & 0xff;
@@ -153,7 +153,7 @@ function gbRom(mbc = 0x03) {
 function gbaRom() {
   const r = Buffer.alloc(0x10000);
   r.writeUInt32LE(0xea00002e, 0);
-  r.write('SOULDEWTEST', 0xa0, 'latin1');
+  r.write('TWICABLETEST', 0xa0, 'latin1');
   r[0xb2] = 0x96;
   let c = 0;
   for (let i = 0xa0; i <= 0xbc; i++) c = (c - r[i]) & 0xff;
@@ -279,7 +279,7 @@ test('the engine alone: the fast player\'s protocol – RAM mirror, exact steps,
     // speed: Max is reported as such
     h.send(NCMD.SPEED, f32(1000));
     await h.until(() => h.ev('stats').some((e) => e.speed > 1.5 && e.shown > 0));
-    // a header that announces more than the host takes: it ends cleanly (as when souldew goes away)
+    // a header that announces more than the host takes: it ends cleanly (as when twicable goes away)
     h.p.stdin.write(Buffer.concat([u32(1), u32(0x7fffffff)]));
     assert.equal(await exitOf(h.p, h.exit), 0);
   } finally {

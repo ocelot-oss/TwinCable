@@ -1,5 +1,5 @@
 // Which cosmetics can be KEPT (owned) – the profile editor disables Save for a pick that isn't owned. Every kind, free
-// and souldew+, with and without the membership (and with only a live preview). Regression: a nameplate is a banner's
+// and twicable+, with and without the membership (and with only a live preview). Regression: a nameplate is a banner's
 // window and is listed under the catalog's banners – looking it up under "nameplates" found nothing, so every nameplate
 // (free ones too) counted as not owned and a patron could never save one.
 import { test } from 'node:test';
@@ -21,14 +21,14 @@ test('free items are owned by everyone – a free nameplate too', () => {
   S.setContent(null);
   S.update({ entitled: false, preview: false });
   assert.equal(S.owned('banners', freeBanner), true);
-  assert.equal(S.owned('nameplates', freeBanner), true, 'a free nameplate can be kept without souldew+');
+  assert.equal(S.owned('nameplates', freeBanner), true, 'a free nameplate can be kept without twicable+');
   assert.equal(S.owned('frames', freeFrame), true);
   assert.equal(S.owned('skins', 'classic'), true);
-  assert.equal(CATALOG.launch, undefined, 'the 2D launch animations (Cartridge and the 13 souldew+ ones) are gone');
+  assert.equal(CATALOG.launch, undefined, 'the 2D launch animations (Cartridge and the 13 twicable+ ones) are gone');
   assert.equal(S.owned('launch', 'cartridge'), false);
 });
 
-test('souldew+ items: owned with the membership and the pack – banner, nameplate, frame, skin', () => {
+test('twicable+ items: owned with the membership and the pack – banner, nameplate, frame, skin', () => {
   loaded();
   S.update({ entitled: true, preview: false });
   for (const [kind, id] of [['banners', plusBanner], ['nameplates', plusBanner], ['frames', plusFrame], ['skins', plusSkin]]) {
@@ -36,7 +36,7 @@ test('souldew+ items: owned with the membership and the pack – banner, namepla
   }
 });
 
-test('souldew+ items without the membership: not owned (also while a live preview has them in memory)', () => {
+test('twicable+ items without the membership: not owned (also while a live preview has them in memory)', () => {
   for (const preview of [false, true]) {
     loaded();
     S.update({ entitled: false, preview });

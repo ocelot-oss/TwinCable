@@ -1,4 +1,4 @@
-// IPC of souldew's native hosts – see hostio.h. The OS calls come from ../ctr-host/compat.h (the 3DS host's portability
+// IPC of twicable's native hosts – see hostio.h. The OS calls come from ../ctr-host/compat.h (the 3DS host's portability
 // layer: POSIX, or Windows with its own small pthread shim), included here only: this file is its own translation unit,
 // so the link host's winpthreads never meets the shim.
 #include "hostio.h"
@@ -27,7 +27,7 @@ static void write_all(const void *p, size_t n) {
     compat_ssize w = compat_write(1, b, n);
     if (w < 0) {
       if (errno == EINTR) continue;
-      _exit(0); // souldew went away
+      _exit(0); // twicable went away
     }
     b += w;
     n -= (size_t)w;
@@ -99,7 +99,7 @@ void host_die(const char *fmt, ...) {
 
 // ---- in: the command queue -------------------------------------------------------------------------------------------
 // The reader thread appends, the frame loop takes between frames. Bounded in bytes: a page that floods the host makes
-// the reader wait (and souldew's pipe fill) instead of growing without end.
+// the reader wait (and twicable's pipe fill) instead of growing without end.
 #define QUEUE_BYTES_MAX (512u * 1024 * 1024)
 static pthread_mutex_t q_lock = PTHREAD_MUTEX_INITIALIZER;
 static struct host_cmd *queue;
@@ -156,7 +156,7 @@ static void *reader(void *arg) {
     }
     push((struct host_cmd){h[0], h[1], p});
   }
-  push((struct host_cmd){CMD_QUIT, 0, NULL}); // souldew closed the pipe (or sent something that can't be a command)
+  push((struct host_cmd){CMD_QUIT, 0, NULL}); // twicable closed the pipe (or sent something that can't be a command)
   return NULL;
 }
 

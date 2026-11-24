@@ -62,7 +62,7 @@ test('which ends count as "this renderer can\'t run here": early crashes and Vul
   assert.equal(R.rendererFailure({ exit: { code: 1 }, events: [{ event: 'error', message: 'core not loadable: dlopen failed' }], ms: 300 }), false);
   assert.equal(R.rendererFailure({ exit: { error: 'spawn ENOENT' }, ms: 10 }), false);
   assert.equal(R.rendererFailure({ exit: { code: 0 }, events: [], ms: 1000 }), false);
-  // after the first seconds, or stopped by souldew
+  // after the first seconds, or stopped by twicable
   assert.equal(R.rendererFailure({ exit: { code: 3221225477 }, events: [crash], ms: R.RETRY_WINDOW_MS + 1 }), false);
   assert.equal(R.rendererFailure({ exit: { code: 3221225477 }, events: [crash], ms: 100, quit: true }), false);
 });

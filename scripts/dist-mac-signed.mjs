@@ -1,20 +1,20 @@
 #!/usr/bin/env node
-// The release build for macOS: souldew.app signed with the Developer ID (hardened runtime, every program and library in
+// The release build for macOS: twicable.app signed with the Developer ID (hardened runtime, every program and library in
 // it signed – the bundled Java, the fast player, the link host, the 3DS player and their cores), notarized by Apple and
 // stapled, in a DMG that is signed, notarized and stapled as well. Gatekeeper then opens it like any other app – no
 // "Open Anyway" – and the keychain item of a signed-in player keeps working across updates (the signature stays the
 // same). `npm run dist` stays the ad-hoc build for development.
 //
-//   npm run dist:mac-signed                       → dist/souldew-<version>-arm64.dmg (what `npm run release` picks up)
+//   npm run dist:mac-signed                       → dist/twicable-<version>-arm64.dmg (what `npm run release` picks up)
 //   npm run dist:mac-signed -- --out <dir>        another output folder (a dry run)
 //   npm run dist:mac-signed -- --no-notarize      signed only (quicker, for a local check – never for a release)
-//   node scripts/dist-mac-signed.mjs --verify <souldew.app> [--dmg <file>] [--roms <dir>]   only the checks (see below)
+//   node scripts/dist-mac-signed.mjs --verify <twicable.app> [--dmg <file>] [--roms <dir>]   only the checks (see below)
 //
 // Needs (nothing of it in the repository):
-//   ~/.souldew-keys/developer-id.p12       the Developer ID Application certificate with its key and Apple's G2
+//   ~/.twicable-keys/developer-id.p12       the Developer ID Application certificate with its key and Apple's G2
 //                                           intermediate (SLS_DEVID_P12 for another place)
-//   ~/.souldew-keys/developer-id.p12.pass  its password (SLS_DEVID_PASS_FILE)
-//   a notarytool keychain profile "souldew" (xcrun notarytool store-credentials souldew --apple-id … --team-id
+//   ~/.twicable-keys/developer-id.p12.pass  its password (SLS_DEVID_PASS_FILE)
+//   a notarytool keychain profile "twicable" (xcrun notarytool store-credentials twicable --apple-id … --team-id
 //   VWQM7SSK3D; SLS_NOTARY_PROFILE for another name) – the app-specific password stays in the login keychain
 //   Xcode's command line tools (codesign, notarytool, stapler), the parts `npm run dist` checks (JRE, 3DS, fast player)
 //
@@ -27,7 +27,7 @@
 //
 // The checks after the build (also on their own: --verify): codesign --verify --deep --strict, spctl (Gatekeeper),
 // stapler validate, every Mach-O file signed with the hardened runtime and the Team ID, the entitlements of the
-// programs souldew starts, `java -version` from inside the bundle – and the app started hidden with a scratch profile:
+// programs twicable starts, `java -version` from inside the bundle – and the app started hidden with a scratch profile:
 // its server answers, the randomizer's Java check passes, and with --roms a GBA and a DS game boot in the fast player.
 import { spawnSync, spawn } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, writeFileSync, rmSync, readdirSync, lstatSync, openSync, readSync, closeSync } from 'node:fs';
@@ -43,10 +43,10 @@ const opt = (name, def = null) => (args.includes(`--${name}`) ? args[args.indexO
 const has = (name) => args.includes(`--${name}`);
 
 export const TEAM_ID = process.env.SLS_TEAM_ID || 'VWQM7SSK3D';
-const P12 = resolve(process.env.SLS_DEVID_P12 || join(homedir(), '.souldew-keys', 'developer-id.p12'));
-const PASS_FILE = resolve(process.env.SLS_DEVID_PASS_FILE || join(homedir(), '.souldew-keys', 'developer-id.p12.pass'));
-const PROFILE = process.env.SLS_NOTARY_PROFILE || 'souldew';
-/** The programs souldew starts itself – each needs the JIT entitlements of build/entitlements.mac.inherit.plist. */
+const P12 = resolve(process.env.SLS_DEVID_P12 || join(homedir(), '.twicable-keys', 'developer-id.p12'));
+const PASS_FILE = resolve(process.env.SLS_DEVID_PASS_FILE || join(homedir(), '.twicable-keys', 'developer-id.p12.pass'));
+const PROFILE = process.env.SLS_NOTARY_PROFILE || 'twicable';
+/** The programs twicable starts itself – each needs the JIT entitlements of build/entitlements.mac.inherit.plist. */
 export const CHILD_PROGRAMS = ['tools/jre/darwin-arm64/bin/java', 'tools/native/darwin-arm64/retrohost', 'tools/native/darwin-arm64/linkhost', 'tools/ctr/darwin-arm64/ctrhost'];
 export const JIT_ENTITLEMENTS = ['com.apple.security.cs.allow-jit', 'com.apple.security.cs.allow-unsigned-executable-memory', 'com.apple.security.cs.disable-library-validation'];
 
@@ -99,7 +99,7 @@ function stream(cmd, a, { env } = {}) {
 /** A keychain with the Developer ID only, for this build → { keychain, hash, remove() }. */
 function buildKeychain() {
   if (!existsSync(P12) || !existsSync(PASS_FILE)) throw new Error(`The Developer ID certificate isn't there (${P12} and its .pass file) – see the top of this script.`);
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-sign-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-sign-'));
   const keychain = join(dir, 'build.keychain-db');
   const pw = randomBytes(24).toString('hex');
   // the user's keychain search list as it is – put back at the end
@@ -193,8 +193,8 @@ async function build() {
   } finally {
     kc.remove();
   }
-  const dmg = join(out, `souldew-${pkg.version}-arm64.dmg`);
-  const app = join(out, 'mac-arm64', 'souldew.app');
+  const dmg = join(out, `twicable-${pkg.version}-arm64.dmg`);
+  const app = join(out, 'mac-arm64', 'twicable.app');
   if (!existsSync(dmg) || !existsSync(app)) throw new Error(`The build left no ${dmg} / ${app}`);
   if (notarize) {
     // the DMG itself (the app inside was notarized and stapled before it went in)
@@ -245,7 +245,7 @@ export async function verify(app, { dmg = null, notarized = true, roms = null } 
     n++;
   }
   say(`${n} Mach-O files: team ${TEAM_ID}, hardened runtime, timestamp ✓`);
-  // the programs souldew starts: their JIT entitlements
+  // the programs twicable starts: their JIT entitlements
   for (const rel of CHILD_PROGRAMS) {
     const f = join(app, 'Contents', 'Resources', rel);
     if (!existsSync(f)) throw new Error(`${rel} is missing from the app`);
@@ -280,10 +280,10 @@ const portOpen = (port) => new Promise((r) => {
  * GBA and a DS game in the fast player (the signed host and cores). Quit at the end.
  */
 async function launchCheck(app, { roms = null } = {}) {
-  const profile = mkdtempSync(join(tmpdir(), 'souldew-verify-'));
+  const profile = mkdtempSync(join(tmpdir(), 'twicable-verify-'));
   const config = { onboarded: true, lang: 'en', playerName: 'Lena', bootAnimation: false, sounds: false, presence: false, volume: 0, ...(roms ? { libraryFolders: [resolve(roms)] } : {}) };
   writeFileSync(join(profile, 'config.json'), JSON.stringify(config));
-  const busy = await portOpen(47390); // (an installed souldew running: the started app takes another port – not checked here)
+  const busy = await portOpen(47390); // (an installed twicable running: the started app takes another port – not checked here)
   let port = busy ? null : 47390;
   run('/usr/bin/open', ['-j', '-g', '-n', '-a', app, '--args', `--user-data-dir=${profile}`, '--use-mock-keychain', '--mute-audio']);
   try {
@@ -291,7 +291,7 @@ async function launchCheck(app, { roms = null } = {}) {
       // find the port of the app we started: the process with our profile in its arguments
       for (let i = 0; i < 60 && !port; i++) {
         await sleep(1000);
-        const ps = run('/bin/ps', ['-axo', 'pid=,command='], { quiet: true }).out.split('\n').find((l) => l.includes(profile) && l.includes('/MacOS/souldew'));
+        const ps = run('/bin/ps', ['-axo', 'pid=,command='], { quiet: true }).out.split('\n').find((l) => l.includes(profile) && l.includes('/MacOS/twicable'));
         const pid = ps && ps.trim().split(/\s+/)[0];
         const ls = pid ? run('/usr/sbin/lsof', ['-a', '-p', pid, '-iTCP', '-sTCP:LISTEN', '-nP'], { quiet: true, allowFail: true }).out : '';
         const m = ls.match(/127\.0\.0\.1:(\d+)|localhost:(\d+)|\*:(\d+)/);
@@ -343,7 +343,7 @@ async function launchCheck(app, { roms = null } = {}) {
     }
   } finally {
     // quit the app we started (only that one: by its profile)
-    const ps = run('/bin/ps', ['-axo', 'pid=,command='], { quiet: true }).out.split('\n').filter((l) => l.includes(profile) && l.includes('/MacOS/souldew'));
+    const ps = run('/bin/ps', ['-axo', 'pid=,command='], { quiet: true }).out.split('\n').filter((l) => l.includes(profile) && l.includes('/MacOS/twicable'));
     for (const l of ps) {
       const pid = Number(l.trim().split(/\s+/)[0]);
       try {

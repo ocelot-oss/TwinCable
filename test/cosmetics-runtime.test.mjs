@@ -91,7 +91,7 @@ test('banner: reduced motion shows the still frame and never ticks; a missing ba
   const strip = el('div', [800, 160]);
   const h = mountBanner(strip, 'plain-dusk');
   assert.equal(bannerStats().running, 0);
-  const none = mountBanner(el('div', [800, 160]), 'aurora-fjord'); // a souldew+ banner without the pack
+  const none = mountBanner(el('div', [800, 160]), 'aurora-fjord'); // a twicable+ banner without the pack
   assert.equal(none.mounted, false);
   h.destroy();
   none.destroy();
@@ -125,7 +125,7 @@ test('frames: drawn in a worker built from the free module (and the verified pac
   assert.equal(workers.size, 1);
   const [w] = workers;
   assert.equal(w.opts.type, 'module');
-  assert.match(w.src, /import __souldewFree from 'http:\/\/127\.0\.0\.1:47631\/lib\/cosmetics\/content\/frames-free\.mjs'/);
+  assert.match(w.src, /import __twicableFree from 'http:\/\/127\.0\.0\.1:47631\/lib\/cosmetics\/content\/frames-free\.mjs'/);
   assert.match(w.src, /from 'http:\/\/127\.0\.0\.1:47631\/lib\/cosmetics\/frames\/worker-host\.mjs'/);
   const mount = w.sent.find((m) => m.op === 'mount');
   assert.deepEqual([mount.recipe, mount.N, mount.small, !!mount.canvas.offscreen], ['plain', 42, false, true]);
@@ -156,7 +156,7 @@ test('frames: a pack loaded later → a new worker with the pack module, every f
   const [w2] = workers;
   assert.match(w2.src, /from 'http:\/\/127\.0\.0\.1:47631\/lib\/cosmetics\/frames\/recipe-lib\.mjs'/, "the pack's engine imports point at the public engine");
   assert.doesNotMatch(w2.src, /@cosmetics\//);
-  assert.match(w2.src, /__souldewHost\(\[\.\.\.__souldewFree, \.\.\.RECIPES\]\)/);
+  assert.match(w2.src, /__twicableHost\(\[\.\.\.__twicableFree, \.\.\.RECIPES\]\)/);
   const mount = w2.sent.find((m) => m.op === 'mount');
   assert.deepEqual([mount.recipe, mount.small], ['tide-ring', true], 'list size uses the small variant');
   f.destroy();
@@ -190,10 +190,10 @@ test('frames: sized to the avatar box as laid out – a 104 px avatar the CSS sh
 
 test('worker source: no pack → only the free content; the pack text is used as given otherwise', () => {
   const free = workerSource({ hostModule: 'frames/worker-host.mjs', freeModule: 'content/frames-free.mjs' });
-  assert.match(free, /__souldewHost\(\[\.\.\.__souldewFree, \.\.\.\[\]\]\)/);
+  assert.match(free, /__twicableHost\(\[\.\.\.__twicableFree, \.\.\.\[\]\]\)/);
   const pack = workerSource({ hostModule: 'frames/worker-host.mjs', packText: "import { od } from '@cosmetics/frames/engine/core.mjs';\nexport const RECIPES = [];", packExport: 'RECIPES' });
   assert.match(pack, /^import 'http:\/\/127\.0\.0\.1:47631\/lib\/cosmetics\/canvas-proxy\.mjs';\n/, 'the canvas stand-ins first');
   assert.match(pack, /\nimport \{ od \} from 'http:\/\/127\.0\.0\.1:47631\/lib\/cosmetics\/frames\/engine\/core\.mjs';/);
-  assert.match(pack, /__souldewHost\(\[\.\.\.\[\], \.\.\.RECIPES\]\)/);
+  assert.match(pack, /__twicableHost\(\[\.\.\.\[\], \.\.\.RECIPES\]\)/);
   void wait;
 });

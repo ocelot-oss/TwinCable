@@ -30,7 +30,7 @@ const DEPTH_MARGIN = 1;
 const SPARKLE = ['..#..', '..#..', '##o##', '..#..', '..#..'];
 const none = (extra = {}) => ({ t: null, setConfig() {}, partner() {}, gone() {}, emote() {}, onWatched() {}, input() {}, debug: () => ({ supported: false, ...extra }), stop() {} });
 
-/** The DS overlay for a player page, or a stand-in that does nothing (a game or language souldew has no table for). */
+/** The DS overlay for a player page, or a stand-in that does nothing (a game or language twicable has no table for). */
 export async function startDs(host, cfg) {
   if (!host.watch) return none({ why: 'no per-picture bytes (browser player)' });
   const [{ findEntry }, addresses, rom] = await Promise.all([
@@ -671,7 +671,7 @@ function worldDs(host, t, gfx) {
   raf = requestAnimationFrame(frame);
   return {
     t,
-    // (HeartGold/SoulSilver have their own Pokémon walking behind you: souldew draws only your partners')
+    // (HeartGold/SoulSilver have their own Pokémon walking behind you: twicable draws only your partners')
     ownFollower: t.followers !== 'overworld',
     setConfig(c) {
       cfg = { ...cfg, ...c, players: c.players || cfg.players, labels: c.labels || cfg.labels, actions: c.actions || cfg.actions };

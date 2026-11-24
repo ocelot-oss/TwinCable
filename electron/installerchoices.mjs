@@ -1,6 +1,6 @@
 // The Windows installer's privacy page (build/installer.nsh): what the player chose there, applied to config.json once.
 //
-// The page shows the two things souldew sends over the internet by itself – the anonymous "playing now" count
+// The page shows the two things twicable sends over the internet by itself – the anonymous "playing now" count
 // (config.presence, server/lib/presence.mjs) and the automatic update check (config.updateCheck, electron/updater.mjs) –
 // each as a checkbox, ticked as config.json has it (on unless switched off). When the page was shown, the installer
 // leaves installer-choices.json in the data folder:

@@ -1,4 +1,4 @@
-# Contributing to souldew
+# Contributing to twicable
 
 Thanks for helping! This guide covers the setup, the conventions the code follows and what a pull request needs.
 
@@ -26,11 +26,11 @@ npm start        # server only, UI in the browser – data goes to runs/ and lib
 To test with several players on one machine, start extra instances with their own data folder:
 
 ```sh
-PORT=47400 SLS_DATA_DIR=/tmp/souldew-p2 NO_OPEN=1 node server/index.mjs
-npm run app -- --user-data-dir=/tmp/souldew-p3
+PORT=47400 SLS_DATA_DIR=/tmp/twicable-p2 NO_OPEN=1 node server/index.mjs
+npm run app -- --user-data-dir=/tmp/twicable-p3
 ```
 
-(PowerShell: `$env:PORT=47400; $env:SLS_DATA_DIR="$env:TEMP\souldew-p2"; $env:NO_OPEN=1; node server/index.mjs`.)
+(PowerShell: `$env:PORT=47400; $env:SLS_DATA_DIR="$env:TEMP\twicable-p2"; $env:NO_OPEN=1; node server/index.mjs`.)
 
 Use separate folders for testing – never point a test instance at your real data in
 `~/Library/Application Support/SoulLink Studio` (Windows: `%APPDATA%\SoulLink Studio`, Linux: `~/.config/SoulLink Studio`).
@@ -60,10 +60,10 @@ npm run matrix -- <folder with ROMs and patches> [more folders or files]
 ```
 
 It finds every ROM (also in `.zip`), applies every patch to the base it belongs to, and plays each game that has an
-input plan (`scripts/rom-matrix/plans/`) in souldew's own emulator page – hidden, muted, with a throwaway data folder,
+input plan (`scripts/rom-matrix/plans/`) in twicable's own emulator page – hidden, muted, with a throwaway data folder,
 never your own. The result is a table (`<out>/matrix.md`, `matrix.json`, screenshots) with one column per live feature:
 team, held items, place, battle, catch, types (a retail ROM's types and type chart must equal the app's data) and
-level cap ("hidden" where souldew can't read it for that game and shows nothing). Every ✅ of the last release must
+level cap ("hidden" where twicable can't read it for that game and shows nothing). Every ✅ of the last release must
 still be there. Useful options: `--only <text>` (one game), `--out <dir>`, `--saves <dir>` (saves for plans that start
 from one, e.g. `unbound.sav`), `--plan <file>` (play another plan, e.g. a probe), `--attempts <n>`, `--show`.
 Plain Node and Electron from `node_modules` – it runs the same on Windows. GB games take a minute, GBA a few, DS 10–25
@@ -87,7 +87,7 @@ minutes each. Never commit ROMs, saves, patched ROMs or the screenshots.
   `httpError(status, 'English text', 'code', vars)` with the code's text in `web/lib/errors.mjs`, build log lines
   through `logLine`. The desktop shell's own texts are `t()` calls from the page's dictionaries (`electron/texts.mjs`).
   `test/i18n-leaks.test.mjs` fails on German in those messages and on codes without a text.
-- German UI text uses the informal "du" and no gender stars. "souldew" is always written in lowercase.
+- German UI text uses the informal "du" and no gender stars. "twicable" is always written in lowercase.
 
 ## Pull requests
 

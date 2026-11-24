@@ -1,6 +1,6 @@
-// The signed souldew+ entitlement (server/lib/accounts/enttoken.mjs, accounts API.md §8.2, SECURITY.md §4): only a token
+// The signed twicable+ entitlement (server/lib/accounts/enttoken.mjs, accounts API.md §8.2, SECURITY.md §4): only a token
 // signed with a pinned key, for this service, this account and this session, counts – and only its claims decide
-// souldew+ in the app. Forged, expired, wrong key / sub / sid / aud / iss, clock skew both ways, the offline grace.
+// twicable+ in the app. Forged, expired, wrong key / sub / sid / aud / iss, clock skew both ways, the offline grace.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { entitlementSigner } from './fixtures/fakeaccounts.mjs';
@@ -47,7 +47,7 @@ test('wrong sub, sid, aud, iss or tier – refused', () => {
   assert.equal(check(signer.sign(claims({ sid: 'ses_other' }))).reason, 'sid', 'another session’s token');
   assert.equal(check(signer.sign(claims({ sid: undefined }))).reason, 'sid', 'a token without a session');
   assert.equal(check(signer.sign(claims()), { sid: null }).reason, 'sid', 'no session here');
-  assert.equal(check(signer.sign(claims({ aud: 'souldew-app' }))).reason, 'aud', 'an access token’s audience');
+  assert.equal(check(signer.sign(claims({ aud: 'twicable-app' }))).reason, 'aud', 'an access token’s audience');
   assert.equal(check(signer.sign(claims({ iss: 'http://127.0.0.1:8788' }))).reason, 'iss', 'from another service');
   assert.equal(check(signer.sign(claims({ tier: 'gold' }))).reason, 'tier');
   assert.equal(check(signer.sign(claims({ exp: 'never' }))).reason, 'claims');

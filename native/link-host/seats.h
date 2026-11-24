@@ -1,16 +1,16 @@
-// Seat management: the consoles the souldew engine runs in this process and what they were made from – one seat alone
+// Seat management: the consoles the twicable engine runs in this process and what they were made from – one seat alone
 // (solo: the player's game, as the fast player runs it) or 2–4 seats in a link session – the backend that runs them,
 // and the battery save of each. A change of mode re-forms the set in place from the seats' games and states: the
-// process, its stream to souldew and the page's picture stay.
-#ifndef SOULDEW_SEATS_H
-#define SOULDEW_SEATS_H
+// process, its stream to twicable and the page's picture stay.
+#ifndef TWICABLE_SEATS_H
+#define TWICABLE_SEATS_H
 
 #include "linkbackend.h"
 
 /** What a seat is made from (the seat set keeps its own copies). */
 struct seat_game {
   char *rom;          // path of the game
-  uint8_t *save;      // battery save (as souldew keeps it) or NULL
+  uint8_t *save;      // battery save (as twicable keeps it) or NULL
   size_t save_len;
   uint8_t *state;     // a state in the fast player's format to go on from, or NULL (the game boots)
   size_t state_len;
@@ -37,10 +37,10 @@ void seats_close(void);
 /** Seat `s`'s game as it was opened (its ROM path and model; save and state as they were given then). */
 const struct seat_game *seats_game(int s);
 
-/** The battery save as souldew keeps it (a Game Boy clock cartridge's with its footer), malloc'd; 0 = none. */
+/** The battery save as twicable keeps it (a Game Boy clock cartridge's with its footer), malloc'd; 0 = none. */
 size_t seats_battery(int s, void **out);
 /**
- * Seat `s`'s battery save to souldew (SRAM, then the event "saved") once the game changed it and it settled – or
+ * Seat `s`'s battery save to twicable (SRAM, then the event "saved") once the game changed it and it settled – or
  * right away with `force` (FLUSH, QUIT, leaving a session).
  */
 void seats_check_sram(int s, bool force);

@@ -148,7 +148,7 @@ test('the RPC client ignores replies from older servers (version 1) and from oth
   old.close();
 });
 
-test('the bridge: not connected → connected without a game → an unknown game → a game souldew reads', async () => {
+test('the bridge: not connected → connected without a game → an unknown game → a game twicable reads', async () => {
   const frames = [];
   const statuses = [];
   const emit = (ev, d) => (ev === 'live' ? frames.push(d) : statuses.push(d));
@@ -171,7 +171,7 @@ test('the bridge: not connected → connected without a game → an unknown game
     assert.equal(bridge.state.game.title, 'Checkpoi');
     assert.equal(bridge.state.supported, false);
     procs.pop();
-    // a game souldew has no data for (Mario Kart 7)
+    // a game twicable has no data for (Mario Kart 7)
     procs.push({ pid: 0x30, titleId: '0004000000030800', name: 'kart' });
     await bridge.poll();
     assert.equal(bridge.state.supported, false);

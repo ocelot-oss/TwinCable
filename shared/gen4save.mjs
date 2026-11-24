@@ -208,7 +208,7 @@ const saveError = (code, message, vars) => Object.assign(new Error(message), { c
  */
 export function parseHgssSave(file, data) {
   if (file.length < 0x40000) throw saveError('saveTooSmall', `Save file too small (${file.length} bytes) – expected 512 KB`, { size: file.length });
-  // DeSmuME (and older souldew builds) keep a save only up to the last byte the game wrote: a fresh game has just the
+  // DeSmuME (and older twicable builds) keep a save only up to the last byte the game wrote: a fresh game has just the
   // first half (256 KB + 1). The rest of the 512 KB flash is erased – 0xFF – and the first partition holds the save.
   let u8 = file.length === 0x80000 ? file : file.subarray(0, 0x80000);
   if (u8.length < 0x80000) {

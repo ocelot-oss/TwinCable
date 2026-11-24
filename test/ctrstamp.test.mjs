@@ -1,6 +1,6 @@
 // `build-ctr.mjs --check` (npm run dist, CI) catches a 3DS core built before a patch was added or changed: the core's
-// stamp (SOULDEW_CORE) names the patches and hashes them (scripts/ctrstamp.mjs). Until 2.8.2's review it only looked
-// whether the file was there – a local core without souldew-sfx.patch passed and lacked what the app asks it for.
+// stamp (TWICABLE_CORE) names the patches and hashes them (scripts/ctrstamp.mjs). Until 2.8.2's review it only looked
+// whether the file was there – a local core without twicable-sfx.patch passed and lacked what the app asks it for.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -36,6 +36,6 @@ test('build-ctr.mjs --check says so (and SLS_NO_3DS still builds without the 3DS
   assert.match(r.stderr, /incomplete/);
   assert.equal(run({ SLS_NO_3DS: '1' }).status, 0);
   const src = readFileSync(new URL('../scripts/build-ctr.mjs', import.meta.url), 'utf8');
-  assert.match(src, /writeFileSync\(join\(out, 'SOULDEW_CORE'\), coreStamp\(\)\)/, 'the build writes the stamp with the hash');
-  assert.match(src, /staleCore\(readFileSync\(join\(out, 'SOULDEW_CORE'\)/, '--check compares it');
+  assert.match(src, /writeFileSync\(join\(out, 'TWICABLE_CORE'\), coreStamp\(\)\)/, 'the build writes the stamp with the hash');
+  assert.match(src, /staleCore\(readFileSync\(join\(out, 'TWICABLE_CORE'\)/, '--check compares it');
 });

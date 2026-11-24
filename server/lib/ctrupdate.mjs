@@ -1,14 +1,14 @@
-// 3DS game updates in souldew's own player. ctrhost points Azahar's core at one save folder per game / run player
+// 3DS game updates in twicable's own player. ctrhost points Azahar's core at one save folder per game / run player
 // (server/lib/ctr.mjs saveDirFor → the core's user folder "<save>/Azahar", its SD card "<save>/Azahar/sdmc"), and the
 // core starts a game with the update it finds installed on that SD card (shared/ctr/update.mjs). So before a game
-// starts, souldew puts the update the library has for it into that save folder – the files Azahar's own "Install CIA"
+// starts, twicable puts the update the library has for it into that save folder – the files Azahar's own "Install CIA"
 // writes for a decrypted CIA – and takes away one it put there before when the library has none any more.
 //
 //   the cache   <data>/ctr/updates/<stamp>/sd/Nintendo 3DS/…/title/0004000e/<low>/content/{00000000.tmd, <id>.app}:
 //               each update file unpacked once (its stamp: path, size, time); unpacked files of update files that are
 //               gone from the library are deleted at the next start
 //   a save      the cache's files hard-linked into "<save>/Azahar/sdmc/…" (copied where links don't work – another
-//               drive, a file system without them), and souldew-update.json next to "content" says which update that is
+//               drive, a file system without them), and twicable-update.json next to "content" says which update that is
 //
 // A randomized game never gets the update: UPR ZX rebuilds the game's code and RomFS from version 1.0, and the update's
 // code (Azahar runs the code of an installed update, not the game file's) would undo the randomization. UPR could only
@@ -22,8 +22,8 @@ import { freeBytes } from './zip.mjs';
 import { updateLayout, updatePaths, updateStatus, gameTitleIdOf } from '../../shared/ctr/update.mjs';
 
 export const UPDATE_CACHE = join(DATA_DIR, DEV ? 'runs/.ctr' : 'ctr', 'updates');
-/** Next to an installed update's "content" folder: which update souldew installed there. */
-export const MARKER = 'souldew-update.json';
+/** Next to an installed update's "content" folder: which update twicable installed there. */
+export const MARKER = 'twicable-update.json';
 const CHUNK = 4 * 1024 * 1024;
 const SPACE_MARGIN = 256 * 1024 * 1024;
 
@@ -154,7 +154,7 @@ export function pruneUpdateCache(keep, { cache = UPDATE_CACHE } = {}) {
 /** The SD card of a 3DS save folder (the core's user folder is "<save>/Azahar"). */
 export const sdOf = (saveDir) => join(saveDir, 'Azahar', 'sdmc');
 
-/** What souldew installed in a save folder for the game `gameTid`: its marker ({ stamp, titleId, version }) or null. */
+/** What twicable installed in a save folder for the game `gameTid`: its marker ({ stamp, titleId, version }) or null. */
 export function installedUpdate(saveDir, gameTid) {
   const tid = String(gameTid || '').toUpperCase();
   const utid = `0004000E${tid.slice(8)}`;
@@ -197,7 +197,7 @@ export function installUpdate(saveDir, unpacked) {
 }
 
 /**
- * Take away the update souldew installed in a save folder for the game `gameTid` (only one it installed itself – the
+ * Take away the update twicable installed in a save folder for the game `gameTid` (only one it installed itself – the
  * marker says so). → true when one was removed.
  */
 export function removeInstalledUpdate(saveDir, gameTid) {
@@ -208,7 +208,7 @@ export function removeInstalledUpdate(saveDir, gameTid) {
 }
 
 /**
- * Before a 3DS game starts in souldew's player: the update it plays with. `gameTid`: the game file's title ID (only
+ * Before a 3DS game starts in twicable's player: the update it plays with. `gameTid`: the game file's title ID (only
  * a game's – 00040000…); `update`: the library's update for it (shared/ctr/update.mjs pickUpdate – a library entry
  * with { file, version, encrypted }) or null; `randomized`: a randomized run's game. Installs / removes the update in
  * `saveDir` and → what the player view and the diagnostics show: null (no update), or { titleId, version, versionText,

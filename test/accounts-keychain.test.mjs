@@ -1,4 +1,4 @@
-// The souldew account and the keychain (server/lib/accounts/store.mjs, session.mjs, electron/main.mjs secureStore):
+// The twicable account and the keychain (server/lib/accounts/store.mjs, session.mjs, electron/main.mjs secureStore):
 // the keychain is asked only when there is a saved sign-in to read or a sign-in to keep, never at start for a player
 // who isn't signed in, and never on the way to the server or the window – an unsigned macOS build is a "new app" to
 // its keychain item after every update, and each touch means a password prompt the app must not wait for.
@@ -9,7 +9,7 @@ import { mkdtempSync, existsSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-const DATA = mkdtempSync(join(tmpdir(), 'souldew-keychain-'));
+const DATA = mkdtempSync(join(tmpdir(), 'twicable-keychain-'));
 process.env.SLS_DATA_DIR = DATA;
 // an accounts service that isn't there: every call is "offline" (the session itself is what these tests look at)
 const SERVICE = 'http://127.0.0.1:9';
@@ -103,7 +103,7 @@ test('a saved sign-in: read once, in the background – never while the session 
   await tick(5);
   assert.equal(s.signedIn, false, '"signed out" while the prompt is open');
   assert.equal(s.publicState().signedIn, false);
-  assert.equal(s.publicState().loaded, false, '… but not known yet: the page must not act on it (a souldew+ pack would be wiped)');
+  assert.equal(s.publicState().loaded, false, '… but not known yet: the page must not act on it (a twicable+ pack would be wiped)');
   secure.gate.release();
   await loading;
   assert.equal(s.signedIn, true);
@@ -126,7 +126,7 @@ test('the keychain says no (macOS "Deny"): signed out, a calm note to sign in ag
   const s = createSession({ store: createTokenStore(secure, { file: FILE }), port: () => 1, fetchImpl: offline, env: { SLS_ACCOUNTS_URL: SERVICE }, onChange: (x) => changes.push(x) });
   await s.load();
   assert.equal(s.signedIn, false);
-  assert.equal(s.publicState().condition, 'unreadable', 'Settings › Account: "souldew couldn’t read your saved sign-in – sign in again"');
+  assert.equal(s.publicState().condition, 'unreadable', 'Settings › Account: "twicable couldn’t read your saved sign-in – sign in again"');
   assert.equal(changes.at(-1).condition, 'unreadable');
   assert.equal(changes.at(-1).loaded, true, 'a real "signed out": known');
   assert.equal(existsSync(FILE), false, 'the unreadable blob goes');

@@ -98,7 +98,7 @@ function headOf(path, len = 0x200) {
 
 /**
  * A 3DS file: identified from a few header reads (shared/ctr.mjs) – no CRC32, these files are 1–4 GB. A game, or a
- * game's update (kind 'update': attached to its game – scanLibrary's ctrUpdates, installed by souldew's player, see
+ * game's update (kind 'update': attached to its game – scanLibrary's ctrUpdates, installed by twicable's player, see
  * server/lib/ctrupdate.mjs); null for anything else (no 3DS header, DLC, a system title); undefined when the file can't
  * be read right now.
  */
@@ -141,7 +141,7 @@ const notPlayable = (info) => ['update', 'dlc', 'system'].includes(info?.kind);
 /**
  * A 3DS update file as the library lists it (scanLibrary's ctrUpdates): which game it belongs to (`gameTitleId`, the
  * catalog's `gameId`), its title version ("v2.2.0") and – for the latest update of a Pokémon game – the version the game
- * shows ("1.2"), whether souldew can install it (`encrypted`: no), and `detached` (the player took it off the game).
+ * shows ("1.2"), whether twicable can install it (`encrypted`: no), and `detached` (the player took it off the game).
  */
 function updateEntry(info, { id, name, file, size, container = null }, cat, detached) {
   const gameTitleId = gameTitleIdOf(info.titleId);
@@ -167,7 +167,7 @@ const CTR_HEAD = 0x10000;
 
 /**
  * The 3DS games inside a zip (a 3DS game is 1–4 GB – only its first 64 KB are inflated): [{ entry, ext, info }], info as
- * ctrInfo gives it. DLC, entries that aren't 3DS files and entries souldew can't unpack are left out – updates too,
+ * ctrInfo gives it. DLC, entries that aren't 3DS files and entries twicable can't unpack are left out – updates too,
  * unless `updates` (a zip the player adds: its update is unpacked into the library like a game).
  */
 export function zipCtrGames(path, entries = null, { updates = false } = {}) {
@@ -284,7 +284,7 @@ export function scanLibrary(config = {}) {
   const roms = [];
   const patches = [];
   const zipped = []; // 3DS games inside zips – played once unpacked (unpackZipGames)
-  const updates = []; // 3DS game updates – each goes with its game (souldew's player installs it, server/lib/ctrupdate.mjs)
+  const updates = []; // 3DS game updates – each goes with its game (twicable's player installs it, server/lib/ctrupdate.mjs)
   const detached = new Set((Array.isArray(config.ctrUpdatesDetached) ? config.ctrUpdatesDetached : []).map((p) => resolve(String(p))));
   const seen = new Set(); // nested / overlapping library folders would list files twice
   const patchTime = new Map(); // patch → mtime of its file (or zip), to tell which of two versions came later
@@ -414,7 +414,7 @@ export function scanLibrary(config = {}) {
     // a hack the catalog doesn't know: its versions are told together by the file name ("Crest v1.bps", "Crest v2.bps")
     if (!p.hackId) p.family = patchFamily(p.name);
   }
-  // each 3DS game with the update it plays with (the newest one souldew can install)
+  // each 3DS game with the update it plays with (the newest one twicable can install)
   for (const r of roms) if (r.system === '3ds' && r.kind === 'game') r.update = updateSummary(pickUpdate(updates, r.titleId));
   return { roms, patches: newestFirst(patches, patchTime), zipped: zipped.filter((z) => !unpacked.has(ctrKey(z))), ctrUpdates: updates, roots: libraryRoots(config), libraryDir: LIBRARY_DIR };
 }
@@ -742,7 +742,7 @@ export function approvedFolder(p, config = {}) {
  * (approvedImportPath) – checked for all of them before the first one is copied: a refused batch throws right away.
  * A zip with a 3DS game in it isn't copied: the game is unpacked into the library instead (unpackZipGames, `onUnpack`
  * follows it) – the zip itself only when it holds other ROMs or patches too. → a Promise of the library files added.
- * `skipped` collects the files it didn't take: { name, why: 'archive' (a .7z / .rar – souldew can't unpack them) | 'type' }.
+ * `skipped` collects the files it didn't take: { name, why: 'archive' (a .7z / .rar – twicable can't unpack them) | 'type' }.
  */
 export function importFiles(paths, config = {}, { roots, onUnpack = null, skipped = [] } = {}) {
   if (!Array.isArray(paths)) throw httpError(400, 'Invalid path', 'badPath');
@@ -779,7 +779,7 @@ export function importFiles(paths, config = {}, { roots, onUnpack = null, skippe
 }
 
 /**
- * Take a 3DS update off its game ("Remove" in the game's details): souldew's own copy in the library folder is deleted
+ * Take a 3DS update off its game ("Remove" in the game's details): twicable's own copy in the library folder is deleted
  * (the player's original stays where it was), a file in an included folder – the player's own – is only marked
  * (config.ctrUpdatesDetached, by path). → { deleted, ctrUpdatesDetached: the new list }. Throws 400 for anything that
  * isn't a 3DS update in the library.
@@ -795,7 +795,7 @@ export function removeCtrUpdate(id, config = {}) {
   return { deleted: false, ctrUpdatesDetached: [...new Set([...list, abs])] };
 }
 
-/** Archives souldew can't unpack (a 3DS game often comes in one): said so instead of skipped without a word. */
+/** Archives twicable can't unpack (a 3DS game often comes in one): said so instead of skipped without a word. */
 export const OTHER_ARCHIVES = ['7z', 'rar'];
 
 /** Bytes compared between a copy and its original: this many pieces spread over the file, the end always. */
@@ -804,7 +804,7 @@ const VERIFY_PIECE = 64 * 1024;
 
 /**
  * Copy `src` to `target` so that `target` is never a half file (ticket #19): a 3DS game is 1–4 GB, and the copy used to
- * run on the app's main thread right into the library – the window froze for its whole length, and closing souldew
+ * run on the app's main thread right into the library – the window froze for its whole length, and closing twicable
  * meanwhile left a cut-off game under its real name (on Windows even at its full size, the rest never written), which the
  * next start listed as ready and which played as a black screen. Now: off the main thread into a hidden part file
  * next to the target (the scan skips names starting with a dot), the part compared with the original (size and pieces
@@ -853,7 +853,7 @@ async function sameBytes(src, copy, size, pieces) {
   }
 }
 
-/** Does process `pid` still run? (the souldew that is copying it right now) */
+/** Does process `pid` still run? (the twicable that is copying it right now) */
 function alive(pid) {
   try {
     process.kill(pid, 0);
@@ -864,8 +864,8 @@ function alive(pid) {
 }
 
 /**
- * What a copy, an unpack or an upload that never finished left in a folder (souldew closed meanwhile): the hidden
- * `.name.<pid>.import` / `.name.<pid>.part` and `name.<pid>.upload` of another (ended) souldew. → the names removed.
+ * What a copy, an unpack or an upload that never finished left in a folder (twicable closed meanwhile): the hidden
+ * `.name.<pid>.import` / `.name.<pid>.part` and `name.<pid>.upload` of another (ended) twicable. → the names removed.
  */
 export function removeStaleParts(dir = LIBRARY_DIR, pid = process.pid) {
   const removed = [];
@@ -882,7 +882,7 @@ export function removeStaleParts(dir = LIBRARY_DIR, pid = process.pid) {
       rmSync(join(dir, n), { force: true });
       removed.push(n);
     } catch {
-      // still held (another souldew copying right now) – the next start tries again
+      // still held (another twicable copying right now) – the next start tries again
     }
   }
   return removed;
@@ -932,7 +932,7 @@ export async function unpackLibraryZip(id, config = {}, { onUnpack = null } = {}
 export function uploadTarget(name) {
   let safe = safeFileName(name, { fallback: '', maxBytes: 200 }); // file systems allow 255 bytes per name
   const ext = extname(safe).slice(1).toLowerCase();
-  if (OTHER_ARCHIVES.includes(ext)) throw httpError(400, 'souldew can’t unpack .7z / .rar archives', 'archiveUnsupported', { name: safe });
+  if (OTHER_ARCHIVES.includes(ext)) throw httpError(400, 'twicable can’t unpack .7z / .rar archives', 'archiveUnsupported', { name: safe });
   if (![...ROM_EXTENSIONS, ...CTR_EXTENSIONS, ...PATCH_EXTENSIONS, 'zip'].includes(ext)) throw httpError(400, 'Only ROMs (.gb/.gbc/.gba/.nds/.3ds/.cci/.cxi/.cia/.3dsx), patches or .zip', 'uploadType');
   if (safe.startsWith('.')) safe = `_${safe.slice(1)}`; // hidden files are skipped by the library scan
   mkdirSync(LIBRARY_DIR, { recursive: true });

@@ -16,7 +16,7 @@
   manages, up to normal speed, and every press counts.
 - **Already standing in the Union Room when you link? You now see each other.** A game that was in the Union Room
   (or anywhere its wireless was on) when the link started never heard the others until it walked out and back in.
-- **Mixed versions say so.** A DS link with a partner who still has souldew 3.0.0 doesn't start; both of you are told
+- **Mixed versions say so.** A DS link with a partner who still has twicable 3.0.0 doesn't start; both of you are told
   to update.
 - **A link that stands still always says so.** If a link stops moving for a minute – the games no longer hear
   each other – or one of the linked games stops running, both of you get a message, the link ends and each game goes
@@ -24,19 +24,19 @@
 - **Diagnostics include the link.** “Save diagnostics” now records the link session too – when it started, from which
   games, the connection, every console's frames, the buttons sent and received, waits and how it ended – so a report
   about a trade or battle shows where it went wrong.
-- **Try souldew+ free for 7 days.** The souldew+ page offers it once per Discord account (if it's at least 30 days old
-  and never had souldew+ or Legend): no payment details, nothing renews, nothing to cancel. While it runs, the page and
-  Settings › Account show “Trial · ends …” and how to keep it on Buy Me a Coffee; when it ends, souldew goes back to
+- **Try twicable+ free for 7 days.** The twicable+ page offers it once per Discord account (if it's at least 30 days old
+  and never had twicable+ or Legend): no payment details, nothing renews, nothing to cancel. While it runs, the page and
+  Settings › Account show “Trial · ends …” and how to keep it on Buy Me a Coffee; when it ends, twicable goes back to
   its free looks and your picks wait for you – exactly like an ended membership. Once it's used, the offer is gone.
-- **No partner yet? Find one on the souldew Discord.** When you set up a SoulLink without a souldew friend in the other
+- **No partner yet? Find one on the twicable Discord.** When you set up a SoulLink without a twicable friend in the other
   seats, and on the Friends page while you have no friends there yet, a small link opens the partner finder: game,
-  how many partners, language and time zone, when you play and rules – prefilled where souldew knows them. “Post on
+  how many partners, language and time zone, when you play and rules – prefilled where twicable knows them. “Post on
   Discord” puts it in #find-a-partner under your Discord name, with the same “I'm in” button and private group thread
   as the bot's own form, and opens it. Signed out, the link offers the sign-in instead.
-- **Your souldew+ tier on Discord follows your account.** Once a membership is on your souldew account, the matching
-  role – 💧 Supporter, 🔗 souldew+ (also during the trial and with the Lifetime role) or 🏆 Legend – comes on the souldew
+- **Your twicable+ tier on Discord follows your account.** Once a membership is on your twicable account, the matching
+  role – 💧 Supporter, 🔗 twicable+ (also during the trial and with the Lifetime role) or 🏆 Legend – comes on the twicable
   Discord by itself within about 10 minutes, and goes again when the tier does.
-- **A daily anonymous usage count**, under the same switch as “playing now” (Settings › Online): once a day souldew
+- **A daily anonymous usage count**, under the same switch as “playing now” (Settings › Online): once a day twicable
   tells the team that it was used – version, system, processor, the week of first use and on how many recent days it
   ran, with a random value that's new every day. No id for you or your computer. What exactly is sent:
   [docs/PRIVACY.md](docs/PRIVACY.md#daily-usage-count).
@@ -47,54 +47,54 @@
   changed there isn't offered for it (greyed out, with the reason) – in Blaze Black 2 Redux "National Pokédex from
   the start" and "Fastest text" go, and the starters stay the hack's own, since they sit in that same intro. Tested
   with Blaze Black 2 Redux 1.4.1 and three seeds of the Classic preset, from the intro into the player's room.
-- **No "Save file unreadable" at the start of a new game.** A DS game prepares its save while the intro plays; souldew
+- **No "Save file unreadable" at the start of a new game.** A DS game prepares its save while the intro plays; twicable
   read that, found no save in it yet and said "Save file unreadable – save once in the game first". A save that was
   readable and isn't any more still says so.
 - **A ROM hack whose patch doesn't fit your copy of the game says so** in the new-run assistant, instead of failing
   without a reason.
 - **Playing a 3DS game no longer fills up your Windows drive.** The built-in 3DS player sent its picture and sound to
-  souldew's window as one endless download. Antivirus programs that check web traffic (a "web shield") kept all of it
+  twicable's window as one endless download. Antivirus programs that check web traffic (a "web shield") kept all of it
   in `C:\Windows\Temp` until the game was closed – about 25 MB a second, tens of gigabytes in an evening (#38). The
   3DS player and the fast player now send it over a connection those programs don't hold on to. Measured on the same
   game before and after: the same pictures a second and the same smoothness.
-- **Quitting souldew keeps "where you left off".** Closing the whole app while a game runs – the window's close button,
+- **Quitting twicable keeps "where you left off".** Closing the whole app while a game runs – the window's close button,
   ⌘Q or Alt+F4, or a restart for an update – now keeps the moment you were at and your latest save, as "Close game"
   already did. Next time the game picks up right there.
 - **"Java crashes on this Mac" instead of "Java wasn't found".** On macOS 27 with System Integrity Protection turned
-  off, Java can't start on Apple Silicon – the Java that comes with souldew and any other (#40). souldew said Java was
+  off, Java can't start on Apple Silicon – the Java that comes with twicable and any other (#40). twicable said Java was
   missing, and reinstalling Java didn't help. Now it says what's going on: turn System Integrity Protection back on,
   then try again. Checking for Java also waits longer the very first time (macOS checks a new program first) and tries
-  once more, and "Save diagnostics" lists every Java souldew tried and how it ended.
-- **Your account shows "Loading …" at the start** while souldew reads your saved sign-in, instead of "Sign in" for a
-  moment – in the sidebar, Settings › Account, Friends, your profile and souldew+.
+  once more, and "Save diagnostics" lists every Java twicable tried and how it ended.
+- **Your account shows "Loading …" at the start** while twicable reads your saved sign-in, instead of "Sign in" for a
+  moment – in the sidebar, Settings › Account, Friends, your profile and twicable+.
 - **The Mac app is signed and notarized by Apple.** It opens like any other app – no more "Open Anyway" in System
   Settings. Signed in, macOS asked for your keychain password after every update; this update may ask one last time,
   later ones won't.
 - **Cheats in Sun/Moon and Ultra Sun/Ultra Moon no longer stop after you give an item away.** When the last one of an
   item leaves the bag (given to a Pokémon to hold, used up), these games can keep its id in the slot with a count of 0.
-  souldew took that for a sign it wasn't looking at the bag and said "souldew didn't find your
+  twicable took that for a sign it wasn't looking at the bag and said "twicable didn't find your
   bag in the game's memory" for every cheat (#45).
 - **A beaten trainer's team is never taken for yours any more** (#89). In HeartGold and SoulSilver, Platinum, Diamond and
-  Pearl in languages other than English, souldew finds your team by searching the game's memory. After a trainer
+  Pearl in languages other than English, twicable finds your team by searching the game's memory. After a trainer
   battle it could settle on the trainer's party left behind there, with every Pokémon of it at 0 HP, and say your
   team was wiped and the Nuzlocke over. Now it takes only the team that belongs to your trainer in the game's save data.
   And whatever game: a team with none of your Pokémon in it is held back until it has stood for a while outside a
   battle (the game never swaps the whole team at once). A team where every Pokémon is down never comes in that way, so a
   wrong read can't end a run.
-- **X/Y and Omega Ruby/Alpha Sapphire: souldew looks for your team when it isn't where it expects it** (ticket #37,
-  #82). souldew reads the team of these games at a fixed place per update, and for some players the team wasn't there
+- **X/Y and Omega Ruby/Alpha Sapphire: twicable looks for your team when it isn't where it expects it** (ticket #37,
+  #82). twicable reads the team of these games at a fixed place per update, and for some players the team wasn't there
   (no team at all for minutes) or a new catch never showed up, until they saved, reset and loaded the game again. Now,
-  when no team turns up for a while in the game, and once a while after the team was first read, souldew searches the
+  when no team turns up for a while in the game, and once a while after the team was first read, twicable searches the
   game's memory for its team and reads it there too; when that place gets a new Pokémon the old one doesn't show,
-  souldew moves over. "Save diagnostics" notes the search and where it found the team.
+  twicable moves over. "Save diagnostics" notes the search and where it found the team.
 - **Red and Blue: a catch that goes to the PC counts** (#83). With six Pokémon in your team, the game sends a catch to
-  the PC box, and souldew only read the team, so the catch was never filed for its area. souldew now also reads the
+  the PC box, and twicable only read the team, so the catch was never filed for its area. twicable now also reads the
   box you have chosen in the PC: a Pokémon that lands there right after a wild battle is filed under the place you are,
   like one that joins the team.
 - **3DS: "Wild … not caught" no longer comes while you name your catch.** X/Y and the other 3DS games put a catch
-  into your team only after the Pokédex entry and the nickname screen, and souldew asked after 10 seconds. It now waits
+  into your team only after the Pokédex entry and the nickname screen, and twicable asked after 10 seconds. It now waits
   a minute on the 3DS. And when you did press "Mark as spent" and that Pokémon turns up in your team within a few
-  minutes after all, souldew files it as the area's catch instead of keeping the area spent.
+  minutes after all, twicable files it as the area's catch instead of keeping the area spent.
 - **A catch you enter by hand is linked to the Pokémon in your game** (ticket #37). Entering "Caught" on the board
   left live tracking without a link to the Pokémon in the game: it only said "in box", and its level, HP and death
   never came. Now the dialog shows the Pokémon of that species waiting in "From your game" (or in your team without an
@@ -110,7 +110,7 @@
 
 ## 3.0.0
 
-souldew 3.0 brings multiplayer: the players of a run trade Pokémon and battle each other the way the games meant it –
+twicable 3.0 brings multiplayer: the players of a run trade Pokémon and battle each other the way the games meant it –
 in the Cable Club, the Colosseum and the Union Room – and in the Game Boy and Game Boy Advance games (Gen 1 to 3),
 Platinum and HeartGold/SoulSilver your partners walk around in your game.
 Plus a new play view that gives the game the room it deserves.
@@ -123,14 +123,14 @@ Plus a new play view that gives the game the room it deserves.
   it feels like a cable even between two homes; when no direct connection can be made, it goes through a relay server.
   Tested end to end with Red, Crystal with Silver (cartridge clock included), Emerald with Sapphire, Platinum, Diamond
   with Pearl, HeartGold with SoulSilver, and Black with Black, White and Black 2; different games of a generation link
-  too, and a Game Boy game with a Game Boy Color game (Red or Blue with Yellow) – souldew finds your partner's game in
+  too, and a Game Boy game with a Game Boy Color game (Red or Blue with Yellow) – twicable finds your partner's game in
   your library or lets you pick it, checked byte for byte.
 - **Up to four players where the game has it:** the Gen 3 Multi Battle (two against two) and the Gen 4 Union Room,
   where all four of you see each other and trade in pairs. “Link all of us” on the board starts it.
 - **Who's linked shows on the board.** In a run of three or four, while two players trade or battle, the others see
   “In a link with Tim” on both players' cards – Trade and Battle are greyed out with that as the reason, “Link all of
   us” leaves them out, and the Shared World menu says the same. It's gone as soon as the link ends.
-- **Made to be safe for your run.** A trade goes into the run's log. Before the link souldew keeps your save, for the
+- **Made to be safe for your run.** A trade goes into the run's log. Before the link twicable keeps your save, for the
   whole session; if the linked games ever fall out of step, both go back to exactly where they were before the link –
   also for a player who reloaded and rejoined – and the session's last save is kept next to it. In the Game Boy and
   GBA games a player whose game dropped out can rejoin while the others wait, or press “Leave it”: the others' games
@@ -138,8 +138,8 @@ Plus a new play view that gives the game the room it deserves.
   run – a battle there never files a death. The run's rules decide whether trades and link battles are allowed.
 - **Battle for money, and keep score.** A challenge can be for in-game money: pick single or double battle (two
   against two with four Game Boy Advances), set a wager up to what you have, and your partner sees it in the invite –
-  joining for less if they have less. When the battle is over, every player's souldew reads the result from the games
-  themselves, the results are compared, and only one your own souldew read and everybody agrees with counts – nobody
+  joining for less if they have less. When the battle is over, every player's twicable reads the result from the games
+  themselves, the results are compared, and only one your own twicable read and everybody agrees with counts – nobody
   can claim a result your game didn't see. The log says “Sam won a link battle against Tim”, the loser's game pays
   the winner's as soon as both stand in the overworld again (read back from the game, saved with your next in-game
   save – once, even after a reset), and the board keeps the record between you: “Sam 3 : 1 Tim”.
@@ -151,7 +151,7 @@ Plus a new play view that gives the game the room it deserves.
   but the result isn't counted and nobody pays. Stream tools get a `link-battle` event.
 - **Leaving the link inside a link room can't hurt your run.** A game that's still in the Trade Center or the
   Colosseum when the link ends goes on alone in its link mode – Gold, Silver and Crystal even start the next battle
-  against the partner's team they already received. souldew counts nothing of it (no deaths, no catches, no team
+  against the partner's team they already received. twicable counts nothing of it (no deaths, no catches, no team
   changes) until you walk out or start the game again. The result card says “₽2,000 to pay …” until the money has
   really left your game – in the Gen 1 Colosseum, which has no way out, that's after you switch the game off and on
   and press Continue.
@@ -159,14 +159,14 @@ Plus a new play view that gives the game the room it deserves.
   the left counter, open once you have the C-Gear – and trade, battle or swap Trainer Cards as on real hardware, from
   where you are in your game. A trade goes into the log (“traded Lillipup for Patrat with Tim”) and a battle's result
   and wager count as in the other games. White 2 links and trades too, but it hasn't been tested end to end in
-  souldew: its link battles count for neither results nor wagers. The C-Gear's infrared features don't link: the
+  twicable: its link battles count for neither results nor wagers. The C-Gear's infrared features don't link: the
   emulator has no infrared.
 - **The “You are here” sign knows the link rooms** of Diamond, Pearl, Platinum, HeartGold, SoulSilver, Black, White
   and Black 2 – the Union Room and the Colosseums.
 - **Raids: one trainer, all of you, one shared health bar.** On the board's log, “Raid” asks your partners; they
   press Join, a short countdown runs, and the next trainer battle each of you walks into is the raid. Every hit in
   anybody's game comes off one shared HP pool – as a share of each game's HP, so randomized games with other Pokémon
-  work too – and souldew puts the pool into everybody's game while it waits for your move: the opponent's HP bar
+  work too – and twicable puts the pool into everybody's game while it waits for your move: the opponent's HP bar
   slides there the game's own way. The trainer is beaten when the pool is empty, in everyone's game at once (the
   Pokémon that is out keeps 1 HP until your next hit, so the game knocks it out itself). A Pokémon of the trainer's
   that went down in one game never comes out in the others. Your own team fights normally; whoever's team goes
@@ -183,17 +183,17 @@ Plus a new play view that gives the game the room it deserves.
 - **Play together: your own game with friends, no challenge.** Next to SoulLink and Nuzlocke there's a third way to
   play: “Play together” in the SoulLink section, or on a game in your library. Everyone plays their normal game with
   its own save – what you do together is there when you play the game alone from the library, and the other way round.
-  Invite friends with the code or as souldew friends; each of them picks a game of their own, the same as yours or
+  Invite friends with the code or as twicable friends; each of them picks a game of their own, the same as yours or
   another one (Emerald, Sapphire and FireRed in one group is fine). Then it's everything multiplayer has – trades and
   battles in the link rooms (wagers too, if the host allows them), seeing each other walk around, emotes,
   rock-paper-scissors, watching each other's battles, gifts, “Come to me” and raids – and nothing of a challenge: no
   encounter rules, no deaths, no level caps, no run that can fail, no log full of catches. The board shows every
   player's game and team and who can trade, battle or see whom (the same generation links; seeing each other needs
   games with the same maps). The host decides what's allowed, cheats included. It doesn't earn trophies – those are
-  for challenge runs. Needs souldew 3.0 on every computer; a friend on 2.8 is told to update when they open the
+  for challenge runs. Needs twicable 3.0 on every computer; a friend on 2.8 is told to update when they open the
   invite.
 - **Cloned Pokémon no longer stop live tracking.** A cloning glitch (Gen 1–4) leaves the same Pokémon twice in your
-  team. souldew took that for a misread and showed no team at all. Now they're two Pokémon: the one you caught keeps
+  team. twicable took that for a misread and showed no team at all. Now they're two Pokémon: the one you caught keeps
   its place in the run, the clone comes in like any other new Pokémon (the inbox asks what it is), and a Pokémon going
   down or being traded only ever counts for that one – also after you reorder the team. A swap in the party menu,
   or another Pokémon read under the same number, is still never taken for a clone. A trade that leaves a clone in
@@ -215,11 +215,11 @@ Plus a new play view that gives the game the room it deserves.
   doesn't know it's there.
 - **Shared World in 3D: Platinum, HeartGold and SoulSilver.** Your partners walk in the DS field too – with their
   own trainer sprite from your ROM, standing on the ground of the 3D map wherever the camera looks: indoors, outdoors,
-  while it eases after you, smaller further away like everything the game draws. souldew uses the game's own camera,
+  while it eases after you, smaller further away like everything the game draws. twicable uses the game's own camera,
   so they stay on their tile to the pixel while you both walk. In HeartGold and SoulSilver they're lit like the field –
   a blue evening, a dark cave – and their Pokémon walks behind them as the game's own follower does; in Platinum it's
   the party icon. Names, Trade/Battle/Wave with A, the emotes and rock-paper-scissors work as in Gen 3. They walk
-  behind houses, trees, counters, plants and people exactly like the game's own figures: souldew's DS emulator hands
+  behind houses, trees, counters, plants and people exactly like the game's own figures: twicable's DS emulator hands
   over the depth of the 3D picture, pixel for pixel. Surfing partners sit without their Pokémon.
 - **Shared World on the Game Boy: Red, Blue, Yellow, Gold, Silver and Crystal.** Your partners walk in your Gen 1 and
   Gen 2 games too – with their trainer sprite from your ROM, their name tag and the Pokémon at the front of their team
@@ -228,12 +228,12 @@ Plus a new play view that gives the game the room it deserves.
   rock-paper-scissors and the emotes. They look like the game's own people: on the original Game Boy in its greens, in
   a Game Boy Color's colours, in Yellow's – and the tall grass covers their legs exactly where it covers yours. Red,
   Blue and Yellow meet each other, so do Gold, Silver and Crystal. In Yellow, Pikachu already walks behind you: your
-  partners see Pikachu follow you, and souldew adds no second one.
+  partners see Pikachu follow you, and twicable adds no second one.
 - **Partners next door:** a partner on a map connected to yours (the route beyond the town's edge) shows across the
   edge and walks over it smoothly.
 - **Rock-paper-scissors with your partners, fair and square.** Walk up to a partner and press A, click their name tag
   or the hand on their tile, or use “Rock-paper-scissors” in the board's log – that last one works in every game,
-  with or without Shared World. Both pick within 10 seconds; souldew only swaps the hands once both have picked (each
+  with or without Shared World. Both pick within 10 seconds; twicable only swaps the hands once both have picked (each
   side first sends a sealed fingerprint of its hand), so nobody can wait and counter, a changed hand is refused and
   walking away after seeing the other hand counts as a loss. In the game the hands pop up over both heads, everywhere
   else in a small card; the log says “Sam beat Tim at rock-paper-scissors”. A draw is played again; best of 3 from
@@ -254,20 +254,20 @@ Plus a new play view that gives the game the room it deserves.
   Medicine pocket arrives safely too. Only while you walk around – not in a battle or a link (in the Game Boy and
   Gen 3 games not with a menu or a text open either). Key items, TMs/HMs and the Master Ball stay with you. The log says
   “Sam gave Tim a gift: 3 × Potion”; the host's new rule “Gifts between us” (on by default) switches it off for a
-  stricter run. Works in the games whose bag souldew knows – the same as the cheats'.
+  stricter run. Works in the games whose bag twicable knows – the same as the cheats'.
 - **“Come to me”.** One button in the play view marks where you are for all your partners: in their game an arrow at
   the edge of the picture points to you when they're on the same map or next door, otherwise their board says “Sam
   is at Route 110 – come here”. It clears when they arrive, or after a few minutes.
 - **Trades and battles are the host's call, like every rule.** “Trades between us”, “Battles between us” and “Losing a
   link battle counts as deaths” are set by the host – already in the new-run wizard for the games that link, later in
   the board's Rules – and every change goes to the log; the others see them read-only.
-- **German Emerald (Smaragd) is read live.** souldew showed nothing for it so far: its memory was taken to be laid out
-  differently from the English game's. It isn't – every address souldew reads is the same – so the team, the place,
+- **German Emerald (Smaragd) is read live.** twicable showed nothing for it so far: its memory was taken to be laid out
+  differently from the English game's. It isn't – every address twicable reads is the same – so the team, the place,
   battles, level caps and badges, the bag (the Poké Ball rule, Rare Candies, Max Repels) and Shared World now work in
   Smaragd as they do in Emerald. Link battle results and wagers don't count in Smaragd.
 - **FireRed and LeafGreen: the “Previously on your quest…” replay after loading** no longer shows (or sends) where you
   walked last time as if you were there.
-- **souldew engine (beta)** – Settings › Play. One player of souldew's own for DS, GBA and Game Boy, on the
+- **twicable engine (beta)** – Settings › Play. One player of twicable's own for DS, GBA and Game Boy, on the
   same emulators as the fast player: a trade or battle simply brings your partners' consoles into your running game,
   and when the link ends they leave it again – nothing restarts, not even for a moment's handover. Speed steps, Max,
   save states (the fast player's – they work in both), cheats, live sync, the turbo music, the steady fast-forward sound
@@ -313,45 +313,45 @@ Plus a new play view that gives the game the room it deserves.
   “Import a save file …”; in a run, the board's Files menu. It takes .sav and .srm files from other emulators, flash
   carts and cartridge dumps (Checkpoint, JKSM), DeSmuME's .dsv (its footer comes off), Game Boy saves with either
   clock footer and mGBA's clock record, and a zip with one save in it. The size is checked per system, and for the
-  Pokémon games souldew tells whether it is a save of that game at all (Gen 1–5: the save's own checksums and
+  Pokémon games twicable tells whether it is a save of that game at all (Gen 1–5: the save's own checksums and
   signatures) – a save of another game gets a warning you can go past. The save it replaces is always backed up first
   (the one from before your first import is kept however many files you try), Undo puts it back, and nothing is
   written while the game runs. In a run it is a big change and asks first: it goes into the log for everyone, a
   SoulLink needs the host's new rule “Allow importing a save file”, and what the save brings along doesn't count – its
   Pokémon are set aside, its badges are no news, and the run earns no trophies for winning or level records. 3DS: a
-  Checkpoint or JKSM backup (the folder or a zip) goes into souldew's own 3DS player once the game has saved there.
+  Checkpoint or JKSM backup (the folder or a zip) goes into twicable's own 3DS player once the game has saved there.
   “Save game file” stays a plain .sav that other emulators and flash carts read.
-- **Pokémon Quetzal is read live** (thanks to a player on Discord). The hack keeps Emerald's game code, so souldew used
+- **Pokémon Quetzal is read live** (thanks to a player on Discord). The hack keeps Emerald's game code, so twicable used
   to take it for Emerald: “Pokémon Emerald Version”, no team, and the randomizer's check ending in “unreadable”. Now
   it is recognised by its header – the library files it under Pokémon Quetzal, every version of it – and read with its
   own memory layout: your team with its own Pokémon (from Sprigatito to the hack's own, named as the game names them),
   HP, status and held items, the place from the game's own names, battles with the opponent's HP, catches filed under
   their area and deaths. Checked in a new game from Oak's lab to the first catch on Route 1. What isn't safe for the
-  hack is off and says so: the cheats, souldew's randomizer (the hack has one of its own – the new-run wizard points
+  hack is off and says so: the cheats, twicable's randomizer (the hack has one of its own – the new-run wizard points
   you there), link trades and battles, Shared World and raids. Its PC boxes and level caps aren't read.
 - **Interface size, for big screens** (thanks to a player on Discord). Settings › General › “Interface size” draws
-  souldew's own interface at 80 to 175 % – the sidebar, the dock, the board, partner windows, menus, toasts and the
+  twicable's own interface at 80 to 175 % – the sidebar, the dock, the board, partner windows, menus, toasts and the
   names and menus over the game – sharp at every size, because it is laid out again rather than stretched. ⌘+ / ⌘− /
   ⌘0 (Ctrl on Windows and Linux) and the new View menu change it anywhere; while a game fills the window, its own
   shortcuts on those keys go first, so ⌘+ / ⌘− stay the game speed there as before. The game picture isn't scaled: it
   keeps filling the room it has, pixel-sharp. A window too small for the size you picked shows the biggest one that
   fits and grows back when you make it larger. On a large screen at 100 % (4K, or 1440p without the system's own
-  scaling) souldew asks once: “The interface looks small on this screen – make it bigger?”. The size is kept per
+  scaling) twicable asks once: “The interface looks small on this screen – make it bigger?”. The size is kept per
   computer, not per account; the stream overlays keep their own size in OBS.
 - **When the 3DS resolution holds back fast-forward, the play view says so.** At 2× or 3× some graphics cards fall
   well short of the fast-forward speed you picked (a player's 4× reached only 1.1–3.3× at 3×, with gaps in the
   sound). When fast-forward stays below 70 % of it for about 10 seconds, a small note in the dock says how fast it
-  really runs and opens Settings › Play › 3DS resolution – once per start of souldew, with “Don't show again” and a
-  switch next to the resolution to bring it back. souldew never lowers the resolution by itself.
+  really runs and opens Settings › Play › 3DS resolution – once per start of twicable, with “Don't show again” and a
+  switch next to the resolution to bring it back. twicable never lowers the resolution by itself.
 - **The 3DS team keeps up with your game** (thanks to a player on Discord). X/Y and Omega Ruby/Alpha Sapphire keep the
-  team in a different place for version 1.0 and for the latest update, and souldew stuck with the first place it
+  team in a different place for version 1.0 and for the latest update, and twicable stuck with the first place it
   found a team for the whole session. Now it looks at the version of the update the game started with first, and keeps
   checking: when the team it reads stands still while the other place changes, or stops being a team for a few
-  seconds, souldew moves over – and "Save diagnostics" notes the move.
+  seconds, twicable moves over – and "Save diagnostics" notes the move.
 - **One cheats menu: Poké Balls, healing items and money** (thanks to a player on Discord). The cheats button in the
   play view's dock now opens one menu instead of single buttons: pick how many (×1, ×10, ×99), then Rare Candy, Max
   Repel, Master Ball, Ultra Ball, Poké Ball, Full Restore, Revive or Max Revive – each goes into its own pocket of the
-  bag – or add money: +₽1,000, +₽10,000, +₽100,000 or Max (₽999,999). souldew asks first, writes into the game's
+  bag – or add money: +₽1,000, +₽10,000, +₽100,000 or Max (₽999,999). twicable asks first, writes into the game's
   memory and reads it back; a full pocket, a stack at the game's limit or a bag it can't find says so, with a details
   line for a report – it never writes blindly. The new cheats show only in the games they were tried in, every item
   with every amount: Red, Blue, Yellow, Gold, Silver, Crystal, Ruby, Sapphire, Emerald, FireRed and LeafGreen (English
@@ -378,16 +378,16 @@ Plus a new play view that gives the game the room it deserves.
   language and everyday words like “fast forward” or “gamepad”. Buttons elsewhere in the app – “Connect Discord …”,
   “Open Settings” on a slow game, “More sound settings” in the game's sound menu – open the exact setting and mark it.
   The tab you used last opens again, back and forward work, and L / R on a controller switch the tabs.
-- **Colour themes.** Settings › General › Appearance has a Theme row: souldew's own look, free as always, and 16
-  souldew+ colour themes in two groups (Colours · dark, Colours · light). One click tries a theme on the whole app;
+- **Colour themes.** Settings › General › Appearance has a Theme row: twicable's own look, free as always, and 16
+  twicable+ colour themes in two groups (Colours · dark, Colours · light). One click tries a theme on the whole app;
   “Back to …” or leaving Settings puts yours back. A theme only ever changes the look, never a box or a word.
-- **A souldew account – optional, for playing with friends.** Settings › Account: “Sign in with Discord” opens your
-  browser (souldew never sees your Discord password and only gets your name and picture) and the sign-in is kept in
+- **A twicable account – optional, for playing with friends.** Settings › Account: “Sign in with Discord” opens your
+  browser (twicable never sees your Discord password and only gets your name and picture) and the sign-in is kept in
   your computer's keychain. Then you have a profile – banner, frame, nameplate, a title from your trophies, an accent
   colour, a showcase and a status line, and, only if you turn it on, your run numbers – and a **Friends** page: add
   friends by handle or friend code, see who is online and what they play, invite them into a SoulLink or a Play
   together from the board or the new-run wizard (only as many as the run has free seats). Your friend gets the invite
-  in souldew and presses Join; you allow it with one click, and the run itself still connects peer to peer as before –
+  in twicable and presses Join; you allow it with one click, and the run itself still connects peer to peer as before –
   the account service only carries the invite, never the key to your run. Friends can ask to join a run with a free
   seat if you allow it. Privacy is yours to set (who sees your profile, appear offline, where you are in the game), and
   you can export or delete your data any time. Without an account everything works exactly as before.
@@ -395,29 +395,29 @@ Plus a new play view that gives the game the room it deserves.
   right where your profile picture sits once you're signed in. It starts the same sign-in as Settings › Account, says
   so while your browser is open (a click opens it again, the × stops waiting), and works with the keyboard and a
   controller.
-- **souldew+ with your account.** Support souldew on Buy Me a Coffee and link it in Settings › Account › souldew+ (or
-  with /supporter claim in the souldew Discord). There are three tiers: **Supporter** gives you a Supporter badge on
-  your profile and the 3D launch with your own handheld; **souldew+** and **Legend** (souldew+ with its own badge)
+- **twicable+ with your account.** Support twicable on Buy Me a Coffee and link it in Settings › Account › twicable+ (or
+  with /supporter claim in the twicable Discord). There are three tiers: **Supporter** gives you a Supporter badge on
+  your profile and the 3D launch with your own handheld; **twicable+** and **Legend** (twicable+ with its own badge)
   unlock every colour theme, banner, avatar frame, nameplate and everything for your handheld and the launch
-  animation. Friends see your badge, banner and frame. Signed in without souldew+, you can try
+  animation. Friends see your badge, banner and frame. Signed in without twicable+, you can try
   any theme on the whole app for 15 minutes (“Try for 15 minutes”, a Preview badge counts down, then your own look
   comes back). The looks arrive as one signed pack, encrypted for your account, checked file by file before anything
   is shown; updates only download what changed, and the pack is removed from your computer when the membership ends
   or you sign out. Everything that was free in 2.x stays free. “Unlink membership” takes it off your account again (to
   move it to another one; the email can be linked again after 30 days), and Settings › Account lists every device
-  you're signed in on, each with its own “Sign out”. Quitting souldew tells your friends you're offline right away.
-- **A tidier sidebar and a souldew+ page.** The sidebar puts the three things you play every day on top – Library,
+  you're signed in on, each with its own “Sign out”. Quitting twicable tells your friends you're offline right away.
+- **A tidier sidebar and a twicable+ page.** The sidebar puts the three things you play every day on top – Library,
   SoulLink, Nuzlocke – then Friends and Trophies, then Connection and Stream; Settings and Help sit at the bottom as
-  two buttons next to **souldew+**, which replaces “Buy me a coffee” (members read “thank you”). The souldew+ page
+  two buttons next to **twicable+**, which replaces “Buy me a coffee” (members read “thank you”). The twicable+ page
   shows you yourself wearing it – your own picture and name – a few of the best banners, frames and nameplates in
-  their real look, your handheld turning slowly with any skin you pick (a souldew+ one as a marked preview; “Put it on
+  their real look, your handheld turning slowly with any skin you pick (a twicable+ one as a marked preview; “Put it on
   my handheld” for the ones you have), the launch animations playing side by side with their tier (“Use it for my
   games” on one you may use), every colour theme
   as a small swatch, the three tiers, what always stays free, where the money goes and what happens if you stop.
-  Every “Get souldew+” in the app leads there – never a pop-up; joining happens on the Buy Me a Coffee membership page.
-- **A Thank you page, live.** Help, Settings › About and the souldew+ page lead to the people who keep souldew free –
-  Legends, souldew+ members, Supporters and everyone who bought a coffee – each in their own banner and frame, with how
-  many support souldew right now. It updates by itself every minute while you look at it, and someone new arrives with
+  Every “Get twicable+” in the app leads there – never a pop-up; joining happens on the Buy Me a Coffee membership page.
+- **A Thank you page, live.** Help, Settings › About and the twicable+ page lead to the people who keep twicable free –
+  Legends, twicable+ members, Supporters and everyone who bought a coffee – each in their own banner and frame, with how
+  many support twicable right now. It updates by itself every minute while you look at it, and someone new arrives with
   a short “New: Lena joined the Legends 🏆”; offline it shows the last list with “as of …”. Nobody appears by name
   unless they say so: a new supporter is asked once (“Yes, show me” / “No thanks”), and Settings › Account › Privacy has
   “Show my name on the Thank you page” – everyone else is only counted.
@@ -430,19 +430,19 @@ Plus a new play view that gives the game the room it deserves.
   see it, on the right every part you can change as a card – banner, avatar frame, nameplate, accent colour, name and
   status, title, showcase layout, trophies, most trusted, favourite game and who sees what. Pick a card, or click the
   part right on your profile, and try things on: everything shows at once, and one Save (or Cancel) covers it all,
-  with “Back to saved” for a single part. Leaving with unsaved changes asks first. Without souldew+ you can try on any
+  with “Back to saved” for a single part. Leaving with unsaved changes asks first. Without twicable+ you can try on any
   banner, frame or nameplate as long as you like – Save keeps your free one and saves the rest. Works with keyboard
   and controller (L / R steps through the parts, B goes back).
 - **Favourites for your looks.** Every banner, frame, nameplate, colour theme and launch animation has a ☆ in its
   corner, in the profile editor and in Settings. Click it (or press F, or Y / △ on a controller) and “★ Favourites”
-  above the list shows just those, in their usual order. souldew+ items can be starred too, as a wish list.
+  above the list shows just those, in their usual order. twicable+ items can be starred too, as a wish list.
   Favourites are kept on this computer.
-- **A new launch animation: your handheld, in 3D – with Supporter or souldew+.** Starting a game, your own souldew
+- **A new launch animation: your handheld, in 3D – with Supporter or twicable+.** Starting a game, your own twicable
   handheld plays over the screen area: a DS or 3DS lid swings open, a GBA or Game Boy turns round, the card or
   cartridge drops in and latches, the screens power on with the game's own picture and the camera pushes into them –
   ending exactly on the game. It runs next to the game's start and never makes it wait; a click or any key skips it; it
   is silent. Settings › Play › Launch animation: with Supporter “Your colours” (in your theme's colours) with Full /
-  Quick / Off; with souldew+ (and Legend) also Gold, Clear shell (four colours), Holo label, and now and then – one
+  Quick / Off; with twicable+ (and Legend) also Gold, Clear shell (four colours), Holo label, and now and then – one
   start in 64 – a Rare start. With reduced motion it is a short fade. It plays smoothly from its first frame to the
   game: the device, its light and every look are made ready before it appears, the game's sound and “where you left
   off” (a DS game's too) start under it without costing it a frame, and the hand-over is one clean cut.
@@ -450,32 +450,32 @@ Plus a new play view that gives the game the room it deserves.
   in Settings › Play › Launch animation, with a quiet line about the 3D one.
 - **Your handheld.** Dress that device: one skin for all of them (made from a banner), up to 8 stickers per device out
   of 54 – turn them freely, size them 70–160 %, put them over the edges and on top of each other; they slide round
-  buttons and screens. Supporter: the Plain Dusk skin, the 11 free stickers and one saved design; souldew+: every skin
+  buttons and screens. Supporter: the Plain Dusk skin, the 11 free stickers and one saved design; twicable+: every skin
   and sticker, holo and glitter, up to 12 saved designs and “Surprise me at start”. Favourites, export / import as a
   small file. Three stickers and the Summit Dawn banner can't be bought – they come with a hard trophy: the banner is
   on your profile for everyone, the stickers show in the 3D launch. Only you see your handheld. From the library's
-  header tile (with Supporter or souldew+), the souldew+ page or Settings › Play › Launch animation.
+  header tile (with Supporter or twicable+), the twicable+ page or Settings › Play › Launch animation.
 - **20 cool and funny stickers for your handheld,** next to the cosy ones: RIP, 1 HP and GG are among the free
-  stickers (with Supporter or souldew+); Skill Issue, Snake Eyes, Crit!, Blow On It, Touch Grass, Rubber Duck, Cool
-  Skull, Flame Skull, Bolt, Hardcore, Arcade Stick, Floppy, Glitch, the souldew Racing Stripe, Verified Nuzlocker,
-  LIVE and Finish Flag come with souldew+. Their lettering is the souldew logo's own pixel font. The sticker sheet
-  shows the souldew+ stickers in two groups – cosy, and funny and cool – so the 54 stay easy to look through.
+  stickers (with Supporter or twicable+); Skill Issue, Snake Eyes, Crit!, Blow On It, Touch Grass, Rubber Duck, Cool
+  Skull, Flame Skull, Bolt, Hardcore, Arcade Stick, Floppy, Glitch, the twicable Racing Stripe, Verified Nuzlocker,
+  LIVE and Finish Flag come with twicable+. Their lettering is the twicable logo's own pixel font. The sticker sheet
+  shows the twicable+ stickers in two groups – cosy, and funny and cool – so the 54 stay easy to look through.
 - **When a membership ends, nothing you set is lost.** Your launch settings, your handheld and its designs stay as they
-  are and come back with the membership; meanwhile the launch plays what your tier has now – from souldew+ to
+  are and come back with the membership; meanwhile the launch plays what your tier has now – from twicable+ to
   Supporter the free parts, without a membership the cartridge. Nothing paid is shown or played in the meantime: the
   launch plays “Your colours”, the still of your handheld in Settings and the library's tile show it without the
-  souldew+ skin, stickers and finishes, and a line says they're back as soon as souldew+ is active again.
-- **souldew+ looks stay souldew+'s.** Gold, Clear shell, Holo label, the Rare start and the holo and glitter sticker
-  finishes come in the souldew+ pack like the banners and stickers, not built into the app – a changed copy of the
-  open-source app can't just switch them on. The pack's key belongs to the device you signed in on: copying souldew's
-  data folder to another computer opens nothing, and signing a device out ends its key. The pictures of souldew+
+  twicable+ skin, stickers and finishes, and a line says they're back as soon as twicable+ is active again.
+- **twicable+ looks stay twicable+'s.** Gold, Clear shell, Holo label, the Rare start and the holo and glitter sticker
+  finishes come in the twicable+ pack like the banners and stickers, not built into the app – a changed copy of the
+  open-source app can't just switch them on. The pack's key belongs to the device you signed in on: copying twicable's
+  data folder to another computer opens nothing, and signing a device out ends its key. The pictures of twicable+
   stickers and skins you see before joining are shots of the real thing, not the files themselves.
 - **Trophies come once you've joined.** Opening a friend's invite already gave you “Press Start” and “Linked Souls”
   (and “Roll the Dice” or “The More, the Deadlier” for such a run) before your game was even built. Now a run counts
   once your game for it is built – an invite you only looked at, or turned down, earns nothing.
-- **No DS save missed with the melonDS app.** A save melonDS wrote just as souldew began watching for it – right after
-  souldew started or the emulator launched, on a busy computer – could go unnoticed until your next in-game save,
-  most often a first save into melonDS's own save folder. souldew now notes every save file the moment it starts
+- **No DS save missed with the melonDS app.** A save melonDS wrote just as twicable began watching for it – right after
+  twicable started or the emulator launched, on a busy computer – could go unnoticed until your next in-game save,
+  most often a first save into melonDS's own save folder. twicable now notes every save file the moment it starts
   watching, so that save is read like any other.
 - **Shared World moves as smoothly as the game itself.** Your partners, their Pokémon and your own Pokémon step
   exactly with the pictures of your game: they start and stop at walking speed, follow the grid around corners, wait
@@ -483,30 +483,30 @@ Plus a new play view that gives the game the room it deserves.
   on over a route's edge into the next town. In the Game Boy games and on the DS a partner beside you keeps their place
   to the pixel, a partner running in HeartGold/SoulSilver runs evenly, and followers stay in view when you turn back
   through them. Measured picture by picture in Emerald, Sapphire, Platinum, HeartGold, Red and Crystal.
-- **A DS run opens right away.** Opening a run waited for souldew to read the game's own data out of the game file
+- **A DS run opens right away.** Opening a run waited for twicable to read the game's own data out of the game file
   (its types, a ROM hack's own Pokémon) – a few seconds for a DS game, much longer on a slower PC the first time.
   All that time you showed as offline to your partners, nothing synced and no trade or battle could start. The run
   now opens at once and that data comes in a moment later.
-- **A backup before the first start of 3.0.** Updating from 2.x, souldew first copies your runs, in-game saves, save
+- **A backup before the first start of 3.0.** Updating from 2.x, twicable first copies your runs, in-game saves, save
   states, settings and trophies into a “backups” folder next to your data – not your games, which stay where they are.
   Settings › About shows it with “Open backup folder”. It's made once, and only when there's enough free space on the
-  disk (if not, souldew says so there and changes nothing for lack of it); a file that disappears while it is being
+  disk (if not, twicable says so there and changes nothing for lack of it); a file that disappears while it is being
   copied is left out, not the whole backup.
-- **You decide what souldew sends by itself.** souldew collects no personal data. Two things go out on their own: the
+- **You decide what twicable sends by itself.** twicable collects no personal data. Two things go out on their own: the
   anonymous “playing now” count while a game runs (once a minute: the system, the mode, the app version and a random
-  id), and the update check at start and every four hours. Signed in with a souldew account, the account service also gets your
+  id), and the update check at start and every four hours. Signed in with a twicable account, the account service also gets your
   online status for your friends – what you play and, only if you allow it, where you are in the game; “Appear
-  offline” shares none of it. The Windows installer now opens with a privacy page – what souldew sends, what the
+  offline” shares none of it. The Windows installer now opens with a privacy page – what twicable sends, what the
   installer changes on your PC, a link to the privacy policy and a checkbox for each of the two (both ticked as before;
   a reinstall shows them as you set them). The in-app update installs silently, skips the page and keeps your
   settings. On every system the welcome tour has the same two switches, and Settings › About has “Check for updates
-  automatically” – off, souldew only looks when you press “Check for updates”. Uninstalling on Windows asks whether
+  automatically” – off, twicable only looks when you press “Check for updates”. Uninstalling on Windows asks whether
   your data in %APPDATA%\SoulLink Studio should go too; “No” is the default and keeps it.
 - **What's new, at a glance.** The first start after updating from 2.x shows five short cards – trade & battle, Shared
   World, raids, your handheld and friends – each with a picture of the app. Skip them any time; Help and Settings ›
   General bring them back. New installs get the welcome tour as before.
 - **A partner still on 2.8 is told, not left waiting.** In a SoulLink where someone hasn't updated yet, Trade and
-  Battle on their card say they need souldew 3.0 (instead of an invite that ran out with “didn't answer”), “Link all of
+  Battle on their card say they need twicable 3.0 (instead of an invite that ran out with “didn't answer”), “Link all of
   us” leaves them out, and the run's log gets one line for them that their 2.8 app shows as a notice: update to trade,
   battle, raid and walk around together. Everything else of the run – catches, deaths, the log, the rules – keeps
   syncing between both versions as before.
@@ -515,36 +515,36 @@ Plus a new play view that gives the game the room it deserves.
   game's own memory, so a write the game didn't take is reported as not working.
 - **Cheats in Ruby, Sapphire, Emerald, FireRed and LeafGreen** wait until you stand in the overworld – not during a
   battle, a menu, a text or a screen change, when the game may be moving its data around – and not on the title
-  screen or the Continue menu, where a new game would throw it away. Otherwise souldew says to try again in a moment.
+  screen or the Continue menu, where a new game would throw it away. Otherwise twicable says to try again in a moment.
 - **“Close game” keeps where you left off in the fast player and the 3DS player too.** Closing a game there (or
   switching to another game or run) left no “where you left off” of that moment – the next start went back to the
-  last one souldew had kept while you played, up to two minutes earlier, or to your in-game save. Now the game closes
+  last one twicable had kept while you played, up to two minutes earlier, or to your in-game save. Now the game closes
   once that moment is kept, a split second later, and the next start picks up right there.
 
 Good to know:
-- Every player needs souldew 3.0. Linking without a restart works from the fast player (Settings › Play, on by
+- Every player needs twicable 3.0. Linking without a restart works from the fast player (Settings › Play, on by
   default); a game in the browser emulator joins the link from its last in-game save.
 - Save states made for Game Boy / Game Boy Color games in the fast player before 3.0 (on the old Gambatte emulator)
-  can't be loaded any more – souldew says so and deletes nothing: the last “where you left off” moves to the backups,
+  can't be loaded any more – twicable says so and deletes nothing: the last “where you left off” moves to the backups,
   older ones are set aside in the save-state folder, and your in-game saves are fine. Save states of the other Game
   Boy look load once you switch back to it.
 
 ## 2.8.4
 
 - **Cheats in Sun, Moon, Ultra Sun and Ultra Moon work right from the start** (thanks to a player for the report). In
-  these games your bag stays empty for a while after you get your first Pokémon, and souldew never writes into memory
+  these games your bag stays empty for a while after you get your first Pokémon, and twicable never writes into memory
   it can't be sure is your bag – an empty bag looked just like empty memory, so “Add 99 Rare Candies” and “Add 10 Max
-  Repels” said your bag wasn't found and blamed a game update you didn't have. souldew now recognises the empty bag by
-  the game's own bookkeeping, and when the bag of a 3DS game isn't where souldew expects it, it now looks for it nearby
+  Repels” said your bag wasn't found and blamed a game update you didn't have. twicable now recognises the empty bag by
+  the game's own bookkeeping, and when the bag of a 3DS game isn't where twicable expects it, it now looks for it nearby
   instead of giving up. If it still can't find it, the message says so plainly, and “Save diagnostics” records where it
   looked.
 
 - **Fast-forward with “Music continues” stays in step with the game** (thanks to a player on Discord). In the fast player
-  (DS, GBA, Game Boy) and the 3DS player, a song souldew had no music of its own for yet – right after starting a game,
+  (DS, GBA, Game Boy) and the 3DS player, a song twicable had no music of its own for yet – right after starting a game,
   on a new route, or in a ROM hack whose music it can't read – was played at its normal speed while the picture raced
   ahead: first a moment of silence, then the game's sound up to a second late and skipping ahead in pieces, and a jump
   when fast-forward ended. It sounded as if fast-forward didn't touch the sound and then lost step with the game. Now
-  you hear the sped-up original there, in step with the picture, until souldew has music of its own for that song
+  you hear the sped-up original there, in step with the picture, until twicable has music of its own for that song
   (heard at normal speed, or the game's own music track) – as the setting always promised. The fast player's log also no
   longer fills up with thousands of empty messages from the DS emulator, so “Save diagnostics” keeps the lines that
   matter.
@@ -555,13 +555,13 @@ Good to know:
   you can catch – and many attempts ended in the very first rival battle, before there was a single Poké Ball (in Omega
   Ruby and Alpha Sapphire you only get them after the battle with May or Brendan). New runs now have the rule “Nothing
   counts before your first Poké Balls” on (Nuzlocke and SoulLink, switchable in the wizard and in the rules; in a
-  SoulLink the host decides): until souldew sees Poké Balls in your bag – or your first catch, in games where it can't
+  SoulLink the host decides): until twicable sees Poké Balls in your bag – or your first catch, in games where it can't
   read the bag – a Pokémon that is knocked out doesn't die, a blackout doesn't end the run, it costs no life and no area
   is used up, so you can reset or just play on. The play screen says so in a small note, and once the balls are there
   the log says “Rules start now – first Poké Balls”. In a SoulLink it goes by each player's own bag; when a partner whose
-  rules have started loses a Pokémon, the linked one still dies with it. A SoulLink with the rule needs souldew 2.8.3 for
+  rules have started loses a Pokémon, the linked one still dies with it. A SoulLink with the rule needs twicable 2.8.3 for
   every player – older versions are asked to update when they join. Runs you already have keep counting from the start.
-- **Deaths show when the game shows them** (thanks to a player on Discord). souldew used to know a Pokémon was gone the
+- **Deaths show when the game shows them** (thanks to a player on Discord). twicable used to know a Pokémon was gone the
   moment its HP hit 0 in memory – while the game was still draining the HP bar – and showed the death, the sound and
   “the run is over” before you had seen it happen. Now the death notice, the sounds, the end-of-run screen, your
   partners' notice and log, the stream overlay and Discord all wait until the game has shown it: until your next Pokémon
@@ -589,14 +589,14 @@ Good to know:
   at 0 HP; one the battle view missed is caught as soon as the battle ends. The log line still names the area the
   Pokémon was caught in (that's why it said Ruins of Alph) and now also says where it was knocked out. “Got away?” goes
   by the place of the battle itself, never by where you walked afterwards – 2.8.2 already did that for most games, now
-  it also holds when the battle view lags behind the game – and when souldew can't tell where the battle was, it asks
+  it also holds when the battle view lags behind the game – and when twicable can't tell where the battle was, it asks
   nothing instead of guessing.
 - **Natures, abilities, IVs and EVs on the board** (#74 – thanks for the report). Click a Pokémon in a live team on the
   board to see its moves, held item and a small stats block: nature, ability, Hidden Power (type and power), IVs and
   EVs – in the Game Boy games DVs and stat experience. “Copy for damage calc” puts the Pokémon on the clipboard in
   Pokémon Showdown’s format (species, item, ability, level, EVs, nature, IVs, moves), ready to paste into a damage
   calculator. In Gen 3 games the ability comes from the game itself, so a randomized game or a ROM hack shows the one
-  it really gives. Only what souldew reads from the game is shown – a line the game doesn't have is left out, and ROM
+  it really gives. Only what twicable reads from the game is shown – a line the game doesn't have is left out, and ROM
   hacks on an expanded engine (Run & Bun, Unbound, Radical Red …) show no stats block for now. The stats stay between
   you and your partners: the stream overlay, the stream API and the Pokelink bridge don't show them.
 - **Randomizer: TM compatibility can follow the new TM moves** (#81 – thanks to BigPhitty for the request). With random
@@ -604,30 +604,30 @@ Good to know:
   still worked for the Seismic Toss users. The new switch “TM compatibility follows the new TM moves” (Advanced settings
   › TMs & HMs, off by default) gives such a TM to the Pokémon that could learn its new move in the original game – by TM,
   tutor or level-up, also as an earlier evolution. A move no Pokémon could learn goes to the Pokémon of its type; HMs and
-  TMs that kept their move stay as they are. Everyone in a SoulLink needs souldew 2.8.3 to join a run that uses it.
-- **3DS: game updates in souldew's player** (thanks to players on Discord). An update file for a 3DS game – the .cia
+  TMs that kept their move stay as they are. Everyone in a SoulLink needs twicable 2.8.3 to join a run that uses it.
+- **3DS: game updates in twicable's player** (thanks to players on Discord). An update file for a 3DS game – the .cia
   of Ultra Sun / Ultra Moon 1.2, for example – used to be ignored, and the game always started as version 1.0. Now add
-  the update to your library like a game (Add files or drag and drop): souldew recognises it, puts it with its game (the
+  the update to your library like a game (Add files or drag and drop): twicable recognises it, puts it with its game (the
   game's details say “Update v2.2.0 (game version 1.2) – installed”, with a Remove button) and its player starts the
-  game with it. An update added before its game waits for it. An encrypted update can't be used – souldew says so
+  game with it. An update added before its game waits for it. An encrypted update can't be used – twicable says so
   instead of starting the old version without a word. Randomized runs start without the update, because the randomizer
   builds the game from version 1.0. Live tracking knows the team's place in version 1.0 and in the latest update of
   every 3DS Pokémon game; with an older update the play view says so if the team doesn't show up.
 - **The randomizer says which file it got stuck on** (thanks to a player on Discord). When building a run stopped at a
-  file – the disk ran full, souldew wasn't allowed to use a folder, or the game file couldn't be read to the end – you
+  file – the disk ran full, twicable wasn't allowed to use a folder, or the game file couldn't be read to the end – you
   only saw “Randomizer error: RandomizerIOException” and a hint about ROM hacks. Now the message names the system's own
   reason (“No space left on device”, “Permission denied”, “Input/output error” …), which file it was – the game file, the
-  new game in the run folder or the randomizer's working files – and what helps: free up space, allow souldew access to
+  new game in the run folder or the randomizer's working files – and what helps: free up space, allow twicable access to
   the folder, or copy the game from an external drive, a network folder or iCloud Drive onto the computer. The
   diagnostics (Help › Save diagnostics) now keep the cause behind the error, which file, and how much space was free.
 - **Run & Bun: catches sent to the PC are tracked** (#77 – thanks for the report). With a full team a new catch – like a
-  Pokémon fished in Littleroot Town's pond – goes straight to the PC, and in Run & Bun souldew only saw it once it joined
-  the team, so the place stayed “First encounter open”. souldew now reads Run & Bun's PC boxes live, as in Emerald: the
-  catch is filed under its place right away, souldew asks again after a wild Pokémon that got away while your team is
+  Pokémon fished in Littleroot Town's pond – goes straight to the PC, and in Run & Bun twicable only saw it once it joined
+  the team, so the place stayed “First encounter open”. twicable now reads Run & Bun's PC boxes live, as in Emerald: the
+  catch is filed under its place right away, twicable asks again after a wild Pokémon that got away while your team is
   full, and the board shows how many Pokémon are in the box. Other ROM hacks on the same engine get it too wherever
   their PC is where Emerald keeps it.
 - **Megas and other alternate forms are tracked when you catch them** (thanks to a player on Discord). In ROM hacks on
-  pokeemerald-expansion that leave out a generation of Pokémon, souldew lost track of every alternate form – a caught
+  pokeemerald-expansion that leave out a generation of Pokémon, twicable lost track of every alternate form – a caught
   Mega, Primal or regional form was never filed and had to be entered by hand. Now such a catch is filed on its route as
   its species: a Mega Charizard Y counts as Charizard for the dupes clause, the evolution line, SoulLink pairs and the
   Pokédex, and an Alolan form counts as its species' line too. Your team, the board and the battle help show the form:
@@ -663,10 +663,10 @@ Good to know:
   “Plain” also comes sooner: about an eighth of a second behind the picture when the game holds its speed, instead of
   almost half a second, and never more than about a third of a second – when the game gets faster, it catches up within
   a moment instead of trailing the picture by seconds.
-- **3DS: no more short hole in the sound every two minutes.** While you play, souldew keeps a “where you left off”
+- **3DS: no more short hole in the sound every two minutes.** While you play, twicable keeps a “where you left off”
   state every two minutes – and for that the 3DS game stood still for almost half a second on some computers, so the
   music and sound effects dropped out for a moment (and came a little later afterwards). The game now stands still only
-  for the part that can’t wait (copying its memory), and souldew takes the state when the game is quiet for a moment
+  for the part that can’t wait (copying its memory), and twicable takes the state when the game is quiet for a moment
   (a scene change, a menu, a fade) whenever there is one – the sound stays in step with the picture afterwards.
 - **Fast-forward at Max sounds clean** (thanks to a player on Discord). With “Sped-up original” or “Plain” the sound at
   Max turned into a harsh, garbled mush. It still sounds like fast-forward, but clean now – in the 3DS player and in
@@ -675,9 +675,9 @@ Good to know:
   few seconds of the sound could start repeating on their own – in a trainer battle the same attack sound came round
   every few seconds through the knock-out, the level-up and the prize money, and the battle's real sounds never came.
   In the 3DS player the music and sounds of the game now go on as the game plays them, at their normal pitch and at
-  most a second behind. Music souldew heard at normal speed still takes over as before.
+  most a second behind. Music twicable heard at normal speed still takes over as before.
 - **3DS: the game's own music during fast-forward – at its normal speed, pitch and quality.** With “Music continues”,
-  souldew now plays the music track straight from the game: it sees which music file the game reads and where it is in
+  twicable now plays the music track straight from the game: it sees which music file the game reads and where it is in
   it, and while you fast-forward that track plays on at its normal speed – the real recording, its own loop, the next
   track faded in when the game changes music (a new route, a battle), short fanfares left out. When fast-forward ends it
   finds the exact spot the game is at and fades back into the game's sound without a seam. It works from the game's own
@@ -686,66 +686,66 @@ Good to know:
   (meanwhile fast-forward sounds as before), and damaged or unusual game files can't slow down or freeze the player.
 - **3DS: the game's sounds during fast-forward – at their normal speed, right when they happen.** With “Music
   continues” the music from the game used to replace everything, so menu clicks, cries and attack sounds were gone while
-  you fast-forwarded. Now souldew tells the game's music apart from its other sounds inside the emulator and plays those
+  you fast-forwarded. Now twicable tells the game's music apart from its other sounds inside the emulator and plays those
   sounds over the music: each one starts the moment it happens on screen and plays at its normal pitch – no chipmunk
   sounds, and nothing piles up or comes late, however long you fast-forward (a sound that goes on and on is cut to what
-  fits, and a held key the game repeats many times a second plays as one click instead of a buzz). Where souldew can't tell the music apart for sure, fast-forward sounds as before. “Sped-up original”, “Plain”
+  fits, and a held key the game repeats many times a second plays as one click instead of a buzz). Where twicable can't tell the music apart for sure, fast-forward sounds as before. “Sped-up original”, “Plain”
   and “Mute” are unchanged, and nothing changes at normal speed.
 - **DS and the other games in the fast player: steady fast-forward sound** (thanks to a player on Discord). With
   “Sped-up original” or “Plain” the sound jumped in pitch four times a second and left out bits whenever the computer
   didn't hold the turbo speed exactly, so it seemed to drift away from the game. It now uses the same steady method as
   the 3DS player: the pitch follows the speed the game holds over a few seconds, no bits are dropped any more, and the
   sound stays about an eighth of a second behind the picture – at most about a third of a second, also right after the
-  game gets faster. With “Music continues” a song souldew hadn't heard at normal
+  game gets faster. With “Music continues” a song twicable hadn't heard at normal
   speed yet also no longer turns into a few seconds on repeat – the game's own music and sounds go on.
-- **Adding a 3DS game no longer freezes souldew, and an interrupted copy can't end up as a black screen** (thanks to a
-  player on Discord). A 3DS game is up to 4 GB, and souldew copied it into the library in one go – the window froze
-  until the copy was done, which on Windows can take a minute and looks like a crash. Closing souldew meanwhile left a
+- **Adding a 3DS game no longer freezes twicable, and an interrupted copy can't end up as a black screen** (thanks to a
+  player on Discord). A 3DS game is up to 4 GB, and twicable copied it into the library in one go – the window froze
+  until the copy was done, which on Windows can take a minute and looks like a crash. Closing twicable meanwhile left a
   cut-off copy behind that was listed as ready and only played a black screen. Now the copy runs in the background, goes
   into the library only once it is complete and checked against the original, and leftovers of an interrupted copy are
   cleaned up on the next start. A game file that is already incomplete is recognised before it starts (from the game's
-  own checksums) and souldew says to add it again instead of showing a black screen.
-- **A 3DS game that only shows black says so** (thanks to a player on Discord). If the picture stays black, souldew now
+  own checksums) and twicable says to add it again instead of showing a black screen.
+- **A 3DS game that only shows black says so** (thanks to a player on Discord). If the picture stays black, twicable now
   tells you what helps – adding the game again, or the Software renderer for a graphics driver that can't draw it – and
   “Save diagnostics” records the game file's size, header, whether it is encrypted, whether it is complete and which
   renderer ran, without any file names.
-- **.7z and .rar archives** (thanks to a player on Discord). souldew can't unpack them, and adding one did nothing at all.
-  Now souldew says so and asks you to unpack the game first and add the .3ds, .cci or .cxi file.
-- **3DS place sign after reopening a game** (thanks to a player on Discord). If souldew couldn't read a 3DS game's file
+- **.7z and .rar archives** (thanks to a player on Discord). twicable can't unpack them, and adding one did nothing at all.
+  Now twicable says so and asks you to unpack the game first and add the .3ds, .cci or .cxi file.
+- **3DS place sign after reopening a game** (thanks to a player on Discord). If twicable couldn't read a 3DS game's file
   for a moment – a virus scan or a backup holding the 3 GB file – it remembered that game as having no place names, and
   the place sign stayed away in every later session. Now it reads the file again a little later, and the play view keeps
-  asking until it has the place names. If your team still isn't found, “Save diagnostics” now records what souldew sees
+  asking until it has the place names. If your team still isn't found, “Save diagnostics” now records what twicable sees
   at the game's party addresses, so the next report shows why.
 - **Skip the intro: start new attempts from your intro save** (a community idea). Play the intro once, save in the game
   before you pick your starter, then choose Files › “Use as my intro save” on the run's board. From then on, “Start
   from my intro save” is ticked when you start a new attempt or a new run of that game – randomized or not, the
-  starter you then pick comes from the new game. It works for every game souldew plays (3DS games in souldew's own
+  starter you then pick comes from the new game. It works for every game twicable plays (3DS games in twicable's own
   3DS player) and only for that exact game and language – German Smaragd keeps its own, separate from Emerald. Each
   player keeps their own: it stays on your computer and never goes into an invite. If your save already has Pokémon,
-  souldew tells you, and they come along without counting for the run. Untick it to play the intro, or remove the
+  twicable tells you, and they come along without counting for the run. Untick it to play the intro, or remove the
   intro save right there.
 - **“Got away?” after every wild Pokémon that got away** (thanks to a player on Discord). In a SoulLink or Nuzlocke,
-  souldew asks after a wild battle without a catch whether the area is spent – but only when no other battle began in
+  twicable asks after a wild battle without a catch whether the area is spent – but only when no other battle began in
   the next ten seconds, and the question disappeared as soon as the next battle started. On a route full of grass
   (Platinum's Route 204) or with fast-forward on, the next Pokémon nearly always came first, so the question never
   showed up and the next catch there was filed as the area's encounter. Now every wild battle that ends without a catch
   gets its question, however soon the next battle comes, and the question waits (out of the way while you battle)
   until you answer it – one per area, the first encounter first. When a wild Pokémon doesn't count because of the dupes
-  clause, souldew says so briefly instead of staying silent. In Diamond, Pearl, Platinum, HeartGold and SoulSilver one
-  odd reading no longer turns a wild battle into a trainer battle, and in the games' other languages souldew no longer
+  clause, twicable says so briefly instead of staying silent. In Diamond, Pearl, Platinum, HeartGold and SoulSilver one
+  odd reading no longer turns a wild battle into a trainer battle, and in the games' other languages twicable no longer
   trusts a battle signal it hasn't seen working in that language, which could hide battles altogether.
 - **melonDS: your team updates after every in-game save in every DS game** (thanks to a player on Discord). When you
-  play with the melonDS app, souldew reads the save file it writes – but it only ever did that for HeartGold and
-  SoulSilver. In Diamond, Pearl, Platinum, Black, White, Black 2 and White 2 nothing changed after saving. souldew now
+  play with the melonDS app, twicable reads the save file it writes – but it only ever did that for HeartGold and
+  SoulSilver. In Diamond, Pearl, Platinum, Black, White, Black 2 and White 2 nothing changed after saving. twicable now
   reads the saves of all of them, in every language, also when melonDS saves into its own save folder (set in melonDS's
-  settings) instead of next to the game. The melonDS page shows which save file souldew reads and when it last read it.
+  settings) instead of next to the game. The melonDS page shows which save file twicable reads and when it last read it.
 - **SoulLink: the host sets all the rules.** Whoever creates a SoulLink now picks every rule right in the wizard – type
   rule, dupes clause, missed encounters, shiny clause, gifts & eggs, level caps, cheats, lives, the type matchup help and
   the automatic switches – instead of setting most of them later on the board. The rules come with the invite, and the
   join page shows them before you join. Afterwards only the host can change them: the others see them on the board's
   Rules tab (and in the rules drawer while playing) with “Set by the host”, and every change the host makes shows up in
   the log for everyone. A change from anyone else doesn't count on the other players' computers – not even from an
-  older or modified souldew. A new attempt keeps the rules. In runs you already have, the player who created the run is
+  older or modified twicable. A new attempt keeps the rules. In runs you already have, the player who created the run is
   the host, and the rules stay as they are. Players on 2.8.1 can still join – they just don't see the rules as locked.
 
 ## 2.8.1
@@ -757,31 +757,31 @@ Good to know:
   controller button too (none by default). Help › Controls & shortcuts shows the keys you use.
 - **“What hits …” in the battle help folds in** (thanks to a player for the feedback). Seeing the opponent's moves before
   it uses them gave a bit too much away, so that part of the battle help is now folded in to its title line by default.
-  Click it (or use the keyboard) to unfold it – souldew remembers your choice. Your own moves, the type charts and the
+  Click it (or use the keyboard) to unfold it – twicable remembers your choice. Your own moves, the type charts and the
   team check stay as they were.
 - **.sgb files work like .gb files** (thanks to a player for the report). Some cartridge readers save Red, Blue and other
-  Game Boy games as .sgb (Super Game Boy) files. souldew now takes them everywhere: adding files, drag & drop, zips,
+  Game Boy games as .sgb (Super Game Boy) files. twicable now takes them everywhere: adding files, drag & drop, zips,
   “Find ROMs on this computer”, recognising the game, ROM hacks, new runs and playing.
 - **Catching demos are no longer your encounter** (thanks to a player on Discord). In Emerald, Wally's catching lesson
   in Petalburg City filed the Zigzagoon he catches his Ralts with as your Petalburg encounter, and your own team seemed
-  to vanish while it lasted. souldew now recognizes every game's catching demo – the old man in Viridian City (Red, Blue, Yellow,
+  to vanish while it lasted. twicable now recognizes every game's catching demo – the old man in Viridian City (Red, Blue, Yellow,
   FireRed, LeafGreen), Professor Oak's Pikachu in Yellow, the Dude on Route 29 (Gold, Silver, Crystal), Wally (Ruby,
   Sapphire, Emerald), Dawn and Lucas (Diamond, Pearl, Platinum), Lyra and Ethan (HeartGold, SoulSilver), Professor
   Juniper (Black, White) and Bianca (Black 2, White 2) – and the Poké Dude's battles on FireRed and LeafGreen's Teachy
   TV. They never count as an encounter, a missed encounter or a dupe, show no catch chance and can't cost a Pokémon, and
   your team stays on screen the whole time.
 - **Black and White: Rotom's forms in the battle helper** (thanks to a player on Discord). Heat, Wash, Frost, Fan and
-  Mow Rotom showed Rotom's normal types, so the matchups were wrong. souldew now reads a Pokémon's form in the DS games
+  Mow Rotom showed Rotom's normal types, so the matchups were wrong. twicable now reads a Pokémon's form in the DS games
   and uses its types and sprite – Rotom, Wormadam, Shaymin's Sky Forme, Arceus with its plate, Castform and the other
   forms – from your ROM where it has them, so randomized and hacked games show theirs. In Diamond, Pearl, Platinum,
   HeartGold and SoulSilver Rotom's forms keep Electric/Ghost, as in those games.
 - **The trainer's next Pokémon is the one actually sent out** (thanks to a player on Discord). In Black, White, Black 2,
   White 2, Diamond, Pearl and Platinum the battle helper jumped to the next Pokémon in the trainer's party as soon as one
-  went down – but trainers pick their next Pokémon themselves. souldew now follows the battle itself: the defeated
+  went down – but trainers pick their next Pokémon themselves. twicable now follows the battle itself: the defeated
   Pokémon stays until the trainer sends the next one, and the helper shows the one that really comes out.
 - **Black, White, Black 2 and White 2: catches sent to the PC are filed right away** (thanks to a player on Discord).
   With a full team, a new catch only showed up once you took it out of the PC – and a wild Pokémon that got away was
-  never asked about, since souldew couldn't tell whether it had been caught. souldew now reads the PC live in these games
+  never asked about, since twicable couldn't tell whether it had been caught. twicable now reads the PC live in these games
   too, so both work like in the other games.
 - **HeartGold and SoulSilver: the level caps** (thanks to a player on Discord). Falkner's cap was 9 – his Pidgey – instead
   of 13, his Pidgeotto, and the rival at Azalea Town's 20 instead of 18. Marking a gym leader as defeated on the board
@@ -792,7 +792,7 @@ Good to know:
   can't do a rate exactly, the wizard says what it does instead (1 in 100 becomes 1 in 99.9). Everyone in a run with a
   custom rate needs 2.8.1 – 2.8.0 refuses its invite and says to update. As before it's for the original Gen 3–5 games,
   and shinies from a raised rate fill the Pokédex but don't count for the shiny achievements.
-- **Fast-forward sound keeps up with the game** (thanks to a player on Discord). With “Music continues”, a song souldew
+- **Fast-forward sound keeps up with the game** (thanks to a player on Discord). With “Music continues”, a song twicable
   hadn't heard at normal speed yet played at its normal pace while the game raced ahead – so the game's own sounds, menu
   sounds too, came later and later the longer fast-forward ran, up to half a minute. Now that music skips ahead in small,
   smooth steps and stays at most a second behind the game, at every speed and however long you fast-forward.
@@ -815,7 +815,7 @@ Good to know:
   such a run (older versions refuse its invite instead of building a game with the normal rate; the invite says so).
   Shinies from a raised rate fill the Pokédex but don't count for the shiny achievements. Not for ROM hacks, Gen 1/2 or
   the 3DS games.
-- **Missed encounters remember the Pokémon** (thanks to a player on Discord). When an encounter gets away, souldew now
+- **Missed encounters remember the Pokémon** (thanks to a player on Discord). When an encounter gets away, twicable now
   fills in which Pokémon it was if it saw the battle. A new switch under the dupes clause, “Fled or knocked-out
   encounters count as dupes”, makes such a Pokémon block its evolution line (off by default). And SoulLinks now ask
   after a wild battle without a catch whether it got away, like solo Nuzlockes do – where the place sign shows the area
@@ -825,18 +825,18 @@ Good to know:
   built, save-file problems, update errors and the menu before the app has loaded showed some German text with English,
   French, Spanish or Italian selected. A partner's ping and “boss defeated” in the log now show in your language too.
 - **Black and White: the place sign works in every language** (thanks to a player on Discord). In versions other than
-  English it showed Black City in the intro and then no place at all. souldew now reads the game's own copy of the
+  English it showed Black City in the intro and then no place at all. twicable now reads the game's own copy of the
   zone data, and the title screen no longer shows Black City (Black/White, and Black 2/White 2 when switched on).
 - **The place sign in every game: the right place or none, never a wrong one.** In Red/Blue/Yellow, Gold/Silver/
-  Crystal, the Gen 3 games and Black 2/White 2, souldew now reads where you are from the game's own copy of the current
+  Crystal, the Gen 3 games and Black 2/White 2, twicable now reads where you are from the game's own copy of the current
   map's data and checks it against your ROM. In Diamond, Pearl, Platinum, HeartGold and SoulSilver it reads the place
   from your save data, and only once it has made sure that data really is your game's. Where the game's memory sits
-  elsewhere than in the English versions, souldew finds it instead of guessing. No more Pallet Town on Red's title
+  elsewhere than in the English versions, twicable finds it instead of guessing. No more Pallet Town on Red's title
   screen or Black City when Black 2/White 2 start.
 - **Badges and level caps in every language of Diamond, Pearl, Platinum, HeartGold and SoulSilver** (thanks to a player
-  on Discord for the report). In versions other than English, souldew found the team but never the badges: the overlay
+  on Discord for the report). In versions other than English, twicable found the team but never the badges: the overlay
   showed none and the level cap stayed at the first gym's, so a team at level 10 after Falkner was flagged as over the
-  cap. souldew now finds the save data next to the team, so badges, the level cap and the PC update live in German,
+  cap. twicable now finds the save data next to the team, so badges, the level cap and the PC update live in German,
   French, Spanish, Italian and every other language too.
 - **Eggs stay a surprise until they hatch.** An egg showed on the board and in the team as the Pokémon it will hatch
   into – a spoiler in a randomized game. Eggs now stay out of the board, the team in the play view, savestates and the
@@ -850,7 +850,7 @@ Good to know:
   can't, so they still need the copy their notes name), and if a hack really doesn't fit your ROM, the wizard says so
   instead of switching to the original game.
 - **The randomizer says up front when it can't handle a game** (thanks to a player on Discord for the report). When you
-  pick a game for a new run, souldew now tries the randomizer on it first. If the game's data isn't laid out the way
+  pick a game for a new run, twicable now tries the randomizer on it first. If the game's data isn't laid out the way
   the randomizer expects (some ROM hacks and releases), the randomizer is switched off with that reason, instead of the
   build failing with an error like “Index 1286 out of bounds”. A build that fails anyway explains what happened in your
   language, and two randomizer runs at the same time no longer get in each other's way. Renegade Platinum and Crystal
@@ -862,11 +862,11 @@ Good to know:
   inaudible speed change of at most 0.5 %. In the fast player (Game Boy, GBA, DS) short drop-outs fade instead of
   clicking, too. Save diagnostics now includes the 3DS player's sound drop-outs, to help with sound reports.
 - **“Music continues” in the 3DS player: clear music, and battle music that ends with the battle** (thanks to a player
-  on Discord for the report). While fast-forwarding, the music of a place souldew hadn't recorded yet came out
-  muffled – at 4× nothing above about 1.8 kHz was left. The 3DS player now hands souldew the game's own sound as well,
+  on Discord for the report). While fast-forwarding, the music of a place twicable hadn't recorded yet came out
+  muffled – at 4× nothing above about 1.8 kHz was left. The 3DS player now hands twicable the game's own sound as well,
   so the music keeps its full sound at its normal pitch (measured in Pokémon Sun: the same highs as at 1×). And in the
-  3DS games souldew didn't know which song was playing: once it had picked up a battle's music while fast-forwarding,
-  that music kept looping after the battle – and came back with the next fast-forward. souldew now follows the place
+  3DS games twicable didn't know which song was playing: once it had picked up a battle's music while fast-forwarding,
+  that music kept looping after the battle – and came back with the next fast-forward. twicable now follows the place
   you're in and battles (with live tracking running), switches to the battle music when a battle starts and back to
   the place's music when it ends, and no longer files the first moments of a battle under the place's music.
 - **A new controller layout works right away** (thanks to a player on Discord for the report). Changing the buttons in
@@ -878,7 +878,7 @@ Good to know:
 
 ## 2.7.4
 
-- **“Playing now” on the souldew Discord.** The server now shows how many people are playing in souldew right now – as
+- **“Playing now” on the twicable Discord.** The server now shows how many people are playing in twicable right now – as
   the locked channel “🎮 Playing now: N” and in the bot's status. It is counted anonymously: only while a game actually
   runs (fast player, 3DS player or browser player), the app sends one small message a minute with the system (GB, GBA,
   DS, 3DS), solo / Nuzlocke / SoulLink, the app version and a random id that is new for every game – no name, no
@@ -891,25 +891,25 @@ Good to know:
 
 - **No more false deaths in Black/White and Black 2/White 2 battles** (thanks to a player on Discord for the report). A
   Pokémon that was switched out and grew a level from the shared EXP could be reported as dead – the SoulLink popup came
-  up, yet in the game it was fine. souldew reads the live HP from the battle's own data and found each Pokémon there by
+  up, yet in the game it was fine. twicable reads the live HP from the battle's own data and found each Pokémon there by
   species, level and max HP; once the level-up changed those, it took the wild Pokémon of the same kind instead, which
   had just been knocked out (reproduced in Black 2 in the fast player). It now recognizes every Pokémon in the battle by
   its own ID, so a look-alike opponent never stands in for it, and a level-up mid-battle keeps its live HP. On top of
-  that, in every game a Pokémon has to read 0 HP twice in a row before souldew files a death – a real knock-out still
+  that, in every game a Pokémon has to read 0 HP twice in a row before twicable files a death – a real knock-out still
   shows a moment later, in the battle.
 - **Hall of Fame** (idea from the community). Won a run? The run-won notice and the board now offer “Post to the Hall
   of Fame”: your final team – in a SoulLink as its linked pairs or groups, each player's Pokémon in their colour – with
   the game, the rules, the deaths, the play time and the players goes up as its own post in the new #hall-of-fame forum
-  on the souldew Discord, where everyone can react and congratulate. A preview shows the card first, and nothing is
+  on the twicable Discord, where everyone can react and congratulate. A preview shows the card first, and nothing is
   posted until you press the button. It needs Live runs (Settings › Discord); without it the notice says how to connect
   with `/live connect`. Partners of the same run share one post. Won runs now go there instead of #live-runs.
 - **Rare Candies in the 3DS games on Windows** (thanks to a player on Discord for the report). "Add 99 Rare Candies"
   found the bag but said "The game's memory couldn't be changed." The 3DS player looked for the bag's place in the
   emulator's memory by its content, and on Windows it only searched part of that memory – the part the bag isn't in.
-  souldew's build of the 3DS emulator now writes the bytes itself, at the address the game uses, on every system and
+  twicable's build of the 3DS emulator now writes the bytes itself, at the address the game uses, on every system and
   for every game (X/Y, Omega Ruby/Alpha Sapphire, Sun/Moon, Ultra Sun/Ultra Moon) – still only into the game's heaps
   and only after the same checks as before. The messages are clearer too: when a game's bag isn't where its version
-  keeps it, souldew says so, and "the game changed your bag just then" has its own message.
+  keeps it, twicable says so, and "the game changed your bag just then" has its own message.
 - **Smooth sound while fast-forwarding in the 3DS player** (thanks to a player on Discord for the report). On PCs where
   a 3DS game can't hold the chosen speed steadily – its speed swings from moment to moment, which is normal for 3DS
   games – "Sped-up original" and "Plain" stuttered (around ten little gaps a second) and sounded harsh, and "Music
@@ -923,7 +923,7 @@ Good to know:
 - **Modern Emerald is tracked live – and its trophies count** (thanks to a player on Discord for the report). Nothing
   was read in this hack: no team, no catches, no battles, no badges – and so no achievements either. Modern Emerald is
   rebuilt from the Emerald source with things of its own in memory, so its team, its save data and its battle flag
-  aren't where they are in Emerald. souldew now finds them from the game's own code and memory instead of assuming
+  aren't where they are in Emerald. twicable now finds them from the game's own code and memory instead of assuming
   Emerald's addresses: the team, catches (also when they go to the PC – its 15 boxes), wild and trainer battles,
   badges and the level caps that follow them, and the cheats menu's Rare Candies. Checked in the game with version 3.6
   (Torchic, the Zigzagoon battle, a real catch on Route 101, a badge → cap 19); older versions (1.5.6 – 3.3.1) are read
@@ -936,7 +936,7 @@ Good to know:
 - **Fast-forward steps one at a time in the 3DS player** (thanks to a player on Discord for the report). Plus went 2× →
   3× → 4×, but minus at 4× dropped straight to 1×, and after a while plus jumped from 1× to 4×. The 3DS player measured
   fast-forward by the pictures it got – and while fast-forwarding the game only sends some of them – so every step looked
-  like 1× to souldew, which then stopped offering 2× and 3×. It now counts the frames the game really ran, like the fast
+  like 1× to twicable, which then stopped offering 2× and 3×. It now counts the frames the game really ran, like the fast
   player: 1×, 2×, 3×, 4× (and Max, when switched on) up and down – on the toolbar, with T, the menu and the controller.
   What was measured wrongly before is forgotten.
 - **Sound while fast-forwarding in the 3DS player** (thanks to a player on Discord for the report). It was always silent;
@@ -947,17 +947,17 @@ Good to know:
   more work for the graphics card. 1× stays the default; it applies to the next 3DS game you start. The Software renderer
   always plays at 1×, and when "Automatic" has to step down to a safer renderer after a crash, it goes back to 1× too.
   The screen layout menu also has "Smooth picture" (softer scaling instead of crisp pixels), switchable while playing.
-- **Rare Candies for the 3DS games.** The cheats menu's "Add 99 Rare Candies" now works in souldew's own 3DS player
+- **Rare Candies for the 3DS games.** The cheats menu's "Add 99 Rare Candies" now works in twicable's own 3DS player
   too – X/Y, Omega Ruby/Alpha Sapphire, Sun/Moon and Ultra Sun/Ultra Moon (asked for by an Ultra Moon player). They go
   into the Medicine pocket, onto the candies you carry or into the first free slot, up to 999. As before: only when the
-  run's rules allow cheats, every use shows up in the run's log and counts for the trophies, and souldew checks first
+  run's rules allow cheats, every use shows up in the run's log and counts for the trophies, and twicable checks first
   that it really found the bag – if anything looks off, nothing is written. Checked in Sun; X/Y, ORAS and Ultra Sun/Ultra
   Moon use the bag addresses known from other 3DS tools. Not when a 3DS game opens in the Azahar app.
 
 ## 2.7.1
 
 - **Catches sent to the PC are tracked in the Gen 3 games** (#61 – thanks to BigPhitty for the report). With a full
-  team a new catch goes straight to the PC, and souldew only saw it once it joined the team. The PC boxes of
+  team a new catch goes straight to the PC, and twicable only saw it once it joined the team. The PC boxes of
   FireRed/LeafGreen (English, German, French, Italian, Spanish), Emerald (English) and Ruby/Sapphire (English, German)
   are now read live like in the Gen 4 games: the catch is filed under its route right away, a Pokémon that leaves the
   boxes and the team is noticed, and the board shows how many Pokémon are in the box. (Not in the expanded-engine ROM
@@ -966,17 +966,17 @@ Good to know:
   stopped" in the first second). The crash is in AMD's Vulkan driver with Azahar's libretro core since 2126.1 – the
   standalone Azahar is fine (azahar-emu/azahar#2742). The player now creates the graphics device the way standalone
   Azahar does and passes every image the core creates through the workaround found there; and should a graphics
-  driver still stop the game in its first seconds, souldew starts it again right away in a more compatible Vulkan mode,
+  driver still stop the game in its first seconds, twicable starts it again right away in a more compatible Vulkan mode,
   then with Azahar's software renderer (slower, but no graphics card needed) – remembered for that graphics card and
   driver. New setting Settings › Emulators › "3DS renderer": Automatic (the default), Vulkan, Vulkan (compatibility)
   or Software. "Play 3DS games in Azahar" stays on the message when nothing helps. Crash reports from Windows now name
   the functions that led to the crash, for the next driver that misbehaves.
-- **Safe graphics mode for a blank window (Windows, Linux).** Windows gets a second Start menu entry, "souldew (safe
-  graphics)", and `souldew --safe-graphics` (or `SOULDEW_SAFE_GRAPHICS=1`) works everywhere: souldew then draws without
+- **Safe graphics mode for a blank window (Windows, Linux).** Windows gets a second Start menu entry, "twicable (safe
+  graphics)", and `twicable --safe-graphics` (or `TWICABLE_SAFE_GRAPHICS=1`) works everywhere: twicable then draws without
   the graphics card – slower, but the window shows. Settings › General says so and lets you pick another graphics
   backend, then "Restart normally".
 - **The fast player starts games whose path has letters like ü or é on Windows.** A run named after the German
-  "Blattgrüne Edition", or a Windows user name like "Jürgen", ended in "game not readable" and souldew fell back to the
+  "Blattgrüne Edition", or a Windows user name like "Jürgen", ended in "game not readable" and twicable fell back to the
   slower built-in player. Found in the diagnostics file of #61.
 - **Randomizer: "Shop items" says which shops change** (#62 – thanks to BigPhitty for the report). The bundled
   Universal Pokémon Randomizer ZX only changes the special shops – department store floors, herb and vitamin sellers,
@@ -985,7 +985,7 @@ Good to know:
 - **Security hardening from @Never-lab** (#56, #58 – thank you!): unpacking a zip refuses an oversized central
   directory, too many entries and deflate entries that would blow up far beyond their size (a "zip bomb" can no longer
   fill the memory or the disk), and the mGBA live-bridge script, library ROM and patch downloads, save files and the
-  app's event stream are only handed to souldew's own pages – not to a typed URL or another program on the computer.
+  app's event stream are only handed to twicable's own pages – not to a typed URL or another program on the computer.
 - The library no longer says Black/White read the PC boxes live – they read the team (with the catch location).
 
 ## 2.7.0
@@ -995,7 +995,7 @@ Good to know:
   Evolution options, a live progress line while the game is rebuilt, and one `.cxi` per player that the built-in player
   and Azahar start directly. Every computer builds the same bytes from the same seed (checked across Java versions), so a
   SoulLink join compares the games as before; with "Same world for everyone" the game is built once. A decrypted dump is
-  needed – souldew decrypts nothing and says so when a file is encrypted. About 3 GB and well under a minute per game on
+  needed – twicable decrypts nothing and says so when a file is encrypted. About 3 GB and well under a minute per game on
   an SSD. Playing in the Azahar app? Remove the game's update there for the run, it would replace parts of it.
 - **Both editions of a pair can share one SoulLink** (#18). In a run without randomizer or ROM hack one player can
   play HeartGold and the other SoulSilver – likewise Red/Blue, Gold/Silver, Ruby/Sapphire, FireRed/LeafGreen,
@@ -1005,17 +1005,17 @@ Good to know:
   area, so version exclusives need no special rule. Randomized and patched runs still need the exact same release – and
   a ROM that was patched before it was added to the library now counts as patched, too. Thanks to @Never-lab for the
   first version of this in #54.
-- **Use souldew with a controller** (#33 – thanks for the request): library, boards, runs, settings, dialogs and menus
+- **Use twicable with a controller** (#33 – thanks for the request): library, boards, runs, settings, dialogs and menus
   now work with just a gamepad – on the couch or in Steam Deck game mode. The D-pad or left stick moves between
   buttons (held, it repeats), A presses, B goes back (closes the open dialog or menu first), L and R switch the page's
   tabs or the sections of the sidebar, Start jumps into the sidebar and the right stick scrolls; a select steps
   through its options with A (X goes back one). The buttons follow Settings › Controller. A clear ring shows where you
   are while the controller is in use and goes away when you touch the mouse or keyboard. While a game runs the
   controller stays the game's alone – pause it (ZL/LT/L2 or Home), open a menu over it or leave it in the corner, and
-  the controller moves to souldew's menus; resuming hands it back once you let go of the button. Turn it off in
+  the controller moves to twicable's menus; resuming hands it back once you let go of the button. Turn it off in
   Settings › Controller › "Navigate the app with a controller".
 - **Zipped 3DS games show up in the library.** Adding a zip with a Nintendo 3DS game in it ("Pokemon Sun (USA).zip",
-  2.6 GB) said the library was updated, but the game never appeared: souldew only looked for Game Boy, GBA and DS
+  2.6 GB) said the library was updated, but the game never appeared: twicable only looked for Game Boy, GBA and DS
   ROMs inside zips, and could only unpack up to 600 MB. Now the game is unpacked into your library folder as a normal
   file – whether you add the zip with "Add files", drop it into the library or pick it in "Search my Mac / PC" – and it
   is on the shelf like any 3DS game. The zip itself isn't copied into the library. Unpacking streams the game to disk
@@ -1029,21 +1029,21 @@ Good to know:
   Kaizo page. Its page now has "This is a ROM hack…": pick the hack (the hacks of that game, or "Other / unknown hack"
   with a name of your own), and the ROM appears on the hack's page as "Your ROM" with Play, New SoulLink and New
   Nuzlocke – remembered by its checksum, also after renaming it, and undone with one click. When the file name already
-  says which hack it is, souldew asks "Looks like Pokémon Emerald Kaizo – link it?" on the ROM's page and in the message
+  says which hack it is, twicable asks "Looks like Pokémon Emerald Kaizo – link it?" on the ROM's page and in the message
   after adding it. Runs of such a ROM are hack runs: no vanilla level caps, the randomizer follows the hack's entry, and
   joining a SoulLink needs the very same ROM, like any patched run.
 - **Zips with 3DS games in your library folders** are no longer passed over in silence: the library lists them under
   "Zipped 3DS games" with an "Unpack" button that puts the game into your library (the zip stays where it is).
 - 3DS games and zips can be dropped into the library up to 8 GB (it was 600 MB, too small for most 3DS games).
 - **Installing Azahar on Windows works again.** The one-click install stopped with "Entpacken fehlgeschlagen: ENOTDIR …
-  plugins\\generic": Azahar's Windows zip names its folders with backslashes ("…\\plugins\\"), and souldew unpacked
+  plugins\\generic": Azahar's Windows zip names its folders with backslashes ("…\\plugins\\"), and twicable unpacked
   that folder entry as an empty file, which then blocked every file inside it. Folder entries are now folders, an empty
   "file" in the way of a folder gives way, and the download is unpacked next to the old install and only swapped in once
   Azahar is really in it – a failed or interrupted try changes nothing, and the next try starts clean (also after the
-  broken installs of earlier versions). While Azahar runs, souldew says so instead of deleting half of it.
+  broken installs of earlier versions). While Azahar runs, twicable says so instead of deleting half of it.
 - **Install and start errors of the external emulators are in your language** – no internet, a GitHub error, no build
   for your system, a failed download or unpack, files in use – instead of German text for everyone.
-- **When the built-in 3DS player stops, souldew says why and offers Azahar.** The message shows how the game ended
+- **When the built-in 3DS player stops, twicable says why and offers Azahar.** The message shows how the game ended
   (e.g. "exit code 0xC0000005 (access violation)"), with one click to play 3DS games in Azahar instead (Settings ›
   Emulators › Nintendo 3DS) and a "Save diagnostics" button. The diagnostics now hold the 3DS player's graphics card,
   driver and Vulkan loader, how its last games ended and what it wrote last (also kept in the data folder's
@@ -1054,11 +1054,11 @@ Good to know:
   that, other drivers may crash on it; the player now shows the core only what its device really has. It also picks the
   dedicated graphics card before an integrated one (CTRHOST_GPU=n picks another), checks every Vulkan step and reports
   a lost device instead of freezing, and no longer leaves a Windows error dialog behind when it crashes.
-- **An encrypted 3DS game file is named as such** ("souldew and Azahar only play decrypted games …") instead of "the
+- **An encrypted 3DS game file is named as such** ("twicable and Azahar only play decrypted games …") instead of "the
   core couldn't load the game" – when you play it and when you randomize it.
 - Settings › Emulators no longer says 3DS games only run in Azahar.
 - **"Share to Discord" also works where `workers.dev` is blocked.** Some DNS filters (school, work or parental
-  filters) block every `*.workers.dev` address, so linking and posting failed with "offline". souldew now talks to the
+  filters) block every `*.workers.dev` address, so linking and posting failed with "offline". twicable now talks to the
   bot at `api.souldew.app` and only falls back to the old address when that can't be reached at all.
 
 ## 2.6.3
@@ -1068,19 +1068,19 @@ Good to know:
   old version – on Windows always the older file. The newest version now comes first (by the version in the file
   name, else the file added last), and when a hack has several patch files its page and the new-run wizard let you
   choose between them, each shown with its file name.
-- **Patches for hacks souldew doesn't know show up in the library.** They used to be added without appearing anywhere
+- **Patches for hacks twicable doesn't know show up in the library.** They used to be added without appearing anywhere
   but the new-run wizard. Now each gets a card on the ROM hacks shelf, named after the file with its version
   underneath, and a page like the known hacks have: the base game when the patch says which ROM it needs, Play and
   "Save patched game" once that ROM is in your library, new runs, and a version picker when you have several.
 - **Adding files says what was actually added** – "Added: Pokémon Run & Bun 1.08 (patch)", "2 games and 1 patch
-  added", "Already in your library", or which files held nothing souldew can use – instead of always "New games are
+  added", "Already in your library", or which files held nothing twicable can use – instead of always "New games are
   on the shelf".
 
 ## 2.6.2
 
 - **Randomized SoulLinks with "only sensible items" for trainers build the same game everywhere.** On Gen 4/5 games this
   option added weakness berries in an order that depended on the Java version, so two computers with different Java
-  could build different ROMs from the same seed and settings. souldew now ships a fixed copy
+  could build different ROMs from the same seed and settings. twicable now ships a fixed copy
   of the randomizer's one affected class, so every computer builds byte-identical games. New
   "Nuzlocke hard mode" runs on DS games get different trainer items than before; existing runs keep their files.
 - **Undoing a death in a deathless Nuzlocke only reopens the run when no other death stands** (#35). When a second
@@ -1135,9 +1135,9 @@ Hardening found in a code review and reported by @Never-lab – thank you:
 - Fast-forward music (Settings › Turbo music) works in the fast player too.
 - The 3DS player sends its commands to the emulator in batches, like the fast player – long sessions no longer pile up
   memory in the app's page.
-- **Share to Discord (Live runs):** link souldew to your Discord account once (Settings › Discord, with the code from
-  `/live connect`) and share big moments to #live-runs on the souldew Discord – from the death notice, a graveyard
-  entry and the notice when a run is wiped, over or won. Each post is a card in souldew's look: the headline, what the
+- **Share to Discord (Live runs):** link twicable to your Discord account once (Settings › Discord, with the code from
+  `/live connect`) and share big moments to #live-runs on the twicable Discord – from the death notice, a graveyard
+  entry and the notice when a run is wiped, over or won. Each post is a card in twicable's look: the headline, what the
   Pokémon fell to (species, level, wild or trainer battle, the place sign where it happened), every player's team side
   by side with the fallen group marked, and the run in numbers. Shared moments stay marked "Shared ✓" – also when a
   partner shared it first. The link only lives on your computer (not in runs, invites, exports or diagnostics), the
@@ -1154,11 +1154,11 @@ Hardening found in a code review and reported by @Never-lab – thank you:
 All found in a code review and reported by @Never-lab – thank you:
 
 - **Run data saved by the app can't be pinned with a date far in the future** (#19): the app already ignored a change
-  that claimed to be made days ahead (it would win over every later change of that entry), but the copy souldew keeps
+  that claimed to be made days ahead (it would win over every later change of that entry), but the copy twicable keeps
   on disk accepted it. Both now apply the same limit (one day ahead at most).
 - **Files of a run stay in the run's folder** (#20): the ROM, save and spoiler log of a run are looked up by name in
   its `run.json`; a damaged or hand-edited name (`../…`) or a link inside the folder that points elsewhere could make
-  souldew start, serve or overwrite a file outside the run. Every such path is now checked, also after following
+  twicable start, serve or overwrite a file outside the run. Every such path is now checked, also after following
   links. Along the way: a 3DS run no longer offers its ROM as "Save my save file" (3DS saves live in the player's
   own folder).
 - **An installed app never takes an unsigned update** (#24): a build without the release's public key (a fork, or a
@@ -1175,14 +1175,14 @@ All found in a code review and reported by @Never-lab – thank you:
   matching digits. Joining between this version and 2.5.0 keeps working (the digits are computed the same way).
 - **The Pokélink bridge answers fewer pages** (#25): it used to let any page served from this computer
   (`localhost` on any port – a dev server, another program's web page) read your teams. Now it answers themes opened
-  from disk, Pokélink's own sites and souldew's own pages; a theme served by another local web server needs the new
+  from disk, Pokélink's own sites and twicable's own pages; a theme served by another local web server needs the new
   switch **Also themes from another web server on this computer** on the Stream page. A theme added in OBS with
   **Local file** ticked now connects too (OBS serves those from its own `http://absolute/` address, which the bridge
   didn't know). SECURITY.md lists what the stream features show on purpose (teams and other spoilers) and what they
   never do (keys, codes, paths).
 - **Stream API and the app's private data are tighter** (#21):
   - Without a token the stream API (`/api/v1`) now answers OBS (browser sources and **Local file** sources), scripts
-    and souldew itself. Layouts opened from disk in a browser and pages of other local web servers need the token or
+    and twicable itself. Layouts opened from disk in a browser and pages of other local web servers need the token or
     the new switch **Pages on this computer without a token, too** on the Stream page – a page from disk can't be told
     apart from a sandboxed frame on a website. Installs from before keep the old rule (the switch starts on), so
     existing layouts keep working; new installs start with it off.
@@ -1191,13 +1191,13 @@ All found in a code review and reported by @Never-lab – thank you:
     URL or another program gets nothing. The OBS overlays don't use any of them.
 - **The library only copies from places you chose** (#23): adding games took any file path the page sent, and
   "Use a folder" any folder. Now files come only from the places "Search my Mac / PC" looks through, folders already
-  in your library, and files or folders you picked in souldew's own file dialog (the app registers those itself – a
+  in your library, and files or folders you picked in twicable's own file dialog (the app registers those itself – a
   page can't). "Use a folder" takes only a folder picked there. In the browser version (`npm start`) "Search" and
   uploading files work as before; see `docs/DEVELOPMENT.md` for including a folder there.
 
 ## 2.5.0
 
-- **Nintendo 3DS games play inside souldew**: X/Y, Omega Ruby/Alpha Sapphire, Sun/Moon and Ultra Sun/Ultra Moon run
+- **Nintendo 3DS games play inside twicable**: X/Y, Omega Ruby/Alpha Sapphire, Sun/Moon and Ultra Sun/Ultra Moon run
   in the play view like every other game – Azahar's core, both screens, sound, touch screen with the mouse,
   controller, savestates, fast-forward, screenshots and the "saved in the game" indicator. Live data comes straight
   from the game's memory: the team, the battle panel (wild or trainer) and the "You are here" sign with the place
@@ -1229,7 +1229,7 @@ All found in a code review and reported by @Never-lab – thank you:
 - The play view's buttons stay on one row in a 1100 px window.
 - A 3DS game that stops (or can't start) says so in the player in the app's language, and a quick save / load in that
   moment no longer waits forever.
-- The library's live note for 3DS games no longer says "in Azahar" – they run in souldew's own player.
+- The library's live note for 3DS games no longer says "in Azahar" – they run in twicable's own player.
 - The battle helper judges by the running game's generation: 3DS battles used Gen 4's chart and moves (no Fairy
   attacks, Steel resisting Ghost and Dark, Tackle at 35), Black/White's Gen 4 move power; 3DS teams name held items.
 - **Checked with real saves** (players' saves from the internet: Ultra Sun before Tapu Koko, a finished Omega Ruby, Y,
@@ -1276,8 +1276,8 @@ All found in a code review and reported by @Never-lab – thank you:
   leaders, Blaze Black 2 Redux's Challenge Mode, Run & Bun, Too Many Types) no cap is shown rather than a wrong one, and
   "Level cap: unknown for this game" is gone – the cap only shows when it's known and the run uses caps.
 - **The app stays responsive the first time you open a big game**: reading the ROM (place names, types, caps) runs in
-  the background, so nothing else waits for it, and a damaged ROM file can no longer hang souldew.
-- **The library says what souldew can read for each game** – team, held items, place, battles, catches, types and
+  the background, so nothing else waits for it, and a damaged ROM file can no longer hang twicable.
+- **The library says what twicable can read for each game** – team, held items, place, battles, catches, types and
   level caps – worked out from your ROM. In the game, held items and moves that can't be named are left out instead of
   showing wrong ones, and "Save diagnostics" records what was confirmed.
 - The battle helper shows the moves Unbound and Radical Red really have (they number newer moves their own way), and a
@@ -1295,7 +1295,7 @@ All found in a code review and reported by @Never-lab – thank you:
 ## 2.3.1
 
 - **OBS overlays keep working from run to run** (#8): the links on
-  the Stream page now follow the current run – the one open in souldew – so a new run, a joined SoulLink or another
+  the Stream page now follow the current run – the one open in twicable – so a new run, a joined SoulLink or another
   game no longer means adding every overlay to OBS again. They switch live, without OBS reloading them. The Stream
   page's Run menu can still pin the links to one run, and links from earlier versions keep showing their run. The
   Pokélink bridge and the stream API's `current` streams follow along too.
@@ -1312,12 +1312,12 @@ All found in a code review and reported by @Never-lab – thank you:
   game shows how fast it really runs and what helps: the melonDS app for DS games (one click in Settings ›
   Emulators, the run syncs on every in-game save), another graphics backend on Windows and Linux, and power settings.
 - **A USB microphone or headset no longer takes the controller's place** (#2): on Windows some of them show up as a
-  game controller, and when one was listed first, souldew used it and the real controller (a PS5 controller in the
-  report) pressed nothing in the game. souldew now picks the controller itself – a real one, skipping microphones,
+  game controller, and when one was listed first, twicable used it and the real controller (a PS5 controller in the
+  report) pressed nothing in the game. twicable now picks the controller itself – a real one, skipping microphones,
   headsets and devices with hardly any buttons – and Settings › Controller has a new "Controller to use" choice
   that lists every connected device; the one you pick is remembered and used whenever it is connected.
 - **Battle helper: your choice where it sits** (#10): two small buttons on the panel move it to the left or the right
-  of the game and fold it in to one line (the opponent, and a catch rule only when it says "don't"). souldew
+  of the game and fold it in to one line (the opponent, and a catch rule only when it says "don't"). twicable
   remembers both. If the host switched the type matchup help off for a run, it stays off.
 - **Battle helper for your whole team** (#11): a new "Your team against …" list shows every team member's best hit
   on the opponent and the opponent's worst for it – who to send in at a glance. Black 2: the panel
@@ -1347,7 +1347,7 @@ All found in a code review and reported by @Never-lab – thank you:
 - **Run & Bun: the battle panel follows the battle**: it didn't know who was out – after a switch it kept showing your
   lead, with its moves, its matchups and an HP bar that didn't move while the other Pokémon took the hits, a trainer
   who switched kept their first Pokémon on the panel, and a trainer with a single Pokémon (your rival's first battle)
-  counted as a wild battle, so the Nuzlocke catch rules showed up there. souldew now finds the hack's own battle data
+  counted as a wild battle, so the Nuzlocke catch rules showed up there. twicable now finds the hack's own battle data
   in its memory and reads who is out on both sides, and tells wild from trainer battles by the opponent's trainer
   ID. Checked in the game: a switch in a wild battle and the rival's Mudkip on Route 103, HP as on screen. In a double
   battle it follows the left Pokémon of each side, and its partner once the left one is down.
@@ -1356,14 +1356,14 @@ All found in a code review and reported by @Never-lab – thank you:
   Platinum, the randomizer's Pokémon, and a hack's own creatures under the names the game gives them.
 - **More ROM hacks in the library**: Too Many Types and Too Many Types 2 are recognised, and
   a hack's details now say how far live tracking works for it (read live, with limits, not checked yet) and what to
-  know – e.g. that Too Many Types' own types aren't known to souldew. A patch named after the longer of two hacks
+  know – e.g. that Too Many Types' own types aren't known to twicable. A patch named after the longer of two hacks
   ("Too Many Types 2") is linked to that one.
 - **Too Many Types and Too Many Types 2 are read live** (#3): checked in both games – the starter (Fennekin,
   Chimchar) lands under "Starter", a real catch under its route (Poochyena → "Route 101", Sewaddle → "Route 121"), the
   place sign, wild and trainer battles with HP as on screen and switches. Too Many Types 2 showed nothing useful
   before: the game keeps its Pokémon names, its team and its battle flag elsewhere than Run & Bun, so it read as plain
-  Emerald. Both hacks have types of their own (57 and 80) that souldew doesn't know: instead of the official – wrong –
-  ones, souldew now shows no types, matchups or type rule for their Pokémon, and the battle panel says why.
+  Emerald. Both hacks have types of their own (57 and 80) that twicable doesn't know: instead of the official – wrong –
+  ones, twicable now shows no types, matchups or type rule for their Pokémon, and the battle panel says why.
 - **Patches and already patched ROMs are recognised by their checksum**: a patch is linked to its hack by what it
   makes, whatever the file is called (a "1.1.1 mirror.bps" is Too Many Types 2), and a ROM that was patched before you
   added it shows up as the hack – in the library, when you play it and in a new run – instead of as Emerald.
@@ -1391,7 +1391,7 @@ All found in a code review and reported by @Never-lab – thank you:
   - Level caps: the board, the play view and the stream API now know the badges and show the cap – the ace of the
     next gym leader, after the eighth badge the Elite Four (unmodified game, Normal mode – not for ROM hacks, whose
     trainers have other levels).
-  - Catches an older souldew filed under a number ("#6") get their place name once you play the game again, for
+  - Catches an older twicable filed under a number ("#6") get their place name once you play the game again, for
     every player of the run.
 - Held items are shown by name on the board and in the play view (Gen 3–5), in your app's language (#15) – before it
   only said "Holds an item". Hacks on an expanded engine (Run & Bun) number their items their own way and keep "Holds
@@ -1439,7 +1439,7 @@ All found in a code review and reported by @Never-lab – thank you:
 
 - When a scene can't keep up, the speed in the bar now shows what the game really runs at ("≈1.6×", in yellow) –
   the step you picked moves to the small tag above it ("set: 4×").
-- souldew remembers per game how fast fast-forward gets on your computer. Steps it never reaches there aren't offered
+- twicable remembers per game how fast fast-forward gets on your computer. Steps it never reaches there aren't offered
   any more: with HeartGold on an M1, `T` and the +/– buttons go 1× → 4× instead of 2× → 3× → 4× that all play at the
   same ~1.6×. The highest step stays – it runs as fast as your computer manages, up to 4×, so lighter scenes (menus,
   houses, the opening) still get the full speed – and says so when you switch to it ("4× – this computer usually
@@ -1449,7 +1449,7 @@ All found in a code review and reported by @Never-lab – thank you:
 
 - The place sign in the play view now works in Black, White, Black 2 and White 2 (randomized ones included): the
   route or town you're in, and in a run whether its first encounter is still open.
-- souldew now reads the place names and which map belongs to which place straight from the ROM – the same names the
+- twicable now reads the place names and which map belongs to which place straight from the ROM – the same names the
   game shows when you enter a route – instead of only from its own tables. ROM hacks with their own maps and place
   names show those. The Gen 4 games in other languages than English can now show the sign as well, in the game's
   language (not tested on every language yet).
@@ -1459,7 +1459,7 @@ All found in a code review and reported by @Never-lab – thank you:
 **Smaller changes**
 
 - The library no longer links to ROM hacks or their download pages. The known hacks are still listed – with
-  description, difficulty and base game – so souldew recognises them and applies a patch file you add yourself.
+  description, difficulty and base game – so twicable recognises them and applies a patch file you add yourself.
 - New run rule "Show type matchup help" (on by default): the host decides when creating a SoulLink or Nuzlocke whether
   the battle helper in the play view shows how your moves land, what hits you and the weakness charts. Off hides it
   for every player. Only the host can change it later (board › Rules), and every change shows up in the log. Runs
@@ -1467,13 +1467,13 @@ All found in a code review and reported by @Never-lab – thank you:
 - The "Buy me a coffee" button gets a visitor now and then (every few minutes, never while a game is running):
   Pikachu peeks out of the cup, Snorlax naps on it, a Poké Ball wobbles and pops, or Jigglypuff hops by – a few
   seconds of pixel art, no sound, and none at all with "reduce motion" or once you've clicked the button.
-- From the fifth start on, souldew may now and then (rarely, at most every few days) thank you in a window that looks
-  suspiciously like an old shareware "please buy a license" nag – in full old-Windows glory, on every system. souldew is
+- From the fifth start on, twicable may now and then (rarely, at most every few days) thank you in a window that looks
+  suspiciously like an old shareware "please buy a license" nag – in full old-Windows glory, on every system. twicable is
   and stays free: the window only jokes, offers the coffee link and closes with Esc. Settings › About turns it off.
 
 **Open stream API – build your own overlay layout**
 
-- Streamers who design their own OBS layout can now read souldew's data without its preset look: the current run as
+- Streamers who design their own OBS layout can now read twicable's data without its preset look: the current run as
   JSON (players with their colours, every team with species, nickname, level, HP, status, held item, shiny and
   sprites, linked groups, graveyard, encounters per route, each player's location and battle, badges and level cap,
   the run's rules), plus a live event stream for catches, deaths, level-ups, evolutions, location changes, battles
@@ -1486,7 +1486,7 @@ All found in a code review and reported by @Never-lab – thank you:
 **A surprise on legendary encounters**
 
 - Meet a legendary or mythical Pokémon while live tracking runs, and there's a 1-in-4 chance that the stream overlay
-  shows a small pop-up with a joke about that very Pokémon ("Mewtwo has entered the chat. souldew's developer has
+  shows a small pop-up with a joke about that very Pokémon ("Mewtwo has entered the chat. twicable's developer has
   entered the coffee shortage.") and the "Buy me a coffee" link with a QR code – for about 12 seconds, at most once
   every 20 minutes and once per species per run. Jokes in all five languages.
 - It shows in the Alerts overlay – no extra setup, and no spoiler on the Stream page. On by default; Settings › About
@@ -1497,7 +1497,7 @@ All found in a code review and reported by @Never-lab – thank you:
 - **Pokédex:** all 1025 species, with what you caught (evolutions count) and saw in every SoulLink and Nuzlocke on
   this computer – first catch with run, date, route and nickname, shinies, how many died, and your whole history with
   each one. Filter by generation, type and caught/seen/missing, or search. Species from Gen 6 on aren't in any game
-  souldew plays yet: they're listed, greyed out, and say so.
+  twicable plays yet: they're listed, greyed out, and say so.
 - **102 achievements** in six categories – from "Gotcha!" and "Eight for Eight" over "Untouchable" (win without a
   death), "Soul Twins" and "Chaos Tamer" to the classics: "Rollout Trauma" (Whitney's Miltank), "Abra Used
   Teleport", "Too Much Water", "Bird Jesus", "It's a Magikarp Moment" and a few secret ones. All of them fit the usual
@@ -1505,7 +1505,7 @@ All found in a code review and reported by @Never-lab – thank you:
   rarities, unlock dates, progress bars, and a toast when one unlocks while you play (no sound).
 - **Medals** in a medal case – one per category, one per regional Pokédex and the Champion's Medal, from bronze to
   master. Original pixel-art designs.
-- Everything is worked out from the runs souldew already records (catches, deaths and their cause, badges, the end
+- Everything is worked out from the runs twicable already records (catches, deaths and their cause, badges, the end
   of a run, the live data while you play) and stays on your computer. Your existing runs count from the first start;
   a deleted run's catches stay in the Pokédex.
 
@@ -1516,10 +1516,10 @@ All found in a code review and reported by @Never-lab – thank you:
   isn't the app's. New catches are named the same way, so catches in Black/White and Black 2/White 2 get their place
   name instead of a number, and a hack's catches get the hack's names.
 - GBA ROM hacks that put other Pokémon into the game (Light Platinum: 141 of them, e.g. Venipede where Weedle was, or
-  Turtwig) now show the Pokémon the game shows – before, souldew showed the original game's Pokémon of that number, or
+  Turtwig) now show the Pokémon the game shows – before, twicable showed the original game's Pokémon of that number, or
   nothing. A Pokémon only the hack has gets the hack's name.
 - **Run & Bun** is tracked live: team, battle and the place sign, although it runs on an expanded engine with its own
-  Pokémon numbers and memory layout (souldew finds both from the game itself). Other hacks on an expanded engine
+  Pokémon numbers and memory layout (twicable finds both from the game itself). Other hacks on an expanded engine
   (Unbound, Radical Red …) are tried the same way and say that live tracking doesn't support them when their team
   can't be found – never wrong Pokémon. Catches can still be entered by hand.
 - Hacks that add the **Fairy type** or retype Pokémon (Renegade Platinum, Blaze Black 2 Redux) now show the hack's own
@@ -1541,7 +1541,7 @@ All found in a code review and reported by @Never-lab – thank you:
 
 - **Run & Bun:** during a battle the panel shows your own Pokémon's HP from before the fight, and whether it's a wild
   or a trainer battle is a guess.
-- **Unbound, Radical Red and other hacks on an expanded engine** weren't tested in the running game. If souldew can't
+- **Unbound, Radical Red and other hacks on an expanded engine** weren't tested in the running game. If twicable can't
   find their team, the play view says live tracking doesn't support the hack – enter catches by hand there.
 - **Renegade Platinum** and **Light Platinum:** place names, Pokémon and types come from the game file and were
   checked there; a full play-through with catches is still to come.
@@ -1549,15 +1549,15 @@ All found in a code review and reported by @Never-lab – thank you:
 - Original games in languages other than English and German count as modified: they show the game's own place
   names (in the game's language) instead of the translated ones.
 - **Trophies from earlier runs:** catches, deaths, badges and wins of runs from before 2.3.0 count, but moments
-  souldew only notices while you play (a Pokémon at 1 HP, a badge won underleveled, a monotype team) don't. In older
-  SoulLinks souldew guesses which player you were until you open the run once.
+  twicable only notices while you play (a Pokémon at 1 HP, a badge won underleveled, a monotype team) don't. In older
+  SoulLinks twicable guesses which player you were until you open the run once.
 
 ## 2.2.0
 
 **Smoother built-in emulator, and fast-forward at its full speed** – mainly on Windows.
 
 - Fast-forward reaches the speed you pick: on many Windows PCs 4× got stuck around 2.2× (and 2× around 1.7×), because
-  the emulator timed its frames with browser timers that only fire every ~15.6 ms there. souldew now times the game
+  the emulator timed its frames with browser timers that only fire every ~15.6 ms there. twicable now times the game
   itself from the display's frames – the same on every system and at every refresh rate (60, 75, 120, 144, 165 Hz).
 - No more stutter and crackling at normal speed when the computer is briefly busy: the game no longer waits on its
   sound, keeps a larger sound buffer (128 ms) and makes its sound at the sound card's own rate.
@@ -1577,20 +1577,20 @@ All found in a code review and reported by @Never-lab – thank you:
 - New in Settings › General: "Graphics backend" – Automatic (default), Direct3D 11, Vulkan or OpenGL on Windows,
   Automatic, OpenGL or Vulkan on Linux. If the built-in emulator stutters or its sound crackles, try Vulkan: on one
   player's Windows PC that made both go away. The change applies after a restart ("Restart now").
-- If souldew doesn't open with the chosen backend (twice in a row) or its graphics process keeps crashing, the next
+- If twicable doesn't open with the chosen backend (twice in a row) or its graphics process keeps crashing, the next
   start uses "Automatic" again and says so once.
 - "Save diagnostics" now includes the graphics backend, Chromium's GPU status and the graphics card with its driver.
-- For experiments: the environment variable `SOULDEW_CHROMIUM_FLAGS` passes extra Chromium switches (see
+- For experiments: the environment variable `TWICABLE_CHROMIUM_FLAGS` passes extra Chromium switches (see
   docs/DEVELOPMENT.md).
 
 **mGBA live data works again for GBA games** – on every system the panel stayed at "Waiting for the script …".
 
-- mGBA 0.10 reports GBA games as "AGB-BPEE" (Game Boy as "CGB-…"/"DMG-…"); souldew only knew "BPEE", so it never
-  asked the script for the party. Scripts loaded from older versions work again once souldew is updated.
+- mGBA 0.10 reports GBA games as "AGB-BPEE" (Game Boy as "CGB-…"/"DMG-…"); twicable only knew "BPEE", so it never
+  asked the script for the party. Scripts loaded from older versions work again once twicable is updated.
 - The mGBA panel says what is going on: no connection yet, script connected but no game data yet, no live data for
   this game, an outdated script or one from another installation tried to connect. The script's path has Copy and
   Show in Finder/Explorer buttons (on Windows it lives in a hidden folder).
-- The script (version 2) reconnects on its own when souldew restarts or uses another port, tries every port souldew
+- The script (version 2) reconnects on its own when twicable restarts or uses another port, tries every port twicable
   may use, finishes partial sends instead of losing data, re-announces the game after a reset and writes what it
   does and why it failed into mGBA's scripting window. It also avoids an mGBA 0.10 bug that closes a reused socket
   number when an old socket is garbage-collected.
@@ -1602,10 +1602,10 @@ All found in a code review and reported by @Never-lab – thank you:
   cheat: 99 Rare Candies"), as does switching the rule. The bag is checked before anything is written; games
   whose bag isn't known say "Not available for this game".
 
-**Linux support** – souldew now runs on 64-bit Linux, the Steam Deck included, and plays together with Mac and
+**Linux support** – twicable now runs on 64-bit Linux, the Steam Deck included, and plays together with Mac and
 Windows players.
 
-- Two packages: an **AppImage** (`souldew-<version>-linux-x86_64.AppImage`) that runs on almost every distribution and
+- Two packages: an **AppImage** (`twicable-<version>-linux-x86_64.AppImage`) that runs on almost every distribution and
   updates itself, and a **.deb** for Debian, Ubuntu, Mint and friends (updates through the download page).
 - Automatic updates for the AppImage: the app downloads the new one next to the old file, checks its signature and
   checksum and swaps it on restart – under the old file name, so desktop and Steam shortcuts keep working. The same
@@ -1624,9 +1624,9 @@ after a scene change. A fix follows in the next update. Until then another turbo
 
 ## 2.1.0
 
-**Windows support** – souldew now runs on Windows 10 and 11 (x64), and Mac and Windows players can play together.
+**Windows support** – twicable now runs on Windows 10 and 11 (x64), and Mac and Windows players can play together.
 
-- Windows installer (`souldew-2.1.0-win-x64-setup.exe`): installs per user without admin rights, with Start menu and
+- Windows installer (`twicable-2.1.0-win-x64-setup.exe`): installs per user without admin rights, with Start menu and
   desktop shortcuts. It isn't signed with a paid certificate, so SmartScreen may ask once (More info › Run anyway).
 - The window matches the dark look on Windows too (window buttons in the app's colours); all shortcuts use Ctrl, and
   the app speaks of Explorer and "Search my PC" there.
@@ -1641,7 +1641,7 @@ after a scene change. A fix follows in the next update. Until then another turbo
 
 ## 2.0.0
 
-- New name: **souldew** (formerly SoulLink Studio), with a new boot animation and sound. Data, runs and saves carry
+- New name: **twicable** (formerly SoulLink Studio), with a new boot animation and sound. Data, runs and saves carry
   over.
 - SoulLinks for 2–4 players and solo Nuzlockes with their own rule editor.
 - Invite with a 6-digit code; the joiner's name is the one everyone sees.

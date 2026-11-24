@@ -1,4 +1,4 @@
-// "Share to Discord" (Live runs): the card – a 1200×675 PNG in the souldew look, drawn on a canvas in the page.
+// "Share to Discord" (Live runs): the card – a 1200×675 PNG in the twicable look, drawn on a canvas in the page.
 //
 // Two steps: cardModel() reads the run (doc + manifest) into plain text and numbers – the headline, the cause (the
 // killer from the battle the Pokémon fell in, its level, wild or trainer, the place sign where it happened) and every
@@ -318,9 +318,9 @@ export function drawCard(ctx, model, sprites = new Map()) {
   appMark(ctx, 56, 38, 44);
   font(ctx, `700 32px ${DISPLAY}`, 0.6);
   ctx.fillStyle = '#3a3842';
-  ctx.fillText('souldew', 114, 72 + 3);
+  ctx.fillText('twicable', 114, 72 + 3);
   ctx.fillStyle = C.ink;
-  ctx.fillText('souldew', 114, 72);
+  ctx.fillText('twicable', 114, 72);
   font(ctx, `500 13px ${MONO}`, 2);
   const pill = String(model.kicker || '').toUpperCase();
   const pw = ctx.measureText(pill).width + 26;
@@ -430,7 +430,7 @@ export function drawCard(ctx, model, sprites = new Map()) {
   });
   // the right end: the mark again, small, with the version
   font(ctx, `700 16px ${PIXEL}`, 1);
-  const brand = model.app ? `souldew ${model.app}` : 'souldew';
+  const brand = model.app ? `twicable ${model.app}` : 'twicable';
   const bw = ctx.measureText(brand).width;
   ctx.fillStyle = C.lcd5;
   ctx.fillText(brand, W - 56 - bw, ty + 29);

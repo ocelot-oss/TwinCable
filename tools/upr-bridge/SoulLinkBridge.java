@@ -49,14 +49,14 @@ import java.util.ResourceBundle;
  *   java -cp PokeRandoZX.jar:bridge SoulLinkBridge randomize <rom> <out.nds> <settings.properties> <seed> <log.txt> <data.json>
  *   java -cp PokeRandoZX.jar:bridge SoulLinkBridge tmcompat <case.json>   (tests: TmFollow on plain data or a stand-in game)
  *
- * Settings keys starting with @ are souldew's own: @base (a UPR settings string), @miscTweaks and @tmsFollowMoves
+ * Settings keys starting with @ are twicable's own: @base (a UPR settings string), @miscTweaks and @tmsFollowMoves
  * ("TM compatibility follows the TM moves", see TmFollow – an older bridge ignores it with an "Unknown setting" warning).
  *
  * 3DS games (Gen 6: X/Y, Omega Ruby/Alpha Sapphire; Gen 7: Sun/Moon, Ultra Sun/Ultra Moon) go through UPR ZX's own
  * Gen6/Gen7RomHandler: a decrypted .3ds/.cci/.cxi in, one rebuilt, self-contained .cxi out (the same file every
  * computer builds from the same seed). Besides the @@ lines below, 3DS builds print @@STEP (load / randomize) and
  * @@FILES (how many files the game's romfs has – UPR prints "NCCH: Writing file …" per file while writing), and a
- * dump UPR can't read because it is encrypted ends with @@CODE "encrypted" (souldew never decrypts: a decrypted dump is needed),
+ * dump UPR can't read because it is encrypted ends with @@CODE "encrypted" (twicable never decrypts: a decrypted dump is needed),
  * running out of Java heap with @@CODE "memory".
  *
  * Compiled with --release 8 so it runs on every Java >= 8.
@@ -126,7 +126,7 @@ public class SoulLinkBridge {
 
     /**
      * `followTms`: the game gets a handler that rewrites TM compatibility after UPR picked the TM moves (TmFollow) –
-     * Gen 1–3 and 6–7 then load through souldew's subclass instead of UPR's factory (only then: a run without the
+     * Gen 1–3 and 6–7 then load through twicable's subclass instead of UPR's factory (only then: a run without the
      * option loads exactly as before). The original data is read here, before anything is randomized.
      */
     private static RomHandler load(String rom, boolean followTms) throws Exception {
@@ -180,7 +180,7 @@ public class SoulLinkBridge {
         return handler;
     }
 
-    /** The handler UPR's factory `f` would create, as souldew's subclass that hooks TmFollow in. */
+    /** The handler UPR's factory `f` would create, as twicable's subclass that hooks TmFollow in. */
     private static RomHandler followHandler(RomHandler.Factory f, java.util.Random random) {
         if (f instanceof com.dabomstew.pkrandom.romhandlers.Gen1RomHandler.Factory) return new FollowGen1(random);
         if (f instanceof com.dabomstew.pkrandom.romhandlers.Gen2RomHandler.Factory) return new FollowGen2(random);
@@ -190,7 +190,7 @@ public class SoulLinkBridge {
         throw new IllegalStateException("no TM hook for " + f.getClass().getName());
     }
 
-    /** The TmFollow a handler was given (null: the option is off, or the handler isn't souldew's). */
+    /** The TmFollow a handler was given (null: the option is off, or the handler isn't twicable's). */
     static TmFollow tmFollowOf(RomHandler h) {
         return h instanceof FollowHolder ? ((FollowHolder) h).follow() : null;
     }

@@ -1,11 +1,11 @@
 // Electron main for test/thanks-render.test.mjs: the real app (its own server, a scratch data folder, muted, hidden
 // window) against the fake accounts service (test/fixtures/fakeaccounts.mjs – never the real one), with a Thank you wall
-// of Legends, souldew+ members, Supporters and coffees – some opted in, most not. It
+// of Legends, twicable+ members, Supporters and coffees – some opted in, most not. It
 //   1. signs in as a new Supporter who never answered → the one-time card must show (and only once): "Yes, show me"
 //   2. reads the Thank you page: who is named (only the opted-in), the "and N more", the live state
 //   3. a new Legend opts in while the page is open → the next minute's ask shows "New: … joined the Legends"
 //   4. the service goes away → the last wall stays, "Offline – as of …"
-// With a souldew+ dev pack (SLS_PLUS_DEV_PACK) the page is also shown in two light and two dark skins and at a bigger
+// With a twicable+ dev pack (SLS_PLUS_DEV_PACK) the page is also shown in two light and two dark skins and at a bigger
 // interface size. SHOTS=<folder>: PNG captures go there. Writes one JSON result to the path given last.
 import { app, BrowserWindow } from 'electron';
 import { writeFileSync, mkdirSync } from 'node:fs';

@@ -1,5 +1,5 @@
 // Alternate forms in live tracking (2.8.3, a player's report on Discord: a friend caught a Mega Charizard Y and had to
-// enter it on the route by hand – it wasn't tracked). The three ways a game can hand souldew such a Pokémon:
+// enter it on the route by hand – it wasn't tracked). The three ways a game can hand twicable such a Pokémon:
 //  (a) a randomized 3DS game with "Allow alternate forms" (UPR ZX writes species + form into the wild slots): the PK6/PK7
 //      keeps the National Dex number and the form apart – tracked as its species, the form only shown;
 //  (b) an expanded GBA engine (pokeemerald-expansion, Complete FireRed Upgrade) numbers every form as a species of its

@@ -83,7 +83,7 @@ export function cia({ titleId = '0004000000055E00', productCode = 'CTR-P-EK2A', 
 }
 
 /** A homebrew .3dsx with an SMDH whose English title is `title`. */
-export function threedsx(title = 'souldew test app') {
+export function threedsx(title = 'twicable test app') {
   const smdhOff = 0x100;
   const b = new Uint8Array(smdhOff + 0x36c0);
   ascii(b, 0, '3DSX');

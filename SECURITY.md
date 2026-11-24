@@ -4,12 +4,12 @@
 
 Please **don't open a public issue** for security problems. Use GitHub's private vulnerability reporting
 ([report a vulnerability](https://github.com/souldewapp/souldew/security/advisories/new)), or contact the maintainers privately. Include the
-souldew version, what an attacker could do, and steps to reproduce. You'll get an answer as soon as possible; please
+twicable version, what an attacker could do, and steps to reproduce. You'll get an answer as soon as possible; please
 give us time to ship a fix before disclosing details.
 
 ## Scope
 
-souldew runs a local HTTP server and talks to other players over public relays. Things we especially want to hear
+twicable runs a local HTTP server and talks to other players over public relays. Things we especially want to hear
 about:
 
 - **Local server** (`server/`): requests from other websites or other machines reaching the API (host check, origin
@@ -44,11 +44,11 @@ serve is readable by design – to the pages and programs listed in [docs/STREAM
 - **Never served:** room keys and secrets, invite codes, device IDs, the Discord webhook, the spoiler log, ROMs, saves,
   savestates, file names and folders.
 - **Stream API** (`server/lib/streamapi.mjs`): with the token, whoever has it; without, OBS (no Origin, or its
-  `http://absolute` local files), scripts and souldew's own pages. Pages opened from disk (Origin `null` – shared with
+  `http://absolute` local files), scripts and twicable's own pages. Pages opened from disk (Origin `null` – shared with
   sandboxed frames on any website) and other `localhost` pages only after the Stream page's switch, which starts on
   for installs set up before it existed (so their layouts keep working) and off for new ones.
 - **Pokélink bridge** (`server/lib/pokelink.mjs`): readable to themes opened from disk (`file://`, Origin `null`),
-  Pokélink's own sites and souldew's own pages; pages of other local web servers only after the switch on the Stream
+  Pokélink's own sites and twicable's own pages; pages of other local web servers only after the switch on the Stream
   page. Because a page opened from disk sends Origin `null` – which a sandboxed frame on a website sends too – a
   browser that lets public websites reach `127.0.0.1` could let such a frame read the teams while the bridge is on.
   The bridge is off until you switch it on.
@@ -56,12 +56,12 @@ serve is readable by design – to the pages and programs listed in [docs/STREAM
 A way to read anything from the "never" list, or to read the stream data from a page or machine that isn't allowed
 there, is a vulnerability we want to hear about.
 
-## The souldew account and souldew+ (3.0)
+## The twicable account and twicable+ (3.0)
 
-The account service (souldew-accounts, its own SECURITY.md) is the trust root for everything other players see. On
+The account service (twicable-accounts, its own SECURITY.md) is the trust root for everything other players see. On
 this computer:
 
-- **Who may act as the account:** the local server's account and souldew+ routes (`/api/account*`, `/api/plus*`) need,
+- **Who may act as the account:** the local server's account and twicable+ routes (`/api/account*`, `/api/plus*`) need,
   in the desktop app, a per-launch random secret on top of the app header: electron/main.mjs sets it as an HttpOnly,
   SameSite=Strict cookie in the app window's own cookie jar, the server never serves it (`server/lib/guard.mjs`
   `rendererSecretError`). Another program on the computer – another user's on a shared machine – that talks HTTP to
@@ -71,7 +71,7 @@ this computer:
   only for the redirect the server just made (a one-time nonce) – a website can't fake "You're signed in".
 - **Development switches** (`SLS_ACCOUNTS_URL`, `SLS_PLUS_DEV_PACK`, `SLS_PLUS_DEV_KEY`, `SLS_ACCOUNTS_DEV_ENT_KEY`) are
   ignored by an installed (packaged) app; a session is bound to the service address that issued it.
-- **souldew+ decisions** come only from the entitlement token verified against the pinned key
+- **twicable+ decisions** come only from the entitlement token verified against the pinned key
   (`server/lib/accounts/enttoken.mjs`: signature, `aud`, `iss`, `sub`, `sid`, `tier`, `exp` with 5 minutes of clock
   skew; offline its `grace_until`, and a clock set back behind the latest time seen counts as expired). Packs: the
   manifest signature is checked against the pinned pack key in the local server before anything is downloaded, and

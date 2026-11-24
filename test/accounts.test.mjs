@@ -1,5 +1,5 @@
-// The souldew account in the app (server/lib/accounts, shared/social.mjs) against a fake of the accounts service
-// (test/fixtures/fakeaccounts.mjs – souldew-accounts docs/API.md, never the real one): sign-in with PKCE and the
+// The twicable account in the app (server/lib/accounts, shared/social.mjs) against a fake of the accounts service
+// (test/fixtures/fakeaccounts.mjs – twicable-accounts docs/API.md, never the real one): sign-in with PKCE and the
 // loopback hand-off incl. state / verifier mismatches and the loopback's hardening, token storage, refresh rotation,
 // revoked and offline sessions, sign-out, the profile round trip, friends, presence visibility, export / delete – and
 // that nothing changes (and nothing is sent) while signed out.
@@ -9,7 +9,7 @@ import { mkdtempSync, readFileSync, readdirSync, statSync, existsSync, rmSync } 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-const DATA = mkdtempSync(join(tmpdir(), 'souldew-acct-'));
+const DATA = mkdtempSync(join(tmpdir(), 'twicable-acct-'));
 process.env.SLS_DATA_DIR = DATA;
 const { startFakeAccounts, rawGet } = await import('./fixtures/fakeaccounts.mjs');
 const fake = await startFakeAccounts();
@@ -211,7 +211,7 @@ test('sign-in: PKCE S256, a fresh state, the loopback on 127.0.0.1 – and the c
   assert.equal(body.grant_type, 'login_code');
   assert.equal(body.redirect_uri, 'http://127.0.0.1:47999/auth/done');
   assert.match(body.code_verifier, /^[A-Za-z0-9_-]{43}$/);
-  assert.equal(body.device_name, { darwin: 'souldew on a Mac', win32: 'souldew on Windows', linux: 'souldew on Linux' }[process.platform], 'the kind of computer, never its host name');
+  assert.equal(body.device_name, { darwin: 'twicable on a Mac', win32: 'twicable on Windows', linux: 'twicable on Linux' }[process.platform], 'the kind of computer, never its host name');
   const st = s.publicState();
   assert.equal(st.signedIn, true);
   assert.equal(st.pending, false);
@@ -511,7 +511,7 @@ test('profile: edit round trip – only known fields go out, the service’s rul
   assert.equal(r.body.accent, 'dusk');
   assert.equal(fake.users.get(robin.id).privacy.profile, 'link');
   assert.equal((await a.get('/api/account')).body.me.showcase.favoriteGame, 'Emerald');
-  // a premium banner without souldew+ → the service says no, the page gets a code it can translate
+  // a premium banner without twicable+ → the service says no, the page gets a code it can translate
   const plus = await quiet(() => a.patch('/api/account/me', { banner: 'night-train' }));
   assert.equal(plus.status, 403);
   assert.deepEqual([plus.body.code, plus.body.vars.code], ['acct', 'not_entitled']);
@@ -615,7 +615,7 @@ test('export, deletion, entitlements and pack access', async () => {
   assert.ok(!fake.users.has(temp.id));
 });
 
-test('souldew+: patron is souldew+, the live preview answer is cleaned, a rotated or lost pack key wipes the pack cache', async () => {
+test('twicable+: patron is twicable+, the live preview answer is cleaned, a rotated or lost pack key wipes the pack cache', async () => {
   const a = await app();
   const pat = fake.addUser({ handle: 'patty', display_name: 'Patty' });
   fake.memberships.set('patron@example.com', 'patron');
@@ -632,7 +632,7 @@ test('souldew+: patron is souldew+, the live preview answer is cleaned, a rotate
   assert.equal(ent0.packKey, null);
   const packs = (await a.get('/api/account/packs')).body.items;
   assert.deepEqual(packs.map((p) => [p.id, p.kind, p.previewable]), [['skins-autumn', 'skins', false], ['skins-preview', 'preview', true]]);
-  // patron (tier 3) = souldew+ with the patron badge
+  // patron (tier 3) = twicable+ with the patron badge
   const linked = (await a.post('/api/account/link-email', { email: 'patron@example.com' })).body;
   assert.deepEqual([linked.linked, linked.tier, linked.badges], [true, 'patron', ['plus', 'patron']]);
   const ent = (await a.get('/api/account/entitlements')).body;
@@ -740,7 +740,7 @@ test('avatars: a picture without a length is read no further than a picture may 
   assert.doesNotMatch(src.slice(src.indexOf('async function avatar(')), /^[^\n]*Buffer\.from\(await r\.arrayBuffer\(\)\)[^\n]*$/m);
 });
 
-test('souldew+ trial (§8.6): offered, started, shown as a trial (not a thank-you), once only; an old app reads the new source kind', async () => {
+test('twicable+ trial (§8.6): offered, started, shown as a trial (not a thank-you), once only; an old app reads the new source kind', async () => {
   const a = await app();
   const tri = fake.addUser({ handle: 'trialist', display_name: 'Lena' });
   await a.signIn(tri);
@@ -757,7 +757,7 @@ test('souldew+ trial (§8.6): offered, started, shown as a trial (not a thank-yo
   assert.equal(me.entitlement.trial.only, true);
   const ent = (await a.get('/api/account/entitlements')).body;
   assert.deepEqual(ent.sources.map((x) => x.kind), ['trial']);
-  assert.match(ent.packKey, /^[A-Za-z0-9_-]{43}$/, 'a trial is souldew+: the pack key comes');
+  assert.match(ent.packKey, /^[A-Za-z0-9_-]{43}$/, 'a trial is twicable+: the pack key comes');
   const again = await quiet(() => a.post('/api/account/trial'));
   assert.equal(again.status, 409);
   assert.equal(again.body.vars.code, 'trial_used');
@@ -766,7 +766,7 @@ test('souldew+ trial (§8.6): offered, started, shown as a trial (not a thank-yo
   const kept = (await a.get('/api/account/entitlements')).body;
   fake.offlinePaths.delete('/v1/entitlements');
   assert.deepEqual([kept.offline, kept.tier, kept.trial?.only], [true, 'plus', true]);
-  // souldew 3.0.0 mapped unknown kinds to 'bmc' – 'trial' is known now, anything newer still counts as a source
+  // twicable 3.0.0 mapped unknown kinds to 'bmc' – 'trial' is known now, anything newer still counts as a source
   assert.equal(clean.cleanEntitlements({ sources: [{ kind: 'trial', tier: 'plus', until: '2026-12-01T00:00:00Z' }, { kind: 'future', tier: 'plus' }] }).sources.map((x) => x.kind).join(), 'trial,bmc');
   assert.equal(clean.cleanTrial({ state: 'running' }), null, 'a running trial without an end is not believed');
   assert.deepEqual(clean.cleanTrial({ state: 'unavailable', reason: 'account_age', until: 'x' }), { state: 'unavailable', days: 7, until: null, reason: 'account_age' });

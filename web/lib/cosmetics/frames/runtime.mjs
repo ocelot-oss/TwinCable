@@ -33,7 +33,7 @@ function getWorker() {
   if (worker && workerGen === state.generation) return worker;
   worker?.terminate();
   workerGen = state.generation;
-  worker = startWorker({ hostModule: 'frames/worker-host.mjs', freeModule: 'content/frames-free.mjs', packText: content.framesModule, packExport: 'RECIPES', name: 'souldew-frames' });
+  worker = startWorker({ hostModule: 'frames/worker-host.mjs', freeModule: 'content/frames-free.mjs', packText: content.framesModule, packExport: 'RECIPES', name: 'twicable-frames' });
   worker.onmessage = (e) => {
     const m = e.data || {};
     if (m.op === 'stats') {
@@ -45,7 +45,7 @@ function getWorker() {
     else if (m.op === 'missing' || m.op === 'error') it?.onMissing(m);
   };
   worker.onerror = (e) => {
-    console.warn('souldew frames worker failed', e.message || e);
+    console.warn('twicable frames worker failed', e.message || e);
     for (const it of instances.values()) it.onMissing({});
   };
   return worker;

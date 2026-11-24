@@ -1,7 +1,7 @@
 // The owner's round on 3.0 (19.11.26, looked at on Windows): a permanent "Sign in" at the sidebar's foot (where the
-// profile picture sits once signed in); the souldew+ page's "Your handheld" puts every skin on the 3D device (a souldew+
-// one without souldew+ from its public preview picture, marked, never put on); the launch animations as ONE row of cards
-// that show the animation, one selected; no favourite stars on the souldew+ page.
+// profile picture sits once signed in); the twicable+ page's "Your handheld" puts every skin on the 3D device (a twicable+
+// one without twicable+ from its public preview picture, marked, never put on); the launch animations as ONE row of cards
+// that show the animation, one selected; no favourite stars on the twicable+ page.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -111,7 +111,7 @@ test('the scene draws the preview art instead of the recipe – only when the re
 
 // ---- the showcase's skins -----------------------------------------------------------------------------------------
 
-test('the showcase starts on the worn skin, else the first souldew+ skin – never a bare device', () => {
+test('the showcase starts on the worn skin, else the first twicable+ skin – never a bare device', () => {
   assert.equal(P.showcaseSkin('plain-dusk'), 'plain-dusk');
   assert.equal(P.showcaseSkin('coral-shelf'), 'coral-shelf');
   const first = WRAPS.find((w) => w.tier === 'plus').id;
@@ -119,17 +119,17 @@ test('the showcase starts on the worn skin, else the first souldew+ skin – nev
   assert.equal(P.showcaseSkin('no-such-skin'), first);
 });
 
-test('what a skin is for each account: a souldew+ skin without souldew+ is only ever a preview', () => {
-  // free (signed out or no tier): no handheld to dress – the free skin is "free", a souldew+ one a preview
+test('what a skin is for each account: a twicable+ skin without twicable+ is only ever a preview', () => {
+  // free (signed out or no tier): no handheld to dress – the free skin is "free", a twicable+ one a preview
   assert.equal(P.showcaseState('plain-dusk', FREE, null), 'free');
   assert.equal(P.showcaseState(null, FREE, null), 'free');
   assert.equal(P.showcaseState('night-train', FREE, null), 'preview');
-  // Supporter: the free skin may go on, souldew+ ones are previews
+  // Supporter: the free skin may go on, twicable+ ones are previews
   assert.equal(P.showcaseState('plain-dusk', SUP, null), 'owned');
   assert.equal(P.showcaseState('plain-dusk', SUP, 'plain-dusk'), 'yours');
   assert.equal(P.showcaseState(null, SUP, 'plain-dusk'), 'owned', 'back to the theme colour');
   assert.equal(P.showcaseState('aurora-fjord', SUP, null), 'preview');
-  // souldew+ with the pack: every skin; without the pack (yet): the art isn't here, a preview
+  // twicable+ with the pack: every skin; without the pack (yet): the art isn't here, a preview
   for (const w of WRAPS) assert.equal(P.showcaseState(w.id, MEMBER, 'coral-shelf'), w.id === 'coral-shelf' ? 'yours' : 'owned');
   assert.equal(P.showcaseState('aurora-fjord', NOPACK, null), 'preview');
   const view = src('web/views/handheldtile.mjs');
@@ -137,7 +137,7 @@ test('what a skin is for each account: a souldew+ skin without souldew+ is only 
   assert.match(show, /role="radiogroup" aria-label=\$\{t\('hh\.skins'/, 'the skins are a radio group (keys, arrows, the controller)');
   assert.match(show, /\$\{st === 'owned' && html`<button[^`]*onClick=\$\{wear\}/, 'only an owned skin can be put on');
   assert.equal((show.match(/setHandheld\(/g) || []).length, 2, 'put on (owned) and Surprise me – nothing else writes the handheld');
-  assert.match(show, /hh-show-badge/, 'a souldew+ preview is marked on the stage');
+  assert.match(show, /hh-show-badge/, 'a twicable+ preview is marked on the stage');
 });
 
 // ---- the launch cards ---------------------------------------------------------------------------------------------
@@ -146,12 +146,12 @@ test('one row of launch cards, each with its tier; the one in use is selected fi
   assert.deepEqual(P.LOOK_CARDS.map(([id]) => id), ['cartridge', 'your-colours', 'gold', 'clear-shell', 'holo']);
   assert.deepEqual(P.LOOK_CARDS.map(([, t]) => t), ['free', 'supporter', 'plus', 'plus', 'plus']);
   assert.deepEqual(P.lookInUse(FREE, { look: 'gold', clear: 'ice' }), { id: 'cartridge', tint: null }, 'free: the 2D module plays');
-  assert.deepEqual(P.lookInUse(SUP, { look: 'gold', clear: 'ice' }), { id: 'your-colours', tint: null }, 'a kept souldew+ look waits');
+  assert.deepEqual(P.lookInUse(SUP, { look: 'gold', clear: 'ice' }), { id: 'your-colours', tint: null }, 'a kept twicable+ look waits');
   assert.deepEqual(P.lookInUse(MEMBER, { look: 'clear-shell', clear: 'ice' }), { id: 'clear-shell', tint: 'ice' });
   assert.deepEqual(P.lookInUse(MEMBER, { look: 'holo', clear: 'ice' }), { id: 'holo', tint: null });
 });
 
-test('who may switch to a card: never the 2D one from the page, souldew+ shells only with souldew+', () => {
+test('who may switch to a card: never the 2D one from the page, twicable+ shells only with twicable+', () => {
   for (const R of [FREE, SUP, MEMBER]) assert.equal(P.lookUsable('cartridge', R), false);
   assert.equal(P.lookUsable('your-colours', FREE), false);
   assert.equal(P.lookUsable('your-colours', SUP), true);
@@ -183,7 +183,7 @@ test('the launch section: one radio group, a tick on the selected card, the card
   assert.match(src('scripts/plus-dev-pack.mjs'), /renderLaunchPreviews\(\{ looks: HH\.looks/);
 });
 
-test('no favourite stars on the souldew+ page (they stay in the profile editor and the pickers)', () => {
+test('no favourite stars on the twicable+ page (they stay in the profile editor and the pickers)', () => {
   const plus = src('web/views/plus.mjs');
   assert.doesNotMatch(plus, /FavScope|favourites\.mjs/);
   assert.doesNotMatch(src('web/plus.css'), /fav-star|plus-fav/);
@@ -221,7 +221,7 @@ test('the Discord mark is on the icons\' 16 × 16 grid', () => {
   assert.equal(ys.indexOf(true), 15 - ys.lastIndexOf(true), 'vertically centred');
 });
 
-test('the souldew+ launch looks\' stills ship with the app until the previews carry them – small public pictures', async () => {
+test('the twicable+ launch looks\' stills ship with the app until the previews carry them – small public pictures', async () => {
   const { existsSync, statSync } = await import('node:fs');
   const { SHIPPED_STILLS } = await import('../scripts/handheld/launch-stills.mjs');
   assert.deepEqual(P.SHIPPED_STILLS, SHIPPED_STILLS, 'the app and the script name the same pictures');
@@ -239,11 +239,11 @@ test('the souldew+ launch looks\' stills ship with the app until the previews ca
 
 // 3.0.1: at the start the saved sign-in is read in the background (the keychain may take a moment) – until then every
 // account place says "Loading …", never "signed out" for a moment (lib/account.mjs `known`)
-test('account at start: "Loading …" everywhere until the saved sign-in is read – Settings, Friends, the profile, souldew+', () => {
+test('account at start: "Loading …" everywhere until the saved sign-in is read – Settings, Friends, the profile, twicable+', () => {
   const settings = src('web/views/settings/account.mjs');
   assert.match(settings, /const on = acct\.known && acct\.session\.signedIn;/);
   assert.match(settings, /\$\{!acct\.known \? html`<p class="muted small">\$\{t\('common\.loading', 'Loading …'\)\}/);
-  assert.match(settings, /\$\{acct\.known && !on && html`<\$\{Group\} title="souldew\+">/, 'no souldew+ sign-in offer while unknown');
+  assert.match(settings, /\$\{acct\.known && !on && html`<\$\{Group\} title="twicable\+">/, 'no twicable+ sign-in offer while unknown');
   for (const f of ['web/views/friends.mjs', 'web/views/profile.mjs', 'web/views/plus.mjs']) {
     assert.match(src(f), /if \(!acct\.known\) return html`<div class="empty-state"><p class="muted">\$\{t\('common\.loading', 'Loading …'\)\}<\/p><\/div>`;/, f);
     assert.doesNotMatch(src(f), /if \(!acct\.loaded\) return null;/, `${f}: not the old "answered once" check`);

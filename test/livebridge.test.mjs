@@ -30,7 +30,7 @@ test('game codes as mGBA reports them match the address tables', () => {
   assert.equal(normalizeGameCode(''), '');
   assert.equal(normalizeGameCode(undefined), '');
 
-  // the bug from 2.1.0: "AGB-BPEE" matched no game, so souldew never asked for memory and the UI waited forever
+  // the bug from 2.1.0: "AGB-BPEE" matched no game, so twicable never asked for memory and the UI waited forever
   const emerald = parseHello(`HELLO ${TOKEN} 0 AGB-BPEE POKEMON EMER`, TOKEN);
   assert.deepEqual(emerald, { platform: '0', code: 'BPEE', title: 'POKEMON EMER' });
   assert.equal(findEntry(TABLE, { platform: 'gba', ...emerald })?.id, 'emerald_us');
@@ -59,7 +59,7 @@ test('the generated script: ASCII, LF, every port with the current one first, cl
   assert.match(lua, /outbuf = outbuf:sub\(n \+ 1\)/);
   assert.match(lua, /if err ~= AGAIN then drop/);
   // messages for the user go to mGBA's console
-  assert.match(lua, /console:warn\("\[souldew\] "/);
+  assert.match(lua, /console:warn\("\[twicable\] "/);
   // a path containing "]]" can't end the long string early
   assert.match(luaScript(47123, TOKEN, { scriptPath: '/a]]b/x.lua' }), /local SCRIPT = \[=\[\/a\]\]b\/x\.lua\]=\]/);
   assert.throws(() => luaScript(47123, 'nope'));
@@ -164,7 +164,7 @@ test('script v2 on mGBA 0.10 (Emerald, "AGB-BPEE"): regions asked, chunked frame
     assert.ok(st.lastAt);
     assert.equal(bridgeState(st, { fresh: true }).key, 'live');
 
-    // a reset or another game: the script says HELLO again, souldew answers OK + that game's regions
+    // a reset or another game: the script says HELLO again, twicable answers OK + that game's regions
     const before = c.received().length;
     await c.send(`HELLO ${TOKEN} 0 AGB-BPRE POKEMON FIRE\nV 2\n`, [9]);
     const again = (await c.waitFor(/R 2024284 600\n[^]*$/)).slice(before);
@@ -189,7 +189,7 @@ test('script v2 on mGBA 0.10 (Emerald, "AGB-BPEE"): regions asked, chunked frame
 test('an unknown game gets "N", the version-1 script still works, foreign scripts get ERR', async () => {
   const { b, emitted, port, close } = await bridge();
   try {
-    // a game souldew has no addresses for: told so instead of silence
+    // a game twicable has no addresses for: told so instead of silence
     const ruby = await scriptClient(port);
     await ruby.send(`HELLO ${TOKEN} 0 AGB-AXVJ POKEMON RUBY\nV 2\n`);
     assert.match(await ruby.waitFor(/N .*\n/), /^OK\nN GBA AXVJ POKEMON RUBY\n$/);
@@ -198,7 +198,7 @@ test('an unknown game gets "N", the version-1 script still works, foreign script
     ruby.sock.destroy();
     await ruby.closed;
 
-    // souldew 2.1.0's script: no V line, RESET lines, ignores OK – works now and is reported as outdated
+    // twicable 2.1.0's script: no V line, RESET lines, ignores OK – works now and is reported as outdated
     const v1 = await scriptClient(port);
     await v1.send(`HELLO ${TOKEN} 0 AGB-BPEE POKEMON EMER\n`, [4]);
     await v1.waitFor(/R 20244ec 600\n/);

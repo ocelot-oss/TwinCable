@@ -1,6 +1,6 @@
 // The map's top layer for the Shared World overlay (shared/world.mjs, docs/MULTIPLAYER.md › 9): which pixels of the map
 // the game draws *above* object sprites – tree tops, roofs, the leaves of potted plants, the counter in front of the
-// nurse – so a partner drawn by souldew disappears behind them exactly where the real player would. Nothing is
+// nurse – so a partner drawn by twicable disappears behind them exactly where the real player would. Nothing is
 // shipped: the tilesets come from the local game's own ROM (the one the page already loaded for the sprites), the
 // map's blocks from its RAM (shared/world.mjs readMapView).
 //

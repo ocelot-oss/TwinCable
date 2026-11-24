@@ -1,9 +1,9 @@
-// IPC of souldew's native hosts (native/retro-host, native/link-host): framed messages over stdout (protocol.h), the
-// command reader that queues souldew's commands for the frame loop, and the few platform services both hosts need
+// IPC of twicable's native hosts (native/retro-host, native/link-host): framed messages over stdout (protocol.h), the
+// command reader that queues twicable's commands for the frame loop, and the few platform services both hosts need
 // (a monotonic clock, short sleeps, UTF-8 file names on Windows). Both hosts are single-threaded around the emulation:
 // commands are taken between two frames, in the order they came.
-#ifndef SOULDEW_HOSTIO_H
-#define SOULDEW_HOSTIO_H
+#ifndef TWICABLE_HOSTIO_H
+#define TWICABLE_HOSTIO_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -21,7 +21,7 @@ extern "C" {
  */
 void hostio_init(const char *name, bool protocol);
 
-/** One message to souldew (thread-safe: whole messages, never interleaved). `send2`: a header part and a body part. */
+/** One message to twicable (thread-safe: whole messages, never interleaved). `send2`: a header part and a body part. */
 void host_send(uint32_t type, const void *p, uint32_t n);
 void host_send2(uint32_t type, const void *a, uint32_t na, const void *b, uint32_t nb);
 /** EVENT: a JSON object (printf-style, at most 1 KB). */
@@ -35,14 +35,14 @@ void host_exit(int code);
 /** `s` as the inside of a JSON string. */
 void host_json_escape(char *out, size_t cap, const char *s);
 
-/** One command from souldew; `p` is malloc'd (NULL when empty) and belongs to whoever takes it. */
+/** One command from twicable; `p` is malloc'd (NULL when empty) and belongs to whoever takes it. */
 struct host_cmd {
   uint32_t type, len;
   uint8_t *p;
 };
 /**
- * Start the thread that reads souldew's commands into a queue. A command longer than `max_len` or the end of stdin
- * (souldew went away) queues a QUIT.
+ * Start the thread that reads twicable's commands into a queue. A command longer than `max_len` or the end of stdin
+ * (twicable went away) queues a QUIT.
  */
 void host_start_reader(uint32_t max_len);
 /** The queued commands, in order (at most `cap`; the rest stay for the next call). Returns how many. */

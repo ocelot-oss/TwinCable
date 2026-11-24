@@ -1,4 +1,4 @@
-// souldew+ in Settings: the Theme row (General › Appearance, under the colour schemes) – the Launch animation row (Play)
+// twicable+ in Settings: the Theme row (General › Appearance, under the colour schemes) – the Launch animation row (Play)
 // is settings/launch.mjs. A theme is tried on the whole app with one click and reverts when you leave Settings or press "Back to …";
 // it changes the look only, never the layout or a text. The machinery is web/lib/cosmetics (skins.mjs).
 // Every theme has its favourite star and the lists their favourites row (lib/favourites.mjs).
@@ -35,7 +35,7 @@ function useTimeLeft(until) {
 
 /** Why the service said no to a live preview, in words. */
 function previewError(e) {
-  if (e?.code === 'rate_limited') return t('skin.previewDay', 'You’ve used today’s previews – try again tomorrow, or get souldew+ to keep every theme.');
+  if (e?.code === 'rate_limited') return t('skin.previewDay', 'You’ve used today’s previews – try again tomorrow, or get twicable+ to keep every theme.');
   if (e?.code === 'limit_reached') return t('skin.previewBusy', 'Too many previews are running on your account – wait until one ends.');
   if (e?.code === 'none') return t('skin.previewNone', 'Previews aren’t available right now.');
   return t('skin.previewFailed', 'The preview couldn’t be loaded. Check your connection and try again.');
@@ -56,7 +56,7 @@ export function SkinSetting({ cfg, save }) {
   usePreviews();
   const s = useSkinState();
   const pack = packState();
-  const [locked, setLocked] = useState(null); // a souldew+ theme that can't be previewed here (no pack, no preview)
+  const [locked, setLocked] = useState(null); // a twicable+ theme that can't be previewed here (no pack, no preview)
   const [trying, setTrying] = useState(null); // { error } after a failed "Try for 15 minutes"
   const [ended, setEnded] = useState(false);
   const left = useTimeLeft(pack.preview ? pack.previewUntil : null);
@@ -90,7 +90,7 @@ export function SkinSetting({ cfg, save }) {
     await save({ skin: id === 'classic' ? null : id });
   };
   const previewName = s.previewing ? byId[s.previewing]?.name : null;
-  const backName = byId[committed]?.name || 'souldew';
+  const backName = byId[committed]?.name || 'twicable';
   const group = (label, list, compact) => list.length > 0 && html`<div class="skin-group">
     <span class="skin-group-label small faint">${label}</span>
     <div class=${`theme-picker skin-picker${compact ? ' compact' : ''}`} role="radiogroup" aria-label=${label}>
@@ -113,37 +113,37 @@ export function SkinSetting({ cfg, save }) {
   return html`<div class="stack-s skin-setting">
     <h3 class="skin-picker-head">${t('skin.title', 'Theme')} <span class="plus-mark" aria-hidden="true"><${Icon} name="plus" size=${10} /></span></h3>
     <p class="small muted">${t('skin.note', 'Changes the look, never the layout. Click a theme to try it on the whole app – leaving Settings puts yours back.')}
-      ${!pack.entitled && html` <a href="#/plus" class="skin-plus-link">${t('skin.whatsInPlus', 'What’s in souldew+')}</a>`}</p>
+      ${!pack.entitled && html` <a href="#/plus" class="skin-plus-link">${t('skin.whatsInPlus', 'What’s in twicable+')}</a>`}</p>
     ${previewName && html`<div class=${`skin-preview-bar${pack.preview && !byId[s.previewing]?.owned ? ' live' : ''}`} role="status">
-      ${pack.preview && !byId[s.previewing]?.owned ? html`<span class="skin-live-badge" title=${t('skin.liveHint', 'A souldew+ theme to try for 15 minutes – it goes back by itself.')}>${t('skin.live', 'Preview')} · ${t('skin.left', '{time} left', { time: left || '0:00' })}</span>`
+      ${pack.preview && !byId[s.previewing]?.owned ? html`<span class="skin-live-badge" title=${t('skin.liveHint', 'A twicable+ theme to try for 15 minutes – it goes back by itself.')}>${t('skin.live', 'Preview')} · ${t('skin.left', '{time} left', { time: left || '0:00' })}</span>`
         : html`<span class="led amber on" aria-hidden="true"></span>`}
       <span>${t('skin.previewing', 'Previewing {name} – nothing is saved.', { name: '\u0000' }).split('\u0000').flatMap((part, i) => (i ? [html`<b>${previewName}</b>`, part] : [part]))}</span>
       <span class="spacer"></span>
       <button type="button" class="btn small ghost" onClick=${() => endPreview()}>${t('skin.back', 'Back to {name}', { name: backName })}</button>
       <button type="button" class="btn small go" onClick=${() => keep(s.previewing)}>${byId[s.previewing]?.owned
-        ? t('skin.keep', 'Keep {name}', { name: previewName }) : t('skin.keepPlus', 'Keep {name} with souldew+', { name: previewName })}</button>
+        ? t('skin.keep', 'Keep {name}', { name: previewName }) : t('skin.keepPlus', 'Keep {name} with twicable+', { name: previewName })}</button>
     </div>`}
     ${lockedName && html`<div class="skin-preview-bar" role="status">
       <${PlusMark} />
-      <span>${pack.loading || trying?.busy ? t('skin.loading', 'Loading souldew+ themes …') : trying?.error ? previewError(trying.error)
-        : canTry ? t('skin.lockedTry', '{name} comes with souldew+ – try it on for 15 minutes.', { name: lockedName })
-        : !pack.entitled && !signedIn() ? t('skin.lockedSignIn', '{name} comes with souldew+. Sign in to try it on for 15 minutes.', { name: lockedName })
-        : t('skin.lockedText', '{name} comes with souldew+.', { name: lockedName })}</span>
+      <span>${pack.loading || trying?.busy ? t('skin.loading', 'Loading twicable+ themes …') : trying?.error ? previewError(trying.error)
+        : canTry ? t('skin.lockedTry', '{name} comes with twicable+ – try it on for 15 minutes.', { name: lockedName })
+        : !pack.entitled && !signedIn() ? t('skin.lockedSignIn', '{name} comes with twicable+. Sign in to try it on for 15 minutes.', { name: lockedName })
+        : t('skin.lockedText', '{name} comes with twicable+.', { name: lockedName })}</span>
       <span class="spacer"></span>
       <button type="button" class="btn small ghost" onClick=${() => { setLocked(null); setTrying(null); }}>${t('skin.back', 'Back to {name}', { name: backName })}</button>
       ${canTry && !trying && html`<button type="button" class="btn small" onClick=${() => tryIt(locked)}>${t('skin.try', 'Try for 15 minutes')}</button>`}
       ${!pack.entitled && !signedIn() && html`<button type="button" class="btn small" onClick=${() => { location.hash = '#/settings?s=account'; }}>${t('acct.signIn', 'Sign in with Discord')}</button>`}
-      ${!pack.loading && html`<button type="button" class="btn small go" onClick=${() => openPlus({ reason: 'skin', id: locked })}>${t('skin.getPlus', 'Get souldew+')}</button>`}
+      ${!pack.loading && html`<button type="button" class="btn small go" onClick=${() => openPlus({ reason: 'skin', id: locked })}>${t('skin.getPlus', 'Get twicable+')}</button>`}
     </div>`}
     ${lockedName && !canTry && previewSrc('skins', locked) && html`<figure class="skin-shot">
-      <${PreviewPicture} kind="skins" id=${locked} alt=${t('skin.shotAlt', 'souldew in {name}', { name: lockedName })} />
-      <figcaption class="small faint">${t('skin.shotCaption', 'How souldew looks in {name}.', { name: lockedName })}</figcaption></figure>`}
+      <${PreviewPicture} kind="skins" id=${locked} alt=${t('skin.shotAlt', 'twicable in {name}', { name: lockedName })} />
+      <figcaption class="small faint">${t('skin.shotCaption', 'How twicable looks in {name}.', { name: lockedName })}</figcaption></figure>`}
     ${ended && !previewName && !lockedName && html`<p class="small faint" role="status">${t('skin.previewEnded', 'The preview has ended – your own theme is back.')}</p>`}
     ${fav.row && html`<div class="skin-filter">${fav.row}</div>`}
     ${group(t('skin.dark', 'Colours · dark'), fav.shown.filter((k) => k.group === 'dark'), true)}
     ${group(t('skin.light', 'Colours · light'), fav.shown.filter((k) => k.group === 'light'), true)}
     ${fav.filter === 'favs' && !fav.counts.favs && html`<${FavEmpty} />`}
-    ${cfg.skin && s.pending && !pack.loading && !pack.entitled && html`<p class="small faint">${t('skin.pending', 'Your theme {name} is back as soon as souldew+ is active on this computer again.', { name: byId[s.pending]?.name || s.pending })}</p>`}
+    ${cfg.skin && s.pending && !pack.loading && !pack.entitled && html`<p class="small faint">${t('skin.pending', 'Your theme {name} is back as soon as twicable+ is active on this computer again.', { name: byId[s.pending]?.name || s.pending })}</p>`}
   </div>`;
 }
 
@@ -163,7 +163,7 @@ function ShowItem({ kind, item, known }) {
 }
 
 /**
- * "What souldew+ holds": the real look of every premium theme, banner, frame and nameplate, from the signed preview
+ * "What twicable+ holds": the real look of every premium theme, banner, frame and nameplate, from the signed preview
  * media – for everyone, signed in or not (nobody buys what they can't see) – and, in words, what each tier gets for the
  * launch animation (views/launchtiers.mjs). Only those words when the previews can't be reached.
  */
@@ -172,8 +172,8 @@ export function PlusShowcase() {
   const [kind, setKind] = useState('skins');
   const launchTier = useLaunchRights().tier;
   const tiers = html`<${LaunchTiers} current=${launchTier} />`;
-  const bare = html`<section class="plus-show stack-s" aria-label=${t('plusShow.title', 'What souldew+ holds')}>
-    <div class="row plus-show-head"><h3>${t('plusShow.title', 'What souldew+ holds')}</h3></div>${tiers}</section>`;
+  const bare = html`<section class="plus-show stack-s" aria-label=${t('plusShow.title', 'What twicable+ holds')}>
+    <div class="row plus-show-head"><h3>${t('plusShow.title', 'What twicable+ holds')}</h3></div>${tiers}</section>`;
   if (!pv?.files) return bare;
   const cat = catalog();
   const lists = {
@@ -185,10 +185,10 @@ export function PlusShowcase() {
   const k = kinds.some(([x]) => x === kind) ? kind : kinds[0][0];
   const items = lists[k].filter((x) => previewSrc(k, x.id));
   const known = (cat[k] || []).map((x) => x.id);
-  return html`<section class="plus-show stack-s" aria-label=${t('plusShow.title', 'What souldew+ holds')}>
-    <div class="row plus-show-head"><h3>${t('plusShow.title', 'What souldew+ holds')}</h3>
+  return html`<section class="plus-show stack-s" aria-label=${t('plusShow.title', 'What twicable+ holds')}>
+    <div class="row plus-show-head"><h3>${t('plusShow.title', 'What twicable+ holds')}</h3>
       <span class="small muted">${t('plusShow.count', '{count} item|{count} items', { count: Object.entries(lists).reduce((n, [x, l]) => n + l.filter((i) => previewSrc(x, i.id)).length, 0) })}</span></div>
-    <div class="seg small" role="tablist" aria-label=${t('plusShow.title', 'What souldew+ holds')}>
+    <div class="seg small" role="tablist" aria-label=${t('plusShow.title', 'What twicable+ holds')}>
       ${kinds.map(([x, label]) => html`<button type="button" role="tab" aria-selected=${x === k} class=${x === k ? 'on' : ''} onClick=${() => setKind(x)}>${label}</button>`)}
     </div>
     <p class="small faint">${k === 'skins' ? t('plusShow.themesHint', 'Every theme recolours the whole app – never a box or a word.') : t('plusShow.hint', 'Hover or focus one to see it move.')}</p>
@@ -197,7 +197,7 @@ export function PlusShowcase() {
   </section>`;
 }
 
-/** One kind's items, with the favourites row (a wish list: everything here is souldew+). */
+/** One kind's items, with the favourites row (a wish list: everything here is twicable+). */
 function ShowGrid({ k, items, known }) {
   const fav = useFavList(`showcase-${k}`, items, { kind: FAV_KIND_OF[k] });
   return html`${fav.row}

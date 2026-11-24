@@ -1,4 +1,4 @@
-// Friends (souldew account, look "A – Logbook"): the list grouped Playing now / Online / Offline with friend requests
+// Friends (twicable account, look "A – Logbook"): the list grouped Playing now / Online / Offline with friend requests
 // on top, a pane with the picked friend (what they play, "Invite to a run", "Ask to join"), the invites that are open
 // both ways, adding by handle or friend code, removing, blocking and reporting. Signed out it only points to
 // Settings › Account. Every name and status here was written by another player: text only.
@@ -37,7 +37,7 @@ export function SignInFirst({ what }) {
   return html`<div class="panel empty-state acct-signin-first">
     <${Icon} name="user" size=${48} />
     <h2>${what}</h2>
-    <p class="muted">${t('fr.signInText', 'Friends, profiles and invites need a souldew account. Everything else works without one.')}</p>
+    <p class="muted">${t('fr.signInText', 'Friends, profiles and invites need a twicable account. Everything else works without one.')}</p>
     <button class="btn primary" onClick=${() => navigate('settings', settingsLink('account'))}>${t('fr.toAccount', 'Sign in under Settings › Account')}</button>
   </div>`;
 }
@@ -129,7 +129,7 @@ export function InviteModal({ friend, onClose }) {
       const m = await api.get(`/api/runs/${pick}`);
       const taken = () => (manifest?.id === m.id ? takenSlots(manifest, { me, doc, linkStatus }) : slotsOf(m).filter((s) => s === 'p1' || m.summary?.live?.[s]));
       await inviteFriends(m, [friend], { gameTitle: shortTitle({ gameId: m.game?.id, hackId: m.game?.hackId, title: m.game?.title }), taken });
-      toast({ kind: 'ok', title: t('fr.inviteSent', 'Invite sent to {name}', { name: friend.name }), text: t('fr.inviteSentText', 'Keep souldew open – you allow them in when their app asks.') });
+      toast({ kind: 'ok', title: t('fr.inviteSent', 'Invite sent to {name}', { name: friend.name }), text: t('fr.inviteSentText', 'Keep twicable open – you allow them in when their app asks.') });
       onClose();
     } catch (e) {
       toast({ kind: 'death', title: t('fr.inviteFailed', 'Couldn’t send the invite'), text: e.message });
@@ -141,7 +141,7 @@ export function InviteModal({ friend, onClose }) {
       <button class="btn ghost" onClick=${onClose}>${t('common.cancel', 'Cancel')}</button>
       <button class="btn go" disabled=${busy} onClick=${send}><${Icon} name="link" size=${14} />${pick === 'new' ? t('fr.newRunGo', 'Set up the run') : t('fr.sendInvite', 'Send invite')}</button>`}>
     <div class="stack">
-      <p class="muted">${t('fr.inviteText', '{name} gets the invite in souldew right away – no code to read out. It works like “Invite with code”: their app fetches the run once you allow it, never your game files.', { name: friend.name })}</p>
+      <p class="muted">${t('fr.inviteText', '{name} gets the invite in twicable right away – no code to read out. It works like “Invite with code”: their app fetches the run once you allow it, never your game files.', { name: friend.name })}</p>
       <div class="inv-runs" role="radiogroup">
         ${withSeats.map(({ r, free }) => html`<button type="button" role="radio" aria-checked=${pick === r.id} class=${`inv-run ${pick === r.id ? 'on' : ''}`} disabled=${free === 0} onClick=${() => setPick(r.id)}>
           <span class="radio"></span>${coverOf(library, { gameId: r.game?.id, hackId: r.game?.hackId }) ? html`<img class="inv-cover pixel" src=${coverOf(library, { gameId: r.game?.id, hackId: r.game?.hackId })} alt="" />` : html`<span class="inv-cover"></span>`}
@@ -158,7 +158,7 @@ export function InviteModal({ friend, onClose }) {
 function FriendRow({ f, on, onPick, onInvite, library }) {
   const p = f.presence;
   const cover = coverForTitle(library, p?.game?.title);
-  // the friend's nameplate (souldew+) behind their row, still until hovered – drawn by the cosmetics module
+  // the friend's nameplate (twicable+) behind their row, still until hovered – drawn by the cosmetics module
   return html`<${Nameplate} id=${f.user.nameplate || null} class=${`fr-row ${on ? 'on' : ''} ${groupOf(f)}`} data-cos-row="">
     <button type="button" class="fr-pick" onClick=${onPick} aria-pressed=${on}>
       <${Avatar} user=${f.user} size=${38} presence=${p} />
@@ -376,7 +376,7 @@ function FriendPicker({ onClose, onPick, exclude = [], max = 3 }) {
           <input type="checkbox" checked=${sel.some((x) => x.id === f.user.id)} onChange=${() => toggle(f.user)} />
           <${Avatar} user=${f.user} size=${30} presence=${f.presence} />
           <span class="grow stack-s fr-text"><b class="ellipsis">${f.user.name}</b><span class="small muted ellipsis">${presenceText(f.presence)}</span></span></label>`)}</div>`}
-      <p class="small muted">${t('fr.pickSeats', '1 seat is free – pick one friend.|{count} seats are free – pick up to {count} friends.', { count: max })} ${t('fr.pickHint', 'Each friend gets their own invite in souldew. They still need their own copy of the game.')}</p>
+      <p class="small muted">${t('fr.pickSeats', '1 seat is free – pick one friend.|{count} seats are free – pick up to {count} friends.', { count: max })} ${t('fr.pickHint', 'Each friend gets their own invite in twicable. They still need their own copy of the game.')}</p>
     </div>
   <//>`;
 }
@@ -404,7 +404,7 @@ export function RunFriendInvites({ manifest, autoFriends = [] }) {
         gameTitle: shortTitle({ gameId: manifest.game?.id, hackId: manifest.game?.hackId, title: manifest.game?.title }),
         taken,
       });
-      toast({ kind: 'ok', title: t('fr.invitesSent', 'Invite sent|{count} invites sent', { count: friends.length }), text: t('fr.inviteSentText', 'Keep souldew open – you allow them in when their app asks.') });
+      toast({ kind: 'ok', title: t('fr.invitesSent', 'Invite sent|{count} invites sent', { count: friends.length }), text: t('fr.inviteSentText', 'Keep twicable open – you allow them in when their app asks.') });
     } catch (e) {
       toast({ kind: 'death', title: t('fr.inviteFailed', 'Couldn’t send the invite'), text: e.message });
     }
@@ -416,7 +416,7 @@ export function RunFriendInvites({ manifest, autoFriends = [] }) {
   }, [on, auto, manifest.id]);
   if (!on) return null;
   return html`<div class="fr-runinv stack-s">
-    <div class="row"><${Icon} name="heart" size=${14} /><span class="small grow">${t('fr.runInvite', 'Your souldew friends get the invite in the app – no code to read out.')}</span>
+    <div class="row"><${Icon} name="heart" size=${14} /><span class="small grow">${t('fr.runInvite', 'Your twicable friends get the invite in the app – no code to read out.')}</span>
       <button class="btn small go" disabled=${busy || left < 1} title=${left < 1 ? t('fr.noSeatLeft', 'Every seat of this run is taken or has an invite out.') : ''} onClick=${() => setPicking(true)}><${Icon} name="plus" size=${14} />${t('fr.inviteFriends', 'Invite friends')}</button></div>
     ${hosted.map((h) => html`<div class=${`fr-inv row nowrap ${h.state?.phase === 'request' ? 'asking' : ''}`} key=${h.id}>
       <${Avatar} user=${h.friend} size=${30} />

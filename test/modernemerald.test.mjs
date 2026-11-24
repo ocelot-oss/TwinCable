@@ -2,7 +2,7 @@
 // its RAM isn't the retail Emerald's (PokemonModernEmerald3.6.sym: gPlayerParty 0x0201D9CC, gPlayerPartyBackup between
 // it and gEnemyParty 0x0201DE7C, gMain 0x03001574, gSaveBlock1Ptr 0x030036F0, SaveBlock1's flags at +0x1364 – the
 // retail flag numbers –, SaveBlock2's encryption key past +0xAC, a string right in front of gTrainers). Synthetic data shaped
-// like what was measured in the running game (souldew's ROM matrix with the 3.6 patch).
+// like what was measured in the running game (twicable's ROM matrix with the 3.6 patch).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
@@ -252,7 +252,7 @@ test('Modern Emerald: Rare Candies go into the bag through the found save blocks
   assert.deepEqual([slot1[0] | (slot1[1] << 8), (slot1[2] | (slot1[3] << 8)) ^ (KEY & 0xffff)], [68, 99]);
 });
 
-test('Modern Emerald: what souldew reads from the ROM – level caps too now that its badge flags are known', () => {
+test('Modern Emerald: what twicable reads from the ROM – level caps too now that its badge flags are known', () => {
   const rom = { header: { system: 'gba', code: 'BPEE', title: 'POKEMON EMER' }, species: { engine: 'expanded', map: species }, data: { names: ['x'], maps3 }, items: { names: items }, caps: { caps: [15, 19, 24, 29, 31, 33, 42, 46], badgeFlags: 0x867 } };
   const f = romFeatures(rom, addresses);
   assert.deepEqual([f.party, f.battle, f.catch, f.items, f.caps], ['yes', 'yes', 'yes', 'yes', 'yes']);

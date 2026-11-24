@@ -259,7 +259,7 @@ test('/api/account/thanks: signed out works, only opted-in names, ETag to the se
   assert.equal(l.since, '2026-09');
   assert.equal(l.banner, 'night-train');
   const c = w.people.find((p) => p.name === 'Cup');
-  assert.equal(c.banner, null, 'a souldew+ banner a coffee doesn’t cover is not shown');
+  assert.equal(c.banner, null, 'a twicable+ banner a coffee doesn’t cover is not shown');
   assert.ok(!JSON.stringify(w).includes(lena.id) || l.avatar.includes(encodeURIComponent(lena.id)), 'ids only inside the avatar address');
   assert.ok(!JSON.stringify(w).includes(lena.discord.id) && !JSON.stringify(w).includes('quiet') && !JSON.stringify(w).includes(no.handle));
   assert.equal(sent.length, 1);

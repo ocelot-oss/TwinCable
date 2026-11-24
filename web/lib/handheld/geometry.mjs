@@ -1,4 +1,4 @@
-// "Your handheld" in plain numbers (no three.js, no DOM): the souldew handhelds' dimensions, where their buttons, screens,
+// "Your handheld" in plain numbers (no three.js, no DOM): the twicable handhelds' dimensions, where their buttons, screens,
 // LED, speaker holes, slot and feet sit, and – for every face a wrap or a sticker can go on – how far it reaches over the
 // edge and what it must leave bare. The 3D scene (scene.mjs) builds its meshes from the same numbers, the editor places
 // stickers with them, and test/handheld.test.mjs checks the placement rules without a page.

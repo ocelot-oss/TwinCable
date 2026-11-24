@@ -13,13 +13,13 @@
 //  - never the Master Ball (item 1 in every generation): each game has one, and passing it around would let one player
 //    catch two legendaries without a fight;
 //  - Gen 1/2 item numbers differ between the two generations, so a gift only goes to a game of the same generation
-//    (the run's games are, but the receiver checks it), and only an item souldew knows by name.
+//    (the run's games are, but the receiver checks it), and only an item twicable knows by name.
 
 /** Master Ball: item 1 from Gen 1 to Gen 7. */
 export const MASTER_BALL = 1;
 
 /**
- * Gen 1 and 2 items souldew may give, by the game's item number → PokeAPI identifier (pret pokered / pokecrystal
+ * Gen 1 and 2 items twicable may give, by the game's item number → PokeAPI identifier (pret pokered / pokecrystal
  * constants/item_constants.asm, checked against PokeAPI's item_game_indices – where those two disagree, pret is right:
  * Gen 2 0x15 is MAX_ELIXER). The names come from shared/data/pokeapi.json by the identifier (web/lib/data.mjs itemName).
  */
@@ -74,7 +74,7 @@ export function giftable(gen, id, pocket = null) {
   return pocket !== null;
 }
 
-/** The PokeAPI identifier of a Gen 1/2 item souldew may give (its name), or ''. */
+/** The PokeAPI identifier of a Gen 1/2 item twicable may give (its name), or ''. */
 export const gbItemKey = (gen, id) => GB_GIFT_ITEMS[gen]?.[id] || '';
 
 /**

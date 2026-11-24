@@ -1,4 +1,4 @@
-// Play with friends, end to end: two souldew apps (two local servers with their own scratch data folders, as two
+// Play with friends, end to end: two twicable apps (two local servers with their own scratch data folders, as two
 // players have them) signed in to the fake accounts service as two friends. The host invites the friend into a run it
 // created; the service only carries the invite (name, game, a long friend code – never the run's room key); the friend's
 // app accepts, joins with the existing invite-code handshake (over an in-memory relay), the host allows it, and the
@@ -76,7 +76,7 @@ let fake;
 const apps = [];
 const dirs = [];
 async function startApp(name) {
-  const dir = mkdtempSync(join(tmpdir(), `souldew-inv-${name}-`));
+  const dir = mkdtempSync(join(tmpdir(), `twicable-inv-${name}-`));
   dirs.push(dir);
   const port = await freePort();
   const child = spawn(process.execPath, [fileURLToPath(new URL('server/index.mjs', ROOT))], {

@@ -110,7 +110,7 @@ test('read7z unpacks LZMA, LZMA2, Deflate and stored archives with folders, empt
     const entries = read7z(readFileSync(join(FIX, name)));
     const files = Object.fromEntries(entries.filter((e) => !e.dir).map((e) => [e.name, Buffer.from(e.data)]));
     assert.deepEqual(entries.filter((e) => e.dir).map((e) => e.name).sort(), ['a', 'a/sub'], name);
-    assert.equal(files['a/hello.txt'].toString(), 'Hello souldew\n'.repeat(50), name);
+    assert.equal(files['a/hello.txt'].toString(), 'Hello twicable\n'.repeat(50), name);
     assert.equal(files['a/empty.bin'].length, 0, name);
     assert.equal(files['Pokémon – ümlaut.txt'].toString(), 'Glurak ♂ é\n', name);
     assert.deepEqual(files['data.bin'], Buffer.from(fixtureData()), name);
@@ -155,11 +155,11 @@ test('7z bombs: a tiny archive that claims a huge file is refused at once, not d
     assert.ok(Date.now() - t < 1000, `${size}: took ${Date.now() - t} ms`);
   }
   // stored data must carry a checksum – and match it
-  const hello = Buffer.from('hello souldew');
+  const hello = Buffer.from('hello twicable');
   assert.throws(() => read7z(tiny7z({ size: hello.length, packed: hello, coder: 'copy' })), (e) => e.code === 'BAD_7Z' && /checksum/.test(e.message));
   assert.throws(() => read7z(tiny7z({ size: hello.length, packed: hello, coder: 'copy', crc: 1 })), (e) => e.code === 'BAD_7Z' && /CRC/.test(e.message));
   const ok = read7z(tiny7z({ size: hello.length, packed: hello, coder: 'copy', crc: crc32(hello) }));
-  assert.equal(Buffer.from(ok[0].data).toString(), 'hello souldew');
+  assert.equal(Buffer.from(ok[0].data).toString(), 'hello twicable');
 });
 
 test('LZMA / LZMA2 streams that end early are errors, not zeros', () => {
@@ -233,7 +233,7 @@ test('extractArchive unpacks zip and 7z, keeps folders and checks CRCs', () => {
   writeFileSync(seven, readFileSync(join(FIX, 'lzma2.7z')));
   const out7 = join(TMP, 'x-7z');
   extractArchive(seven, out7);
-  assert.equal(readFileSync(join(out7, 'a', 'hello.txt'), 'utf8'), 'Hello souldew\n'.repeat(50));
+  assert.equal(readFileSync(join(out7, 'a', 'hello.txt'), 'utf8'), 'Hello twicable\n'.repeat(50));
   assert.ok(existsSync(join(out7, 'a', 'sub')));
   assert.equal(readFileSync(join(out7, 'a', 'empty.bin')).length, 0);
   // a damaged entry: nothing is "installed" from it
@@ -249,7 +249,7 @@ test('extractArchiveAsync unpacks on a worker thread and reports its errors', as
   const out = join(TMP, 'x-async');
   const written = await extractArchiveAsync(seven, out);
   assert.equal(written.length, 4);
-  assert.equal(readFileSync(join(out, 'a', 'hello.txt'), 'utf8'), 'Hello souldew\n'.repeat(50));
+  assert.equal(readFileSync(join(out, 'a', 'hello.txt'), 'utf8'), 'Hello twicable\n'.repeat(50));
   const bomb = join(TMP, 'bomb.7z');
   writeFileSync(bomb, tiny7z({ size: 1_000_000_000, packed: Buffer.alloc(10) }));
   await assert.rejects(extractArchiveAsync(bomb, join(TMP, 'x-bomb')), (e) => e.code === 'BAD_7Z');

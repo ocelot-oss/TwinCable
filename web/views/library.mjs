@@ -71,7 +71,7 @@ export function DiscoverModal({ onClose }) {
     ${!res && !error && html`<div class="disc-search" role="status"><span class="disc-spin" aria-hidden="true"></span>
       <div><b>${IS_MAC ? t('disc.searching', 'Looking in Downloads, Desktop, Documents, iCloud Drive and game folders …') : IS_WIN ? t('disc.searchingPc', 'Looking in Downloads, Desktop, Documents, OneDrive and game folders …')
         : t('disc.searchingLinux', 'Looking in Downloads, Desktop, Documents, game folders (EmuDeck, RetroDECK, RetroArch) and on SD cards …')}</b>
-      <p class="small muted">${IS_MAC ? t('disc.privacy', 'Only file names and the first bytes of game files are read – nothing leaves your Mac. macOS may ask once whether souldew may look into these folders.')
+      <p class="small muted">${IS_MAC ? t('disc.privacy', 'Only file names and the first bytes of game files are read – nothing leaves your Mac. macOS may ask once whether twicable may look into these folders.')
         : t('disc.privacyPc', 'Only file names and the first bytes of game files are read – nothing leaves your PC.')}</p></div></div>`}
     ${error && html`<div class="warning error" role="alert">${error}</div>`}
     ${busy && unpacking?.title && html`<div class="disc-search" role="status"><span class="disc-spin" aria-hidden="true"></span>
@@ -95,7 +95,7 @@ export function DiscoverModal({ onClose }) {
 }
 
 /**
- * 3DS games the scan found inside zips in your library folders (scanLibrary().zipped): souldew plays 3DS games from
+ * 3DS games the scan found inside zips in your library folders (scanLibrary().zipped): twicable plays 3DS games from
  * the unpacked file, so they are offered for unpacking here instead of sitting on the shelf unplayable. Unpacking puts
  * the game into the library folder (the zip stays where it is); the progress shows as a toast (web/app.mjs).
  */
@@ -123,7 +123,7 @@ function ZippedGames({ zipped }) {
   };
   return html`<div class="panel flat zipped-games" style="margin-bottom:22px">
     <div class="panel-head"><h2>${t('lib.zippedTitle', 'Zipped 3DS game|Zipped 3DS games', { count: zipped.length })}</h2>
-      <p>${t('lib.zippedText', 'souldew plays 3DS games from the unpacked file. Unpack it once into your library – the zip stays where it is.|souldew plays 3DS games from the unpacked file. Unpack them once into your library – the zips stay where they are.', { count: zipped.length })}</p></div>
+      <p>${t('lib.zippedText', 'twicable plays 3DS games from the unpacked file. Unpack it once into your library – the zip stays where it is.|twicable plays 3DS games from the unpacked file. Unpack them once into your library – the zips stay where they are.', { count: zipped.length })}</p></div>
     <ul class="disc-list">${zipped.map((z) => html`<li class="disc-item" key=${z.id}><div class="row">
       ${z.gameId ? html`<img class="disc-cover pixel" src=${coverOf(library, { gameId: z.gameId })} alt="" loading="lazy" />` : html`<span class="disc-cover none">3DS</span>`}
       <span class="disc-body grow"><b>${nameOf(z)}</b>
@@ -139,7 +139,7 @@ export async function addGamesFlow({ reloadLibrary, folder = false, toast } = {}
   let before = null;
   try {
     if (window.sls?.pickFiles) {
-      const paths = await window.sls.pickFiles({ folder, title: t('lib.addTitle', 'Add games to souldew') });
+      const paths = await window.sls.pickFiles({ folder, title: t('lib.addTitle', 'Add games to twicable') });
       if (!paths?.length) return;
       before = await libraryNow();
       if (folder) {
@@ -239,7 +239,7 @@ function RomHackAction({ rom, onLinked }) {
         <button class="btn small ghost" disabled=${busy} onClick=${() => save({ none: true })}>${t('lib.hackNotIt', 'No, it isn’t')}</button></div></div>`}
     ${!open ? html`<div><button class="btn small ghost" onClick=${() => setOpen(true)}>${t('lib.isHack', 'This is a ROM hack…')}</button></div>`
       : html`<div class="panel flat stack">
-        <p class="small muted">${t('lib.isHackHint', 'An already-patched ROM still names the original game in its header. Tell souldew which hack it is – it then shows up on the hack’s page, and runs get the hack’s settings.')}</p>
+        <p class="small muted">${t('lib.isHackHint', 'An already-patched ROM still names the original game in its header. Tell twicable which hack it is – it then shows up on the hack’s page, and runs get the hack’s settings.')}</p>
         <label class="field">${t('lib.hackPick', 'Which hack?')}
           <select value=${pick} onChange=${(e) => setPick(e.target.value)}>
             <option value="">–</option>
@@ -289,8 +289,8 @@ async function uploadFiles(files) {
 /** Files the server didn't take (server/lib/library.mjs importFiles `skipped`) as failures to show: { name, error }. */
 export function skippedFailures(skipped) {
   return (skipped || []).map((x) => ({ name: x.name,
-    error: x.why === 'archive' ? t('lib.skipArchive', 'souldew can’t open .7z or .rar archives – unpack the game first (with 7-Zip, for example), then add the .3ds, .cci or .cxi file.')
-      : t('lib.skipType', 'not a game or patch file souldew knows') }));
+    error: x.why === 'archive' ? t('lib.skipArchive', 'twicable can’t open .7z or .rar archives – unpack the game first (with 7-Zip, for example), then add the .3ds, .cci or .cxi file.')
+      : t('lib.skipType', 'not a game or patch file twicable knows') }));
 }
 
 function toastFailures(toast, failures) {
@@ -563,7 +563,7 @@ export function LibraryView() {
 
     ${hacks.length + ownPatches.length + customRoms.length > 0 && html`<div class="stack" style="margin-top:34px">
       <h2>${t('lib.popularHacks', 'Popular ROM hacks')}</h2>
-      <p class="small muted">${t('lib.hacksHint2', 'Fan-made versions. If you have a patch file for one, add it here and souldew applies it to your own ROM.')}</p>
+      <p class="small muted">${t('lib.hacksHint2', 'Fan-made versions. If you have a patch file for one, add it here and twicable applies it to your own ROM.')}</p>
       <div class="shelf">
         ${ownPatches.map((c) => html`<${Cart} key=${c.family} hack title=${c.title} sub=${c.sub} color=${c.color} system=${c.system} owned
           onClick=${() => setOpen({ kind: 'patch', id: c.family })} />`)}
@@ -716,7 +716,7 @@ function GameDetail({ id, onClose, openHack }) {
 
 /**
  * A 3DS game's update (server/lib/library.mjs: rom.update – or, while the game isn't in the library yet, the update
- * file waiting for it): which one souldew's player starts the game with, and "Remove". `randomizable`: the game's runs
+ * file waiting for it): which one twicable's player starts the game with, and "Remove". `randomizable`: the game's runs
  * can be randomized (those start without the update – server/lib/ctrupdate.mjs).
  */
 function CtrUpdateFacts({ rom, waiting = null, randomizable = false }) {
@@ -728,15 +728,15 @@ function CtrUpdateFacts({ rom, waiting = null, randomizable = false }) {
     try {
       await api.post('/api/library/ctr-update/remove', { id: u.id });
       await reloadLibrary();
-      toast({ kind: 'ok', title: t('ctrUpdate.removed', 'Update removed'), text: t('ctrUpdate.removedText', 'souldew’s player starts the game without it now.') });
+      toast({ kind: 'ok', title: t('ctrUpdate.removed', 'Update removed'), text: t('ctrUpdate.removedText', 'twicable’s player starts the game without it now.') });
     } catch (e) {
       toast({ kind: 'death', title: t('ctrUpdate.removeFailed', 'Couldn’t remove the update'), text: e.message });
     } finally {
       setBusy(false);
     }
   };
-  const state = !u ? null : u.encrypted ? t('ctrUpdate.encrypted', 'encrypted – souldew can’t use it, it needs a decrypted copy')
-    : !rom ? t('ctrUpdate.waiting', 'used as soon as you add the game') : t('ctrUpdate.installed', 'installed – souldew’s player starts the game with it');
+  const state = !u ? null : u.encrypted ? t('ctrUpdate.encrypted', 'encrypted – twicable can’t use it, it needs a decrypted copy')
+    : !rom ? t('ctrUpdate.waiting', 'used as soon as you add the game') : t('ctrUpdate.installed', 'installed – twicable’s player starts the game with it');
   return html`<dt>${t('ctrUpdate.label', 'Update')}</dt><dd>${u
     ? html`<div><span class="mono small">${updateVersionLabel(u)}</span> <span class=${`chip ${u.encrypted ? 'bad' : rom ? 'ok' : ''}`}>${state}</span>
         <button class="btn small ghost" disabled=${busy} onClick=${remove}><${Icon} name="close" size=${14} />${t('ctrUpdate.remove', 'Remove')}</button></div>
@@ -746,7 +746,7 @@ function CtrUpdateFacts({ rom, waiting = null, randomizable = false }) {
 }
 
 /**
- * "What souldew can read for this game": the features its ROM data makes possible (shared/live/features.mjs – the same
+ * "What twicable can read for this game": the features its ROM data makes possible (shared/live/features.mjs – the same
  * judgement the play view starts from), worked out from the file itself (/api/rom/locations, cached after the first
  * time). `src` = the /api/… URL the emulator would load, `gameId` = the catalog game (its curated cap list).
  */
@@ -781,14 +781,14 @@ export function ReadsLine({ src, gameId = null }) {
   if (f?.types === 'partial') yes.push(t('reads.typesOnly', 'types (no matchups)'));
   const no = f ? FEATURES.filter((k) => f[k] === 'no').map((k) => label[k]) : [];
   const body = st.state === 'checking' ? html`<span class="muted small">${t('reads.checking', 'Checking the ROM …')}</span>`
-    : st.state === 'error' ? html`<span class="muted small">${t('reads.error', 'Couldn’t check this ROM – what souldew reads shows once the game runs.')}</span>`
-      : st.state === 'unknown' ? html`<span class="muted small">${t('reads.unknown', 'Not known yet – what souldew reads shows once the game runs.')}</span>`
+    : st.state === 'error' ? html`<span class="muted small">${t('reads.error', 'Couldn’t check this ROM – what twicable reads shows once the game runs.')}</span>`
+      : st.state === 'unknown' ? html`<span class="muted small">${t('reads.unknown', 'Not known yet – what twicable reads shows once the game runs.')}</span>`
         : yes.length ? yes.join(' · ') : html`<span class="muted">${t('reads.nothing', 'Nothing live – enter catches by hand')}</span>`;
-  return html`<dt>${t('reads.title', 'souldew reads')}</dt><dd class="reads-line">${body}
+  return html`<dt>${t('reads.title', 'twicable reads')}</dt><dd class="reads-line">${body}
     ${f && no.length > 0 && yes.length > 0 && html`<div class="small muted">${t('reads.not', 'Not for this game: {list} – hidden rather than guessed.', { list: no.join(', ') })}</div>`}</dd>`;
 }
 
-// How far souldew reads a ROM hack live (catalog `live`, docs/TESTED_GAMES.md) and what to know about it (`liveNote`).
+// How far twicable reads a ROM hack live (catalog `live`, docs/TESTED_GAMES.md) and what to know about it (`liveNote`).
 const liveLabel = (v) => ({
   yes: t('lib.liveYes', 'Read live'),
   partial: t('lib.livePartial', 'Read live, with limits'),
@@ -799,7 +799,7 @@ const liveNote = (k) => ({
   cfru: t('lib.liveNote.cfru', 'Team, place, battles and catches are read live, held items by the names the game gives them, types and matchups from the ROM. No level cap is shown – the hack’s leaders can’t be told apart with confidence – and the cheats are off.'),
   rnb: t('lib.liveNote.rnb', 'Team, place, battles and catches are read live. The cheats are off and held items aren’t named – the hack numbers its items its own way.'),
   types: t('lib.liveNote.types', 'Team, place, battles and catches are read live, the hack’s own types and their matchups from the ROM. The cheats are off.'),
-  quetzal: t('lib.liveNote.quetzal', 'Team, place, battles and catches are read live, held items by the names the game gives them, its own Pokémon by their names from the ROM. The PC boxes aren’t read and no level cap is shown (the hack has its own). Off for this hack: the cheats, souldew’s randomizer (use the hack’s own), link trades and battles, Shared World and raids.'),
+  quetzal: t('lib.liveNote.quetzal', 'Team, place, battles and catches are read live, held items by the names the game gives them, its own Pokémon by their names from the ROM. The PC boxes aren’t read and no level cap is shown (the hack has its own). Off for this hack: the cheats, twicable’s randomizer (use the hack’s own), link trades and battles, Shared World and raids.'),
 }[k] || '');
 
 function HackDetail({ id, onClose, openGame }) {
@@ -914,7 +914,7 @@ function PatchDetail({ family, onClose, openGame }) {
         <${Cart} big hack title=${title} color=${game?.color} system=${baseRom?.system} owned />
       </div>
       <div class="stack">
-        <p>${t('lib.ownPatchText', 'A ROM hack that isn’t in souldew’s list – souldew applies your patch file to your own ROM, like for the hacks it knows.')}</p>
+        <p>${t('lib.ownPatchText', 'A ROM hack that isn’t in twicable’s list – twicable applies your patch file to your own ROM, like for the hacks it knows.')}</p>
         ${patch.error && html`<p class="warning">${t('lib.patchUnreadable', 'This patch file can’t be read: {error}', { error: patch.error })}</p>`}
         <dl class="facts">
           <dt>${t('lib.patch', 'Patch')}</dt><dd>${card.versions.length > 1
@@ -972,7 +972,7 @@ function RomDetail({ id, onClose, openHack }) {
           <${ReadsLine} src=${`/api/library/rom?id=${encodeURIComponent(r.id)}`} />
         </dl>
         ${r.customHack
-          ? html`<p class="small muted">${t('lib.hackMarkedOther', 'You marked this ROM as a ROM hack that isn’t in souldew’s list.')}
+          ? html`<p class="small muted">${t('lib.hackMarkedOther', 'You marked this ROM as a ROM hack that isn’t in twicable’s list.')}
               <button class="btn small ghost" onClick=${() => markRomHack(r, {}, { toast, reloadLibrary })}>${t('lib.hackUndo', 'Undo')}</button></p>`
           : html`<p class="small muted">${t('lib.unknownRom', 'This ROM is not in the catalog (maybe a hack or another region). You can still play it.')}</p>
             <${RomHackAction} rom=${r} onLinked=${openHack} />`}
@@ -995,7 +995,7 @@ export function liveSupportText(g) {
     3: t('lib.liveGen45', 'Party + PC boxes live incl. catch location'),
     4: t('lib.liveGen45', 'Party + PC boxes live incl. catch location'),
     5: t('lib.liveGen3', 'Party live incl. catch location'),
-    // 3DS: in souldew's own player (or the Azahar app over its RPC server) – the party, no PC boxes
+    // 3DS: in twicable's own player (or the Azahar app over its RPC server) – the party, no PC boxes
     6: t('lib.liveGen3', 'Party live incl. catch location'),
     7: t('lib.liveGen3', 'Party live incl. catch location'),
   };

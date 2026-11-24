@@ -1,8 +1,8 @@
 // #77: Run & Bun (Emerald, an expanded engine) – a Pokémon fished in Littleroot Town wasn't filed, the place sign kept
-// "First encounter open". What souldew read from the running game (checked in Run & Bun 1.07 with the ROM test
+// "First encounter open". What twicable read from the running game (checked in Run & Bun 1.07 with the ROM test
 // matrix): Littleroot (map 0.9, region map section 0) has a pond and a fishing table of its own (Surskit, Lotad, Finneon,
 // Tympole at Lv 2–3); a fished Pokémon carries met location 0, and with room in the team it was filed under "Littleroot
-// Town" as it should be. With a full team the game sends the catch to the PC – and souldew didn't read Run & Bun's PC
+// Town" as it should be. With a full team the game sends the catch to the PC – and twicable didn't read Run & Bun's PC
 // at all (only expanded engines that kept the retail item numbers), so the catch stayed unseen until it joined the team.
 // Run & Bun keeps the PC where Emerald does (gPokemonStoragePtr right after the save block pointers, 14 boxes "Box1" …).
 // These tests feed the live readers simulated RAM (the layout measured in the game) and the run logic the snapshots

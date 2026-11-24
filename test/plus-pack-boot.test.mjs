@@ -1,4 +1,4 @@
-// souldew+ pack at start: the account is read in the background (the saved sign-in may wait for the keychain), so right
+// twicable+ pack at start: the account is read in the background (the saved sign-in may wait for the keychain), so right
 // after start the player only LOOKS signed out. The pack must not be wiped then (it was: refreshPack() at boot ended in
 // DELETE /api/plus/pack, and every member downloaded the pack again at every start). It is removed only once the account
 // is known and really signed out, or the membership really ended.
@@ -49,12 +49,12 @@ async function makePack() {
   const key = globalThis.crypto.getRandomValues(new Uint8Array(32));
   const kid = '1';
   const version = '1.0.0';
-  const { manifest, manifestBytes } = await buildManifest({ id: 'souldew-plus', version, kind: 'mixed', title: 'Test', files: FILES });
+  const { manifest, manifestBytes } = await buildManifest({ id: 'twicable-plus', version, kind: 'mixed', title: 'Test', files: FILES });
   const signature = await signer.sign(manifestBytes);
   const sealed = new Map();
-  for (const f of FILES) sealed.set(`${BASE}/${version}/file?path=${encodeURIComponent(f.path)}&k=${kid}`, await sealFile({ pack: 'souldew-plus', version, path: f.path, wm: 'wm_acct', kid, key, bytes: f.bytes }));
+  for (const f of FILES) sealed.set(`${BASE}/${version}/file?path=${encodeURIComponent(f.path)}&k=${kid}`, await sealFile({ pack: 'twicable-plus', version, path: f.path, wm: 'wm_acct', kid, key, bytes: f.bytes }));
   const answer = {
-    packId: 'souldew-plus', version, manifest: b64url(manifestBytes), signature: b64url(signature), keyId: kid, watermark: 'wm_acct',
+    packId: 'twicable-plus', version, manifest: b64url(manifestBytes), signature: b64url(signature), keyId: kid, watermark: 'wm_acct',
     files: manifest.files.map((f) => ({ path: f.path, url: `${BASE}/${version}/file?path=${encodeURIComponent(f.path)}&k=${kid}` })),
   };
   K.PRODUCTION_KEYS.push(b64url(signer.publicKey));
@@ -77,7 +77,7 @@ function localServer(p) {
     if (!b) return { ok: false, status: 404, headers: new Map() };
     return { ok: true, status: 200, headers: new Map([['content-length', String(b.length)]]), body: (async function* chunks() { yield b; })() };
   };
-  const cache = createPlusPack({ dir: mkdtempSync(join(tmpdir(), 'souldew-plus-boot-')), devDir: '', fetchImpl, env: {} });
+  const cache = createPlusPack({ dir: mkdtempSync(join(tmpdir(), 'twicable-plus-boot-')), devDir: '', fetchImpl, env: {} });
   const account = { loaded: false, signedIn: true, tier: 'plus', until: Date.now() + 30 * DAY };
   const log = [];
   globalThis.fetch = async (url, opts = {}) => {
@@ -93,8 +93,8 @@ function localServer(p) {
         const plus = account.tier === 'plus';
         return json({ tier: account.tier, until: plus ? account.until : null, packKey: plus ? b64url(p.key) : null, packKeyId: plus ? p.kid : null });
       }
-      if (url === '/api/account/packs') return json({ items: [{ id: 'souldew-plus', kind: 'mixed', entitled: account.tier === 'plus' }] });
-      if (url === '/api/account/packs/souldew-plus/download') return json({ ...p.answer, packKeyId: p.kid, watermarkId: p.answer.watermark });
+      if (url === '/api/account/packs') return json({ items: [{ id: 'twicable-plus', kind: 'mixed', entitled: account.tier === 'plus' }] });
+      if (url === '/api/account/packs/twicable-plus/download') return json({ ...p.answer, packKeyId: p.kid, watermarkId: p.answer.watermark });
       if (url === '/api/plus/pack/meta' && m === 'GET') return json(cache.meta());
       if (url === '/api/plus/pack/meta' && m === 'POST') return json(cache.touch(body));
       if (url === '/api/plus/pack/fetch') return json(await cache.fetch(body));
@@ -117,7 +117,7 @@ async function cachedFromLastTime(srv, p) {
   srv.downloads.length = 0;
 }
 
-test('a souldew+ member at start: no DELETE while the account is still being read – the cached pack is kept and used', async () => {
+test('a twicable+ member at start: no DELETE while the account is still being read – the cached pack is kept and used', async () => {
   const p = await makePack();
   const srv = localServer(p);
   await cachedFromLastTime(srv, p);
@@ -215,7 +215,7 @@ test('signed out at start for real (nothing saved): known – the old cache is r
   assert.ok(srv.cache.meta().none);
 });
 
-test('the membership ended (the verified tier is no longer souldew+): the pack is removed', async () => {
+test('the membership ended (the verified tier is no longer twicable+): the pack is removed', async () => {
   const p = await makePack();
   const srv = localServer(p);
   srv.account.loaded = true;

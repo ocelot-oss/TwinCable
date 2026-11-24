@@ -1,5 +1,5 @@
 // "Playing now" (docs/PRIVACY.md): while a game actually runs, the page tells the local server every minute – the
-// server sends the anonymous heartbeat to the souldew Discord bot when Settings › General allows it
+// server sends the anonymous heartbeat to the twicable Discord bot when Settings › General allows it
 // (server/lib/presence.mjs). Only the system and the mode leave this page; the game, the run and the player don't.
 
 export const EVERY_MS = 60_000;

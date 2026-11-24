@@ -1,5 +1,5 @@
 // Importing a battery save (a player on Discord: "can I bring my old .sav?"): the file is checked and brought into
-// souldew's layout (shared/savefile.mjs), the save it replaces is always backed up first – next to the other save
+// twicable's layout (shared/savefile.mjs), the save it replaces is always backed up first – next to the other save
 // backups (a run's `backups` folder, the graveyard's too; the solo games' `Saves/backups/<game>`) – and one step back
 // is kept: Undo puts the replaced save back (and keeps the imported one as a backup as well, nothing is lost).
 //
@@ -7,8 +7,8 @@
 // player or an external emulator has the file open, and the page closes the browser player first.
 //
 // 3DS: a Checkpoint / JKSM backup (a folder of the save's files, or a zip of it) goes into the game's save folder in
-// souldew's own 3DS player – only where the game already made that folder (started once and saved): Azahar formats a
-// save archive itself the first time, and a folder souldew made up could be one the game refuses.
+// twicable's own 3DS player – only where the game already made that folder (started once and saved): Azahar formats a
+// save archive itself the first time, and a folder twicable made up could be one the game refuses.
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync, cpSync, renameSync, mkdtempSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { createHash, randomBytes } from 'node:crypto';
@@ -76,7 +76,7 @@ export function readZipFiles(bytes, tmpDir, { max = 16 * 1024 * 1024 } = {}) {
 }
 
 /**
- * Check a file for a game: brought into souldew's layout and looked at. `game`: { system, gameId (the catalog id – a
+ * Check a file for a game: brought into twicable's layout and looked at. `game`: { system, gameId (the catalog id – a
  * hack's: null), clock } → { bytes, size, from, notes, check: { verdict, found, want, gen, party } }. Throws (with a
  * code) for a size or format no cartridge of the system has.
  */
@@ -107,7 +107,7 @@ export function importBackups(dir, key) {
 }
 
 /**
- * The oldest import backups past KEEP_BACKUPS go (only souldew's own `import-…` files – by their exact names) – except
+ * The oldest import backups past KEEP_BACKUPS go (only twicable's own `import-…` files – by their exact names) – except
  * the oldest "before": the save the player had before their first import, which a few tries with other files must
  * never cost them.
  */
@@ -267,7 +267,7 @@ export function checkCtrImport(files, { archive, gameId = null }) {
  * save as it was. → { at, backup (folder name) }
  */
 export function replaceCtrSave({ archive, files, backupDir, key, now = Date.now() }) {
-  if (!archive || !existsSync(archive)) throw httpError(409, 'Start the game in souldew once and save in it first', 'ctrSaveNotStarted');
+  if (!archive || !existsSync(archive)) throw httpError(409, 'Start the game in twicable once and save in it first', 'ctrSaveNotStarted');
   const stamp = stampNow(now);
   const backup = `${PREFIX}${key}-${stamp}-before`;
   try {

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <!-- souldew: a handheld whose screen shows the two linked rings (player 1 blue, player 2 pink).
+  <!-- twicable: a handheld whose screen shows the two linked rings (player 1 blue, player 2 pink).
        macOS icon grid: the body fills the 824 px squircle, no outline – high contrast on light and dark docks. -->
   <defs>
     <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">

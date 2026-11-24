@@ -2,12 +2,12 @@
 // shared by the Electron updater, scripts/release.mjs and the tests.
 //
 // Feed format (latest.json, published next to the DMG, the Windows installer and the Linux AppImage of each GitHub release):
-//   { version: '2.1.0', notes: '…', url: 'https://…/souldew-2.1.0-arm64.dmg',
+//   { version: '2.1.0', notes: '…', url: 'https://…/twicable-2.1.0-arm64.dmg',
 //     sha256: '<64 hex>', size: 123456789, minVersion?: '2.0.0', page?: 'https://…', pubDate?: '…',
-//     assets?: { 'win32-x64': { name: 'souldew-2.1.0-win-x64-setup.exe', url: 'https://…', sha256: '<64 hex>', size: 98765432 },
-//                'linux-x64': { name: 'souldew-2.1.0-linux-x86_64.AppImage', url: 'https://…', sha256: '<64 hex>', size: 123456789 } },
+//     assets?: { 'win32-x64': { name: 'twicable-2.1.0-win-x64-setup.exe', url: 'https://…', sha256: '<64 hex>', size: 98765432 },
+//                'linux-x64': { name: 'twicable-2.1.0-linux-x86_64.AppImage', url: 'https://…', sha256: '<64 hex>', size: 123456789 } },
 //     sig?: '<base64 Ed25519 signature of canonicalFeed(feed)>' }
-// The top-level url/sha256/size are the macOS DMG – that is all souldew ≤ 2.0 knows. Other platforms live in
+// The top-level url/sha256/size are the macOS DMG – that is all twicable ≤ 2.0 knows. Other platforms live in
 // `assets` (Windows added in 2.1, Linux after it): older apps ignore unknown fields and unknown `assets` keys, and the
 // signature covers every field, `assets` included, so the same signed latest.json serves all of them
 // (test/update.test.mjs runs the 2.0.0 and 2.1.0 code against such a feed).
@@ -213,17 +213,17 @@ export function canonicalFeed(feed) {
 }
 
 /** Release asset name without spaces (GitHub would turn them into dots and break the URL in the feed). */
-export const dmgAssetName = (version, arch = 'arm64') => `souldew-${version}-${arch}.dmg`;
+export const dmgAssetName = (version, arch = 'arm64') => `twicable-${version}-${arch}.dmg`;
 
 /** The Windows installer of a release (package.json → build.win.artifactName builds exactly this name). */
-export const winAssetName = (version, arch = 'x64') => `souldew-${version}-win-${arch}-setup.exe`;
+export const winAssetName = (version, arch = 'x64') => `twicable-${version}-win-${arch}-setup.exe`;
 
 // electron-builder names the architecture the way each Linux package format does: x86_64 for AppImages, amd64 for .deb.
 const APPIMAGE_ARCH = { x64: 'x86_64', arm64: 'arm64' };
 const DEB_ARCH = { x64: 'amd64', arm64: 'arm64' };
 
 /** The Linux AppImage of a release (package.json → build.linux.artifactName builds exactly this name). */
-export const linuxAssetName = (version, arch = 'x64') => `souldew-${version}-linux-${APPIMAGE_ARCH[arch] || arch}.AppImage`;
+export const linuxAssetName = (version, arch = 'x64') => `twicable-${version}-linux-${APPIMAGE_ARCH[arch] || arch}.AppImage`;
 
 /** The Debian / Ubuntu package of a release – only uploaded next to the AppImage, never in the feed (it can't self-update). */
-export const debAssetName = (version, arch = 'x64') => `souldew-${version}-linux-${DEB_ARCH[arch] || arch}.deb`;
+export const debAssetName = (version, arch = 'x64') => `twicable-${version}-linux-${DEB_ARCH[arch] || arch}.deb`;

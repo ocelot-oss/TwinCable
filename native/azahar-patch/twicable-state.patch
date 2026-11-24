@@ -13,34 +13,34 @@ diff --git a/src/citra_libretro/citra_libretro.cpp b/src/citra_libretro/citra_li
  #include <numeric>
  #include <vector>
  #include <math.h>
-@@ -912,4 +916,83 @@ RETRO_API uint64_t souldew_title_id(void) {
+@@ -912,4 +916,83 @@ RETRO_API uint64_t twicable_title_id(void) {
      return process && process->codeset ? process->codeset->program_id : 0;
  }
  
 +
-+// ---- souldew: a save state that stops the game only while it is copied ----------------------------------------------
++// ---- twicable: a save state that stops the game only while it is copied ----------------------------------------------
 +// retro_serialize_size packs the state between two frames – serializing ~300 MB of the 3DS' memory into a stringstream
-+// and compressing it with zstd took 0.4 s on a Windows PC, a gap in the sound (no frames meanwhile) every time souldew's
++// and compressing it with zstd took 0.4 s on a Windows PC, a gap in the sound (no frames meanwhile) every time twicable's
 +// play view saved its resume state (every 2 minutes). Here the game stops only while the state is copied into one buffer;
-+// zstd and the header run on a thread of their own, and souldew collects the result a few frames later.
++// zstd and the header run on a thread of their own, and twicable collects the result a few frames later.
 +namespace {
-+struct SouldewStateJob {
++struct TwicableStateJob {
 +    std::mutex mx;
 +    int status = 0; // 0 being packed, 1 ready, -1 failed
 +    std::vector<u8> out;
 +};
-+std::shared_ptr<SouldewStateJob> souldew_state_job;
++std::shared_ptr<TwicableStateJob> twicable_state_job;
 +} // namespace
 +
 +/// Starts a save state: 1 started, 0 the last one is still being packed, -1 failed (no game, the game's file / network
 +/// operations didn't settle, or serializing failed). Call between two frames, from the thread that runs the core.
-+RETRO_API int souldew_state_begin(void) {
-+    if (souldew_state_job) {
-+        std::lock_guard lock{souldew_state_job->mx};
-+        if (souldew_state_job->status == 0)
++RETRO_API int twicable_state_begin(void) {
++    if (twicable_state_job) {
++        std::lock_guard lock{twicable_state_job->mx};
++        if (twicable_state_job->status == 0)
 +            return 0;
 +    }
-+    souldew_state_job.reset();
++    twicable_state_job.reset();
 +    auto& system = Core::System::GetInstance();
 +    if (!system.IsPoweredOn() || !DrainAsyncOperations(system))
 +        return -1;
@@ -51,7 +51,7 @@ diff --git a/src/citra_libretro/citra_libretro.cpp b/src/citra_libretro/citra_li
 +        LOG_ERROR(Frontend, "Error saving state: {}", e.what());
 +        return -1;
 +    }
-+    auto job = std::make_shared<SouldewStateJob>();
++    auto job = std::make_shared<TwicableStateJob>();
 +    const auto run = [job, pack]() {
 +        std::vector<u8> r;
 +        try {
@@ -68,31 +68,31 @@ diff --git a/src/citra_libretro/citra_libretro.cpp b/src/citra_libretro/citra_li
 +    } catch (const std::exception&) {
 +        run(); // (no thread to be had: pack it here)
 +    }
-+    souldew_state_job = job;
++    twicable_state_job = job;
 +    return 1;
 +}
 +
 +/// The started save state's size once it is packed, 0 while it is still being packed, -1 failed or none started.
-+RETRO_API int64_t souldew_state_poll(void) {
-+    if (!souldew_state_job)
++RETRO_API int64_t twicable_state_poll(void) {
++    if (!twicable_state_job)
 +        return -1;
-+    std::lock_guard lock{souldew_state_job->mx};
-+    if (souldew_state_job->status == 0)
++    std::lock_guard lock{twicable_state_job->mx};
++    if (twicable_state_job->status == 0)
 +        return 0;
-+    return souldew_state_job->status == 1 ? static_cast<int64_t>(souldew_state_job->out.size()) : -1;
++    return twicable_state_job->status == 1 ? static_cast<int64_t>(twicable_state_job->out.size()) : -1;
 +}
 +
-+/// Copies the packed save state into `out` (at least souldew_state_poll() bytes) and forgets it; false if it isn't ready.
-+RETRO_API bool souldew_state_take(void* out, size_t size) {
-+    if (!souldew_state_job || !out)
++/// Copies the packed save state into `out` (at least twicable_state_poll() bytes) and forgets it; false if it isn't ready.
++RETRO_API bool twicable_state_take(void* out, size_t size) {
++    if (!twicable_state_job || !out)
 +        return false;
 +    {
-+        std::lock_guard lock{souldew_state_job->mx};
-+        if (souldew_state_job->status != 1 || size < souldew_state_job->out.size())
++        std::lock_guard lock{twicable_state_job->mx};
++        if (twicable_state_job->status != 1 || size < twicable_state_job->out.size())
 +            return false;
-+        std::memcpy(out, souldew_state_job->out.data(), souldew_state_job->out.size());
++        std::memcpy(out, twicable_state_job->out.data(), twicable_state_job->out.size());
 +    }
-+    souldew_state_job.reset();
++    twicable_state_job.reset();
 +    return true;
 +}
 +
@@ -101,12 +101,12 @@ diff --git a/src/citra_libretro/libretro.osx.def b/src/citra_libretro/libretro.o
 --- a/src/citra_libretro/libretro.osx.def
 +++ b/src/citra_libretro/libretro.osx.def
 @@ -35,3 +35,6 @@ _retro_get_memory_size
- _souldew_read_memory
- _souldew_title_id
- _souldew_write_memory
-+_souldew_state_begin
-+_souldew_state_poll
-+_souldew_state_take
+ _twicable_read_memory
+ _twicable_title_id
+ _twicable_write_memory
++_twicable_state_begin
++_twicable_state_poll
++_twicable_state_take
 diff --git a/src/core/core.h b/src/core/core.h
 --- a/src/core/core.h
 +++ b/src/core/core.h
@@ -122,7 +122,7 @@ diff --git a/src/core/core.h b/src/core/core.h
  
      std::vector<u8> SaveStateBuffer() const;
  
-+    /// souldew: SaveStateBuffer in two halves – the state copied out now (between two frames: the game stops only for
++    /// twicable: SaveStateBuffer in two halves – the state copied out now (between two frames: the game stops only for
 +    /// that), and a function that packs it (zstd and the header: the slow part, run it on any thread).
 +    std::function<std::vector<u8>()> SaveStateDeferred() const;
 +
@@ -147,7 +147,7 @@ diff --git a/src/core/savestate.cpp b/src/core/savestate.cpp
  }
  
 +namespace {
-+/// souldew: an output stream straight into a vector (sized like the last state: no stringstream doubling its buffer,
++/// twicable: an output stream straight into a vector (sized like the last state: no stringstream doubling its buffer,
 +/// no copy out of it – the part of a save state the game waits for is copying its memory once).
 +class VectorOut : public std::streambuf {
 +public:

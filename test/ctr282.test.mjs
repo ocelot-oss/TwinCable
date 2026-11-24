@@ -204,7 +204,7 @@ test('importFiles: games are copied off the main thread; .7z / .rar are named as
   }
 });
 
-test('removeStaleParts: what an ended souldew left half copied goes; a running copy and real games stay', () => {
+test('removeStaleParts: what an ended twicable left half copied goes; a running copy and real games stay', () => {
   const dir = join(TMP, 'stale');
   mkdirSync(dir, { recursive: true });
   const dead = 2 ** 22 + 12345; // (no such process)

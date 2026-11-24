@@ -1,9 +1,9 @@
-// souldew's fast-forward sound, shared by the 3DS host (ctrhost.c) and the fast player's host (retro-host/retrohost.c):
+// twicable's fast-forward sound, shared by the 3DS host (ctrhost.c) and the fast player's host (retro-host/retrohost.c):
 // the frames' sound sped up by the real speed, resampled to exactly real time. The including file defines audio_buf /
 // audio_n (the frame's s16 stereo samples), send_msg and send_event before it includes this, and calls ff_reset when
 // fast-forward starts or ends and ff_frame after each fast-forwarded frame.
-#ifndef SOULDEW_FFSOUND_H
-#define SOULDEW_FFSOUND_H
+#ifndef TWICABLE_FFSOUND_H
+#define TWICABLE_FFSOUND_H
 // ---- fast-forward sound -------------------------------------------------------------------------------------------
 // While fast-forwarding the core makes k seconds of sound per second, k being the speed it really reaches – and on a
 // 3DS that swings from frame to frame (Pokémon Sun's overworld on a mid-range PC: anywhere between 1.1× and 3× within
@@ -17,7 +17,7 @@
 // has passed – without holes. k follows the measured speed and how full the queue is (its target: FF_TMIN … FF_TARGET
 // seconds, as deep as the speed makes it swing – the queue is also how late the sped-up sound comes); it
 // glides (no jumps in pitch), and every change is announced right before the first sound made with it (event
-// "ffrate"), so souldew's turbo mixer can slow the sound back down by exactly the ratio it was sped up with.
+// "ffrate"), so twicable's turbo mixer can slow the sound back down by exactly the ratio it was sped up with.
 // Until 2.8.1 k followed the speed within 0.15 s and pulled hard on the queue (60 % faster or slower at a full target's
 // error): a Windows player's Pokémon Y video (4× asked, the PC at ≈1.7–3.7×) had the sped-up sound warble by about a
 // semitone, up and down every second or so – the pitch followed every swing of the speed. Now k follows the speed it
@@ -233,7 +233,7 @@ static size_t ff_make(size_t want) {
   return m;
 }
 
-/** Fast-forward, after a frame: its sound into the queue, and the sped-up sound for `dt` seconds out to souldew. */
+/** Fast-forward, after a frame: its sound into the queue, and the sped-up sound for `dt` seconds out to twicable. */
 static void ff_frame(double dt, double sample_rate) {
   if (!(dt > 0)) dt = 0; // (a clock that went back: no time passed)
   ff_push(audio_buf, audio_n / 2);
@@ -272,7 +272,7 @@ static void ff_frame(double dt, double sample_rate) {
     else ff.target = want > ff.target - FF_SINK * dt ? want : ff.target - FF_SINK * dt;
   }
   // the ratio: the speed the sound comes in at, nudged towards the queue's target fill, gliding there (no jumps in
-  // pitch); souldew hears of every change of more than 1 %, right before the sound made with it
+  // pitch); twicable hears of every change of more than 1 %, right before the sound made with it
   // (right after the switch k starts at the asked-for speed, which the PC may not reach: it follows faster at first, so
   // the queue doesn't run dry while it gets there)
   ff.age += dt;

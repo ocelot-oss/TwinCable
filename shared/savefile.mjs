@@ -1,13 +1,13 @@
 // Battery saves brought in from elsewhere (a player on Discord: "can I import my old .sav?"): what a file is, whether
-// its size fits the system, the layout souldew keeps it in, and – where it is cheap to tell – whether it is a save of
+// its size fits the system, the layout twicable keeps it in, and – where it is cheap to tell – whether it is a save of
 // this game at all. Pure: the server (server/lib/saveimport.mjs) backs up, writes and undoes; the page asks first.
 //
-// souldew keeps every battery save as the raw cartridge memory (what melonDS, mGBA, SameBoy, flash carts and most
+// twicable keeps every battery save as the raw cartridge memory (what melonDS, mGBA, SameBoy, flash carts and most
 // emulators call a .sav): a Game Boy clock cartridge with the 48-byte clock footer VBA-M, mGBA and SameBoy write
 // (native/retro-host/retrohost.c), nothing else around it. What comes in is brought into that layout:
 //   DeSmuME .dsv   the raw data, then a footer naming the chip – the footer goes, the data is padded to the chip's size
 //   VBA-M 44 B     the older clock footer (a 32-bit time) – widened to the 48-byte one
-//   mGBA +16 B     the Game Boy Advance clock mGBA appends – dropped (souldew's players take the clock from the computer)
+//   mGBA +16 B     the Game Boy Advance clock mGBA appends – dropped (twicable's players take the clock from the computer)
 //   flash carts    a cart that pads every save to its biggest size – the blank rest past the game's own size goes
 // Checkpoint and JKSM dump DS cartridges as raw .sav files, so those are plain raw saves here too.
 import { inspectSave, blankSave } from './introsave.mjs';
@@ -97,7 +97,7 @@ export const sizeText = (n) => (n >= KB * KB ? `${n / (KB * KB)} MB` : n >= KB ?
 const sizesText = (system) => SAVE_SIZES[system].map(sizeText).join(', ');
 
 /**
- * Bring a file into the layout souldew keeps battery saves in (see the top). `system`: gb/gbc/gba/nds; `expected`: the
+ * Bring a file into the layout twicable keeps battery saves in (see the top). `system`: gb/gbc/gba/nds; `expected`: the
  * game's own save size when known (familySize) – a cart's blank padding past it goes. Throws (saveFileError) for a
  * size no cartridge of the system has, an empty file, a format it doesn't read.
  * → { bytes, size, from: 'raw' | 'dsv', notes: [...] } – notes: 'dsv', 'padded' (a DS save cut short), 'clockWidened',
@@ -120,7 +120,7 @@ export function normalizeSave(input, system, { expected = null, clock = null } =
     }
     if (u8.length > 1024 * KB || u8.length < 512) throw bad();
     if (!sizes.includes(u8.length)) {
-      // a save DeSmuME (or an older souldew) counted only up to the last byte the game wrote – a fresh HeartGold save is
+      // a save DeSmuME (or an older twicable) counted only up to the last byte the game wrote – a fresh HeartGold save is
       // 256 KB + 1: the rest of the chip is erased flash
       const chip = sizes.find((c) => c > u8.length);
       const out = new Uint8Array(chip).fill(0xff);

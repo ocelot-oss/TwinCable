@@ -1,4 +1,4 @@
-// The parody "please buy a license" window (views/nag.mjs) – a joke on old shareware nag screens. souldew is free and
+// The parody "please buy a license" window (views/nag.mjs) – a joke on old shareware nag screens. twicable is free and
 // stays free: the window only says thanks and points at the coffee link. When it may show up: pure, testable.
 
 export const NAG = {

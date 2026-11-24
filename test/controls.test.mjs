@@ -369,7 +369,7 @@ test('R for B (Discord): a game button takes any shortcut key – the shortcut g
   assert.equal(resolve({ ...defaults(QWERTY), a: { none: true } }, QWERTY).a, null);
 });
 
-test('shortcuts: what the system or souldew’s menu does is refused (⌘Q, Alt+F4, the Windows key …)', async () => {
+test('shortcuts: what the system or twicable’s menu does is refused (⌘Q, Alt+F4, the Windows key …)', async () => {
   const { reservedCombo } = await import('../web/lib/controls.mjs');
   const k = (x, m = {}) => ({ keyCode: typeof x === 'number' ? x : x.toUpperCase().charCodeAt(0), ...m });
   for (const c of [k('q', { meta: 1 }), k('w', { meta: 1 }), k('h', { meta: 1 }), k('m', { meta: 1 }), k(9, { meta: 1 }), k(32, { meta: 1 }), k('f', { meta: 1, ctrl: 1 }), k(52, { meta: 1, shift: 1 })]) {
@@ -378,7 +378,7 @@ test('shortcuts: what the system or souldew’s menu does is refused (⌘Q, Alt+
   for (const c of [k(115, { alt: 1 }), k(9, { alt: 1 }), k(46, { ctrl: 1, alt: 1 }), k(27, { ctrl: 1 }), k(27, { ctrl: 1, shift: 1 }), k('r', { meta: 1 }), k(32, { alt: 1 })]) {
     assert.equal(reservedCombo(c, false), 'system', JSON.stringify(c));
   }
-  // souldew's menu: settings, the sections, add games, the sidebar, copy & paste, fullscreen (F11 on Windows / Linux)
+  // twicable's menu: settings, the sections, add games, the sidebar, copy & paste, fullscreen (F11 on Windows / Linux)
   for (const [c, mac] of [[k(188, { meta: 1 }), true], [k(49, { meta: 1 }), true], [k('o', { ctrl: 1 }), false], [k('b', { ctrl: 1 }), false], [k('c', { meta: 1 }), true], [k('v', { ctrl: 1 }), false], [k(122), false]]) {
     assert.equal(reservedCombo(c, mac), 'menu', JSON.stringify(c));
   }
@@ -448,7 +448,7 @@ test('controller shortcuts: ZR turbo, ZL pause, fast-forward none – all re-bin
   assert.deepEqual(poll([], true), ['ffHold:false'], 'a release never hurts');
 });
 
-test('a 2.8.1 fast-forward key souldew’s menu has here (F11 on Windows / Linux) is said, not quietly put back on Tab; one that works stays', async () => {
+test('a 2.8.1 fast-forward key twicable’s menu has here (F11 on Windows / Linux) is said, not quietly put back on Tab; one that works stays', async () => {
   const { refusedHotkeys } = await import('../web/lib/controls.mjs');
   const F11 = { keyCode: 122, key: 'F11', code: 'F11' };
   const saved = { ffHold: F11 };

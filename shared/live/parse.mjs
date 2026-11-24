@@ -1255,8 +1255,8 @@ const saveFileError = (code, message) => Object.assign(new Error(message), { cod
  * snapshotFromSave: `heldItem`, per-Pokémon `checksumOk`); throws saveNotFound when the file holds no save of it.
  */
 export function readSaveFile(entry, file, T) {
-  if (!entry || (entry.gen !== 4 && entry.gen !== 5)) throw saveFileError('saveNotFound', 'Not a DS game souldew reads saves of');
-  // a save cut short (DeSmuME, an older souldew – the rest of the flash is erased) – 0xFF up to 512 KB, like the flash
+  if (!entry || (entry.gen !== 4 && entry.gen !== 5)) throw saveFileError('saveNotFound', 'Not a DS game twicable reads saves of');
+  // a save cut short (DeSmuME, an older twicable – the rest of the flash is erased) – 0xFF up to 512 KB, like the flash
   let u8 = file.subarray(0, 0x80000);
   if (u8.length < 0x80000) {
     const full = new Uint8Array(0x80000).fill(0xff);
@@ -2206,7 +2206,7 @@ function foeStatusDS(entry, read, state, foe) {
  * They used to be found by species, max HP and level. A wild Patrat with the same level and max HP as the player's then
  * shared its struct – and when the player's Patrat, switched out, grew a level from the shared EXP, its own struct no
  * longer matched the save party's old numbers and the search took the wild one, which had just fainted: the player's
- * Patrat "died" (#12, checked in Black 2 in souldew's fast player). Now a struct counts only when its pointer leads into
+ * Patrat "died" (#12, checked in Black 2 in twicable's fast player). Now a struct counts only when its pointer leads into
  * one of this battle's copies (`copies`: address → count – a freed struct of an earlier battle points into a copy that is
  * gone) and to the Pokémon's PID. Level and max HP may change (a level-up). Remembered per PID while that still holds,
  * rescanned at most every 2 s. → Map(pid → { hp, maxHp, addrs: [struct addresses, both copies] }).

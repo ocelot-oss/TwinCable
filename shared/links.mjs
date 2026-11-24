@@ -2,9 +2,9 @@
 // pop-up (shared/coffee.mjs). web/lib/links.mjs re-exports them for the app.
 export const LINKS = {
   coffee: 'https://buymeacoffee.com/souldew',
-  // the souldew Discord server (invite) – where "Find a SoulLink partner" posts go
+  // the twicable Discord server (invite) – where "Find a SoulLink partner" posts go
   discord: 'https://discord.gg/kvVDCyzdpQ',
-  // the memberships (Supporter, souldew+, Legend) – joining, switching and cancelling all happen there
+  // the memberships (Supporter, twicable+, Legend) – joining, switching and cancelling all happen there
   membership: 'https://buymeacoffee.com/souldew/membership',
   github: 'https://github.com/souldewapp/souldew',
   issues: 'https://github.com/souldewapp/souldew/issues/new/choose',
@@ -14,7 +14,7 @@ export const LINKS = {
   // and docs/PRIVACY.md (English, the exact request)
   privacy: 'https://souldew.app/datenschutz.html#spielt-gerade',
   privacyDocs: 'https://github.com/souldewapp/souldew/blob/main/docs/PRIVACY.md',
-  // the app's privacy policy – what souldew sends by itself and how to switch it off; the Windows installer's privacy
+  // the app's privacy policy – what twicable sends by itself and how to switch it off; the Windows installer's privacy
   // page (build/installer.nsh) and the welcome tour link to it
   privacyPolicy: 'https://souldew.app/privacy.html',
 };

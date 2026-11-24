@@ -164,17 +164,17 @@ function navLight(e) {
 }
 
 /**
- * souldew+ at the foot of the rail – where "Buy me a coffee" was: the page about it (#/plus), no price, no nag. Members
+ * twicable+ at the foot of the rail – where "Buy me a coffee" was: the page about it (#/plus), no price, no nag. Members
  * (any tier) read "thank you" under it. Folded, a small mark in the window's bottom left corner instead. The coffee
  * button's little Pokémon moments stay with it (views/coffee.mjs).
  */
 function RailPlus({ thanks = false, here = false, float = false, fx = null, onOpen }) {
-  const label = thanks ? t('rail.plusThanksSr', 'souldew+ – thank you') : t('rail.plus', 'souldew+');
+  const label = thanks ? t('rail.plusThanksSr', 'twicable+ – thank you') : t('rail.plus', 'twicable+');
   return html`<a class=${`rail-plus no-drag ${float ? 'rail-plus-float' : ''} ${here ? (float ? 'on' : 'active') : ''} ${fx ? `cfx-live cfx-on-${fx.id}` : ''}`} href="#/plus" style="--na:#e1b05a"
-    aria-current=${here ? 'page' : undefined} title=${thanks ? t('rail.plusThanksHint', 'souldew+ – thank you for supporting souldew') : t('rail.plusHint', 'What souldew+ adds – and everything that stays free')}
+    aria-current=${here ? 'page' : undefined} title=${thanks ? t('rail.plusThanksHint', 'twicable+ – thank you for supporting twicable') : t('rail.plusHint', 'What twicable+ adds – and everything that stays free')}
     aria-label=${float ? label : undefined} onClick=${() => onOpen?.()}>
     <span class="rail-plus-mark" aria-hidden="true"><${Icon} name="plus" size=${float ? 12 : 10} /></span>
-    ${!float && html`<span class="rail-plus-text"><b>${t('rail.plus', 'souldew+')}</b>${thanks && html`<span class="rail-plus-thanks">${t('rail.thanks', 'thank you')}</span>`}</span>`}
+    ${!float && html`<span class="rail-plus-text"><b>${t('rail.plus', 'twicable+')}</b>${thanks && html`<span class="rail-plus-thanks">${t('rail.thanks', 'thank you')}</span>`}</span>`}
     <${CoffeeFx} fx=${fx} /></a>`;
 }
 
@@ -395,10 +395,10 @@ function App() {
     api.post('/api/config', whatsNewSeenPatch()).then(() => reloadStatus()).catch(() => {});
   }, [status]);
   useEffect(() => {
-    // for trying it out: dispatchEvent(new Event('souldew:nag'))
+    // for trying it out: dispatchEvent(new Event('twicable:nag'))
     const open = () => setNag({ launches: Math.max(5, (status?.config?.nag?.launches) || 5) });
-    addEventListener('souldew:nag', open);
-    return () => removeEventListener('souldew:nag', open);
+    addEventListener('twicable:nag', open);
+    return () => removeEventListener('twicable:nag', open);
   }, [status]);
 
   // A toast with a `key` replaces the one shown with that key (progress: "Unpacking … 40 %"); `{ key, remove: true }`
@@ -489,7 +489,7 @@ function App() {
       const s = await api.get('/api/status');
       setStatus(s);
       applyTheme(s.config?.theme);
-      // souldew+: the chosen skin is remembered now and shows as soon as the pack is loaded and verified (in the background)
+      // twicable+: the chosen skin is remembered now and shows as soon as the pack is loaded and verified (in the background)
       applySkin(s.config?.skin);
       initFavourites(s.config?.favourites); // the starred looks in the cosmetics pickers
       initHandheld(s.config?.handheld); // "Your handheld" in the launch animation (a local setting)
@@ -497,7 +497,7 @@ function App() {
       // the pack comes through the account – and only once the account is known: until the server has read the saved
       // sign-in (keychain, in the background) the player only looks signed out, and that must not wipe a member's pack
       setPackAccessProvider((o) => cosmeticsPackAccess({ ...o, signedOut: devPackAccess }));
-      refreshPack().catch((e) => console.warn('souldew+ pack', e));
+      refreshPack().catch((e) => console.warn('twicable+ pack', e));
       const lang = await setLang(s.config?.lang || guessLang());
       sendMenuLabels(s.config?.controls || null);
       await detectLayout(lang); // key names in Help / Settings › Controls
@@ -594,7 +594,7 @@ function App() {
   soundOn.current = status?.config?.sounds !== false;
   const sfx = useCallback((name) => play(name, soundOn.current), []);
 
-  // souldew put the graphics backend back to "Automatic" (electron/main.mjs): say so once, then forget the notice.
+  // twicable put the graphics backend back to "Automatic" (electron/main.mjs): say so once, then forget the notice.
   // (Once the app language is loaded and the start-up animation is over.)
   const gpuFallback = ready && !boot ? status?.config?.gpuFallback : null;
   useEffect(() => {
@@ -610,8 +610,8 @@ function App() {
       if (!g?.safe) return;
       const choose = PLATFORM === 'win32' || PLATFORM === 'linux';
       toast({ kind: 'warn', title: t('set.gpuSafeTitle', 'Safe graphics mode'), ttl: 20000,
-        text: choose ? t('set.gpuSafeToast', 'souldew draws without the graphics card this time (slower). Pick another graphics backend in Settings › About › Troubleshooting, then restart normally.')
-          : t('set.gpuSafeToastMac', 'souldew draws without the graphics card this time (slower). Quit and start it again for the normal mode.'),
+        text: choose ? t('set.gpuSafeToast', 'twicable draws without the graphics card this time (slower). Pick another graphics backend in Settings › About › Troubleshooting, then restart normally.')
+          : t('set.gpuSafeToastMac', 'twicable draws without the graphics card this time (slower). Quit and start it again for the normal mode.'),
         ...(choose ? { action: { label: t('play.slowSettings', 'Open Settings'), run: () => navigate('settings', settingsLink('gpu')) } } : {}) });
     }).catch(() => {});
   }, [ready, boot]);
@@ -831,16 +831,19 @@ function App() {
   const applySnapRef = useRef(applySnap);
   applySnapRef.current = applySnap;
   useEffect(() => events({
-    save: (p) => p.runId === runId && applySnapRef.current(snapshotFromSave(p.save)),
-    live: (frame) => setLiveInfo({ ...frame, at: Date.now() }),
+    save: (p) => p.runId === runId && (!p.slot || p.slot === me) && applySnapRef.current(snapshotFromSave(p.save)),
+    live: (frame) => {
+      if (frame.emulator === 'melonds' && (frame.runId !== runId || frame.slot !== me)) return;
+      setLiveInfo({ ...frame, at: Date.now() });
+    },
     'live-status': (s) => setLiveInfo((x) => ({ ...(x || {}), status: s })),
-    'save-error': (p) => p.runId === runId && toast({ kind: 'death', title: t('toast.saveError', 'Save file unreadable'), text: serverErrorText(p) }),
+    'save-error': (p) => p.runId === runId && (!p.slot || p.slot === me) && toast({ kind: 'death', title: t('toast.saveError', 'Save file unreadable'), text: serverErrorText(p) }),
     // a zipped 3DS game being unpacked into the library (server/lib/library.mjs unpackZipGames) – what came of it is
     // told by the page that added it (web/lib/libadded.mjs addedMessage, or the error)
     unpack: (p) => toast(unpackToast(p)),
-    // the souldew account: signed in / out, new counters of friend requests and invites (server/lib/accounts)
+    // the twicable account: signed in / out, new counters of friend requests and invites (server/lib/accounts)
     account: (p) => accountEvent(p),
-  }), [runId]);
+  }), [runId, me]);
 
   // ---- raids (web/lib/raid.mjs): one hub per run document – the invites, the host's start, the log entry ----
   useEffect(() => {
@@ -876,7 +879,7 @@ function App() {
     const names = getPlayers(doc, manifest);
     const link = new SyncLink({
       room: manifest.room, secret: manifest.secret, slot: me, slots: slotsOf(manifest), name: names[me].name, doc,
-      // TURN for strict NATs: short-lived credentials from souldew's bot through the local server (docs/MULTIPLAYER.md)
+      // TURN for strict NATs: short-lived credentials from twicable's bot through the local server (docs/MULTIPLAYER.md)
       getIceServers: () => api.get('/api/link/ice').then((r) => (r?.iceServers ? { iceServers: r.iceServers, relayOnly: !!r.relayOnly } : null)),
       onStatus: (s) => linkRef.current === link && setLinkStatus({ ...s }),
       onMessage: (msg) => {
@@ -1067,7 +1070,7 @@ function App() {
   // render (toasts, live frames from an external emulator …)
   const checkCount = useMemo(() => (runDoc ? checks(runDoc, manifest, runData).length : 0), [runDoc, docVersion, manifest, runData]);
   const warnCount = runDoc ? checkCount + inbox.inbox.length + inbox.alerts.length : 0;
-  // the souldew account (lib/socialapp.mjs): presence, notices, the Friends entry – nothing at all while signed out
+  // the twicable account (lib/socialapp.mjs): presence, notices, the Friends entry – nothing at all while signed out
   const social = useSocial({ ready, route, session, manifest, doc: runDoc, me, linkStatus, toast, navigate });
   const ctx = {
     status, reloadStatus, library, reloadLibrary, runId, setRunId, manifest, missingRun, reloadManifest, doc: runDoc, docVersion, runData, me, setMe,
@@ -1079,7 +1082,7 @@ function App() {
   if (!ready) {
     if (bootError) {
       return html`<div class="boot" style="cursor:default"><div class="panel stack" role="alert" style="max-width:420px">
-        <h2>${t('boot.failed', 'souldew could not start')}</h2>
+        <h2>${t('boot.failed', 'twicable could not start')}</h2>
         <p class="small muted">${t('boot.failedText', 'The local server did not answer or a data file is missing. Check that the app is still running, then try again.')}</p>
         <p class="small code">${bootError}</p>
         <div><button class="btn primary" onClick=${bootUp}>${t('err.retry', 'Try again')}</button></div>
@@ -1153,7 +1156,7 @@ function App() {
   const here = route.route === 'handheld' ? 'settings' // (Settings › Play › Launch animation › Your handheld)
     : route.route !== 'play' ? route.route
     : showsSession && session ? playingIn : rp.run ? sectionOf(rp.run) : 'library';
-  // souldew+ at the rail's foot says "thank you" to every member (supporter, souldew+, patron)
+  // twicable+ at the rail's foot says "thank you" to every member (supporter, twicable+, patron)
   const thanks = !!social.signedIn && thankedFor(social.me?.entitlement);
   const NAV = [
     { id: 'library', label: t('nav.library', 'Library'), icon: 'library', accent: '#e0a458' },
@@ -1161,7 +1164,7 @@ function App() {
     { id: 'soullink', label: t('nav.soullink', 'SoulLink'), icon: 'link', count: manifest && runSection(manifest) === 'soullink' ? warnCount : 0, accent: '#d77fc6' },
     { id: 'nuzlocke', label: t('nav.nuzlocke', 'Nuzlocke'), icon: 'nuzlocke', count: manifest && runMode(manifest) === 'nuzlocke' ? warnCount : 0, accent: '#e8735f' },
     { id: 'link', label: t('nav.link', 'Connection'), icon: 'signal', accent: '#6f9bff' },
-    // signed in only: the souldew account's friends (green: how many are online; the badge: requests and invites)
+    // signed in only: the twicable account's friends (green: how many are online; the badge: requests and invites)
     ...(social.signedIn ? [{ id: 'friends', label: t('nav.friends', 'Friends'), icon: 'friends', accent: '#6fb39b', online: social.online, count: social.toAnswer, countHint: t('nav.friendsHint', 'Friend requests and invites') }] : []),
     { id: 'stream', label: t('nav.stream', 'Stream'), icon: 'stream', accent: '#ff5b6e', onAir: streamer },
     { id: 'trophies', label: t('nav.trophies', 'Trophies'), icon: 'trophy', accent: '#e7c24f' },
@@ -1178,7 +1181,7 @@ function App() {
       ${playFold && !fs && !peek && html`<${RailHint} />`}
       <aside class=${`rail ${native ? '' : 'web'} ${native ? 'drag' : ''}`} onPointerEnter=${folded ? peekIn : undefined} onPointerLeave=${folded ? peekOut : undefined}
         onfocusin=${folded ? peekIn : undefined} onfocusout=${folded ? (e) => { if (!e.currentTarget.contains(e.relatedTarget)) peekOut(); } : undefined}>
-        <div class="brand no-drag"><${AppMark} size=${34} /><div class="name">souldew</div>
+        <div class="brand no-drag"><${AppMark} size=${34} /><div class="name">twicable</div>
           ${streamer && html`<a href="#/stream" class="onair on brand-onair" title=${t('stream.onAirHint', 'Streamer mode is on – codes, keys, paths and spoilers are covered')}>${t('stream.live', 'LIVE')}</a>`}</div>
         ${!fs && html`<button class="rail-toggle no-drag" onClick=${() => setHidden(!railHidden)} title=${`${railHidden ? t('rail.pin', 'Keep the sidebar open') : t('rail.hide', 'Hide the sidebar')} (${shortcut('Mod+B')})`}
             aria-label=${railHidden ? t('rail.pin', 'Keep the sidebar open') : t('rail.hide', 'Hide the sidebar')} aria-pressed=${!railHidden}><${Icon} name="sidebar" size=${16} /></button>`}

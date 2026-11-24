@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * "TM compatibility follows the TM moves" (souldew setting {@code @tmsFollowMoves}, GitHub #81).
+ * "TM compatibility follows the TM moves" (twicable setting {@code @tmsFollowMoves}, GitHub #81).
  *
  * UPR ZX randomizes which move a TM teaches but keeps who can use it tied to the TM's slot: a TM that taught Seismic
  * Toss and now teaches Muddy Water still works for the Seismic Toss users. With this on, right after UPR picked the TM
@@ -37,7 +37,7 @@ final class TmFollow {
     /** How a TM's compatibility was decided (report and tests). */
     static final String KEPT = "kept", LEARNSETS = "learnsets", TYPE = "type", ORIGINAL = "original";
 
-    /** Implemented by souldew's handler subclasses: they call {@link #apply} right after UPR randomized the TM moves. */
+    /** Implemented by twicable's handler subclasses: they call {@link #apply} right after UPR randomized the TM moves. */
     interface Host {
         void setTmFollow(TmFollow follow);
     }

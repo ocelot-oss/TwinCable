@@ -1,4 +1,4 @@
-// SignPath's privacy condition: the Windows installer shows what souldew sends by itself (build/installer.nsh), with
+// SignPath's privacy condition: the Windows installer shows what twicable sends by itself (build/installer.nsh), with
 // a checkbox for each automatic connection, and the app applies what was ticked once (electron/installerchoices.mjs).
 // Here: the choices go into config.json once and only when the page was shown (not on a silent update), only what the
 // player changed counts, the update check and the "playing now" count obey their settings, and the installer script
@@ -15,13 +15,13 @@ import { scheduleUpdateChecks, autoCheckOn, installerArgs } from '../electron/up
 import { LINKS } from '../shared/links.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const DATA = mkdtempSync(join(tmpdir(), 'souldew-installer-'));
+const DATA = mkdtempSync(join(tmpdir(), 'twicable-installer-'));
 process.env.SLS_DATA_DIR = DATA; // before anything of the server is imported (server/lib/paths.mjs) – hence the dynamic imports
 const quiet = { warn() {} };
 
 /** A data folder with a config.json (written the way the app writes it) and the main process' read / patch. */
 function profile(config = null) {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-choices-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-choices-'));
   const file = join(dir, 'config.json');
   if (config) writeFileSync(file, JSON.stringify(config, null, 2));
   const readConfig = () => {
@@ -217,7 +217,7 @@ test('"playing now": switched off on the installer page, nothing is sent; switch
   const sent = [];
   const fetchImpl = async (url, o) => { sent.push({ url, body: JSON.parse(o.body) }); return { ok: true, json: async () => ({}) }; };
   // server/app.mjs: presence({ enabled: () => loadConfig().presence !== false })
-  const counter = createPresence({ enabled: () => p.readConfig().presence !== false, fetchImpl, env: { SOULDEW_LIVE_URL: 'http://127.0.0.1:9' }, timers: { setTimeout: () => ({}), clearTimeout() {} } });
+  const counter = createPresence({ enabled: () => p.readConfig().presence !== false, fetchImpl, env: { TWICABLE_LIVE_URL: 'http://127.0.0.1:9' }, timers: { setTimeout: () => ({}), clearTimeout() {} } });
   assert.equal((await counter.beat({ system: 'gba', mode: 'soullink' })).sent, false);
   assert.equal(sent.length, 0, 'not a single request');
   p.patchConfig({ presence: true });
@@ -336,7 +336,7 @@ test('installer: every text in every language electron-builder bundles (makensis
   }
   // the policy mentions both switches and where to find them later
   const en = (name) => uses.find((u) => u[1] === name)[2].match(/"([^"]*)"/)[1];
-  assert.match(en('sdPol1'), /api\.souldew\.app/);
+  assert.match(en('sdPol1'), /api\.twicable\.app/);
   assert.match(en('sdPol2'), /GitHub/);
   assert.match(en('sdPol5'), /Start menu[\s\S]*desktop shortcut[\s\S]*Apps[\s\S]*No file types/);
 });

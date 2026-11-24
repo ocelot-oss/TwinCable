@@ -4,7 +4,7 @@ const KEY = 'sl-theme';
 export const THEME_IDS = ['classic', 'contrast', 'deutan', 'tritan'];
 
 /** Windows: the title bar buttons (drawn by Windows over the page) take the colours of the page's top edge (also after a
- * souldew+ skin changed them – web/lib/cosmetics/skins.mjs). */
+ * twicable+ skin changed them – web/lib/cosmetics/skins.mjs). */
 export function syncTitleBar() {
   if (globalThis.window?.sls?.platform !== 'win32' || !window.sls.setTitleBarColors) return;
   const css = getComputedStyle(document.documentElement);

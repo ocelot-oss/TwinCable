@@ -19,9 +19,9 @@
 // - Gen 6/7: Bulbapedia (Generation VI, VII) and The Cave of Dragonflies "Gen VI/VII Capture Mechanics" – Gen 5's X,
 //   four shake checks with Y = ⌊65536 / (255 / X)^(3/16)⌋; Gen 7: any ball but the Beast Ball is ×410/4096 on an Ultra
 //   Beast. (The low-level bonus, max((30 − level) / 10, 1), only came with Gen 8 – Sword/Shield and Brilliant
-//   Diamond/Shining Pearl – so it doesn't apply to any game souldew runs.)
+//   Diamond/Shining Pearl – so it doesn't apply to any game twicable runs.)
 //
-// Left out on purpose, as souldew can't know them: critical captures (Gen 5–7: they depend on the Pokédex count and only
+// Left out on purpose, as twicable can't know them: critical captures (Gen 5–7: they depend on the Pokédex count and only
 // ever raise the chance), Gen 5's dark-grass penalty, Entralink/O-Power/Roto Catch boosts, the first route of the 3DS
 // games where every ball catches, and balls whose bonus needs the turn count, the time of day, the terrain or the
 // Pokédex (Quick, Timer, Dusk, Dive, Repeat, the Apricorn balls). The only situational balls shown are the ones whose

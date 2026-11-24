@@ -35,10 +35,10 @@ export const SETTINGS = [
   { id: 'theme', section: 'general', keys: ['set.appearance', 'set.theme', 'set.themeText', 'theme.classic', 'theme.contrast', 'theme.deutan', 'theme.tritan'],
     kw: 'appearance colour color colors colours dark mode high contrast colour-blind colorblind color blind accessibility a11y design look darstellung farbe farbenblind kontrast couleur daltonien contraste color daltónico colore daltonico' },
   { id: 'skin', section: 'general', keys: ['skin.title', 'skin.note', 'skin.dark', 'skin.light'],
-    kw: 'theme themes skin skins souldew+ plus look style light mode dark mode thema design aussehen hell dunkel thème apparence clair sombre tema aspecto claro oscuro aspetto chiaro scuro' },
+    kw: 'theme themes skin skins twicable+ plus look style light mode dark mode thema design aussehen hell dunkel thème apparence clair sombre tema aspecto claro oscuro aspetto chiaro scuro' },
   // Play
   { id: 'launch', section: 'play', keys: ['launch.title', 'launch.hint3', 'set.gameStart', 'hh.title', 'hh.dress'],
-    kw: 'launch start startup start-up boot intro animation cartridge module slot souldew+ plus spielstart startanimation modul démarrage lancement inicio arranque avvio handheld device console skin wrap sticker stickers design designs gold clear holo rare quick handheld konsole gerät aufkleber sticker skin design console autocollant pegatina adesivo' },
+    kw: 'launch start startup start-up boot intro animation cartridge module slot twicable+ plus spielstart startanimation modul démarrage lancement inicio arranque avvio handheld device console skin wrap sticker stickers design designs gold clear holo rare quick handheld konsole gerät aufkleber sticker skin design console autocollant pegatina adesivo' },
   { id: 'full-turbo', section: 'play', keys: ['set.fullTurbo', 'set.fullTurboHint'], kw: `${TURBO} performance` },
   { id: 'speed-guard', section: 'play', keys: ['set.speedGuard', 'set.speedGuardHint'], kw: `${TURBO} slow lag stutter performance` },
   { id: 'turbo-max', section: 'play', keys: ['set.turboMax', 'set.turboMaxHint'], kw: `${TURBO} unlimited maximum` },
@@ -48,7 +48,7 @@ export const SETTINGS = [
   { id: 'gb-look', section: 'play', keys: ['set.gbLook', 'set.gbLookHint'], kw: `${PIC} game boy gameboy gbc colour color palette green screen red blue yellow` },
   { id: 'ctr-scale', section: 'play', keys: ['set.ctrScale', 'set.ctrScaleHint', 'set.ctrFfHint'], kw: `${PIC} 3ds resolution upscale sharp hd auflösung résolution resolución risoluzione fast-forward hint` },
   { id: 'native', section: 'play', keys: ['set.native', 'set.nativeHint'], kw: 'fast player emulator melonds mgba sameboy libretro performance speed core schneller player lecteur rapide reproductor rápido' },
-  { id: 'engine', section: 'play', keys: ['set.engine', 'set.engineHint'], kw: 'souldew engine beta trade battle link cable tausch kampf échange combat intercambio combate scambio lotta' },
+  { id: 'engine', section: 'play', keys: ['set.engine', 'set.engineHint'], kw: 'twicable engine beta trade battle link cable tausch kampf échange combat intercambio combate scambio lotta' },
   // Controls
   { id: 'keyboard', section: 'controls', keys: ['set.keyboard', 'set.controlsText2', 'ctl.presets', 'guide.shortcuts', 'ctl.sneakHint'],
     kw: 'keys keyboard key bindings keybindings remap rebind wasd arrows zqsd azerty tastatur tasten tastenbelegung clavier touches teclado teclas tastiera tasti '
@@ -75,8 +75,8 @@ export const SETTINGS = [
     kw: 'account sign in login log in discord profile handle friend code sign out log out konto anmelden abmelden compte connexion déconnexion cuenta iniciar sesión account accedi esci' },
   { id: 'account-privacy', section: 'account', keys: ['acct.privacy', 'acct.profileVis', 'acct.presenceVis', 'acct.showRuns', 'acct.showLocation', 'acct.askToJoin', 'acct.requestsFrom', 'acct.showOnThanks'],
     kw: 'privacy presence online offline appear offline invisible friends stats runs profile visible thank you thanks supporters wall danke unterstützer merci soutiens gracias grazie privatsphäre datenschutz confidentialité privacidad privacy' },
-  { id: 'plus-show', section: 'account', keys: ['plusShow.title', 'plusShow.themes'], kw: 'souldew+ plus preview previews look see themes banners frames nameplates launch animations vorschau aperçu vista anteprima' },
-  { id: 'plus', section: 'account', keys: ['acct.linkTitle', 'acct.linkEmail', 'acct.claimedDiscord', 'acct.unlink'], kw: 'souldew+ plus supporter membership buy me a coffee bmc donate link unlink email premium cosmetics banner frame mitgliedschaft' },
+  { id: 'plus-show', section: 'account', keys: ['plusShow.title', 'plusShow.themes'], kw: 'twicable+ plus preview previews look see themes banners frames nameplates launch animations vorschau aperçu vista anteprima' },
+  { id: 'plus', section: 'account', keys: ['acct.linkTitle', 'acct.linkEmail', 'acct.claimedDiscord', 'acct.unlink'], kw: 'twicable+ plus supporter membership buy me a coffee bmc donate link unlink email premium cosmetics banner frame mitgliedschaft' },
   { id: 'account-sessions', section: 'account', keys: ['acct.devices', 'acct.devicesText', 'acct.thisDevice'], kw: 'sessions devices signed in computers sign out device geräte sitzungen appareils sessions dispositivos sesiones dispositivi sessioni' },
   { id: 'account-data', section: 'account', keys: ['acct.dataTitle', 'acct.export', 'acct.delete'], kw: 'export download gdpr dsgvo data delete account remove rgpd datos dati' },
   // About

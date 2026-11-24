@@ -1,5 +1,5 @@
 // "A skin changes the look only" – proven on the REAL app: every main view rendered in Electron with classic and with
-// every souldew+ skin of a pack, comparing every element's box, the visible text and the generated text
+// every twicable+ skin of a pack, comparing every element's box, the visible text and the generated text
 // (test/fixtures/skin-proof-runner.mjs). The automated form of the design's proof.py. Signed in (a fake accounts
 // service) the same for Friends, the profile and the sidebar's account chip – plus their text contrast in every skin and
 // the profile's banner (only the avatar overlaps it, 1024–1440 px) – and for the live theme PREVIEW pack, whose skins
@@ -8,7 +8,7 @@
 // Skins are premium content and not in this repository, so the test needs a pack: SLS_PLUS_PROOF_PACK=<dev pack folder>
 // (scripts/plus-dev-pack.mjs), or the design sources next to the checkout (../design-plus/design/plus), from which it
 // builds one – from their last COMMIT (git archive), never the working files another worktree is in the middle of
-// editing. When those sources name other souldew+ stickers or wraps than this checkout (shared/handheld.mjs: the two
+// editing. When those sources name other twicable+ stickers or wraps than this checkout (shared/handheld.mjs: the two
 // are from different rounds), it is skipped and says which. Without a pack – or without a display on Linux – skipped.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,7 +22,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DESIGN = join(ROOT, '..', 'design-plus', 'design', 'plus');
 const noDisplay = process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY;
 const havePack = !!process.env.SLS_PLUS_PROOF_PACK || existsSync(join(DESIGN, 'themes', 'skins.json'));
-const skip = noDisplay ? 'no display' : !havePack ? 'no souldew+ pack (set SLS_PLUS_PROOF_PACK)' : false;
+const skip = noDisplay ? 'no display' : !havePack ? 'no twicable+ pack (set SLS_PLUS_PROOF_PACK)' : false;
 
 const git = (cwd, ...a) => spawnSync('git', ['-C', cwd, ...a], { encoding: 'utf8' });
 
@@ -49,8 +49,8 @@ test('skins never change a box or a text on the real app views', { skip, timeout
   const temp = [];
   t.after(() => { for (const d of temp) rmSync(d, { recursive: true, force: true }); });
   if (!pack) {
-    const src = mkdtempSync(join(tmpdir(), 'souldew-proof-design-'));
-    pack = mkdtempSync(join(tmpdir(), 'souldew-proof-pack-'));
+    const src = mkdtempSync(join(tmpdir(), 'twicable-proof-design-'));
+    pack = mkdtempSync(join(tmpdir(), 'twicable-proof-pack-'));
     temp.push(src, pack);
     const { design, rev, dirty } = committedDesign(DESIGN, src);
     if (dirty) t.diagnostic(`design sources: commit ${rev} – their uncommitted edits are left out`);
@@ -61,7 +61,7 @@ test('skins never change a box or a text on the real app views', { skip, timeout
     }
     assert.equal(b.status, 0, b.stderr);
   }
-  const data = mkdtempSync(join(tmpdir(), 'souldew-proof-data-'));
+  const data = mkdtempSync(join(tmpdir(), 'twicable-proof-data-'));
   writeFileSync(join(data, 'config.json'), JSON.stringify({ onboarded: true, lang: 'en', playerName: 'Proof', bootAnimation: false, nagOff: true }));
   const out = join(data, 'proof.json');
   const electron = (await import('electron')).default;
@@ -78,7 +78,7 @@ test('skins never change a box or a text on the real app views', { skip, timeout
   assert.equal(res.previewSkins, res.skins, 'the preview pack carries every skin');
   // colour skins are colour only: no fonts travel with the preview (or the full pack)
   assert.deepEqual(res.previewFonts, [], `preview fonts: ${res.previewFonts}`);
-  // 12 views signed out (with the souldew+ page), Friends + profile + library + souldew+ + Thank you signed in, a
+  // 12 views signed out (with the twicable+ page), Friends + profile + library + twicable+ + Thank you signed in, a
   // friend's card, 14 views with the preview pack
   assert.equal(res.views, 32);
   assert.deepEqual(res.diffs, [], `${res.diffs.length} differences: ${JSON.stringify(res.diffs.slice(0, 5))}`);

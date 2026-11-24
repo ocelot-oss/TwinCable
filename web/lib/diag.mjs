@@ -16,5 +16,5 @@ export function diag(kind, data) {
 
 /** Everything recorded so far, oldest first per kind, plus `extra` (app version, game …). */
 export function diagDump(extra = {}) {
-  return { format: 'souldew/diagnostics@1', startedAt: new Date(t0).toISOString(), savedAt: new Date().toISOString(), ...extra, logs: Object.fromEntries(logs) };
+  return { format: 'twicable/diagnostics@1', startedAt: new Date(t0).toISOString(), savedAt: new Date().toISOString(), ...extra, logs: Object.fromEntries(logs) };
 }

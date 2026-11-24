@@ -6,10 +6,10 @@
 export const WHATS_NEW = '3.0';
 
 /** The page's event that opens the cards again (Help, Settings › General). */
-export const WHATS_NEW_EVENT = 'souldew:whatsnew';
+export const WHATS_NEW_EVENT = 'twicable:whatsnew';
 
 /**
- * The cards, in order: what's new, each with a picture of the app – souldew's own interface only, never a game's
+ * The cards, in order: what's new, each with a picture of the app – twicable's own interface only, never a game's
  * picture, box art or sprites (scripts/whatsnew-media.mjs builds them from crops of the e2e scripts' screenshots). Their
  * texts live in views/whatsnew.mjs (t() calls, so scripts/extract-i18n.mjs finds them).
  */

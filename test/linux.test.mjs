@@ -24,10 +24,10 @@ const TMP = mkdtempSync(join(tmpdir(), 'sls-linux-'));
 test.after(() => rmSync(TMP, { recursive: true, force: true }));
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
-const DMG_URL = 'https://github.com/o/r/releases/download/v2.2.0/souldew-2.2.0-arm64.dmg';
-const APPIMAGE_URL = 'https://github.com/o/r/releases/download/v2.2.0/souldew-2.2.0-linux-x86_64.AppImage';
+const DMG_URL = 'https://github.com/o/r/releases/download/v2.2.0/twicable-2.2.0-arm64.dmg';
+const APPIMAGE_URL = 'https://github.com/o/r/releases/download/v2.2.0/twicable-2.2.0-linux-x86_64.AppImage';
 const feed = (over = {}) => ({ version: '2.2.0', notes: 'Linux', url: DMG_URL, sha256: 'a'.repeat(64), size: 1234, ...over });
-const linuxAsset = (over = {}) => ({ name: 'souldew-2.2.0-linux-x86_64.AppImage', url: APPIMAGE_URL, sha256: 'd'.repeat(64), size: 123456, ...over });
+const linuxAsset = (over = {}) => ({ name: 'twicable-2.2.0-linux-x86_64.AppImage', url: APPIMAGE_URL, sha256: 'd'.repeat(64), size: 123456, ...over });
 
 async function withServer(handler, fn) {
   const server = createServer(handler);
@@ -45,13 +45,13 @@ test('feed: the Linux AppImage entry is validated like the Windows installer', (
   const ok = validateFeed(feed({ assets: { 'linux-x64': linuxAsset({ sha256: 'D'.repeat(64) }) } }));
   assert.deepEqual(ok.assets, { 'linux-x64': linuxAsset() });
   // the extension is compared case-insensitively (.AppImage, as electron-builder writes it, or .appimage)
-  const lower = 'souldew-2.2.0-linux-x86_64.appimage';
+  const lower = 'twicable-2.2.0-linux-x86_64.appimage';
   assert.equal(validateFeed(feed({ assets: { 'linux-x64': linuxAsset({ name: lower, url: APPIMAGE_URL.replace(/[^/]+$/, lower) }) } })).assets['linux-x64'].name, lower);
   const bad = [
     { 'linux-x64': null },
-    { 'linux-x64': linuxAsset({ name: 'souldew-2.2.0-linux-amd64.deb', url: APPIMAGE_URL.replace(/[^/]+$/, 'souldew-2.2.0-linux-amd64.deb') }) }, // a .deb can't update itself
-    { 'linux-x64': linuxAsset({ name: 'souldew.exe' }) },
-    { 'linux-x64': linuxAsset({ name: '../souldew.AppImage' }) },
+    { 'linux-x64': linuxAsset({ name: 'twicable-2.2.0-linux-amd64.deb', url: APPIMAGE_URL.replace(/[^/]+$/, 'twicable-2.2.0-linux-amd64.deb') }) }, // a .deb can't update itself
+    { 'linux-x64': linuxAsset({ name: 'twicable.exe' }) },
+    { 'linux-x64': linuxAsset({ name: '../twicable.AppImage' }) },
     { 'linux-x64': linuxAsset({ url: APPIMAGE_URL.replace('https:', 'http:') }) },
     { 'linux-x64': linuxAsset({ url: 'https://github.com/o/r/releases/download/v2.2.0/other.AppImage' }) },
     { 'linux-x64': linuxAsset({ sha256: 'xyz' }) },
@@ -75,9 +75,9 @@ test('feed: Linux finds its AppImage; minVersion never sends it to the manual ro
 });
 
 test('release: the asset names are exactly what electron-builder builds (package.json → build.linux)', () => {
-  assert.equal(linuxAssetName('2.2.0'), 'souldew-2.2.0-linux-x86_64.AppImage');
-  assert.equal(linuxAssetName('2.2.0', 'arm64'), 'souldew-2.2.0-linux-arm64.AppImage');
-  assert.equal(debAssetName('2.2.0'), 'souldew-2.2.0-linux-amd64.deb');
+  assert.equal(linuxAssetName('2.2.0'), 'twicable-2.2.0-linux-x86_64.AppImage');
+  assert.equal(linuxAssetName('2.2.0', 'arm64'), 'twicable-2.2.0-linux-arm64.AppImage');
+  assert.equal(debAssetName('2.2.0'), 'twicable-2.2.0-linux-amd64.deb');
   // electron-builder expands ${arch} per format: x86_64 for AppImage, amd64 for deb (builder-util getArtifactArchName)
   const expand = (arch, ext) => pkg.build.linux.artifactName.replaceAll('${version}', '2.2.0').replaceAll('${arch}', arch).replaceAll('${ext}', ext);
   assert.equal(expand('x86_64', 'AppImage'), linuxAssetName('2.2.0'));
@@ -93,8 +93,8 @@ test('release: the asset names are exactly what electron-builder builds (package
     assert.ok(native?.filter.includes('linkhost*'), `${os}: the link host is bundled`);
   }
   assert.ok(pkg.build.linux.files.includes('build/icon.png'));
-  assert.equal(pkg.desktopName, 'souldew.desktop');
-  assert.equal(pkg.build.linux.executableName, 'souldew');
+  assert.equal(pkg.desktopName, 'twicable.desktop');
+  assert.equal(pkg.build.linux.executableName, 'twicable');
   assert.equal(pkg.build.linux.category, 'Game');
 });
 
@@ -102,7 +102,7 @@ test('release: one feed carries the DMG, the Windows installer and the AppImage 
   const f = buildFeed({ version: '2.2.0', notes: 'Linux', repo: 'o/r', dmg: { sha256: 'a'.repeat(64), size: 1 }, win: { sha256: 'b'.repeat(64), size: 2 },
     linux: { sha256: 'c'.repeat(64), size: 3 }, pubDate: '2026-11-06T00:00:00.000Z' });
   assert.deepEqual(Object.keys(f.assets).sort(), ['linux-x64', 'win32-x64']);
-  assert.deepEqual(f.assets['linux-x64'], { name: 'souldew-2.2.0-linux-x86_64.AppImage', url: 'https://github.com/o/r/releases/download/v2.2.0/souldew-2.2.0-linux-x86_64.AppImage', sha256: 'c'.repeat(64), size: 3 });
+  assert.deepEqual(f.assets['linux-x64'], { name: 'twicable-2.2.0-linux-x86_64.AppImage', url: 'https://github.com/o/r/releases/download/v2.2.0/twicable-2.2.0-linux-x86_64.AppImage', sha256: 'c'.repeat(64), size: 3 });
   assert.equal(f.assets['win32-x64'].name, winAssetName('2.2.0'));
   assert.ok(!JSON.stringify(f).includes('.deb'));
   const linuxOnly = buildFeed({ version: '2.2.0', notes: 'x', repo: 'o/r', dmg: { sha256: 'a'.repeat(64), size: 1 }, linux: { sha256: 'c'.repeat(64), size: 3 } });
@@ -111,7 +111,7 @@ test('release: one feed carries the DMG, the Windows installer and the AppImage 
   assert.equal('assets' in macOnly, false); // exactly the 2.0 format
 });
 
-test('backward compatible: souldew 2.0.0 and 2.1.0 accept a signed feed with the Linux entry', async () => {
+test('backward compatible: twicable 2.0.0 and 2.1.0 accept a signed feed with the Linux entry', async () => {
   // Verbatim copies of the released feed code (test/fixtures/update-2.0.0 and update-2.1.0).
   const v200 = { feed: await import('./fixtures/update-2.0.0/shared/update.mjs'), core: await import('./fixtures/update-2.0.0/electron/update-core.mjs') };
   const v210 = { feed: await import('./fixtures/update-2.1.0/shared/update.mjs'), core: await import('./fixtures/update-2.1.0/electron/update-core.mjs') };
@@ -126,13 +126,13 @@ test('backward compatible: souldew 2.0.0 and 2.1.0 accept a signed feed with the
   for (const [label, old] of [['2.0.0', v200], ['2.1.0', v210]]) {
     assert.ok(old.core.verifyFeedSignature(published, pub), `${label}: signature`);
     const seen = old.feed.validateFeed(published);
-    assert.equal(seen.url, 'https://github.com/souldewapp/souldew/releases/download/v2.2.0/souldew-2.2.0-arm64.dmg', label);
+    assert.equal(seen.url, 'https://github.com/souldewapp/souldew/releases/download/v2.2.0/twicable-2.2.0-arm64.dmg', label);
     assert.equal(old.feed.updateAction(seen, '2.0.0'), 'install', label);
   }
   // 2.1.0 knows `assets`: it keeps the Windows installer, drops the unknown Linux key, and its Windows app updates
   const seen210 = v210.feed.validateFeed(published);
   assert.deepEqual(Object.keys(seen210.assets), ['win32-x64']);
-  assert.equal(v210.feed.assetFor(seen210, 'win32', 'x64').name, 'souldew-2.2.0-win-x64-setup.exe');
+  assert.equal(v210.feed.assetFor(seen210, 'win32', 'x64').name, 'twicable-2.2.0-win-x64-setup.exe');
   assert.equal(v210.feed.actionFor(seen210, '2.1.0', { platform: 'win32', arch: 'x64' }), 'install');
   assert.equal(v210.feed.actionFor(seen210, '2.1.0', { platform: 'darwin', arch: 'arm64' }), 'install');
 
@@ -140,7 +140,7 @@ test('backward compatible: souldew 2.0.0 and 2.1.0 accept a signed feed with the
   await withServer((req, res) => (req.url === '/latest.json' ? res.end(text) : res.writeHead(404).end()), async (b) => {
     for (const old of [v200, v210]) assert.equal((await old.core.fetchFeed(`${b}/latest.json`, { allowLocal: true, publicKey: pub })).version, '2.2.0');
     const now = await fetchFeed(`${b}/latest.json`, { allowLocal: true, publicKey: pub });
-    assert.deepEqual(assetFor(now, 'linux', 'x64'), { name: 'souldew-2.2.0-linux-x86_64.AppImage', url: 'https://github.com/souldewapp/souldew/releases/download/v2.2.0/souldew-2.2.0-linux-x86_64.AppImage', sha256: 'c'.repeat(64), size: 134217728 });
+    assert.deepEqual(assetFor(now, 'linux', 'x64'), { name: 'twicable-2.2.0-linux-x86_64.AppImage', url: 'https://github.com/souldewapp/souldew/releases/download/v2.2.0/twicable-2.2.0-linux-x86_64.AppImage', sha256: 'c'.repeat(64), size: 134217728 });
   });
   // The signature protects the Linux entry for every version: a changed AppImage hash is refused.
   const tampered = { ...published, assets: { ...published.assets, 'linux-x64': { ...published.assets['linux-x64'], sha256: 'f'.repeat(64) } } };
@@ -151,21 +151,21 @@ test('backward compatible: souldew 2.0.0 and 2.1.0 accept a signed feed with the
 
 // ---- the AppImage updates itself ---------------------------------------------------------------
 test('AppImage: only an app running from inside its own AppImage updates itself', () => {
-  const env = { APPIMAGE: '/home/deck/Applications/souldew.AppImage', APPDIR: '/tmp/.mount_souldeAbC123' };
-  const execPath = '/tmp/.mount_souldeAbC123/souldew';
-  const exists = (p) => p === '/home/deck/Applications/souldew.AppImage';
-  assert.equal(appImageFromEnv({ env, execPath, exists }), '/home/deck/Applications/souldew.AppImage');
-  assert.equal(appImageFromEnv({ env: { ...env, APPDIR: '/tmp/.mount_souldeAbC123/' }, execPath, exists }), '/home/deck/Applications/souldew.AppImage');
-  assert.equal(appImageFromEnv({ env: { ...env, APPIMAGE: '/home/deck/Applications/souldew-2.2.0-linux-x86_64.appimage' }, execPath, exists: () => true }),
-    '/home/deck/Applications/souldew-2.2.0-linux-x86_64.appimage');
+  const env = { APPIMAGE: '/home/deck/Applications/twicable.AppImage', APPDIR: '/tmp/.mount_souldeAbC123' };
+  const execPath = '/tmp/.mount_souldeAbC123/twicable';
+  const exists = (p) => p === '/home/deck/Applications/twicable.AppImage';
+  assert.equal(appImageFromEnv({ env, execPath, exists }), '/home/deck/Applications/twicable.AppImage');
+  assert.equal(appImageFromEnv({ env: { ...env, APPDIR: '/tmp/.mount_souldeAbC123/' }, execPath, exists }), '/home/deck/Applications/twicable.AppImage');
+  assert.equal(appImageFromEnv({ env: { ...env, APPIMAGE: '/home/deck/Applications/twicable-2.2.0-linux-x86_64.appimage' }, execPath, exists: () => true }),
+    '/home/deck/Applications/twicable-2.2.0-linux-x86_64.appimage');
   const none = [
     { env: {}, execPath, exists }, // .deb install, unpacked build, development
     { env: { APPDIR: env.APPDIR }, execPath, exists },
     { env: { APPIMAGE: env.APPIMAGE }, execPath, exists },
-    { env, execPath: '/opt/souldew/souldew', exists }, // a stray APPIMAGE inherited from another AppImage
-    { env, execPath: '/tmp/.mount_souldeAbC1234/souldew', exists }, // a mount whose name merely starts the same
-    { env: { ...env, APPIMAGE: 'souldew.AppImage' }, execPath, exists: () => true }, // relative
-    { env: { ...env, APPIMAGE: '/home/deck/Applications/souldew' }, execPath, exists: () => true }, // not an AppImage
+    { env, execPath: '/opt/twicable/twicable', exists }, // a stray APPIMAGE inherited from another AppImage
+    { env, execPath: '/tmp/.mount_souldeAbC1234/twicable', exists }, // a mount whose name merely starts the same
+    { env: { ...env, APPIMAGE: 'twicable.AppImage' }, execPath, exists: () => true }, // relative
+    { env: { ...env, APPIMAGE: '/home/deck/Applications/twicable' }, execPath, exists: () => true }, // not an AppImage
     { env: { ...env, APPDIR: '/' }, execPath, exists }, // a mount point can't be the root
     { env: { ...env, APPIMAGE: '/home/deck/x\0.AppImage' }, execPath, exists: () => true },
     { env, execPath, exists: () => false }, // the file is gone (moved while running)
@@ -174,33 +174,33 @@ test('AppImage: only an app running from inside its own AppImage updates itself'
 });
 
 test('AppImage: the update is staged next to the file and replaces it with one rename, under the same name', () => {
-  assert.equal(appImageStagedPath('/home/deck/Applications/souldew.AppImage'), '/home/deck/Applications/.souldew.AppImage.update');
+  assert.equal(appImageStagedPath('/home/deck/Applications/twicable.AppImage'), '/home/deck/Applications/.twicable.AppImage.update');
   assert.deepEqual(canReplaceAppImage(null), { ok: false, reason: 'not-appimage' });
   const deny = () => {
     throw Object.assign(new Error('EACCES'), { code: 'EACCES' });
   };
-  assert.deepEqual(canReplaceAppImage('/opt/apps/souldew.AppImage', { access: deny }), { ok: false, reason: 'read-only' });
+  assert.deepEqual(canReplaceAppImage('/opt/apps/twicable.AppImage', { access: deny }), { ok: false, reason: 'read-only' });
   const asked = [];
-  assert.deepEqual(canReplaceAppImage('/home/deck/Applications/souldew.AppImage', { access: (p, mode) => asked.push([p, mode]) }), { ok: true });
+  assert.deepEqual(canReplaceAppImage('/home/deck/Applications/twicable.AppImage', { access: (p, mode) => asked.push([p, mode]) }), { ok: true });
   assert.deepEqual(asked, [['/home/deck/Applications', constants.W_OK]]); // the folder, for the rename
 
   // with fakes: exactly one rename, the old file's path kept
   const renames = [];
-  assert.equal(swapAppImage('/a/souldew.AppImage', '/a/.souldew.AppImage.update', { rename: (f, t) => renames.push([f, t]), exists: () => true }), '/a/souldew.AppImage');
-  assert.deepEqual(renames, [['/a/.souldew.AppImage.update', '/a/souldew.AppImage']]);
-  assert.throws(() => swapAppImage('/a/souldew.AppImage', '/b/.souldew.AppImage.update', { rename: () => {}, exists: () => true }), (e) => e.code === 'NO_STAGED');
-  assert.throws(() => swapAppImage('/a/souldew.AppImage', '/a/.souldew.AppImage.update', { rename: () => {}, exists: () => false }), (e) => e.code === 'NO_STAGED');
+  assert.equal(swapAppImage('/a/twicable.AppImage', '/a/.twicable.AppImage.update', { rename: (f, t) => renames.push([f, t]), exists: () => true }), '/a/twicable.AppImage');
+  assert.deepEqual(renames, [['/a/.twicable.AppImage.update', '/a/twicable.AppImage']]);
+  assert.throws(() => swapAppImage('/a/twicable.AppImage', '/b/.twicable.AppImage.update', { rename: () => {}, exists: () => true }), (e) => e.code === 'NO_STAGED');
+  assert.throws(() => swapAppImage('/a/twicable.AppImage', '/a/.twicable.AppImage.update', { rename: () => {}, exists: () => false }), (e) => e.code === 'NO_STAGED');
 
   // relaunch: the AppImage file itself with this run's arguments
-  assert.deepEqual(appImageRelaunch('/a/souldew.AppImage', ['/tmp/.mount_x/souldew', '--user-data-dir=/tmp/p']), { execPath: '/a/souldew.AppImage', args: ['--user-data-dir=/tmp/p'] });
+  assert.deepEqual(appImageRelaunch('/a/twicable.AppImage', ['/tmp/.mount_x/twicable', '--user-data-dir=/tmp/p']), { execPath: '/a/twicable.AppImage', args: ['--user-data-dir=/tmp/p'] });
   const modes = [];
-  makeExecutable('/a/.souldew.AppImage.update', { chmod: (p, m) => modes.push([p, m]) });
-  assert.deepEqual(modes, [['/a/.souldew.AppImage.update', 0o755]]);
+  makeExecutable('/a/.twicable.AppImage.update', { chmod: (p, m) => modes.push([p, m]) });
+  assert.deepEqual(modes, [['/a/.twicable.AppImage.update', 0o755]]);
 });
 
 test('AppImage: swap and cleanup on real files (the running file keeps its name)', { skip: process.platform === 'win32' && 'POSIX file modes and paths' }, () => {
   const dir = mkdtempSync(join(TMP, 'apps-'));
-  const app = join(dir, 'souldew-2.1.0-linux-x86_64.AppImage'); // the old version's name stays – shortcuts point to it
+  const app = join(dir, 'twicable-2.1.0-linux-x86_64.AppImage'); // the old version's name stays – shortcuts point to it
   writeFileSync(app, 'old');
   const staged = appImageStagedPath(app);
   writeFileSync(staged, 'new');
@@ -215,7 +215,7 @@ test('AppImage: swap and cleanup on real files (the running file keeps its name)
   writeFileSync(`${staged}.part`, 'x');
   writeFileSync(join(dir, 'other.AppImage'), 'x');
   cleanupAppImageStaging(app);
-  assert.deepEqual(readdirSync(dir).sort(), ['other.AppImage', 'souldew-2.1.0-linux-x86_64.AppImage']);
+  assert.deepEqual(readdirSync(dir).sort(), ['other.AppImage', 'twicable-2.1.0-linux-x86_64.AppImage']);
   cleanupAppImageStaging(null); // nothing to do
 });
 

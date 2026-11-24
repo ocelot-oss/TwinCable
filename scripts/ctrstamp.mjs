@@ -1,7 +1,7 @@
-// The 3DS core's stamp (tools/ctr/<platform>/SOULDEW_CORE, written by scripts/build-ctr.mjs): which Azahar and which of
+// The 3DS core's stamp (tools/ctr/<platform>/TWICABLE_CORE, written by scripts/build-ctr.mjs): which Azahar and which of
 // native/azahar-patch/*.patch went into the core – by name and by a hash of their contents. `build-ctr.mjs --check`
 // (npm run dist, CI) compares it with the patches now, so a core built before a patch was added or changed is caught
-// (until 2.8.2's review it only looked whether the file was there: a local core without souldew-sfx.patch passed).
+// (until 2.8.2's review it only looked whether the file was there: a local core without twicable-sfx.patch passed).
 import { createHash } from 'node:crypto';
 
 /** The stamp for Azahar `tag` with the patches `names` (read(name) → its text; line endings as LF, so a Windows

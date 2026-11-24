@@ -19,14 +19,14 @@ export function OnlineSection({ cfg, save, toast, reloadStatus }) {
   };
   return html`
     <${Group} title=${t('set.withPlayers', 'With the other players')}>
-      <${Item} id="share-screen"><${Check} checked=${cfg.shareScreen !== false} onChange=${(v) => save({ shareScreen: v })}
+      <${Item} id="share-screen"><${Check} checked=${cfg.shareScreen === true} onChange=${(v) => save({ shareScreen: v })}
         label=${t('set.shareScreenAll', 'Share my screen with the other players')}
         hint=${t('set.shareScreenHint', 'While you play, the others see your game small in a corner. It is only sent while someone is watching.')} /><//>
       <${Elsewhere} icon="signal">${t('set.connElsewhere', 'Invite codes, relays and who is online:')} <a href="#/link">${t('nav.link', 'Connection')}</a><//>
     <//>
     <${Group} title="Discord"><${Item} id="discord"><${LiveRunsSettings} /><//>
       <${Item} id="presence"><label class="check"><input type="checkbox" checked=${cfg.presence !== false} onChange=${(e) => save({ presence: e.target.checked })} /><span>${t('set.presence', 'Count me in “playing now” (anonymous)')}
-        <span class="hint">${t('set.presenceHint2', 'Only while a game runs: system, mode (solo, Nuzlocke, SoulLink or Play together) and app version with a random id, for the player count on the souldew Discord. And once a day an anonymous “souldew was used today” for the team’s statistics (version, system, week of first use, how many recent days) – no name, no game, no IP stored, no id that stays.')}
+        <span class="hint">${t('set.presenceHint2', 'Only while a game runs: system, mode (solo, Nuzlocke, SoulLink or Play together) and app version with a random id, for the player count on the twicable Discord. And once a day an anonymous “twicable was used today” for the team’s statistics (version, system, week of first use, how many recent days) – no name, no game, no IP stored, no id that stays.')}
           ${' '}<a href=${LINKS.privacy} onClick=${(e) => { e.preventDefault(); e.stopPropagation(); openExternal(currentLang() === 'de' ? LINKS.privacy : LINKS.privacyDocs); }}>${t('set.presenceMore', 'What exactly is sent')}</a></span></span></label><//>
     <//>
     <${Group} title=${t('nav.stream', 'Stream')}>

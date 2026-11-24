@@ -1,4 +1,4 @@
-// souldew+ pack format (the accounts service's: a signed manifest + one AES-256-GCM envelope per file): the signature
+// twicable+ pack format (the accounts service's: a signed manifest + one AES-256-GCM envelope per file): the signature
 // (valid / invalid / tampered / wrong key / no production key yet), the per-file envelopes (wrong key, edited
 // ciphertext, edited header, another file's or another pack's envelope, the watermark trailer), the file hashes, the
 // manifest's shape – and an envelope made exactly the way the Worker makes it opens here (interoperability).
@@ -22,11 +22,11 @@ const WM = 'wm_acct42';
 
 async function fixture({ kid = '3' } = {}) {
   const signer = await makeSigner();
-  const { manifest, manifestBytes } = await buildManifest({ id: 'souldew-plus', version: '1.0.0', kind: 'mixed', title: 'Test', files });
+  const { manifest, manifestBytes } = await buildManifest({ id: 'twicable-plus', version: '1.0.0', kind: 'mixed', title: 'Test', files });
   const sig = await signer.sign(manifestBytes);
   const key = randKey();
   const envs = new Map();
-  for (const f of files) envs.set(f.path, await sealFile({ pack: 'souldew-plus', version: '1.0.0', path: f.path, wm: WM, kid, key, bytes: f.bytes }));
+  for (const f of files) envs.set(f.path, await sealFile({ pack: 'twicable-plus', version: '1.0.0', path: f.path, wm: WM, kid, key, bytes: f.bytes }));
   const open = (patch = {}) => openPack({ manifest: manifestBytes, signature: sig, keys: [signer.publicKey], key, kid, envelope: (p) => envs.get(p), ...patch });
   return { signer, manifest, manifestBytes, sig, key, envs, kid, open };
 }
@@ -69,16 +69,16 @@ test('only the pinned production key (or a dev key passed in) verifies; a throwa
 
 test('the service must have issued exactly this pack (id / version)', async () => {
   const f = await fixture();
-  await assert.rejects(f.open({ expect: { id: 'souldew-plus', version: '0.9.0' } }), { code: 'manifest' });
+  await assert.rejects(f.open({ expect: { id: 'twicable-plus', version: '0.9.0' } }), { code: 'manifest' });
   await assert.rejects(f.open({ expect: { id: 'other-pack' } }), { code: 'manifest' });
-  await f.open({ expect: { id: 'souldew-plus', version: '1.0.0' } });
+  await f.open({ expect: { id: 'twicable-plus', version: '1.0.0' } });
 });
 
 test('envelopes: wrong key, edited ciphertext, edited header, swapped files, other key id, other pack', async () => {
   const f = await fixture();
   const entry = f.manifest.files[1];
   const env = f.envs.get(entry.path);
-  const o = { pack: 'souldew-plus', kid: '3', entry };
+  const o = { pack: 'twicable-plus', kid: '3', entry };
   assert.equal(new TextDecoder().decode((await openFile(env, f.key, o)).bytes), "html[data-skin='moss'] { --shell: #1f2a20; }");
   await assert.rejects(openFile(env, randKey(), o), { code: 'decrypt' });
   const ct = env.slice();
@@ -102,7 +102,7 @@ test('envelopes: wrong key, edited ciphertext, edited header, swapped files, oth
 
 test('file hashes and the watermark trailer: a changed file, a missing file, no trailer – all refused, nothing used', async () => {
   const f = await fixture();
-  const reseal = (path, bytes) => sealFile({ pack: 'souldew-plus', version: '1.0.0', path, wm: WM, kid: f.kid, key: f.key, bytes });
+  const reseal = (path, bytes) => sealFile({ pack: 'twicable-plus', version: '1.0.0', path, wm: WM, kid: f.kid, key: f.key, bytes });
   // a different CSS sealed correctly – the manifest's hash catches it
   const changed = await reseal('skins/moss.css', enc.encode("html[data-skin='moss'] { --shell: #ff0000; }"));
   await assert.rejects(f.open({ envelope: (p) => (p === 'skins/moss.css' ? changed : f.envs.get(p)) }), { code: 'hash' });
@@ -110,7 +110,7 @@ test('file hashes and the watermark trailer: a changed file, a missing file, no 
   // a text file without the trailer: made like the Worker would for an image, but under the css path
   const noTrailer = await (async () => {
     const nonce = webcrypto.getRandomValues(new Uint8Array(12));
-    const header = enc.encode(JSON.stringify({ v: 1, pack: 'souldew-plus', version: '1.0.0', path: 'skins/moss.css', wm: WM, kid: f.kid, nonce: b64url(nonce) }));
+    const header = enc.encode(JSON.stringify({ v: 1, pack: 'twicable-plus', version: '1.0.0', path: 'skins/moss.css', wm: WM, kid: f.kid, nonce: b64url(nonce) }));
     const k = await webcrypto.subtle.importKey('raw', f.key, 'AES-GCM', false, ['encrypt']);
     const ct = new Uint8Array(await webcrypto.subtle.encrypt({ name: 'AES-GCM', iv: nonce, additionalData: header }, k, files[1].bytes));
     const out = new Uint8Array(6 + header.length + ct.length);
@@ -128,19 +128,19 @@ test('interoperability: an envelope built with node:crypto exactly like the Work
   const entry = f.manifest.files[0];
   const wm = 'wm_AbCdEfGhIjKlMnOpQrStUv';
   const nonce = randomBytes(12);
-  const header = Buffer.from(JSON.stringify({ v: 1, pack: 'souldew-plus', version: '1.0.0', path: entry.path, wm, kid: 'pv_0123456789abcdefABCDEF', nonce: nonce.toString('base64url') }));
+  const header = Buffer.from(JSON.stringify({ v: 1, pack: 'twicable-plus', version: '1.0.0', path: entry.path, wm, kid: 'pv_0123456789abcdefABCDEF', nonce: nonce.toString('base64url') }));
   const c = createCipheriv('aes-256-gcm', f.key, nonce);
   c.setAAD(header);
   const plain = Buffer.concat([files[0].bytes, Buffer.from(`\n/*sdwm:${wm}*/\n`)]);
   const ct = Buffer.concat([c.update(plain), c.final(), c.getAuthTag()]);
   const env = Buffer.concat([Buffer.from('SDP1'), Buffer.from([header.length >> 8, header.length & 255]), header, ct]);
-  const r = await openFile(new Uint8Array(env), f.key, { pack: 'souldew-plus', kid: 'pv_0123456789abcdefABCDEF', entry });
+  const r = await openFile(new Uint8Array(env), f.key, { pack: 'twicable-plus', kid: 'pv_0123456789abcdefABCDEF', entry });
   assert.equal(r.wm, wm);
   assert.deepEqual(r.bytes, files[0].bytes);
 });
 
 test('manifest shape: format, ids, paths, types, sizes, hashes, executable flags are checked even when signed', async () => {
-  const ok = { format: FORMAT, id: 'souldew-plus', version: '1.0.0', kind: 'mixed', title: 't', created: '2026-11-17T00:00:00Z',
+  const ok = { format: FORMAT, id: 'twicable-plus', version: '1.0.0', kind: 'mixed', title: 't', created: '2026-11-17T00:00:00Z',
     files: [{ path: 'skins/a.css', size: 1, sha256: await sha256(new Uint8Array(1)), type: 'text/css', executable: false }] };
   assert.doesNotThrow(() => checkManifest(ok));
   const bad = (patch, file) => assert.throws(() => checkManifest({ ...ok, ...patch, ...(file ? { files: [{ ...ok.files[0], ...file }] } : {}) }), { code: 'manifest' });

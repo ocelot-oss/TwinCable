@@ -1,4 +1,4 @@
-// souldew+ preview media in the page: the real look of every premium banner, nameplate, avatar frame
+// twicable+ preview media in the page: the real look of every premium banner, nameplate, avatar frame
 // and colour skin for someone who doesn't own it – signed in or not. The local server fetches them from the accounts
 // service and hands out only pictures whose signed manifest (pinned pack key) and SHA-256 checked out
 // (server/lib/pluspreviews.mjs); here they are plain <img>s: a still, and the short loop while the card is hovered or
@@ -28,7 +28,7 @@ export function loadPreviews(force = false) {
   return loading;
 }
 
-// stickers / wraps: "Your handheld"'s souldew+ stickers and skins – a still each (scripts/plus-dev-pack.mjs handheldPreviews);
+// stickers / wraps: "Your handheld"'s twicable+ stickers and skins – a still each (scripts/plus-dev-pack.mjs handheldPreviews);
 // launch: the 3D launch looks – a still and a loop each, the Clear shell once per colour (scripts/handheld/launch-shots.mjs)
 const KINDS = { banners: 'banners', nameplates: 'nameplates', frames: 'frames', skins: 'skins', stickers: 'stickers', wraps: 'wraps', launch: 'launch' };
 const STILL_ONLY = new Set(['skins', 'stickers', 'wraps']);

@@ -1,5 +1,5 @@
 // AudioWorklet of the fast player (lib/nativeplayer.mjs) and the 3DS player (lib/ctrplayer.mjs): the host's stereo
-// samples (at the context's rate) go through a jitter buffer (jitterring.mjs) and souldew's turbo mixer (turboaudio.mjs)
+// samples (at the context's rate) go through a jitter buffer (jitterring.mjs) and twicable's turbo mixer (turboaudio.mjs)
 // – at 1× the game's sound as it is, while fast-forwarding the music at normal speed ("music"), silence ("mute") or the
 // sped-up original ("original"; "plain" leaves the mixer out). The hosts send fast-forward sound sped up by the real
 // speed, as RetroArch does for player.html, so the mixer works here exactly as there. If the mixer ever fails, the sound

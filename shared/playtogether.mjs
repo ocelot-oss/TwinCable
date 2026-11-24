@@ -69,7 +69,7 @@ export function cleanGameInfo(v) {
 
 /**
  * What two players' games can do together: { trade, battle, world } – each true, false or 'untested' (the hardware
- * allows it, souldew never ran it) – and `why` when they can't link at all: 'system' (another console family, a 3DS
+ * allows it, twicable never ran it) – and `why` when they can't link at all: 'system' (another console family, a 3DS
  * game), 'gen' (Gen 4 and Gen 5 share the DS but not the Union Room), 'hack' (a hack whose link was never checked).
  *   Gen 1 ↔ Gen 1, Gen 2 ↔ Gen 2: the Cable Club. Gen 1 ↔ Gen 2: the Time Capsule (trades only; never run here).
  *   Gen 3 (Ruby, Sapphire, Emerald, FireRed, LeafGreen): the Cable Club between all five (FireRed/LeafGreen trade with

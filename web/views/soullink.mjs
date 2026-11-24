@@ -562,7 +562,7 @@ function ShinyOption({ support, gen, solo, hack, rate, trainers, onRate, onTrain
   const odds = custom && ok ? shinyOdds(rate) : null;
   const why = ok ? null
     : support?.reason === 'hack' && hack ? t('new.shinyHack', 'Not for ROM hacks – their code can differ from the original game.')
-      : support?.reason === 'hack' || support?.reason === 'code' ? t('new.shinyCode', 'souldew can’t find the shiny check in this copy of the game, so the rate stays as it is.')
+      : support?.reason === 'hack' || support?.reason === 'code' ? t('new.shinyCode', 'twicable can’t find the shiny check in this copy of the game, so the rate stays as it is.')
         : gen === 1 ? t('new.shinyGen1', 'Gen 1 has no shiny Pokémon.')
           : t('new.shinyGames', 'Only for the original Gen 3–5 games (Game Boy Advance and DS).');
   const trainersOff = ok && !support.trainers;
@@ -598,7 +598,7 @@ function ShinyOption({ support, gen, solo, hack, rate, trainers, onRate, onTrain
  * A restart (`from`) always keeps the mode of the old run. */
 function NewRun({ gameId, hackId, patchPick, romPick, friendPick, from, mode: sectionMode }) {
   const { status, navigate, reloadStatus, setRunId, setMe } = useApp();
-  // souldew friends who play the other seats (signed in only): their name goes in, and they get an invite once it's built
+  // twicable friends who play the other seats (signed in only): their name goes in, and they get an invite once it's built
   const acct = useAccount();
   const { data: friendData } = useFriends(!!acct.session?.signedIn);
   const [invited, setInvited] = useState({}); // slot → friend card
@@ -801,12 +801,12 @@ function NewRun({ gameId, hackId, patchPick, romPick, friendPick, from, mode: se
           : count === 2 ? t('new.partner', 'Your partner') : t('new.playerN', 'Player {n}', { n: i + 1 })}</span>
           <input type="text" value=${names[s]} maxLength="20" placeholder=${t('new.playerN', 'Player {n}', { n: i + 1 })}
             onInput=${(e) => setNames({ ...names, [s]: e.target.value })} />
-          ${i > 0 && friends.length > 0 && html`<select class="who-friend small" aria-label=${t('new.friendFor', 'A souldew friend for this seat')} value=${invited[s]?.id || ''}
+          ${i > 0 && friends.length > 0 && html`<select class="who-friend small" aria-label=${t('new.friendFor', 'A twicable friend for this seat')} value=${invited[s]?.id || ''}
             onChange=${(e) => pickFriend(s, e.target.value)}>
-            <option value="">${t('new.noFriend', 'Not a souldew friend')}</option>
+            <option value="">${t('new.noFriend', 'Not a twicable friend')}</option>
             ${friends.filter((f) => f.user.id === invited[s]?.id || !Object.values(invited).some((x) => x?.id === f.user.id)).map((f) => html`<option value=${f.user.id}>${t('new.inviteFriendOpt', 'Invite {name}', { name: f.user.name })}</option>`)}</select>`}</label>`)}
       </div>
-      ${!solo && Object.values(invited).some(Boolean) && html`<p class="small muted">${t('new.friendsInvited', 'Your friends get the invite in souldew as soon as the run is built.')}</p>`}
+      ${!solo && Object.values(invited).some(Boolean) && html`<p class="small muted">${t('new.friendsInvited', 'Your friends get the invite in twicable as soon as the run is built.')}</p>`}
       ${!solo && !from && !Object.values(invited).some(Boolean) && html`<${FindPartnerLink} game=${hack?.name || customHack || (game ? gameTitle(game) : rom?.title || '')}
         partners=${count - 1} rules=${randomize && canRandomize ? 'Randomized' : ''} />`}
     </section>
@@ -828,13 +828,13 @@ function NewRun({ gameId, hackId, patchPick, romPick, friendPick, from, mode: se
       <p class="small muted">${!inspect ? t('new.checking', 'Checking the game …')
         : inspect.failed ? t('new.checkFailed', 'This combination of game and ROM hack doesn’t work – see the message above.')
         // (a hack with a randomizer of its own – Pokémon Quetzal: its new-game options)
-        : hackNoUpr && hack?.ownRandomizer ? t('new.ownRandomizer', 'souldew can’t randomize {hack} – but the hack has a randomizer of its own: switch it on in the game’s options when you start a new game.', { hack: hack.name })
+        : hackNoUpr && hack?.ownRandomizer ? t('new.ownRandomizer', 'twicable can’t randomize {hack} – but the hack has a randomizer of its own: switch it on in the game’s options when you start a new game.', { hack: hack.name })
         : inspect.info?.missingTool === 'javaCrash' ? javaCrashText(solo ? t('new.javaCrashSolo', 'You can still play the Nuzlocke without the randomizer.') : t('new.javaCrashLink', 'You can still play a regular SoulLink.'))
         : inspect.info?.missingTool === 'java' ? (solo ? t('new.noJavaSolo', 'Java wasn’t found, so the randomizer can’t run. Install Java (e.g. Temurin 21 from adoptium.net) and restart the app – or play the Nuzlocke without the randomizer.')
           : t('new.noJava', 'Java wasn’t found, so the randomizer can’t run. Install Java (e.g. Temurin 21 from adoptium.net) and restart the app – or play a regular SoulLink.'))
         : inspect.info?.missingTool === 'upr' ? (solo ? t('new.noUprSolo', 'The randomizer (Universal Pokémon Randomizer ZX) is missing – you can still play the Nuzlocke without it.')
           : t('new.noUpr', 'The randomizer (Universal Pokémon Randomizer ZX) is missing – or play a regular SoulLink.'))
-        : inspect.info?.reason === 'encrypted' ? t('new.ctrEncrypted', 'This 3DS game file is encrypted, so the randomizer can’t read it. It needs a decrypted copy of the game (.3ds, .cci or .cxi) – souldew doesn’t decrypt games.')
+        : inspect.info?.reason === 'encrypted' ? t('new.ctrEncrypted', 'This 3DS game file is encrypted, so the randomizer can’t read it. It needs a decrypted copy of the game (.3ds, .cci or .cxi) – twicable doesn’t decrypt games.')
         : inspect.info?.reason === 'compressed' ? t('new.ctrCompressed', 'Compressed 3DS files (.zcci, .zcxi) can’t be randomized – add the uncompressed game file (.3ds, .cci or .cxi).')
         : inspect.info?.reason === 'randoCrash' ? (solo ? t('new.randoCrashSolo', 'The randomizer can’t build this game – its data isn’t where the randomizer expects it, as in some ROM hacks and releases. You can still play the Nuzlocke without the randomizer.')
           : t('new.randoCrash', 'The randomizer can’t build this game – its data isn’t where the randomizer expects it, as in some ROM hacks and releases. You can still play a regular SoulLink.'))
@@ -951,7 +951,7 @@ function InviteDrop({ onText }) {
 
 function JoinRun() {
   const { manifest, reloadStatus, setRunId, setMe, toast, library, navigate, reloadManifest, status, doc, route } = useApp();
-  // a friend's invite (souldew account): accepted here, its code goes into the join flow below
+  // a friend's invite (twicable account): accepted here, its code goes into the join flow below
   const inviteId = route.params.invite || null;
   const [friendInvite, setFriendInvite] = useState(null);
   useEffect(() => {
@@ -1135,7 +1135,7 @@ function JoinRun() {
         ${myName.trim() && pack.players?.[mine]?.name !== myName.trim() && html`<p class="small muted">${t('join.asName', 'You’ll play as {name} – that’s the name the others see.', { name: myName.trim() })}</p>`}
         ${taken.includes(mine) && html`<p class="small warning info">${t('join.takenHint', 'The host’s app says {name} is already in the run. Only pick it if that’s you on another computer.', { name: pack.players?.[mine]?.name || mine.toUpperCase() })}</p>`}`}
       ${shinyNote(pack) && html`<p class="small muted">${t('join.shiny', 'This run changes shinies ({what}) – your game gets the same.', { what: shinyNote(pack) })}</p>`}
-      ${pack.game?.system === '3ds' && pack.randomizer?.enabled && html`<p class="small muted">${t('join.ctrNote', 'A randomized 3DS run: your game is rebuilt from your own decrypted copy – a few GB and a few minutes. Afterwards souldew checks that it matches the host’s byte for byte.')}</p>`}
+      ${pack.game?.system === '3ds' && pack.randomizer?.enabled && html`<p class="small muted">${t('join.ctrNote', 'A randomized 3DS run: your game is rebuilt from your own decrypted copy – a few GB and a few minutes. Afterwards twicable checks that it matches the host’s byte for byte.')}</p>`}
       <${IntroSaveOption} intro=${intro} forget=${forgetIntro} on=${fromIntro} onChange=${setFromIntro} disabled=${busy} />
       <div><button class="btn primary big" disabled=${busy || !rom || (pack.patch && !patch)} onClick=${build}>${busy ? t('new.building', 'Building …') : t('join.build', 'Build my game & join')}</button></div>
       ${busy && html`<${BuildProgress} state=${progress} name=${(s) => pack.players?.[s]?.name || s?.toUpperCase() || ''} />`}

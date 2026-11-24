@@ -1,4 +1,4 @@
-// A product shot of a souldew+ sticker or wrap for the public preview media (scripts/plus-dev-pack.mjs). The previews
+// A product shot of a twicable+ sticker or wrap for the public preview media (scripts/plus-dev-pack.mjs). The previews
 // go to anyone, signed in or not – and a sticker IS its pixel art: a clean integer upscale would be the sticker itself,
 // one nearest-neighbour downscale away from a patched client's atlas. So the picture is the real look, shot a little
 // turned (a few degrees), at a size that isn't a whole multiple of the art, resampled smoothly, with a soft sheen across

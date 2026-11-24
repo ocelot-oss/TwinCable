@@ -101,7 +101,7 @@ test('a full disk: "No space left on device", the new game, writing – and the 
   assert.doesNotMatch(shown, /ROM hacks|RandomizerIOException/);
 });
 
-test('a folder souldew may not write to: "Permission denied", which file – never its path', () => {
+test('a folder twicable may not write to: "Permission denied", which file – never its path', () => {
   const e = randomizerError(DENIED, { statfs: statfs(80) });
   assert.equal(e.status, 403);
   assert.equal(e.code, 'randoNoAccess');

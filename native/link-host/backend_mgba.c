@@ -152,7 +152,7 @@ static bool m_open(const struct link_open *o) {
     st->core->setVideoBuffer(st->core, (void *)st->video, st->w);
     if (!mCoreLoadFile(st->core, cfg->rom)) { host_log("seat %d: the game didn't load", s); return false; }
     st->core->setAudioBufferSize(st->core, 4096);
-    // the battery save in memory only – souldew gets it back through SRAM / SEATSRAM, nothing is written here
+    // the battery save in memory only – twicable gets it back through SRAM / SEATSRAM, nothing is written here
     st->core->loadSave(st->core, VFileMemChunk(cfg->save, cfg->save_len));
     set_clock(st->core, o->rtc_ms);
     st->core->reset(st->core);

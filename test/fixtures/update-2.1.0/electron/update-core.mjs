@@ -1,4 +1,4 @@
-// Verbatim copy of electron/update-core.mjs as released in souldew 2.1.0 (tag v2.1.0, commit ff9d041) – never edit it: test/update.test.mjs proves
+// Verbatim copy of electron/update-core.mjs as released in twicable 2.1.0 (tag v2.1.0, commit ff9d041) – never edit it: test/update.test.mjs proves
 // with it that the feeds published today still verify and validate in the Mac and Windows apps people already have installed.
 // Self-update for the unsigned desktop app – the parts that need Node but not Electron (testable with node --test).
 // macOS: Squirrel.Mac only updates properly signed apps, so this does it by hand:
@@ -95,7 +95,7 @@ export async function fetchChecked(url, { allowLocal = false, signal, fetchImpl 
   let current = url;
   for (let hop = 0; ; hop++) {
     if (!isAllowedUrl(current, { allowLocal })) throw fail('INSECURE', hop ? 'The update server redirected to a non-HTTPS URL' : `Refusing non-HTTPS URL: ${current}`);
-    const res = await fetchImpl(current, { signal, redirect: 'manual', cache: 'no-store', headers: { 'User-Agent': 'souldew-updater' } });
+    const res = await fetchImpl(current, { signal, redirect: 'manual', cache: 'no-store', headers: { 'User-Agent': 'twicable-updater' } });
     if (res.url && !isAllowedUrl(res.url, { allowLocal })) throw fail('INSECURE', 'The update server redirected to a non-HTTPS URL');
     if (![301, 302, 303, 307, 308].includes(res.status)) return res;
     await res.body?.cancel?.().catch(() => {});
@@ -328,12 +328,12 @@ export async function stageFromDmg({ dmg, bundle, version, log = () => {} }) {
 
 // ---- Windows: the NSIS installer --------------------------------------------------------------
 // electron-builder's NSIS installer (package.json → build.nsis: one-click, per user, no admin rights) puts
-// "Uninstall souldew.exe" next to souldew.exe. Started with /S --updated it waits for the running app to exit
+// "Uninstall twicable.exe" next to twicable.exe. Started with /S --updated it waits for the running app to exit
 // (and closes it if needed), replaces the program files silently and – with --force-run – starts the new version.
 // Path handling uses path.win32, so this is testable on any OS.
 
 /** Install folder of an app installed by the NSIS installer, or null (unpacked build, portable copy, development). */
-export function nsisInstallDir(exePath, { exists = existsSync, productName = 'souldew' } = {}) {
+export function nsisInstallDir(exePath, { exists = existsSync, productName = 'twicable' } = {}) {
   if (typeof exePath !== 'string' || !win32.isAbsolute(exePath) || !/\.exe$/i.test(exePath)) return null;
   const dir = win32.dirname(exePath);
   return exists(win32.join(dir, `Uninstall ${productName}.exe`)) ? dir : null;

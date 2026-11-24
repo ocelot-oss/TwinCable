@@ -1,7 +1,7 @@
 // Watches the emulator's battery save and emits parsed snapshots (debounced, retrying on
 // half-written files). Polling is used on purpose: emulators rewrite saves in place or via
 // temp-file swaps, which native fs.watch reports inconsistently across platforms. The polling is
-// souldew's own, not fs.watchFile: watchFile takes what it compares against from its first stat,
+// twicable's own, not fs.watchFile: watchFile takes what it compares against from its first stat,
 // which runs later on libuv's thread pool – a save written between watch() and that stat (a busy
 // moment: the app starting, an emulator just launched, a full thread pool) became the baseline and
 // was never reported. Here the baseline is taken at once, when the watch starts.
@@ -18,7 +18,7 @@ import { findEntry, readSaveFile, LiveTables } from '../../shared/live/parse.mjs
 export const isHgssGame = (game) => /^IP[KG]/i.test(game?.code || '') || /heartgold|soulsilver/i.test(game?.id || '');
 
 /**
- * How to read the battery save of a run's game (`game`: { code, system, id }), or null when souldew can't: HeartGold /
+ * How to read the battery save of a run's game (`game`: { code, system, id }), or null when twicable can't: HeartGold /
  * SoulSilver with shared/gen4save.mjs (as before – the graveyard edits those), every other DS game the live readers
  * know – Diamond, Pearl, Platinum, Black, White, Black 2, White 2, any language – with shared/live/parse.mjs
  * readSaveFile. `gen4` = shared/data/gen4.json, `addresses` = shared/data/addresses.json.
@@ -73,7 +73,7 @@ export class SaveWatcher {
 
   /**
    * What is watched: `path` the save read last (else the first place it is looked for), `paths` every place, `exists`
-   * whether that file is there, `lastAt` the time it was saved (its modification time), `readAt` when souldew last read
+   * whether that file is there, `lastAt` the time it was saved (its modification time), `readAt` when twicable last read
    * it, `error` why the last read failed.
    */
   status(runId) {

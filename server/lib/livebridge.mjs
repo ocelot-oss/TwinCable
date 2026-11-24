@@ -4,16 +4,16 @@
 // the UI with the same code used for the integrated emulator.
 //
 // Protocol (one line per message, "\n"-terminated, ASCII):
-//   script → souldew  HELLO <token> <platform> <code> <title…>   first line; again after a reset / another game
+//   script → twicable  HELLO <token> <platform> <code> <title…>   first line; again after a reset / another game
 //                     V <version>                                 script version (since version 2)
 //                     D <i> <hex>                                 region i (1-based) of the current snapshot
 //                     F <frame>                                   snapshot complete
 //                     RESET                                       (version 1 only) the game was reset
-//   souldew → script  OK                                          HELLO accepted – forget the regions asked so far
+//   twicable → script  OK                                          HELLO accepted – forget the regions asked so far
 //                     R <addr hex> <len>                          a region to stream
 //                     N <reason>                                  no live data for this game (nothing to stream)
 //                     ERR <reason>                                HELLO rejected (outdated script / other install)
-// Version 1 scripts (souldew ≤ 2.1.0) ignore OK / N / ERR and keep working.
+// Version 1 scripts (twicable ≤ 2.1.0) ignore OK / N / ERR and keep working.
 import { createServer } from 'node:net';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -24,7 +24,7 @@ import { findEntry, regionsFor } from '../../shared/live/parse.mjs';
 
 /**
  * Ports the bridge may listen on, preferred first. The script tries all of them, so a script loaded earlier still
- * finds souldew when the first port is taken (a second instance, or a range Windows reserves for Hyper-V / WSL).
+ * finds twicable when the first port is taken (a second instance, or a range Windows reserves for Hyper-V / WSL).
  */
 export const PORTS = [47123, 47124, 47125, 38123, 29123];
 /** Version of the generated Lua script – a connected script reporting less is outdated (load it again). */
@@ -75,10 +75,10 @@ function luaLong(s) {
 export function luaScript(port, token, { scriptPath = '' } = {}) {
   if (!isToken(token)) throw new Error('live bridge token missing');
   const ports = [port, ...PORTS.filter((p) => p !== port)].filter((p) => Number.isInteger(p) && p > 0 && p < 65536);
-  return `-- souldew live bridge for mGBA (script version ${SCRIPT_VERSION})
+  return `-- twicable live bridge for mGBA (script version ${SCRIPT_VERSION})
 -- Load it in mGBA: Tools > Scripting..., then File > Load script... and choose this file.
 -- mGBA 0.10 doesn't load scripts by itself: after restarting mGBA, load it again (the File menu lists it).
--- It streams your party to souldew on this computer and reconnects on its own. Safe to leave loaded.
+-- It streams your party to twicable on this computer and reconnects on its own. Safe to leave loaded.
 -- Messages appear in mGBA's scripting window - include them when you report a problem.
 -- The token below is this installation's key for the bridge - don't share this file.
 local VERSION = ${SCRIPT_VERSION}
@@ -100,13 +100,13 @@ local helloPending = false
 local lastProblem = nil
 local errors = 0
 
-local function say(msg) console:log("[souldew] " .. msg) end
+local function say(msg) console:log("[twicable] " .. msg) end
 
 -- A problem is logged once until a different one happens, so a waiting script doesn't flood the console.
 local function problem(msg)
   if msg ~= lastProblem then
     lastProblem = msg
-    console:warn("[souldew] " .. msg)
+    console:warn("[twicable] " .. msg)
   end
 end
 
@@ -114,7 +114,7 @@ local function hex(s)
   return (s:gsub(".", function(c) return string.format("%02x", string.byte(c)) end))
 end
 
--- The next port to try. After a whole round without souldew, wait longer between attempts.
+-- The next port to try. After a whole round without twicable, wait longer between attempts.
 local function nextPort()
   portIndex = portIndex % #PORTS + 1
   if portIndex == 1 then delay = math.min(delay * 2, 900) end
@@ -128,7 +128,7 @@ local function drop(reason)
   if sock then
     pcall(function() sock:close() end)
     closed[#closed + 1] = sock
-    -- closed before souldew accepted us: whatever listens there isn't this souldew - try the next port
+    -- closed before twicable accepted us: whatever listens there isn't this twicable - try the next port
     if waitOk then nextPort() end
   end
   sock = nil
@@ -154,7 +154,7 @@ local function flush()
     rounds = rounds + 1
     local n, err = sock:send(outbuf)
     if n == nil then
-      if err ~= AGAIN then drop("connection to souldew lost (" .. tostring(err) .. ") - reconnecting") end
+      if err ~= AGAIN then drop("connection to twicable lost (" .. tostring(err) .. ") - reconnecting") end
       return
     end
     if n <= 0 then return end
@@ -169,7 +169,7 @@ local function connect()
   if not s then
     nextPort()
     nextTry = tick + delay
-    if portIndex == 1 then problem("souldew not reachable (" .. tostring(err) .. ") - is souldew open? Retrying on its own.") end
+    if portIndex == 1 then problem("twicable not reachable (" .. tostring(err) .. ") - is twicable open? Retrying on its own.") end
     return
   end
   sock = s
@@ -189,14 +189,14 @@ local function handle(line)
     if waitOk then
       lastProblem = nil
       delay = 120
-      say("connected to souldew (port " .. PORTS[portIndex] .. ") - game " .. tostring(emu:getGameCode() or "?") .. " " .. tostring(emu:getGameTitle() or ""))
+      say("connected to twicable (port " .. PORTS[portIndex] .. ") - game " .. tostring(emu:getGameCode() or "?") .. " " .. tostring(emu:getGameTitle() or ""))
     end
     waitOk = nil
     regions = {}
   elseif line:sub(1, 2) == "N " then
-    problem("souldew has no live data for this game (" .. line:sub(3) .. ") - saves still sync in souldew")
+    problem("twicable has no live data for this game (" .. line:sub(3) .. ") - saves still sync in twicable")
   elseif line:sub(1, 4) == "ERR " then
-    drop("souldew on port " .. PORTS[portIndex] .. " rejected this script (" .. line:sub(5) .. "): it is outdated or from another souldew installation. Load the script souldew shows on its play page again.")
+    drop("twicable on port " .. PORTS[portIndex] .. " rejected this script (" .. line:sub(5) .. "): it is outdated or from another twicable installation. Load the script twicable shows on its play page again.")
   end
 end
 
@@ -220,10 +220,10 @@ local function receive()
     local chunk, rerr = sock:receive(4096)
     if not chunk then
       if rerr == AGAIN then break end
-      lines() -- what souldew said before closing (ERR ...) explains why
+      lines() -- what twicable said before closing (ERR ...) explains why
       if not sock then return end
       if waitOk then return drop("port " .. PORTS[portIndex] .. " closed the connection - trying the next port") end
-      return drop("souldew closed the connection - reconnecting")
+      return drop("twicable closed the connection - reconnecting")
     end
     inbuf = inbuf .. chunk
   end
@@ -259,19 +259,19 @@ callbacks:add("frame", function()
   local ok, err = pcall(step)
   if not ok then
     errors = errors + 1
-    if errors <= 5 then console:error("[souldew] script error: " .. tostring(err)) end
+    if errors <= 5 then console:error("[twicable] script error: " .. tostring(err)) end
     drop(nil)
     nextTry = tick + delay
   end
 end)
 
--- A reset or another game: tell souldew what runs now (it answers with that game's regions).
+-- A reset or another game: tell twicable what runs now (it answers with that game's regions).
 callbacks:add("reset", function()
   if sock then helloPending = true end
 end)
 
 say("live bridge (script version " .. VERSION .. ") loaded from " .. SCRIPT)
-if emu == nil then say("start a game - the script connects to souldew as soon as it runs") end
+if emu == nil then say("start a game - the script connects to twicable as soon as it runs") end
 `;
 }
 

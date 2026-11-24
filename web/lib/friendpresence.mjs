@@ -1,4 +1,4 @@
-// What the player is doing, for friends (souldew account › presence) – web/lib/presence.mjs is the other, anonymous
+// What the player is doing, for friends (twicable account › presence) – web/lib/presence.mjs is the other, anonymous
 // "Playing now" count: online, in the library, playing a game, or in a run – with whether it has a free seat and
 // whether friends may ask to join it. Coarse on purpose: the game's short title, the run's name and mode, and the
 // route only when the player allowed "show where I am" (the local server and the service drop it otherwise). app.mjs

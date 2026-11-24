@@ -1,5 +1,5 @@
 @echo off
-rem Doppelklick startet souldew (Windows).
+rem Doppelklick startet twicable (Windows).
 cd /d "%~dp0"
 where node >nul 2>nul
 if errorlevel 1 (

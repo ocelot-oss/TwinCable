@@ -2,7 +2,7 @@
 // code, the byte edits per generation, Gen 3's SHINY_ODDS picture arguments, the DS ARM9 compressed again into its
 // old space (shared/nds.mjs blzCompressTo), the setting through build → invite → the partner's build, and the live
 // reader counting shinies with the run's threshold. Synthetic THUMB code only – real ROMs when present:
-//   SOULDEW_TEST_ROMS=/folder/with/roms node --test test/shiny.test.mjs
+//   TWICABLE_TEST_ROMS=/folder/with/roms node --test test/shiny.test.mjs
 // (retail Gen 3–5 dumps: each one is found, patched on a copy in a temp folder and checked; never commit ROMs).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -708,8 +708,8 @@ test('liveness: overwritten before read on every path, into called functions, a 
 });
 
 // ---- real ROMs (optional) ------------------------------------------------------------------------------------------
-const ROMS = process.env.SOULDEW_TEST_ROMS;
-test('real Gen 3–5 ROMs: found, patched on a copy (1 in 512, 100 and 2), the code reads back patched, the check counts right', { skip: !ROMS && 'set SOULDEW_TEST_ROMS' }, () => {
+const ROMS = process.env.TWICABLE_TEST_ROMS;
+test('real Gen 3–5 ROMs: found, patched on a copy (1 in 512, 100 and 2), the code reads back patched, the check counts right', { skip: !ROMS && 'set TWICABLE_TEST_ROMS' }, () => {
   const dir = mkdtempSync(join(DATA, 'real-'));
   const files = readdirSync(ROMS).filter((f) => ['.gba', '.nds'].includes(extname(f).toLowerCase()));
   let checked = 0;

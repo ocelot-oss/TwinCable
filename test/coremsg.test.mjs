@@ -1,5 +1,5 @@
 // The native hosts' filter for a core's messages (native/ctr-host/coremsg.h): melonDS DS sends an empty on-screen
-// message every frame, and a DS player's diagnostics (Linux, souldew 2.8.3) held nothing but thousands of
+// message every frame, and a DS player's diagnostics (Linux, twicable 2.8.3) held nothing but thousands of
 // "[core message] " lines in the host's stderr. The real C code, compiled with a small driver; needs a C compiler (cc),
 // skipped without one.
 import { test } from 'node:test';

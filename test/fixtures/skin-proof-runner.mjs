@@ -208,7 +208,7 @@ function seed(fake) {
   const proof = fake.addUser({ handle: 'proof_dew', display_name: 'Proof', title: 'win-nuzlocke', accent: 'amber', status: 'grinding Victory Road', banner: 'lcd-grid', frame: 'plain',
     showcase: { trophies: ['win-nuzlocke', 'win-soul-link'], trusted: 'Breloom line – on 6 teams, fell once (Crystal, to Whitney)', favorite_game: 'Emerald' },
     privacy: { show_runs: true, profile: 'friends', show_on_thanks: true }, createdAt: Date.parse('2025-03-12'), // on the Thank you wall (and never asked)
-    // a Supporter: the sidebar's souldew+ entry says "thank you" – its contrast is checked in every skin too
+    // a Supporter: the sidebar's twicable+ entry says "thank you" – its contrast is checked in every skin too
     entitlement: { tier: 'supporter', until: new Date(Date.now() + 30 * D).toISOString(), badges: ['supporter'] },
     stats: { totals: { runs_started: 23, runs_completed: 7, runs_failed: 14, soullink_runs: 13, nuzlocke_runs: 10, badges_earned: 61, pokemon_caught: 412, deaths: 168, playtime_minutes: 12840 },
       recent_runs: [
@@ -267,9 +267,9 @@ app.whenReady().then(async () => {
     // still frames only: no animation or transition may land between two captures
     await stillFrames();
     // The coffee button's Pokémon moments (views/coffee.mjs: every 3–8 minutes, ~3 s of pixel art over the sidebar's
-    // souldew+ link – 48 to 178 elements) would land in a capture at random – whenever a run took longer than 3 minutes
+    // twicable+ link – 48 to 178 elements) would land in a capture at random – whenever a run took longer than 3 minutes
     // they showed up as "element count" differences on whichever view was being proved. A click on the button stops
-    // them for the session (the app's own rule: the button did its job); it opens the souldew+ page, which is fine here.
+    // them for the session (the app's own rule: the button did its job); it opens the twicable+ page, which is fine here.
     await until("!!document.querySelector('.rail-plus')");
     await js("document.querySelector('.rail-plus').click(); true");
     await until("!document.querySelector('.cfx')");

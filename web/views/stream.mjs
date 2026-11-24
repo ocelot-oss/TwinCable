@@ -135,7 +135,7 @@ function WidgetCard({ w, run, follow, slots, names, global, live, onTest }) {
   };
   const scaled = [size[0] * global.scale, size[1] * global.scale];
   const target = follow ? 'current' : run.id;
-  const url = overlayUrl(obsOrigin(w.id), target, opts, scaled, `souldew · ${w.title}`);
+  const url = overlayUrl(obsOrigin(w.id), target, opts, scaled, `twicable · ${w.title}`);
   const preview = overlayUrl(location.origin, target, { ...opts, preview: 1, scale: null });
   const toggles = TOGGLES();
   const onDrag = (e) => {
@@ -189,7 +189,7 @@ function WidgetCard({ w, run, follow, slots, names, global, live, onTest }) {
 
 /**
  * Pokélink themes: the bridge (server/lib/pokelink.mjs) speaks the socket.io protocol Pokélink's browser sources
- * use, so an existing theme shows souldew's teams – one "user" per player, by name or slot.
+ * use, so an existing theme shows twicable's teams – one "user" per player, by name or slot.
  */
 function PokelinkCard({ run, follow, slots, names }) {
   const [st, setSt] = useState(null);
@@ -231,7 +231,7 @@ function PokelinkCard({ run, follow, slots, names }) {
     <div class="ov-head">
       <span class="ov-ic"><${Icon} name="link" size=${18} /></span>
       <div class="stack-s grow" style="gap:2px;min-width:0"><h3>${t('stream.pl', 'Pokélink themes')}</h3>
-        <p class="small muted">${t('stream.plText', 'Already have a Pokélink theme you like? souldew can feed it: switch the bridge on, then open the theme with one of the endings below instead of its own ?user=… – in OBS just like before.')}</p></div>
+        <p class="small muted">${t('stream.plText', 'Already have a Pokélink theme you like? twicable can feed it: switch the bridge on, then open the theme with one of the endings below instead of its own ?user=… – in OBS just like before.')}</p></div>
       ${st?.running && st.clients > 0 && html`<span class="chip ok ov-live"><${Led} on color="green" />${t('stream.plClients', 'one theme connected|{count} themes connected', { count: st.clients })}</span>`}
     </div>
     <div class="row wrap" style="gap:8px 14px">
@@ -256,7 +256,7 @@ function PokelinkCard({ run, follow, slots, names }) {
 }
 
 /**
- * The open stream API (server/lib/streamapi.mjs, docs/STREAM_API.md): souldew's data and sprites for streamers who
+ * The open stream API (server/lib/streamapi.mjs, docs/STREAM_API.md): twicable's data and sprites for streamers who
  * build their own layout – the address, a copy button, the docs and the optional token.
  */
 function ApiCard({ run, stream, saveStream }) {
@@ -271,7 +271,7 @@ function ApiCard({ run, stream, saveStream }) {
     <div class="ov-head">
       <span class="ov-ic"><${Icon} name="signal" size=${18} /></span>
       <div class="stack-s grow" style="gap:2px;min-width:0"><h3>${t('stream.api', 'Open API – build your own layout')}</h3>
-        <p class="small muted">${t('stream.apiText', 'Want your own design instead of souldew’s? Your browser sources can read the run as JSON – teams, links, graveyard, encounters, locations – get every catch, death and level-up live, and load the same sprites the app shows.')}</p></div>
+        <p class="small muted">${t('stream.apiText', 'Want your own design instead of twicable’s? Your browser sources can read the run as JSON – teams, links, graveyard, encounters, locations – get every catch, death and level-up live, and load the same sprites the app shows.')}</p></div>
       ${stream?.clients > 0 && html`<span class="chip ok ov-live"><${Led} on color="green" />${t('stream.apiClients', 'one layout connected|{count} layouts connected', { count: stream.clients })}</span>`}
     </div>
     <div class="ov-url api-base">
@@ -289,7 +289,7 @@ function ApiCard({ run, stream, saveStream }) {
       ${stream?.token ? html`<span class="code ellipsis api-tok" title=${t('stream.apiTokenHint', 'Hidden in streamer mode')}>${stream.token}</span>
         <button type="button" class="btn small" onClick=${() => copy(stream.token)}>${t('common.copy', 'Copy')}</button>
         <button type="button" class="btn small ghost" onClick=${() => saveStream({ token: 'new' })}>${t('stream.apiNewToken', 'New token')}</button>`
-        : html`<span class="small muted">${t('stream.apiOpenObs', 'Without a token, OBS (also local files), scripts and souldew may read – other websites can’t.')}</span>`}
+        : html`<span class="small muted">${t('stream.apiOpenObs', 'Without a token, OBS (also local files), scripts and twicable may read – other websites can’t.')}</span>`}
     </div>
     ${!stream?.token && html`<label class="check small"><input type="checkbox" checked=${!!stream?.localPages} disabled=${!stream} onChange=${(e) => saveStream({ localPages: e.target.checked })} />
       <span>${t('stream.apiLocal', 'Pages on this computer without a token, too: layouts opened from disk in a browser and other local web servers (localhost)')}</span></label>`}
@@ -328,7 +328,7 @@ export function StreamView() {
 
   const onTest = async (type, frame) => {
     // the preview shows it right away; the server passes it on to every overlay open in OBS
-    frame?.contentWindow?.postMessage({ souldewTest: type }, location.origin);
+    frame?.contentWindow?.postMessage({ twicableTest: type }, location.origin);
     try {
       const r = await api.post(`/api/runs/${run.id}/overlay/test`, { type });
       toast({ kind: 'ok', title: t('stream.testSent', 'Test alert sent'),
@@ -343,8 +343,8 @@ export function StreamView() {
       <span class="sm-knob"></span></button>
     <div class="stack-s" style="gap:4px;min-width:0">
       <h2>${t('stream.mode', 'Streamer mode')} <span class=${`onair ${streamer ? 'on' : ''}`}>${streamer ? t('stream.live', 'LIVE') : t('stream.off', 'off')}</span></h2>
-      <p class="small muted">${streamer ? t('stream.modeOn', 'souldew is safe to show: everything below is covered on every page until you switch it off.')
-        : t('stream.modeOff', 'Switch it on before you go live – souldew then covers what your viewers mustn’t see.')}</p>
+      <p class="small muted">${streamer ? t('stream.modeOn', 'twicable is safe to show: everything below is covered on every page until you switch it off.')
+        : t('stream.modeOff', 'Switch it on before you go live – twicable then covers what your viewers mustn’t see.')}</p>
       <ul class="sm-list">
         <li><${Icon} name="lock" size=${14} />${t('stream.hideCodes', 'Invite codes and invite files')}</li>
         <li><${Icon} name="eye" size=${14} />${t('stream.hideSpoiler', 'The randomizer’s spoilers')}</li>
@@ -383,7 +383,7 @@ export function StreamView() {
       <ol class="small muted steps">
         <li>${t('stream.s1', 'Pick a widget and set it up – the preview is exactly what OBS shows, live.')}</li>
         <li>${t('stream.s2', 'Drag “Drag into OBS” onto your scene – OBS makes a browser source of the right size. Or copy the URL into a new browser source.')}</li>
-        <li>${t('stream.s3', 'Keep souldew open while you stream: the overlays update the moment something happens.')}</li>
+        <li>${t('stream.s3', 'Keep twicable open while you stream: the overlays update the moment something happens.')}</li>
       </ol>
       <div class="row wrap ov-global">
         <${Seg} label=${t('stream.theme', 'Look')} value=${global.theme} onChange=${(x) => setGlobal({ theme: x })}

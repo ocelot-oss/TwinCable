@@ -15,7 +15,7 @@ const TMP = mkdtempSync(join(tmpdir(), 'sls-update-'));
 test.after(() => rmSync(TMP, { recursive: true, force: true }));
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
 const SHA = 'a'.repeat(64);
-const feed = (over = {}) => ({ version: '2.1.0', notes: 'Fixes', url: 'https://github.com/o/r/releases/download/v2.1.0/souldew-2.1.0-arm64.dmg', sha256: SHA, size: 1234, ...over });
+const feed = (over = {}) => ({ version: '2.1.0', notes: 'Fixes', url: 'https://github.com/o/r/releases/download/v2.1.0/twicable-2.1.0-arm64.dmg', sha256: SHA, size: 1234, ...over });
 
 test('parseVersion accepts semver only', () => {
   assert.deepEqual(parseVersion('2.1.0'), { major: 2, minor: 1, patch: 0, pre: [] });
@@ -88,7 +88,7 @@ test('digestsMatch and the feed URL helpers', () => {
   assert.equal(feedUrlFrom({ repo: '' }), null);
   assert.equal(feedUrlFrom({ repo: 'not a repo' }), null);
   assert.equal(feedUrlFrom({ feed: 'https://example.org/latest.json' }), 'https://example.org/latest.json');
-  assert.equal(dmgAssetName('2.1.0'), 'souldew-2.1.0-arm64.dmg');
+  assert.equal(dmgAssetName('2.1.0'), 'twicable-2.1.0-arm64.dmg');
 });
 
 test('sha256File / verifyFile', async () => {
@@ -205,25 +205,25 @@ test('redirects are followed by hand and every hop must be https', async () => {
 
 // ---- the installed bundle --------------------------------------------------------------
 test('bundle paths', () => {
-  assert.equal(bundleFromExe('/Applications/souldew.app/Contents/MacOS/souldew'), '/Applications/souldew.app');
+  assert.equal(bundleFromExe('/Applications/twicable.app/Contents/MacOS/twicable'), '/Applications/twicable.app');
   assert.equal(bundleFromExe('/Users/x/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron'), '/Users/x/node_modules/electron/dist/Electron.app');
   assert.equal(bundleFromExe('/usr/local/bin/node'), null);
-  assert.ok(isTranslocated('/private/var/folders/ab/T/AppTranslocation/1234/d/souldew.app'));
+  assert.ok(isTranslocated('/private/var/folders/ab/T/AppTranslocation/1234/d/twicable.app'));
   // next to the bundle, in the platform's path syntax (this mac-only code is still exercised on Windows CI)
-  assert.equal(stagingDirFor('/Applications/souldew.app'), join('/Applications', '.souldew.update'));
+  assert.equal(stagingDirFor('/Applications/twicable.app'), join('/Applications', '.twicable.update'));
   assert.equal(canReplace(null).reason, 'not-bundle');
   assert.equal(canReplace('/private/var/folders/x/AppTranslocation/y/A.app').reason, 'translocated');
-  assert.equal(canReplace('/Volumes/souldew/souldew.app').reason, 'dmg');
+  assert.equal(canReplace('/Volumes/twicable/twicable.app').reason, 'dmg');
   assert.equal(canReplace(join(TMP, 'missing.app')).reason, 'read-only');
 });
 
 test('swapBundle replaces the app with two renames and rolls back on failure', () => {
   const apps = join(TMP, 'Applications');
-  const target = join(apps, 'souldew.app');
+  const target = join(apps, 'twicable.app');
   mkdirSync(join(target, 'Contents'), { recursive: true });
   writeFileSync(join(target, 'Contents', 'v'), '2.0.0');
   assert.deepEqual(canReplace(target), { ok: true });
-  const staged = join(stagingDirFor(target), 'souldew.app');
+  const staged = join(stagingDirFor(target), 'twicable.app');
   mkdirSync(join(staged, 'Contents'), { recursive: true });
   writeFileSync(join(staged, 'Contents', 'v'), '2.1.0');
 
@@ -236,7 +236,7 @@ test('swapBundle replaces the app with two renames and rolls back on failure', (
   assert.equal(readFileSync(join(target, 'Contents', 'v'), 'utf8'), '2.1.0');
   // Next start cleans up the old bundle.
   cleanupStaging(target);
-  assert.deepEqual(readdirSync(apps), ['souldew.app']);
+  assert.deepEqual(readdirSync(apps), ['twicable.app']);
 });
 
 test('release notes come from the matching CHANGELOG section', () => {
@@ -362,8 +362,8 @@ test('release key: init writes 0600 key + public key and never overwrites', asyn
 });
 
 // ---- Windows: the installer asset in the feed --------------------------------------------------
-const WIN_URL = 'https://github.com/o/r/releases/download/v2.1.0/souldew-2.1.0-win-x64-setup.exe';
-const winAsset = (over = {}) => ({ name: 'souldew-2.1.0-win-x64-setup.exe', url: WIN_URL, sha256: 'c'.repeat(64), size: 98765, ...over });
+const WIN_URL = 'https://github.com/o/r/releases/download/v2.1.0/twicable-2.1.0-win-x64-setup.exe';
+const winAsset = (over = {}) => ({ name: 'twicable-2.1.0-win-x64-setup.exe', url: WIN_URL, sha256: 'c'.repeat(64), size: 98765, ...over });
 
 test('assets: the Windows installer entry is validated, unknown platforms are dropped', () => {
   const ok = validateFeed(feed({ assets: { 'win32-x64': winAsset({ sha256: 'C'.repeat(64) }), 'haiku-x64': { anything: 1 } } }));
@@ -372,19 +372,19 @@ test('assets: the Windows installer entry is validated, unknown platforms are dr
   assert.deepEqual(validateFeed(feed({ assets: null })).assets, {});
   const bad = [
     'x', [], { 'win32-x64': null }, { 'win32-x64': [] },
-    { 'win32-x64': winAsset({ name: 'souldew.dmg' }) }, { 'win32-x64': winAsset({ name: '../evil.exe' }) }, { 'win32-x64': winAsset({ name: 'a b.exe' }) },
+    { 'win32-x64': winAsset({ name: 'twicable.dmg' }) }, { 'win32-x64': winAsset({ name: '../evil.exe' }) }, { 'win32-x64': winAsset({ name: 'a b.exe' }) },
     { 'win32-x64': winAsset({ url: WIN_URL.replace('https:', 'http:') }) }, { 'win32-x64': winAsset({ url: 'https://github.com/o/r/other.exe' }) },
     { 'win32-x64': winAsset({ sha256: 'abc' }) }, { 'win32-x64': winAsset({ size: 0 }) }, { 'win32-x64': winAsset({ size: '98765' }) },
     { 'win32-x64': winAsset({ size: 3 * 1024 ** 3 }) },
   ];
   for (const assets of bad) assert.throws(() => validateFeed(feed({ assets })), (e) => e.code === 'BAD_FEED', JSON.stringify(assets));
-  assert.equal(validateFeed(feed({ assets: { 'win32-x64': winAsset({ url: 'http://localhost:1/souldew-2.1.0-win-x64-setup.exe' }) } }), { allowLocal: true }).assets['win32-x64'].size, 98765);
+  assert.equal(validateFeed(feed({ assets: { 'win32-x64': winAsset({ url: 'http://localhost:1/twicable-2.1.0-win-x64-setup.exe' }) } }), { allowLocal: true }).assets['win32-x64'].size, 98765);
 });
 
 test('assetFor / updateAction pick the download for this platform', () => {
   const both = validateFeed(feed({ assets: { 'win32-x64': winAsset() } }));
   const macOnly = validateFeed(feed());
-  assert.deepEqual(assetFor(both, 'darwin', 'arm64'), { url: feed().url, sha256: SHA, size: 1234, name: 'souldew-2.1.0-arm64.dmg' });
+  assert.deepEqual(assetFor(both, 'darwin', 'arm64'), { url: feed().url, sha256: SHA, size: 1234, name: 'twicable-2.1.0-arm64.dmg' });
   assert.deepEqual(assetFor(both, 'win32', 'x64'), winAsset());
   assert.equal(assetFor(both, 'win32', 'arm64'), null);
   assert.equal(assetFor(both, 'linux', 'x64'), null);
@@ -401,8 +401,8 @@ test('assetFor / updateAction pick the download for this platform', () => {
   assert.equal(actionFor(old, '2.0.0', { platform: 'darwin', arch: 'arm64' }), 'manual');
   assert.equal(actionFor(old, '2.0.0', { platform: 'win32', arch: 'x64' }), 'install');
   assert.equal(actionFor(old, '2.1.0', { platform: 'win32', arch: 'x64' }), 'none');
-  assert.equal(winAssetName('2.1.0'), 'souldew-2.1.0-win-x64-setup.exe');
-  assert.equal(winAssetName('2.1.0', 'arm64'), 'souldew-2.1.0-win-arm64-setup.exe');
+  assert.equal(winAssetName('2.1.0'), 'twicable-2.1.0-win-x64-setup.exe');
+  assert.equal(winAssetName('2.1.0', 'arm64'), 'twicable-2.1.0-win-arm64-setup.exe');
 });
 
 test('release: one feed carries the DMG (top level) and the Windows installer (assets)', () => {
@@ -411,9 +411,9 @@ test('release: one feed carries the DMG (top level) and the Windows installer (a
   const f = buildFeed({ version: '2.1.0', notes: 'Windows support', repo: 'o/r', dmg, win, pubDate: '2026-11-04T00:00:00.000Z' });
   assert.deepEqual(f, {
     version: '2.1.0', notes: 'Windows support',
-    url: 'https://github.com/o/r/releases/download/v2.1.0/souldew-2.1.0-arm64.dmg', sha256: 'a'.repeat(64), size: 111,
+    url: 'https://github.com/o/r/releases/download/v2.1.0/twicable-2.1.0-arm64.dmg', sha256: 'a'.repeat(64), size: 111,
     page: 'https://github.com/o/r/releases/tag/v2.1.0', pubDate: '2026-11-04T00:00:00.000Z',
-    assets: { 'win32-x64': { name: 'souldew-2.1.0-win-x64-setup.exe', url: 'https://github.com/o/r/releases/download/v2.1.0/souldew-2.1.0-win-x64-setup.exe', sha256: 'b'.repeat(64), size: 222 } },
+    assets: { 'win32-x64': { name: 'twicable-2.1.0-win-x64-setup.exe', url: 'https://github.com/o/r/releases/download/v2.1.0/twicable-2.1.0-win-x64-setup.exe', sha256: 'b'.repeat(64), size: 222 } },
   });
   // macOS only: exactly the 2.0 format (no assets key at all), minVersion when asked for
   const mac = buildFeed({ version: '2.1.0', notes: 'x', repo: 'o/r', dmg, minVersion: '2.0.0' });
@@ -421,7 +421,7 @@ test('release: one feed carries the DMG (top level) and the Windows installer (a
   assert.equal(mac.minVersion, '2.0.0');
 });
 
-test('backward compatible: souldew 2.0.0 accepts and verifies a signed feed with the Windows entry', async () => {
+test('backward compatible: twicable 2.0.0 accepts and verifies a signed feed with the Windows entry', async () => {
   // test/fixtures/update-2.0.0 is the feed code of the released 2.0.0 app, byte for byte (commit bba9071).
   const old = await import('./fixtures/update-2.0.0/shared/update.mjs');
   const oldCore = await import('./fixtures/update-2.0.0/electron/update-core.mjs');
@@ -440,7 +440,7 @@ test('backward compatible: souldew 2.0.0 accepts and verifies a signed feed with
   assert.ok(oldCore.verifyFeedSignature(published, pub));
   // … the validation ignores the unknown `assets` and keeps the DMG …
   const seen = old.validateFeed(published);
-  assert.equal(seen.url, 'https://github.com/souldewapp/souldew/releases/download/v2.1.0/souldew-2.1.0-arm64.dmg');
+  assert.equal(seen.url, 'https://github.com/souldewapp/souldew/releases/download/v2.1.0/twicable-2.1.0-arm64.dmg');
   assert.equal(seen.size, 123456789);
   assert.equal('assets' in seen, false);
   assert.equal(old.updateAction(seen, '2.0.0'), 'install');
@@ -451,7 +451,7 @@ test('backward compatible: souldew 2.0.0 accepts and verifies a signed feed with
     assert.equal(f.sha256, 'a'.repeat(64));
     // the new app reads the same file and finds its installer
     const g = await fetchFeed(`${b}/latest.json`, { allowLocal: true, publicKey: pub });
-    assert.deepEqual(assetFor(g, 'win32', 'x64'), { name: 'souldew-2.1.0-win-x64-setup.exe', url: 'https://github.com/souldewapp/souldew/releases/download/v2.1.0/souldew-2.1.0-win-x64-setup.exe', sha256: 'b'.repeat(64), size: 98765432 });
+    assert.deepEqual(assetFor(g, 'win32', 'x64'), { name: 'twicable-2.1.0-win-x64-setup.exe', url: 'https://github.com/souldewapp/souldew/releases/download/v2.1.0/twicable-2.1.0-win-x64-setup.exe', sha256: 'b'.repeat(64), size: 98765432 });
     assert.equal(assetFor(g, 'darwin', 'arm64').url, f.url);
   });
   // The signature protects the Windows entry for old and new apps alike: a changed installer hash is refused.
@@ -466,11 +466,11 @@ test('backward compatible: souldew 2.0.0 accepts and verifies a signed feed with
 });
 
 test('Windows install: only an app installed by the NSIS installer updates itself', () => {
-  const files = new Set(['C:\\Users\\Ana\\AppData\\Local\\Programs\\souldew\\Uninstall souldew.exe']);
+  const files = new Set(['C:\\Users\\Ana\\AppData\\Local\\Programs\\twicable\\Uninstall twicable.exe']);
   const exists = (p) => files.has(p);
-  assert.equal(nsisInstallDir('C:\\Users\\Ana\\AppData\\Local\\Programs\\souldew\\souldew.exe', { exists }), 'C:\\Users\\Ana\\AppData\\Local\\Programs\\souldew');
-  assert.equal(nsisInstallDir('D:\\build\\win-unpacked\\souldew.exe', { exists }), null); // unpacked / portable
-  assert.equal(nsisInstallDir('/Applications/souldew.app/Contents/MacOS/souldew', { exists: () => true }), null);
+  assert.equal(nsisInstallDir('C:\\Users\\Ana\\AppData\\Local\\Programs\\twicable\\twicable.exe', { exists }), 'C:\\Users\\Ana\\AppData\\Local\\Programs\\twicable');
+  assert.equal(nsisInstallDir('D:\\build\\win-unpacked\\twicable.exe', { exists }), null); // unpacked / portable
+  assert.equal(nsisInstallDir('/Applications/twicable.app/Contents/MacOS/twicable', { exists: () => true }), null);
   assert.equal(nsisInstallDir(null), null);
   assert.deepEqual(installerArgs(), ['/S', '--updated', '--force-run']);
   assert.deepEqual(installerArgs({ relaunch: false }), ['/S', '--updated']);
@@ -478,7 +478,7 @@ test('Windows install: only an app installed by the NSIS installer updates itsel
 
 test('launchInstaller starts the installer detached and reports a failed start', async () => {
   const { EventEmitter } = await import('node:events');
-  const exe = join(TMP, 'souldew-2.1.0-win-x64-setup.exe');
+  const exe = join(TMP, 'twicable-2.1.0-win-x64-setup.exe');
   writeFileSync(exe, 'MZ');
   const calls = [];
   const fake = (outcome) => (cmd, args, opts) => {
@@ -500,7 +500,7 @@ test('launchInstaller starts the installer detached and reports a failed start',
 });
 
 test('Windows: the installer only starts once quitting is certain – never while "keep playing" is still possible', () => {
-  const exe = 'C:\\Temp\\souldew Update\\souldew-2.1.0-win-x64-setup.exe';
+  const exe = 'C:\\Temp\\twicable Update\\twicable-2.1.0-win-x64-setup.exe';
   // "Restart now", the unsaved-progress question answers "keep playing": nothing starts, the card goes back to ready
   let plan = windowsInstallPlan();
   plan.restart();
@@ -524,14 +524,14 @@ test('Windows: the installer only starts once quitting is certain – never whil
 test('Windows: cleaning up old downloads never removes the current one and skips locked files', () => {
   const dir = join(TMP, 'win-update');
   mkdirSync(join(dir, 'old-dir'), { recursive: true });
-  for (const f of ['souldew-2.0.9-win-x64-setup.exe', 'souldew-2.1.0-win-x64-setup.exe', 'locked.exe']) writeFileSync(join(dir, f), 'MZ');
-  const keep = join(dir, 'souldew-2.1.0-win-x64-setup.exe');
+  for (const f of ['twicable-2.0.9-win-x64-setup.exe', 'twicable-2.1.0-win-x64-setup.exe', 'locked.exe']) writeFileSync(join(dir, f), 'MZ');
+  const keep = join(dir, 'twicable-2.1.0-win-x64-setup.exe');
   const rm = (p, o) => {
     if (p.endsWith('locked.exe')) throw Object.assign(new Error('EBUSY'), { code: 'EBUSY' });
     rmSync(p, o);
   };
   cleanupWorkDir(dir, { keep, rm });
-  assert.deepEqual(readdirSync(dir).sort(), ['locked.exe', 'souldew-2.1.0-win-x64-setup.exe']);
+  assert.deepEqual(readdirSync(dir).sort(), ['locked.exe', 'twicable-2.1.0-win-x64-setup.exe']);
   cleanupWorkDir(join(TMP, 'does-not-exist')); // no folder: nothing to do
   cleanupWorkDir(dir);
   assert.deepEqual(readdirSync(dir), []);

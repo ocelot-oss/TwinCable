@@ -17,14 +17,14 @@ const opt = (name) => {
   const i = args.indexOf(`--${name}`);
   return i >= 0 ? args[i + 1] : null;
 };
-const out = resolve(args.find((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--')) || join(tmpdir(), 'souldew-live-cards'));
-const data = resolve(opt('data') || mkdtempSync(join(tmpdir(), 'souldew-live-cards-data-')));
+const out = resolve(args.find((a, i) => !a.startsWith('--') && !args[i - 1]?.startsWith('--')) || join(tmpdir(), 'twicable-live-cards'));
+const data = resolve(opt('data') || mkdtempSync(join(tmpdir(), 'twicable-live-cards-data-')));
 const lang = opt('lang') || 'en';
 const version = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 mkdirSync(out, { recursive: true });
 mkdirSync(data, { recursive: true });
 process.env.SLS_DATA_DIR = data; // before the server's paths are read: the scratch folder, not the real data
-process.env.SOULDEW_LIVE_URL = 'http://127.0.0.1:9'; // and never the real bot (nothing posts here anyway)
+process.env.TWICABLE_LIVE_URL = 'http://127.0.0.1:9'; // and never the real bot (nothing posts here anyway)
 app.setPath('userData', join(data, 'electron'));
 app.commandLine.appendSwitch('mute-audio');
 

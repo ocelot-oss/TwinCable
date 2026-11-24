@@ -1,4 +1,4 @@
-// souldew+ preview media on this computer (server/lib/pluspreviews.mjs): everyone – signed in or not – sees the
+// twicable+ preview media on this computer (server/lib/pluspreviews.mjs): everyone – signed in or not – sees the
 // pictures of every premium item, but only pictures whose manifest is signed with a trusted pack key and whose bytes
 // match it; nothing but PNG / WebP at <kind>/<id> gets through, and the service's answer is cached for offline use.
 import { test } from 'node:test';
@@ -15,7 +15,7 @@ const MEDIA = { 'banners/night-marsh.png': PNG, 'banners/night-marsh.webp': WEBP
 
 async function signed(files, { kind = 'previews', signer } = {}) {
   const s = signer || (await makeSigner());
-  const { manifestBytes } = await buildManifest({ id: 'souldew-previews', version: '1.0.0', kind, title: 'previews', files: Object.entries(files).map(([path, bytes]) => ({ path, bytes: new Uint8Array(bytes) })) });
+  const { manifestBytes } = await buildManifest({ id: 'twicable-previews', version: '1.0.0', kind, title: 'previews', files: Object.entries(files).map(([path, bytes]) => ({ path, bytes: new Uint8Array(bytes) })) });
   return { manifest: b64url(manifestBytes), signature: b64url(await s.sign(manifestBytes)), publicKey: b64url(s.publicKey), signer: s };
 }
 
@@ -36,7 +36,7 @@ test('the manifest: a trusted signature, kind "previews", pictures at <kind>/<id
   const p = readPreviewsManifest(a.manifest, a.signature, a.publicKey);
   assert.equal(p.version, '1.0.0');
   assert.deepEqual([...p.files.keys()].sort(), Object.keys(MEDIA).sort());
-  assert.throws(() => readPreviewsManifest(a.manifest, a.signature, null), /not signed by souldew/, 'an untrusted key (no dev key) is refused');
+  assert.throws(() => readPreviewsManifest(a.manifest, a.signature, null), /not signed by twicable/, 'an untrusted key (no dev key) is refused');
   const other = await signed(MEDIA);
   assert.throws(() => readPreviewsManifest(a.manifest, other.signature, a.publicKey), /not signed/);
   for (const bad of [{ 'banners.json': Buffer.from('[]') }, { 'frames.mjs': Buffer.from('export {}') }, { 'skins/x.css': Buffer.from('html{}') }, { 'banners/sub/x.png': PNG }]) {
@@ -48,12 +48,12 @@ test('the manifest: a trusted signature, kind "previews", pictures at <kind>/<id
 });
 
 test('from the service: verified pictures with their own type, cached on disk; a changed byte is refused', async () => {
-  const dir = mkdtempSync(join(tmpdir(), 'souldew-previews-'));
+  const dir = mkdtempSync(join(tmpdir(), 'twicable-previews-'));
   const a = await signed(MEDIA);
   const calls = [];
   const env = { SLS_ACCOUNTS_URL: 'http://127.0.0.1:8788', SLS_PLUS_DEV_KEY: a.publicKey };
   // the production key list doesn't know this throwaway key: trust it the way dev mode does (a dev folder) …
-  const devDir = mkdtempSync(join(tmpdir(), 'souldew-previews-dev-'));
+  const devDir = mkdtempSync(join(tmpdir(), 'twicable-previews-dev-'));
   writeFileSync(join(devDir, 'access.json'), JSON.stringify({ publicKey: a.publicKey }));
   writeFileSync(join(devDir, 'access-previews.json'), JSON.stringify({ manifest: a.manifest, signature: a.signature, publicKey: a.publicKey }));
   mkdirSync(join(devDir, 'previews', 'banners'), { recursive: true });
@@ -79,7 +79,7 @@ test('from the service: verified pictures with their own type, cached on disk; a
 });
 
 test('the real service path: GET /v1/previews and the pictures from the same origin; offline → the last good manifest', async () => {
-  const dir = join(mkdtempSync(join(tmpdir(), 'souldew-previews-')), 'plus'); // not there yet, as on a fresh install
+  const dir = join(mkdtempSync(join(tmpdir(), 'twicable-previews-')), 'plus'); // not there yet, as on a fresh install
   const a = await signed(MEDIA);
   const calls = [];
   const env = { SLS_ACCOUNTS_URL: 'http://127.0.0.1:8788' };
@@ -89,13 +89,13 @@ test('the real service path: GET /v1/previews and the pictures from the same ori
   pinned.push(a.publicKey);
   try {
     let now = 0;
-    const pv = createPlusPreviews({ dir, env, now: () => now, fetchImpl: service({ pack_id: 'souldew-previews', version: '1.0.0', manifest: a.manifest, signature: a.signature }, MEDIA, calls) });
+    const pv = createPlusPreviews({ dir, env, now: () => now, fetchImpl: service({ pack_id: 'twicable-previews', version: '1.0.0', manifest: a.manifest, signature: a.signature }, MEDIA, calls) });
     assert.equal((await pv.state()).version, '1.0.0');
     assert.deepEqual(Buffer.from((await pv.file('banners/night-marsh.png')).bytes), PNG);
     assert.ok(calls.includes('http://127.0.0.1:8788/v1/previews/1.0.0/banners/night-marsh.png'));
     assert.ok(existsSync(join(dir, 'previews.json')), 'kept for offline use');
     // a forged answer is refused even from the right host
-    const forged = createPlusPreviews({ dir: mkdtempSync(join(tmpdir(), 'souldew-previews-')), env, fetchImpl: service({ manifest: a.manifest, signature: (await signed(MEDIA)).signature }, MEDIA) });
+    const forged = createPlusPreviews({ dir: mkdtempSync(join(tmpdir(), 'twicable-previews-')), env, fetchImpl: service({ manifest: a.manifest, signature: (await signed(MEDIA)).signature }, MEDIA) });
     assert.deepEqual(await forged.state(), { none: true });
     // offline later: the manifest on disk (checked again) still works, cached pictures too
     now = 60 * 60e3;

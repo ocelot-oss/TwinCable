@@ -1,4 +1,4 @@
-// souldew+ cosmetics – the public interface (README.md in this folder documents every name; keep them stable, the
+// twicable+ cosmetics – the public interface (README.md in this folder documents every name; keep them stable, the
 // profile / friends UI and the account client import them).
 import { CATALOG, EARNED_CATALOG, state, onChange, owned, has, setEarnedTrophies } from './state.mjs';
 import { t } from '../i18n.mjs';
@@ -19,7 +19,7 @@ const RARITY = ['free', 'common', 'rare', 'epic', 'legendary'];
  * Everything there is, owned or not – for pickers and profile editors:
  *   { banners, frames, nameplates, skins: [{ id, name, collection, collectionName, rarity, pairsWith, plus,
  *     owned, available, sw, … }], collections: { banners, frames } }
- * owned: usable now (free, or souldew+ with the pack loaded). available: its content is in memory (owned or preview).
+ * owned: usable now (free, or twicable+ with the pack loaded). available: its content is in memory (owned or preview).
  */
 export function catalog() {
   const tag = (kind, list) => list.map((x) => ({ ...x, owned: owned(kind, x.id), available: has(kind, x.id) }));

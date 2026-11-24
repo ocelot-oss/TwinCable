@@ -1,7 +1,7 @@
 // How smoothly a sprite moves on the picture (Shared World, docs/MULTIPLAYER.md › 9): the overlay's trace
 // (web/lib/worldoverlay.mjs / worldds.mjs `trace(true)`) gives, per drawn picture, where each partner, partner follower
 // and your own follower was drawn. A game's own sprites walk at a constant speed – one or two pixels every frame (the
-// Game Boy games: two pixels every other frame) – so a sprite drawn by souldew must too: no frame that stands still
+// Game Boy games: two pixels every other frame) – so a sprite drawn by twicable must too: no frame that stands still
 // and then catches up with a double step, no jump, no step back and forth.
 //
 //   node scripts/world-motion.mjs <trace.json> [<trace.json> …]   (prints the metrics of every sprite in it)

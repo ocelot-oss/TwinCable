@@ -63,7 +63,7 @@ test('cleanHandheld keeps the shape only: known ids, known faces, clamped number
   assert.ok(JSON.stringify(cleanHandheld({ designs, stickers: { nds: Array(8).fill(st('heart', 'lid:top', [1.23456, 2])) } })).length <= HH_BYTES_MAX);
 });
 
-test('the launch settings migrate: the 2.x cartridge and the earlier souldew+ animations become “Your colours”', () => {
+test('the launch settings migrate: the 2.x cartridge and the earlier twicable+ animations become “Your colours”', () => {
   assert.equal(cleanLaunchLook('cartridge'), 'your-colours');
   assert.equal(cleanLaunchLook('low-tide'), 'your-colours');
   assert.equal(cleanLaunchLook(undefined), 'your-colours');
@@ -129,8 +129,8 @@ test('what the launch plays: owned items only – the design keeps the rest (mem
   assert.equal(member.skin, 'night-train');
   assert.deepEqual(member.stickers.nds.map((x) => [x.id, x.finish]), [['heart', 'holo'], ['comet', 'vinyl'], ['thread', 'vinyl'], ['laurel', 'vinyl']]);
   const ended = lookToPlay(doc, { member: false, trophies: new Set(['winSoulLink']) });
-  assert.equal(ended.skin, null, 'a souldew+ skin falls back to the theme colour');
-  assert.deepEqual(ended.stickers.nds.map((x) => [x.id, x.finish]), [['heart', 'vinyl'], ['thread', 'vinyl']], 'souldew+ stickers drop out, holo becomes vinyl, the earned one not earned yet waits');
+  assert.equal(ended.skin, null, 'a twicable+ skin falls back to the theme colour');
+  assert.deepEqual(ended.stickers.nds.map((x) => [x.id, x.finish]), [['heart', 'vinyl'], ['thread', 'vinyl']], 'twicable+ stickers drop out, holo becomes vinyl, the earned one not earned yet waits');
   assert.equal(ended.stickers.gba, undefined, 'a device left with nothing plays bare');
   assert.deepEqual(designNotes(doc, { member: false, trophies: new Set(['winSoulLink']) }), { plus: 4, earned: 1, empty: ['3ds', 'gb'] });
   assert.equal(doc.stickers.nds.length, 4, 'nothing is deleted from the look');
@@ -161,7 +161,7 @@ test('favourites: the handheld’s skins, stickers and designs are kinds of the 
   assert.equal(isFavourite(f, 'banner', 'heart'), false);
 });
 
-test('the catalog: 54 stickers (11 free, 40 souldew+, 3 earned), 7 skins (1 free), four earned items tied to trophies', () => {
+test('the catalog: 54 stickers (11 free, 40 twicable+, 3 earned), 7 skins (1 free), four earned items tied to trophies', () => {
   const by = (tier) => STICKERS.filter((s) => s.tier === tier).length;
   assert.deepEqual([STICKERS.length, by('free'), by('plus'), by('earned')], [54, 11, 40, 3]);
   assert.equal(new Set(STICKERS.map((s) => s.id)).size, STICKERS.length, 'unique ids');
@@ -172,7 +172,7 @@ test('the catalog: 54 stickers (11 free, 40 souldew+, 3 earned), 7 skins (1 free
   for (const dev of Object.keys(REGIONS)) assert.deepEqual(Object.keys(regionsOf(dev)).sort(), [...REGIONS[dev]].sort(), `the faces of ${dev}`);
 });
 
-test('round 7, the cool and funny stickers: RIP, 1 HP and GG free (vinyl – holo and glitter stay souldew+), 17 souldew+, the sizes', () => {
+test('round 7, the cool and funny stickers: RIP, 1 HP and GG free (vinyl – holo and glitter stay twicable+), 17 twicable+, the sizes', () => {
   const fun = STICKERS.filter((s) => stickerSet(s) === 'fun');
   assert.deepEqual(fun.map((s) => s.id), ['rip', 'one-hp', 'gg', 'skill-issue', 'rng', 'crit', 'blow', 'grass', 'duck', 'shades', 'flame-skull', 'bolt', 'hardcore', 'arcade', 'floppy', 'glitch', 'stripe', 'verified', 'live', 'flag']);
   assert.deepEqual(fun.filter((s) => s.tier === 'free').map((s) => s.name), ['RIP', '1 HP', 'GG']);
@@ -182,7 +182,7 @@ test('round 7, the cool and funny stickers: RIP, 1 HP and GG free (vinyl – hol
   // the large ones: the Racing Stripe and Verified Nuzlocker, and Hardcore (bigger than Campsite) and Glitch (wider than Night Ridge)
   assert.deepEqual(fun.filter((s) => s.size === 'l').map((s) => s.id), ['hardcore', 'glitch', 'stripe', 'verified']);
   assert.equal(stickerSet(stickerById('heart')), 'cosy');
-  // a free sticker: vinyl for everyone, holo / glitter are souldew+ finishes – what the launch plays for a Supporter
+  // a free sticker: vinyl for everyone, holo / glitter are twicable+ finishes – what the launch plays for a Supporter
   for (const id of ['rip', 'one-hp', 'gg']) assert.ok(stickerById(id).finishes.includes('vinyl'));
   assert.equal(FINISHES.holo.plus && FINISHES.glitter.plus, true);
   const doc = { stickers: { gb: [st('gg', 'body:top', [0, 0], { finish: 'glitter' }), st('one-hp', 'body:top', [0, 10], { finish: 'holo' }), st('blow', 'body:top', [0, -10])] } };
@@ -196,7 +196,7 @@ test('round 7, the cool and funny stickers: RIP, 1 HP and GG free (vinyl – hol
 
 test('the editor’s sheet: the filter row over 61 items, four sticker groups, favourites – for a member, a Supporter and with stars', () => {
   const isFav0 = () => false;
-  // a Supporter without trophies: 11 free stickers and the free skin are theirs; souldew+ and the earned ones are not
+  // a Supporter without trophies: 11 free stickers and the free skin are theirs; twicable+ and the earned ones are not
   const supItems = sheetItems({ member: launchRights('supporter').plus, trophies: new Set() });
   const sc = sheetCounts(supItems, isFav0);
   assert.deepEqual(sc, { all: 61, favs: 0, owned: 12, plus: 46, earned: 3 });
@@ -208,7 +208,7 @@ test('the editor’s sheet: the filter row over 61 items, four sticker groups, f
   assert.deepEqual(shown(supItems, 'earned'), [['earned', 3]]);
   // the new free ones sit in the free group, at its end
   assert.deepEqual(groupStickers(supItems.filter((x) => x.kind === 'sticker'))[0].list.slice(-3).map((s) => s.id), ['rip', 'one-hp', 'gg']);
-  // a member with one trophy: everything but two earned stickers; "Owned" narrows, "souldew+" too
+  // a member with one trophy: everything but two earned stickers; "Owned" narrows, "twicable+" too
   const memItems = sheetItems({ member: true, trophies: new Set(['winSoulLink']) });
   const mc = sheetCounts(memItems, isFav0);
   assert.equal(mc.owned, 59);
@@ -225,13 +225,13 @@ test('the editor’s sheet: the filter row over 61 items, four sticker groups, f
   assert.equal(shownFilter('owned', filterChips(sheetCounts(all, isFav0))), 'all');
 });
 
-test('no souldew+ sticker art in the public app: the atlas, the build input and the round-7 designs (as hashes)', () => {
+test('no twicable+ sticker art in the public app: the atlas, the build input and the round-7 designs (as hashes)', () => {
   const plus = new Set(STICKERS.filter((s) => s.tier === 'plus').map((s) => s.id));
   assert.deepEqual(DESIGNS.filter((d) => plus.has(d.id)).map((d) => d.id), [], 'scripts/handheld/stickers-app.mjs');
   const layout = JSON.parse(readFileSync(join(ROOT, 'web', 'assets', 'handheld', 'stickers.json'), 'utf8'));
   assert.deepEqual(Object.keys(layout.rects).filter((id) => plus.has(id)), [], 'web/assets/handheld/stickers.json');
   assert.equal(Object.keys(layout.rects).length, 14, '11 free + 3 earned');
-  // two lines of each of the 17 souldew+ designs of round 7 (the private design source's stickers-fun.mjs), as hashes so this
+  // two lines of each of the 17 twicable+ designs of round 7 (the private design source's stickers-fun.mjs), as hashes so this
   // test doesn't publish them: none may turn up in the app's code
   const h8 = (x) => createHash('sha256').update(x).digest('hex').slice(0, 8);
   const lines = (src) => src.split('\n').map((l) => l.trim()).filter((l) => l.length > 30);
@@ -239,7 +239,7 @@ test('no souldew+ sticker art in the public app: the atlas, the build input and 
   const walk = (d) => { for (const n of readdirSync(d)) { const p = join(d, n); if (['node_modules', 'vendor', 'assets', 'i18n', '.git'].includes(n)) continue; if (statSync(p).isDirectory()) walk(p); else if (/\.(m?js|css|html)$/.test(n)) files.push(p); } };
   for (const d of ['web', 'shared', 'scripts', 'server', 'electron']) walk(join(ROOT, d));
   const hits = files.flatMap((f) => lines(readFileSync(f, 'utf8')).filter((l) => FUN_PAID.has(h8(l))).map(() => f));
-  assert.deepEqual(hits, [], 'souldew+ sticker art in the app');
+  assert.deepEqual(hits, [], 'twicable+ sticker art in the app');
   // and the private source, where it is next to this checkout, has every one of them (the list stays honest)
   const src = join(ROOT, '..', 'design-plus', 'design', 'plus', 'handheld', 'stickers-fun.mjs');
   if (existsSync(src)) {
@@ -247,11 +247,11 @@ test('no souldew+ sticker art in the public app: the atlas, the build input and 
     for (const x of FUN_PAID) assert.ok(have.has(x), `hash ${x} is not in the private stickers-fun.mjs`);
   }
 });
-test('texts: the free sticker count is counted, not written in (11 now), and the two souldew+ groups are translated', () => {
+test('texts: the free sticker count is counted, not written in (11 now), and the two twicable+ groups are translated', () => {
   for (const lang of ['en', 'de', 'fr', 'es', 'it']) {
     const T = JSON.parse(readFileSync(join(ROOT, 'web', 'i18n', `${lang}.json`), 'utf8'));
     for (const k of ['hh.supporterHas', 'launch.tierSupWhat']) assert.ok(T[k].includes('{n}') && !/\b8\b/.test(T[k]), `${lang} ${k}`);
-    for (const k of ['hh.groupPlusCosy', 'hh.groupPlusFun']) assert.ok(T[k]?.startsWith('souldew+ · '), `${lang} ${k}`);
+    for (const k of ['hh.groupPlusCosy', 'hh.groupPlusFun']) assert.ok(T[k]?.startsWith('twicable+ · '), `${lang} ${k}`);
   }
 });
 
@@ -329,7 +329,7 @@ test('a stored layout is made valid on load: snapped clear, dropped without room
   const list = [
     st('star', 'deck:top', pad), // moved clear of the pad
     st('logo', 'deck:top', [0, 0], { scale: 1.6 }), // no room: dropped
-    st('comet', 'lid:top', [0, 0]), // a souldew+ sticker whose art isn't here: dropped (the look keeps it)
+    st('comet', 'lid:top', [0, 0]), // a twicable+ sticker whose art isn't here: dropped (the look keeps it)
     ...Array.from({ length: 10 }, (_, i) => st('dot', 'lid:top', [-50 + i * 10, 10])),
   ];
   const out = placeLayout(list, regions, rects);

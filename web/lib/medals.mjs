@@ -1,4 +1,4 @@
-// Pixel-art medals for the trophy page – souldew's own designs, drawn on a small grid like the icon set.
+// Pixel-art medals for the trophy page – twicable's own designs, drawn on a small grid like the icon set.
 // Every medal is computed, not painted: a body shape (circle, hexagon, star …) gets an outline, a bevel lit from
 // the top left, a sheen and an engraved emblem, in the metal of its tier, on a ribbon in its category colour.
 import { html } from '/vendor/htm-preact.mjs';

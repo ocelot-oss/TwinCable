@@ -55,7 +55,7 @@ test('bridge options: Gen 1–5 keep their JVM options, a 3DS game gets the big 
   const ctr = javaOptsFor({ ctr: true, workDir: '/tmp/w' });
   assert.equal(ctr.filter((o) => o.startsWith('-Xmx')).length, 1);
   assert.ok(ctr.includes(CTR_HEAP));
-  assert.ok(ctr.includes('-Dsouldew.upr.root=/tmp/w'));
+  assert.ok(ctr.includes('-Dtwicable.upr.root=/tmp/w'));
   for (const o of JAVA_OPTS.filter((x) => !x.startsWith('-Xmx'))) assert.ok(ctr.includes(o), o);
 });
 

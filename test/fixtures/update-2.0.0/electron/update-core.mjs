@@ -1,4 +1,4 @@
-// Verbatim copy of electron/update-core.mjs as released in souldew 2.0.0 (commit bba9071) – never edit it: test/update.test.mjs proves
+// Verbatim copy of electron/update-core.mjs as released in twicable 2.0.0 (commit bba9071) – never edit it: test/update.test.mjs proves
 // with it that the feeds published today still verify and validate in the apps people already have installed.
 // Self-update for the unsigned macOS app – the parts that need Node but not Electron (testable with node --test).
 // Squirrel.Mac only updates properly signed apps, so this does it by hand:
@@ -93,7 +93,7 @@ export async function fetchChecked(url, { allowLocal = false, signal, fetchImpl 
   let current = url;
   for (let hop = 0; ; hop++) {
     if (!isAllowedUrl(current, { allowLocal })) throw fail('INSECURE', hop ? 'The update server redirected to a non-HTTPS URL' : `Refusing non-HTTPS URL: ${current}`);
-    const res = await fetchImpl(current, { signal, redirect: 'manual', cache: 'no-store', headers: { 'User-Agent': 'souldew-updater' } });
+    const res = await fetchImpl(current, { signal, redirect: 'manual', cache: 'no-store', headers: { 'User-Agent': 'twicable-updater' } });
     if (res.url && !isAllowedUrl(res.url, { allowLocal })) throw fail('INSECURE', 'The update server redirected to a non-HTTPS URL');
     if (![301, 302, 303, 307, 308].includes(res.status)) return res;
     await res.body?.cancel?.().catch(() => {});

@@ -68,7 +68,7 @@ test('filters keep the list order – a favourite is never moved to the top', ()
 });
 
 test('the filter row shows only chips that narrow the list; a vanished filter falls back to All', () => {
-  // a free player: Owned (the free ones) and souldew+ both narrow
+  // a free player: Owned (the free ones) and twicable+ both narrow
   assert.deepEqual(filterChips({ all: 5, favs: 0, owned: 1, plus: 4, earned: 0 }), ['all', 'favs', 'owned', 'plus']);
   // a member: everything is owned – no Owned chip; Earned only where something is earned
   assert.deepEqual(filterChips({ all: 5, favs: 2, owned: 5, plus: 4, earned: 1 }), ['all', 'favs', 'plus', 'earned']);

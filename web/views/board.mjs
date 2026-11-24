@@ -326,8 +326,8 @@ export function InviteBody({ manifest, heading = true, autoFriends = [] }) {
     <p class="muted">${t('invite.what', 'The invite is one small file (.soullink.json). It holds the settings and the key to your room – no game data.')}</p>
     <ol class="small muted steps">
       <li>${t('invite.s1', 'Save the invite and send it to {name} – e.g. via Discord, WhatsApp or mail. Or copy it and paste it into the chat.', { name: partner })}</li>
-      <li>${many ? t('invite.s2Group', 'Each of them opens souldew › SoulLink › “Join with code” and opens the file. Their own copy of the game must be in their library.')
-        : t('invite.s2', '{name} opens souldew › SoulLink › “Join with code” and opens the file. Their own copy of the game must be in their library.', { name: partner })}</li>
+      <li>${many ? t('invite.s2Group', 'Each of them opens twicable › SoulLink › “Join with code” and opens the file. Their own copy of the game must be in their library.')
+        : t('invite.s2', '{name} opens twicable › SoulLink › “Join with code” and opens the file. Their own copy of the game must be in their library.', { name: partner })}</li>
       <li>${many ? t('invite.s3Group', 'Their apps build the identical game and connect you all automatically.') : t('invite.s3', 'Their app builds the identical game and connects you both automatically.')}</li>
     </ol>
     <div class="row">
@@ -685,7 +685,7 @@ function EncounterModal({ area, slot, onClose }) {
     : solo ? t('enc.dupeSolo', 'Dupes clause: you already caught this one ({area}) – keep looking.', { area: areaName(doc, manifest, dupe.area) })
       : t('enc.dupe', 'Dupes clause: {name} already owns this evolution line ({area}).', { name: names[dupe.slot].name, area: areaName(doc, manifest, dupe.area) }));
   const shown = species && html`<div class="row"><${Sprite} id=${species} shiny=${outcome === 'caught' && shiny} size=${64} gen=${runData.gen} /><div><h3>${speciesName(species)}</h3><${Types} types=${runData.types(species, slot)} />
-    ${outcome === 'missed' && seen && species === seen.species && html`<p class="tiny faint">${t('enc.missedSeen', 'From the last battle here – souldew saw it live.')}</p>`}</div></div>`;
+    ${outcome === 'missed' && seen && species === seen.species && html`<p class="tiny faint">${t('enc.missedSeen', 'From the last battle here – twicable saw it live.')}</p>`}</div></div>`;
   return html`<${Modal} open=${true} onClose=${onClose} title=${solo ? areaName(doc, manifest, area) : `${areaName(doc, manifest, area)} · ${names[slot].name}`}
     footer=${html`${existing && html`<button class="btn danger" onClick=${() => { setEncounter(doc, manifest, area, slot, null, { by: me }); onClose(); }}>${t('common.delete', 'Delete')}</button>`}<span class="spacer"></span>
       <button class="btn ghost" onClick=${onClose}>${t('common.cancel', 'Cancel')}</button>
@@ -787,13 +787,13 @@ function GravesTab() {
   const l = live(doc, me);
   const deadInTeam = (l?.party || []).filter((m) => m.area && pairState(doc, m.area, slots).state === 'dead');
   return html`<div class="stack-l">
-    ${deadInTeam.length > 0 && manifest.watch?.watching && manifest.watch.graveyard !== false && html`<section class="panel stack">
+    ${deadInTeam.length > 0 && (manifest.playerWatches?.[me] || manifest.watch)?.watching && manifest.watch?.graveyard !== false && html`<section class="panel stack">
       <h3>${t('graves.cleanTitle', 'Dead Pokémon are still in your team')}</h3>
       <p class="small muted">${t('graves.cleanText', 'Close the game first (save in-game). Then the app moves them into PC box 18 in your save file – with a backup.')}</p>
       <div><button class="btn danger" disabled=${busy} onClick=${async () => {
         setBusy(true);
         try {
-          const r = await api.post(`/api/runs/${manifest.id}/graveyard`, { keys: deadInTeam.map((m) => m.key) });
+          const r = await api.post(`/api/runs/${manifest.id}/graveyard`, { slot: me, keys: deadInTeam.map((m) => m.key) });
           toast({ kind: 'ok', title: t('graves.moved', 'Moved to the graveyard box'), text: t('graves.movedText', '{n} Pokémon is now in box {box}.|{n} Pokémon are now in box {box}.', { n: r.moved.length, box: r.box, count: r.moved.length }) });
         } catch (e) {
           toast({ kind: 'death', title: t('graves.failed', 'Not possible right now'), text: e.message });

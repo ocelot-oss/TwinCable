@@ -1,14 +1,14 @@
-// souldew's Nintendo 3DS host: runs Azahar's libretro core (azahar_libretro) with Vulkan (MoltenVK on macOS) and
-// talks to souldew over stdin/stdout – the 3DS game then plays inside souldew's own player like every other system.
+// twicable's Nintendo 3DS host: runs Azahar's libretro core (azahar_libretro) with Vulkan (MoltenVK on macOS) and
+// talks to twicable over stdin/stdout – the 3DS game then plays inside twicable's own player like every other system.
 //
 //   ctrhost --core <azahar_libretro> --vulkan <libMoltenVK / vulkan loader> --rom <game> --system <dir> --save <dir>
 //           [--scale N] [--renderer vulkan|compat|software] [--bench FRAMES --dump out.ppm]
 //
 // Messages are { u32 type, u32 length, payload } (little-endian), both ways.
-//   host → souldew   1 HELLO  json { width, height, fps, sampleRate }      sent once the game runs
+//   host → twicable   1 HELLO  json { width, height, fps, sampleRate }      sent once the game runs
 //                    2 VIDEO  u16 width, u16 height, u32 format (0 BGRA, 1 RGBA), pixels
 //                    3 AUDIO  s16 stereo samples – fast-forward: the sound sped up by the real speed (at most 16×),
-//                             resampled to exactly real time (see ff_frame) – souldew's turbo mixer
+//                             resampled to exactly real time (see ff_frame) – twicable's turbo mixer
 //                             (web/lib/turboaudio.mjs) plays it per Settings › "Turbo audio"
 //                    4 MEM    u32 count, count × { u32 addr, u32 len, bytes }  the watched regions, between frames
 //                    5 STATE  a save state (answer to SAVE)
@@ -25,19 +25,19 @@
 //                             turbo mixer's "Music continues" records it instead of slowing AUDIO back down (see ff_frame)
 //                    9 ROMFS  u64 frame, u32 count, u32 flags (1: that frame was fast-forwarded), count × { u64 serial,
 //                             u64 offset, u32 length, u32 tag, u64 frame } – the
-//                             game's RomFS reads (native/azahar-patch/souldew-romfs.patch), sent ten times a second right
+//                             game's RomFS reads (native/azahar-patch/twicable-romfs.patch), sent ten times a second right
 //                             before that frame's AUDIO, with the emulated frame each read was seen in (an empty one twice a
-//                             second keeps the page's clock): souldew's "music from the ROM" (web/lib/rommusic.mjs) sees
+//                             second keeps the page's clock): twicable's "music from the ROM" (web/lib/rommusic.mjs) sees
 //                             which music stream the game reads and how far
 //                   10 ROMDATA u32 id, u32 status (0 ok, 1 the core can't, 2 no such RomFS), u64 size of that RomFS, bytes –
 //                             the answer to ROMREAD
 //                   11 SFX    u32 flags (2: music voices were left out, 4: somewhere in it the core kept the music in –
 //                             not to be played), u32 count, count × u32 (where in the samples a new sound began: key-on
 //                             of a voice that isn't music), s16 stereo samples – fast-forward only, in place of FFSOUND,
-//                             while souldew asks for it (SFX): the core's own sound without the voices that play the
-//                             game's streamed music (native/azahar-patch/souldew-sfx.patch) – the sound effects, which
-//                             souldew's turbo mixer plays at 1× over the music track from the ROM (web/lib/sfxplayer.mjs)
-//   souldew → host   1 INPUT  u32 joypad bits (RETRO_DEVICE_ID_JOYPAD_*), s16 lx, ly, rx, ry, s16 px, py (pointer,
+//                             while twicable asks for it (SFX): the core's own sound without the voices that play the
+//                             game's streamed music (native/azahar-patch/twicable-sfx.patch) – the sound effects, which
+//                             twicable's turbo mixer plays at 1× over the music track from the ROM (web/lib/sfxplayer.mjs)
+//   twicable → host   1 INPUT  u32 joypad bits (RETRO_DEVICE_ID_JOYPAD_*), s16 lx, ly, rx, ry, s16 px, py (pointer,
 //                             -0x7fff…0x7fff over the whole picture), u8 pressed
 //                    2 SPEED  f32 (1 = normal, 0 = paused, ≥ 100 = as fast as possible)
 //                    3 SAVE   –           4 LOAD  state bytes      5 WATCH  u32 count, count × { u32 addr, u32 len }
@@ -51,14 +51,14 @@
 //                             between frames, at most ROMREAD_BUDGET bytes per frame
 //                   11 MUSIC  u32 tag, u32 count, count × { u64 start, u64 end } – where the music streams of RomFS `tag`
 //                             are (offsets in its level 3; count 0 forgets them): the core recognises the voices that
-//                             play them (souldew_audio_music_ranges)
+//                             play them (twicable_audio_music_ranges)
 //                   12 SFX    u32 on – leave the music voices out of the fast-forward sound (message 11); the host does
 //                             it only while it fast-forwards, the 1× sound is never touched
-// Memory reads go through souldew_read_memory (native/azahar-patch: the game process's virtual memory, page by page)
+// Memory reads go through twicable_read_memory (native/azahar-patch: the game process's virtual memory, page by page)
 // between two frames – never torn. Azahar's own core (no patch) runs the game without live data.
 // Builds on macOS, Linux and Windows (compat.h); scripts/build-ctr.mjs builds it.
 //
-// --renderer picks how the core draws (souldew's setting "3DS renderer", server/lib/ctrrenderer.mjs):
+// --renderer picks how the core draws (twicable's setting "3DS renderer", server/lib/ctrrenderer.mjs):
 //   vulkan    (default) Vulkan with the device the standalone Azahar creates: the optional extensions the renderer
 //             uses are enabled together with their features (plan_device), robustBufferAccess too
 //   compat    Vulkan with only what the core's own libretro device enables – the optional extensions are hidden from
@@ -109,7 +109,7 @@ enum { R_VULKAN, R_COMPAT, R_SOFTWARE };
 static int renderer = R_VULKAN;
 static const char *const RENDERER_NAMES[] = {"vulkan", "compat", "software"};
 
-// core options souldew sets (everything else: the core's own default)
+// core options twicable sets (everything else: the core's own default)
 static const char *core_option(const char *key) {
   if (!strcmp(key, "citra_graphics_api")) return renderer == R_SOFTWARE ? "Software" : "Vulkan";
   if (!strcmp(key, "citra_resolution_factor")) return scale_str;
@@ -134,7 +134,7 @@ static void write_all(const void *p, size_t n) {
     compat_ssize w = compat_write(1, b, n);
     if (w < 0) {
       if (errno == EINTR) continue;
-      _exit(0); // souldew went away (_exit: see die() – and this may run on one of the core's threads)
+      _exit(0); // twicable went away (_exit: see die() – and this may run on one of the core's threads)
     }
     b += w;
     n -= (size_t)w;
@@ -307,14 +307,14 @@ static void audio_sample(int16_t l, int16_t r) {
   int16_t s[2] = {l, r};
   audio_push(s, 1);
 }
-// souldew's sound effects during fast-forward (native/azahar-patch/souldew-sfx.patch): while the page asks for them and
+// twicable's sound effects during fast-forward (native/azahar-patch/twicable-sfx.patch): while the page asks for them and
 // the game fast-forwards, the core leaves the voices that play the game's streamed music out of its sound (the page plays
 // the music itself, from the ROM) and says per DSP frame (160 samples) what that frame is – asked from right here, the
 // core hands each frame to this callback as it makes it. sfx_onsets: where in audio_buf a new sound (not music) began.
-static void (*souldew_audio_music_ranges)(uint32_t tag, const uint64_t *pairs, uint32_t n);
-static void (*souldew_audio_mute_music)(uint32_t on);
-static uint32_t (*souldew_audio_frame_flags)(void);
-static uint32_t (*souldew_audio_music_state)(uint64_t *out, uint32_t max);
+static void (*twicable_audio_music_ranges)(uint32_t tag, const uint64_t *pairs, uint32_t n);
+static void (*twicable_audio_mute_music)(uint32_t on);
+static uint32_t (*twicable_audio_frame_flags)(void);
+static uint32_t (*twicable_audio_music_state)(uint64_t *out, uint32_t max);
 #define SFX_ONSET 1u
 #define SFX_MUTED 2u
 #define SFX_UNSURE 4u
@@ -323,8 +323,8 @@ static uint32_t (*souldew_audio_music_state)(uint64_t *out, uint32_t max);
 static int sfx_muting; // the core leaves the music out now (asked for this frame)
 static uint32_t sfx_flags, sfx_onsets[MAX_ONSETS], sfx_n;
 static size_t audio_batch(const int16_t *d, size_t frames) {
-  if (sfx_muting && souldew_audio_frame_flags) {
-    const uint32_t f = souldew_audio_frame_flags();
+  if (sfx_muting && twicable_audio_frame_flags) {
+    const uint32_t f = twicable_audio_frame_flags();
     if ((f & SFX_ONSET) && sfx_n < MAX_ONSETS) sfx_onsets[sfx_n++] = (uint32_t)(audio_n / 2);
     // a frame that kept music in it (asked but unsure, or a music voice not left out) spoils the whole message: the page
     // must not play it as sound effects
@@ -704,7 +704,7 @@ static int gpu_score(VkPhysicalDevice d, const VkPhysicalDeviceProperties *p) {
   }
 }
 
-/** Pick the graphics card, tell souldew which one (event "gpu" + log), before the core gets to it. */
+/** Pick the graphics card, tell twicable which one (event "gpu" + log), before the core gets to it. */
 static void choose_gpu(void) {
   PFN_vkEnumeratePhysicalDevices enum_dev = (PFN_vkEnumeratePhysicalDevices)gipa(instance, "vkEnumeratePhysicalDevices");
   PFN_vkGetPhysicalDeviceProperties props_fn = (PFN_vkGetPhysicalDeviceProperties)gipa(instance, "vkGetPhysicalDeviceProperties");
@@ -783,7 +783,7 @@ static void choose_gpu(void) {
 
 static void vk_setup(void) {
   const VkApplicationInfo *app = negotiation && negotiation->get_application_info ? negotiation->get_application_info() : NULL;
-  VkApplicationInfo def = {VK_STRUCTURE_TYPE_APPLICATION_INFO, NULL, "souldew", 1, "souldew", 1, VK_API_VERSION_1_1};
+  VkApplicationInfo def = {VK_STRUCTURE_TYPE_APPLICATION_INFO, NULL, "twicable", 1, "twicable", 1, VK_API_VERSION_1_1};
   PFN_vkEnumerateInstanceExtensionProperties enum_ext = (PFN_vkEnumerateInstanceExtensionProperties)gipa(NULL, "vkEnumerateInstanceExtensionProperties");
   PFN_vkCreateInstance create_instance = (PFN_vkCreateInstance)gipa(NULL, "vkCreateInstance");
   if (!enum_ext || !create_instance) die("the Vulkan loader is incomplete (vkCreateInstance missing) – reinstall the graphics driver");
@@ -1002,7 +1002,7 @@ static void core_log(enum retro_log_level level, const char *fmt, ...) {
   // warnings and errors always; of the info lines only the renderer's (device, driver, extensions – what a crash on
   // another PC needs)
   if (level < RETRO_LOG_WARN && !strstr(buf, "Vulkan") && !strstr(buf, "Render")) return;
-  if (strstr(buf, "Fetching variable")) return; // the core options souldew leaves at their defaults (an error line each)
+  if (strstr(buf, "Fetching variable")) return; // the core options twicable leaves at their defaults (an error line each)
   logf_("[core] %s", buf);
 }
 
@@ -1059,7 +1059,7 @@ static bool environment(unsigned cmd, void *data) {
   if (IS(cmd, RETRO_ENVIRONMENT_GET_AUDIO_VIDEO_ENABLE)) { *(int *)data = 1 | 2; return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_GET_FASTFORWARDING)) { *(bool *)data = false; return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_GET_LANGUAGE)) { *(unsigned *)data = RETRO_LANGUAGE_ENGLISH; return true; }
-  if (IS(cmd, RETRO_ENVIRONMENT_GET_USERNAME)) { *(const char **)data = "souldew"; return true; }
+  if (IS(cmd, RETRO_ENVIRONMENT_GET_USERNAME)) { *(const char **)data = "twicable"; return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION)) { *(unsigned *)data = 1; return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_SET_MESSAGE)) { logf_("[core message] %s", ((const struct retro_message *)data)->msg); return true; }
   if (IS(cmd, RETRO_ENVIRONMENT_SET_MESSAGE_EXT)) { logf_("[core message] %s", ((const struct retro_message_ext *)data)->msg); return true; }
@@ -1069,16 +1069,16 @@ static bool environment(unsigned cmd, void *data) {
 }
 
 // ---- memory reads ----------------------------------------------------------------------------------------------
-// souldew's build of the core exports these (native/azahar-patch): reads through the game process's page table, so
+// twicable's build of the core exports these (native/azahar-patch): reads through the game process's page table, so
 // the heaps the game allocates after loading are readable too. The official core only has the memory map from load.
-static bool (*souldew_read_memory)(uint32_t addr, void *out, uint32_t size);
-static uint64_t (*souldew_title_id)(void);
-// Save states that stop the game only while its memory is copied (native/azahar-patch/souldew-state.patch): zstd runs on
+static bool (*twicable_read_memory)(uint32_t addr, void *out, uint32_t size);
+static uint64_t (*twicable_title_id)(void);
+// Save states that stop the game only while its memory is copied (native/azahar-patch/twicable-state.patch): zstd runs on
 // a thread of the core's own and the state goes out once it is packed, a few frames later. Without them (an older core)
 // retro_serialize_size packs it between two frames – 0.4 s without sound or pictures on a Windows PC.
-static int (*souldew_state_begin)(void);
-static int64_t (*souldew_state_poll)(void);
-static bool (*souldew_state_take)(void *out, size_t size);
+static int (*twicable_state_begin)(void);
+static int64_t (*twicable_state_poll)(void);
+static bool (*twicable_state_take)(void *out, size_t size);
 
 static const uint8_t *mem_at(uint32_t addr, uint32_t len) {
   for (unsigned i = 0; i < memmap_n; i++) {
@@ -1090,16 +1090,16 @@ static const uint8_t *mem_at(uint32_t addr, uint32_t len) {
 }
 
 // ---- memory writes (cheats) ----------------------------------------------------------------------------------------
-// souldew's WRITE command: a few bytes inside one page of the game's heaps (the bag). Every write
+// twicable's WRITE command: a few bytes inside one page of the game's heaps (the bag). Every write
 //   1. only into the game's heaps (application heap, linear heaps) – nothing else is ever touched
-//   2. only while the bytes there are still what souldew expects (`old`) – read through the core, so the game hasn't
-//      changed them since souldew looked
-//   3. through souldew_write_memory (native/azahar-patch): the core's own memory system writes at the game's virtual
+//   2. only while the bytes there are still what twicable expects (`old`) – read through the core, so the game hasn't
+//      changed them since twicable looked
+//   3. through twicable_write_memory (native/azahar-patch): the core's own memory system writes at the game's virtual
 //      address – the process's page table, so the application heap (X/Y, Omega Ruby / Alpha Sapphire) and the linear
 //      heaps (Sun / Moon …) alike, on every OS – and the change is read back through the core
 // Between two frames on the core's thread, like the reads.
 //
-// An older core (souldew 2.7.2 and before) has no write call: then the page is looked for in the core's FCRAM block
+// An older core (twicable 2.7.2 and before) has no write call: then the page is looked for in the core's FCRAM block
 // (one allocation of 256 MB – every heap page of the game is a page of it, and the stack page in the memory map points
 // into it) by its content. Every page with the same 4 KB is tried – the new bytes go in, and only the page whose change
 // shows at the game's address keeps them; every other one is put back at once. The block's bounds come from the OS
@@ -1111,7 +1111,7 @@ static const uint32_t write_ranges[][2] = {
   {0x14000000, 0x1C000000}, // linear heap
   {0x30000000, 0x40000000}, // linear heap, newer kernels (Sun / Moon, Ultra Sun / Ultra Moon)
 };
-static bool (*souldew_write_memory)(uint32_t addr, const void *data, uint32_t size);
+static bool (*twicable_write_memory)(uint32_t addr, const void *data, uint32_t size);
 
 /** Is [addr, addr+len) inside one page of the game's heaps? */
 static bool write_allowed(uint32_t addr, uint32_t len) {
@@ -1152,7 +1152,7 @@ static int rw_range(uintptr_t p, uintptr_t span, uintptr_t *lo, uintptr_t *hi) {
   return 1;
 }
 
-/** The fallback for a core without souldew_write_memory: the page found by its content (see above). */
+/** The fallback for a core without twicable_write_memory: the page found by its content (see above). */
 static const char *scan_write(uint32_t addr, const uint8_t *page, const uint8_t *old, const uint8_t *val, uint32_t len) {
   const uintptr_t anchor = fcram_anchor();
   uint8_t now[MAX_WRITE];
@@ -1167,7 +1167,7 @@ static const char *scan_write(uint32_t addr, const uint8_t *page, const uint8_t 
     if (h[off] != page[off] || memcmp(h, page, 0x1000)) continue;
     tries++;
     memcpy(h + off, val, len);
-    if (souldew_read_memory(addr, now, len) && !memcmp(now, val, len)) return "ok";
+    if (twicable_read_memory(addr, now, len) && !memcmp(now, val, len)) return "ok";
     memcpy(h + off, old, len); // a copy of the page somewhere else – put back
   }
   return "notFound";
@@ -1175,19 +1175,19 @@ static const char *scan_write(uint32_t addr, const uint8_t *page, const uint8_t 
 
 /**
  * One write: "ok", or why not – "range" (outside the game's heaps, or not mapped), "changed" (the game holds other
- * bytes there now), "unsupported" (a core without souldew's memory calls), "failed" (the core refused the write or it
+ * bytes there now), "unsupported" (a core without twicable's memory calls), "failed" (the core refused the write or it
  * didn't read back), "notFound" (the fallback scan didn't find the page).
  */
 static const char *mem_write(uint32_t addr, const uint8_t *old, const uint8_t *val, uint32_t len) {
   if (!write_allowed(addr, len)) return "range";
-  if (!souldew_read_memory) return "unsupported";
+  if (!twicable_read_memory) return "unsupported";
   uint8_t page[0x1000], now[MAX_WRITE];
   const uint32_t vpage = addr & ~0xFFFu, off = addr & 0xFFF;
-  if (!souldew_read_memory(vpage, page, sizeof page)) return "range"; // (not mapped)
+  if (!twicable_read_memory(vpage, page, sizeof page)) return "range"; // (not mapped)
   if (memcmp(page + off, old, len)) return "changed";
-  if (!souldew_write_memory) return scan_write(addr, page, old, val, len);
-  if (!souldew_write_memory(addr, val, len)) return "failed";
-  if (!souldew_read_memory(addr, now, len) || memcmp(now, val, len)) return "failed";
+  if (!twicable_write_memory) return scan_write(addr, page, old, val, len);
+  if (!twicable_write_memory(addr, val, len)) return "failed";
+  if (!twicable_read_memory(addr, now, len) || memcmp(now, val, len)) return "failed";
   return "ok";
 }
 
@@ -1219,8 +1219,8 @@ static void send_mem(void) {
     uint32_t len = w[i].len;
     memcpy(p, &w[i].addr, 4);
     uint8_t *lenp = p + 4, *data = p + 8;
-    if (souldew_read_memory) {
-      if (!souldew_read_memory(w[i].addr, data, len)) len = 0; // unmapped (title screen, another update's address)
+    if (twicable_read_memory) {
+      if (!twicable_read_memory(w[i].addr, data, len)) len = 0; // unmapped (title screen, another update's address)
     } else {
       const uint8_t *src = mem_at(w[i].addr, len);
       if (src) memcpy(data, src, len);
@@ -1233,15 +1233,15 @@ static void send_mem(void) {
   free(b);
 }
 
-// ---- the game's RomFS reads (souldew's "music from the ROM") ------------------------------------------------------
-// The core notes every RomFS read the game makes (native/azahar-patch/souldew-romfs.patch, a lock-free ring); the host
+// ---- the game's RomFS reads (twicable's "music from the ROM") ------------------------------------------------------
+// The core notes every RomFS read the game makes (native/azahar-patch/twicable-romfs.patch, a lock-free ring); the host
 // drains it after each frame – tagged with that frame – and sends what came ten times a second (ROMFS), right before
 // the frame's sound, so the page knows exactly which sound the reads belong to. Nothing here waits on the core or
 // changes how the game runs. ROMREAD asks for RomFS bytes (the tables, a stream's header and data): read between
 // frames, a little per frame.
-static uint32_t (*souldew_romfs_reads)(uint64_t *out, uint32_t max);
-static uint32_t (*souldew_romfs_read)(uint32_t tag, uint64_t offset, void *out, uint32_t size);
-static uint64_t (*souldew_romfs_size)(uint32_t tag);
+static uint32_t (*twicable_romfs_reads)(uint64_t *out, uint32_t max);
+static uint32_t (*twicable_romfs_read)(uint32_t tag, uint64_t offset, void *out, uint32_t size);
+static uint64_t (*twicable_romfs_size)(uint32_t tag);
 #define ROMFS_MAX 1024     // reads kept between two sends (a loading screen reads hundreds a second)
 #define ROMREAD_MAX (1u << 20)
 #define ROMREAD_BUDGET (2u << 20) // bytes of ROMREAD answered per frame (a few ms of disk at most)
@@ -1254,10 +1254,10 @@ static unsigned romreads_n;
 
 /** After a frame: the reads the core noted during it, into the next ROMFS message. */
 static void romfs_drain(uint64_t frame) {
-  if (!souldew_romfs_reads) return;
+  if (!twicable_romfs_reads) return;
   uint64_t r[3 * 64];
   for (;;) {
-    uint32_t n = souldew_romfs_reads(r, 64);
+    uint32_t n = twicable_romfs_reads(r, 64);
     for (uint32_t i = 0; i < n; i++) {
       if (romfs_n >= ROMFS_MAX) {
         romfs_lost++;
@@ -1276,7 +1276,7 @@ static void romfs_drain(uint64_t frame) {
 static int romfs_now; // send with the next frame (fast-forward started or ended: the page lines the music up again)
 static void romfs_send(uint64_t frame, double t, int turbo) {
   static double last_send, last_empty;
-  if (!souldew_romfs_reads) return;
+  if (!twicable_romfs_reads) return;
   if (!romfs_now && (romfs_n ? (t - last_send < 0.1 && romfs_n < ROMFS_MAX) : t - last_empty < 0.5)) return;
   romfs_now = 0;
   last_send = last_empty = t;
@@ -1304,15 +1304,15 @@ static void romfs_answer(void) {
     uint8_t head[16] = {0};
     uint32_t status = 0, got = 0;
     uint64_t size = 0;
-    if (!souldew_romfs_read || !buf) status = 1; // (no patched core – or out of memory: an answer without bytes)
-    else if (!(size = souldew_romfs_size(q[i].tag))) status = 2;
-    else if (q[i].len) got = souldew_romfs_read(q[i].tag, q[i].offset, buf, q[i].len);
+    if (!twicable_romfs_read || !buf) status = 1; // (no patched core – or out of memory: an answer without bytes)
+    else if (!(size = twicable_romfs_size(q[i].tag))) status = 2;
+    else if (q[i].len) got = twicable_romfs_read(q[i].tag, q[i].offset, buf, q[i].len);
     memcpy(head, &q[i].id, 4), memcpy(head + 4, &status, 4), memcpy(head + 8, &size, 8);
     send_msg2(10, head, 16, buf, got);
   }
 }
 
-// ---- commands from souldew ---------------------------------------------------------------------------------------
+// ---- commands from twicable ---------------------------------------------------------------------------------------
 static float speed = 1.0f;
 static int want_save, want_quit, want_reset;
 static int sfx_want; // the page wants the sound effects without the music while fast-forwarding (SFX)
@@ -1344,7 +1344,7 @@ static void *reader(void *arg) {
     if (!read_full(h, 8)) break;
     if (h[1] > 512u * 1024 * 1024) break;
     uint8_t *p = h[1] ? malloc(h[1]) : NULL;
-    if (h[1] && !p) break; // out of memory: as if souldew had gone
+    if (h[1] && !p) break; // out of memory: as if twicable had gone
     if (h[1] && !read_full(p, h[1])) {
       free(p);
       break;
@@ -1444,7 +1444,7 @@ static void *reader(void *arg) {
     free(p);
   }
   pthread_mutex_lock(&cmd_lock);
-  want_quit = 1; // souldew closed the pipe
+  want_quit = 1; // twicable closed the pipe
   pthread_mutex_unlock(&cmd_lock);
   return NULL;
 }
@@ -1509,26 +1509,26 @@ int main(int argc, char **argv) {
   SYM(load_game, "retro_load_game"); SYM(unload_game, "retro_unload_game"); SYM(run, "retro_run");
   SYM(reset, "retro_reset"); SYM(serialize_size, "retro_serialize_size"); SYM(serialize, "retro_serialize");
   SYM(unserialize, "retro_unserialize");
-  souldew_read_memory = dlsym(lib, "souldew_read_memory");
-  souldew_title_id = dlsym(lib, "souldew_title_id");
-  souldew_state_begin = dlsym(lib, "souldew_state_begin");
-  souldew_state_poll = dlsym(lib, "souldew_state_poll");
-  souldew_state_take = dlsym(lib, "souldew_state_take");
-  if (!souldew_state_begin || !souldew_state_poll || !souldew_state_take) souldew_state_begin = NULL;
-  souldew_write_memory = dlsym(lib, "souldew_write_memory");
-  souldew_romfs_reads = dlsym(lib, "souldew_romfs_reads");
-  souldew_romfs_read = dlsym(lib, "souldew_romfs_read");
-  souldew_romfs_size = dlsym(lib, "souldew_romfs_size");
-  if (!souldew_romfs_read || !souldew_romfs_size) souldew_romfs_reads = NULL; // (all three or none)
-  souldew_audio_music_ranges = dlsym(lib, "souldew_audio_music_ranges");
-  souldew_audio_mute_music = dlsym(lib, "souldew_audio_mute_music");
-  souldew_audio_frame_flags = dlsym(lib, "souldew_audio_frame_flags");
-  souldew_audio_music_state = dlsym(lib, "souldew_audio_music_state");
-  if (!souldew_audio_music_ranges || !souldew_audio_mute_music || !souldew_audio_frame_flags || !souldew_romfs_reads) souldew_audio_mute_music = NULL; // (all or none)
-  logf_("sound effects without the music (fast-forward): %s", souldew_audio_mute_music ? "yes" : "no (a core without souldew_audio_mute_music)");
-  logf_("RomFS reads (music from the ROM): %s", souldew_romfs_reads ? "yes" : "no (a core without souldew_romfs_reads)");
-  logf_("memory writes (cheats): %s", souldew_write_memory ? "through the core (souldew_write_memory)"
-                                      : souldew_read_memory ? "page scan (a core without souldew_write_memory)" : "none (Azahar's own core)");
+  twicable_read_memory = dlsym(lib, "twicable_read_memory");
+  twicable_title_id = dlsym(lib, "twicable_title_id");
+  twicable_state_begin = dlsym(lib, "twicable_state_begin");
+  twicable_state_poll = dlsym(lib, "twicable_state_poll");
+  twicable_state_take = dlsym(lib, "twicable_state_take");
+  if (!twicable_state_begin || !twicable_state_poll || !twicable_state_take) twicable_state_begin = NULL;
+  twicable_write_memory = dlsym(lib, "twicable_write_memory");
+  twicable_romfs_reads = dlsym(lib, "twicable_romfs_reads");
+  twicable_romfs_read = dlsym(lib, "twicable_romfs_read");
+  twicable_romfs_size = dlsym(lib, "twicable_romfs_size");
+  if (!twicable_romfs_read || !twicable_romfs_size) twicable_romfs_reads = NULL; // (all three or none)
+  twicable_audio_music_ranges = dlsym(lib, "twicable_audio_music_ranges");
+  twicable_audio_mute_music = dlsym(lib, "twicable_audio_mute_music");
+  twicable_audio_frame_flags = dlsym(lib, "twicable_audio_frame_flags");
+  twicable_audio_music_state = dlsym(lib, "twicable_audio_music_state");
+  if (!twicable_audio_music_ranges || !twicable_audio_mute_music || !twicable_audio_frame_flags || !twicable_romfs_reads) twicable_audio_mute_music = NULL; // (all or none)
+  logf_("sound effects without the music (fast-forward): %s", twicable_audio_mute_music ? "yes" : "no (a core without twicable_audio_mute_music)");
+  logf_("RomFS reads (music from the ROM): %s", twicable_romfs_reads ? "yes" : "no (a core without twicable_romfs_reads)");
+  logf_("memory writes (cheats): %s", twicable_write_memory ? "through the core (twicable_write_memory)"
+                                      : twicable_read_memory ? "page scan (a core without twicable_write_memory)" : "none (Azahar's own core)");
 
   core.set_environment(environment);
   core.set_video_refresh(video_refresh);
@@ -1558,8 +1558,8 @@ int main(int argc, char **argv) {
   core.get_system_av_info(&av);
   double fps = av.timing.fps > 1 ? av.timing.fps : 60.0;
   send_event("{\"event\":\"loaded\",\"width\":%u,\"height\":%u,\"fps\":%.4f,\"sampleRate\":%.1f,\"maps\":%u,\"memory\":%s,\"renderer\":\"%s\",\"romfs\":%s,\"sfx\":%s}",
-             av.geometry.base_width, av.geometry.base_height, fps, av.timing.sample_rate, memmap_n, souldew_read_memory ? "true" : "false", RENDERER_NAMES[renderer],
-             souldew_romfs_reads ? "true" : "false", souldew_audio_mute_music ? "true" : "false");
+             av.geometry.base_width, av.geometry.base_height, fps, av.timing.sample_rate, memmap_n, twicable_read_memory ? "true" : "false", RENDERER_NAMES[renderer],
+             twicable_romfs_reads ? "true" : "false", twicable_audio_mute_music ? "true" : "false");
 
   if (opt_bench) {
     double t0 = now_s();
@@ -1572,13 +1572,13 @@ int main(int argc, char **argv) {
     fprintf(stderr, "bench: %d frames in %.2f s = %.1f fps (%.0f%% of %.2f), %d×%d, %u memory regions\n", opt_bench, dt, opt_bench / dt,
             100.0 * opt_bench / dt / fps, fps, frame_w, frame_h, memmap_n);
     for (unsigned i = 0; i < memmap_n; i++) fprintf(stderr, "  map %08llx +%08llx\n", (unsigned long long)memmap[i].start, (unsigned long long)memmap[i].len);
-    if (souldew_title_id) fprintf(stderr, "title %016llX\n", (unsigned long long)souldew_title_id());
+    if (twicable_title_id) fprintf(stderr, "title %016llX\n", (unsigned long long)twicable_title_id());
     if (renderer != R_SOFTWARE) fprintf(stderr, "images created through wrap_create_image: %u (%u fixed)\n", images_created, images_fixed);
-    if (souldew_read_memory) {
+    if (twicable_read_memory) {
       static const uint32_t probe[] = {0x08000000, 0x08CE1CE8, 0x08CFB26C, 0x14000000, 0x30000000, 0x34195E10, 0x33F7FA44};
       for (unsigned i = 0; i < sizeof probe / sizeof *probe; i++) {
         uint8_t b[16];
-        bool ok = souldew_read_memory(probe[i], b, 16);
+        bool ok = twicable_read_memory(probe[i], b, 16);
         fprintf(stderr, "  read %08X: %s", probe[i], ok ? "" : "unmapped");
         if (ok) for (int k = 0; k < 16; k++) fprintf(stderr, "%02x", b[k]);
         fprintf(stderr, "\n");
@@ -1621,7 +1621,7 @@ int main(int argc, char **argv) {
     writes_n = 0;
     pthread_mutex_unlock(&cmd_lock);
     for (unsigned i = 0; i < mn; i++) {
-      if (souldew_audio_mute_music) souldew_audio_music_ranges(mq[i].tag, mq[i].pairs, mq[i].n);
+      if (twicable_audio_mute_music) twicable_audio_music_ranges(mq[i].tag, mq[i].pairs, mq[i].n);
       free(mq[i].pairs);
     }
     if (quit) break;
@@ -1640,9 +1640,9 @@ int main(int argc, char **argv) {
     static int state_asked; // save states asked for and not answered yet (the page asks one at a time)
     static double state_t0, state_t1;
     if (save) {
-      if (souldew_state_begin) {
+      if (twicable_state_begin) {
         state_t0 = now_s();
-        const int r = state_asked ? 1 : souldew_state_begin(); // (one still being packed answers this ask too)
+        const int r = state_asked ? 1 : twicable_state_begin(); // (one still being packed answers this ask too)
         state_t1 = now_s();
         if (r < 0) for (int i = 0; i < save; i++) send_msg(5, NULL, 0);
         else state_asked += save;
@@ -1657,10 +1657,10 @@ int main(int argc, char **argv) {
       }
     }
     if (state_asked) {
-      const int64_t n = souldew_state_poll();
+      const int64_t n = twicable_state_poll();
       if (n != 0) {
         uint8_t *b = n > 0 ? malloc((size_t)n) : NULL;
-        const bool ok = b && souldew_state_take(b, (size_t)n);
+        const bool ok = b && twicable_state_take(b, (size_t)n);
         for (; state_asked > 0; state_asked--) send_msg(5, ok ? b : NULL, ok ? (uint32_t)n : 0);
         free(b);
         logf_("save state: %lld bytes, %.0f ms between two frames, packed %.0f ms later", (long long)n, (state_t1 - state_t0) * 1000, (now_s() - state_t1) * 1000);
@@ -1683,10 +1683,10 @@ int main(int argc, char **argv) {
     }
     // the sound effects without the music: only while fast-forwarding and asked for – at 1× the core's sound is never
     // touched (the page lines its music track up with it)
-    const int mute = sfx && turbo && souldew_audio_mute_music;
+    const int mute = sfx && turbo && twicable_audio_mute_music;
     if (mute != sfx_muting) {
       sfx_muting = mute;
-      if (souldew_audio_mute_music) souldew_audio_mute_music((uint32_t)mute);
+      if (twicable_audio_mute_music) twicable_audio_mute_music((uint32_t)mute);
     }
     sfx_flags = 0;
     sfx_n = 0;
@@ -1730,7 +1730,7 @@ int main(int argc, char **argv) {
       send_mem();
       // which title runs (the game, or an applet / the HOME menu in between)
       static uint64_t last_tid = 1;
-      uint64_t tid = souldew_title_id ? souldew_title_id() : 0;
+      uint64_t tid = twicable_title_id ? twicable_title_id() : 0;
       if (tid != last_tid) {
         last_tid = tid;
         send_event("{\"event\":\"title\",\"titleId\":\"%016llX\"}", (unsigned long long)tid);
@@ -1746,10 +1746,10 @@ int main(int argc, char **argv) {
       send_event("{\"event\":\"stats\",\"fps\":%.1f,\"speed\":%.3f,\"shown\":%llu,\"frame\":%llu,\"ffk\":%.3f,\"ffHoles\":%u}", stat_frames / (t - stat_t), real,
                  (unsigned long long)frames_shown, (unsigned long long)frame, turbo ? ff.k : 1.0, ff.holes);
       static double sfx_told;
-      if (sfx && souldew_audio_music_state && t - sfx_told >= 1) { // (the page asked for sound effects: how the core tells music)
+      if (sfx && twicable_audio_music_state && t - sfx_told >= 1) { // (the page asked for sound effects: how the core tells music)
         sfx_told = t;
         uint64_t m[8] = {0};
-        souldew_audio_music_state(m, 8);
+        twicable_audio_music_state(m, 8);
         send_event("{\"event\":\"sfx\",\"voices\":%llu,\"noted\":%llu,\"hits\":%llu,\"misses\":%llu,\"aac\":%llu,\"romfs\":%llu,\"unsure\":%llu,\"muting\":%d}",
                    (unsigned long long)m[0], (unsigned long long)m[1], (unsigned long long)m[2], (unsigned long long)m[3], (unsigned long long)m[4],
                    (unsigned long long)m[5], (unsigned long long)m[6], sfx_muting);

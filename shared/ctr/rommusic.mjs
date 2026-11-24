@@ -1,5 +1,5 @@
 // "Music from the ROM" for 3DS games: which music stream the game plays, and where in it – read off the game's own RomFS
-// reads (the emulator notes each read: native/azahar-patch/souldew-romfs.patch, ctrhost.c message 9). The turbo mixer
+// reads (the emulator notes each read: native/azahar-patch/twicable-romfs.patch, ctrhost.c message 9). The turbo mixer
 // then plays that track itself at normal speed while the game fast-forwards (web/lib/romvoice.mjs).
 //
 // Nothing here depends on file names. A file is music when its own bytes are a stream (shared/ctr/streams.mjs: BCSTM,

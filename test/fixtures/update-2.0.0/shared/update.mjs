@@ -1,10 +1,10 @@
-// Verbatim copy of shared/update.mjs as released in souldew 2.0.0 (commit bba9071) – never edit it: test/update.test.mjs proves
+// Verbatim copy of shared/update.mjs as released in twicable 2.0.0 (commit bba9071) – never edit it: test/update.test.mjs proves
 // with it that the feeds published today still verify and validate in the apps people already have installed.
 // Update feed: version comparison and validation of latest.json. Pure functions, no Node or DOM APIs,
 // shared by the Electron updater, scripts/release.mjs and the tests.
 //
 // Feed format (latest.json, published next to the DMG of each GitHub release):
-//   { version: '2.1.0', notes: '…', url: 'https://…/souldew-2.1.0-arm64.dmg',
+//   { version: '2.1.0', notes: '…', url: 'https://…/twicable-2.1.0-arm64.dmg',
 //     sha256: '<64 hex>', size: 123456789, minVersion?: '2.0.0', page?: 'https://…', pubDate?: '…',
 //     sig?: '<base64 Ed25519 signature of canonicalFeed(feed)>' }
 
@@ -146,4 +146,4 @@ export function canonicalFeed(feed) {
 }
 
 /** Release asset name without spaces (GitHub would turn them into dots and break the URL in the feed). */
-export const dmgAssetName = (version, arch = 'arm64') => `souldew-${version}-${arch}.dmg`;
+export const dmgAssetName = (version, arch = 'arm64') => `twicable-${version}-${arch}.dmg`;

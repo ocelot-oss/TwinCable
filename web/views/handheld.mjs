@@ -7,10 +7,10 @@
 // skins, stickers and what you earn instead of buy.
 //
 // A local setting (config.json `handheld`, lib/handheld/look.mjs): it is saved the moment it changes, like every
-// setting; Undo / Redo and "Back to how it was" are the safety net. Nobody else ever sees it. souldew+ items show when
+// setting; Undo / Redo and "Back to how it was" are the safety net. Nobody else ever sees it. twicable+ items show when
 // their art is here (the pack); a design keeps them after a membership ends, and the launch plays the free parts.
 // What it holds follows the membership (shared/handheld.mjs launchRights): Supporter – the free skin, the free and the
-// earned stickers, one saved design, no Surprise me; souldew+ – everything. Free accounts have the 2D launch: here they
+// earned stickers, one saved design, no Surprise me; twicable+ – everything. Free accounts have the 2D launch: here they
 // get a short page saying so (with what is earned), and whatever they dressed before stays for when they come back.
 //   #/handheld[?sys=gba|nds|3ds|gb]
 import { html, useEffect, useLayoutEffect, useMemo, useRef, useState } from '/vendor/htm-preact.mjs';
@@ -86,13 +86,13 @@ function HandheldFree() {
       <button type="button" class="btn primary" onClick=${() => navigate('settings', settingsLink('launch'))}>${t('hh.done', 'Done')}</button></div>
     <div class="hh-free-body stack">
       <h2>${t('hh.title', 'Your handheld')}</h2>
-      <p class="muted">${t('hh.freeLead', 'Your own souldew handheld in 3D – dressed with a skin and stickers – is the launch animation with Supporter or souldew+. Your games start with the cartridge sliding into the console.')}</p>
+      <p class="muted">${t('hh.freeLead', 'Your own twicable handheld in 3D – dressed with a skin and stickers – is the launch animation with Supporter or twicable+. Your games start with the cartridge sliding into the console.')}</p>
       ${kept && html`<p class="small faint">${t('hh.freeKept', 'What you dressed it in is kept on this computer – it comes back with a membership.')}</p>`}
       <div class="hh-sec"><span class="pe-kicker">${t('hh.earnedTitle', 'Earned, not bought')}</span><span class="tiny faint">${t('hh.earnedOf', '{n} of {all}', { n: UNLOCKS.filter((u) => has.has(u.trophy)).length, all: UNLOCKS.length })}</span></div>
       <div class="hh-earn">${UNLOCKS.map((u) => { const ok = has.has(u.trophy); const thumb = u.kind === 'sticker' ? stickerThumb(u.id, 4) : null; return html`<div class=${`hh-earn-row ${ok ? 'ok' : 'off'}`}>
         ${u.kind === 'banner' ? html`<span class="hh-earn-b" style=${`background-image:url(${bannerThumb()})`}></span>` : thumb ? html`<img class="hh-earn-s" src=${thumb} alt="" />` : html`<span></span>`}
         <span class="hh-earn-t"><b>${u.name}${u.kind === 'banner' ? html` <span class="tiny faint">· ${t('hh.aBanner', 'a banner')}</span>` : ''}</b><span class=${`tiny ${ok ? 'faint' : ''}`}>${ok ? t('hh.earnedByT', 'Earned by {trophy}', { trophy: trophyName(u.trophy) }) : `${trophyName(u.trophy)}: ${trophyHow(u.trophy)}`}</span>
-          <span class="tiny faint">${u.kind === 'banner' ? t('hh.earnedBannerAll', 'On your profile – for everyone.') : t('hh.earned3d', 'Shows in the 3D launch – with Supporter or souldew+.')}</span></span>
+          <span class="tiny faint">${u.kind === 'banner' ? t('hh.earnedBannerAll', 'On your profile – for everyone.') : t('hh.earned3d', 'Shows in the 3D launch – with Supporter or twicable+.')}</span></span>
         <span class=${`hh-earn-k ${ok ? 'ok' : ''}`}>${ok ? t('hh.yours', 'Yours') : t('hh.locked', 'locked')}</span></div>`; })}</div>
       <div class="row"><a class="btn" href="#/plus">${t('launch.seeTiers', 'What each tier gets')}</a></div>
     </div>
@@ -109,7 +109,7 @@ function HandheldEditor({ R }) {
   const member = R.plus;
   const designMax = R.designMax;
   const L = launchConfig(status?.config);
-  const lookId = playableLookFor(L.look, R); // a souldew+ look kept from a membership that ended: "Your colours" plays
+  const lookId = playableLookFor(L.look, R); // a twicable+ look kept from a membership that ended: "Your colours" plays
   const look = launchLook(lookId).look;
   const shellOnly = look === 'clear' || look === 'gold'; // Clear and Gold are shells, not paint: no wrap on them
   const p0 = route.params?.sys;
@@ -304,7 +304,7 @@ function HandheldEditor({ R }) {
   const plusHint = (text) => say(text, { plus: true });
   function canAdd(s) {
     if (s.tier === 'earned' && !has.has(s.trophy)) { say(t('hh.earnedBy', 'Earned by {trophy} – {how}', { trophy: trophyName(s.trophy), how: trophyHow(s.trophy) })); return false; }
-    if (!rects[s.id]) { plusHint(t('hh.plusSticker', '{name} comes with souldew+.', { name: s.name })); return false; }
+    if (!rects[s.id]) { plusHint(t('hh.plusSticker', '{name} comes with twicable+.', { name: s.name })); return false; }
     if (stickers.length >= STICKER_MAX) { say(t('hh.full', '{n} stickers on your {device} already – peel one off first', { n: STICKER_MAX, device: devName(sys) })); return false; }
     return true;
   }
@@ -487,7 +487,7 @@ function HandheldEditor({ R }) {
   const active = designs.find((d) => d.id === doc.active) || null;
   const dirty = designDirty(doc);
   const own = { member, trophies: has };
-  const full = () => (designMax < 2 ? plusHint(t('hh.designsOne', 'With Supporter you keep one saved design – save changes to it, or delete it. souldew+ keeps up to 12.'))
+  const full = () => (designMax < 2 ? plusHint(t('hh.designsOne', 'With Supporter you keep one saved design – save changes to it, or delete it. twicable+ keeps up to 12.'))
     : say(t('hh.designsFull', '{n} designs saved – delete or overwrite one first', { n: designMax })));
   const saveNew = () => {
     const next = saveAsNew(doc, { name: t('hh.designN', 'Design {n}', { n: designs.length + 1 }), max: designMax });
@@ -500,7 +500,7 @@ function HandheldEditor({ R }) {
     commit(applyDesign(doc, d.id));
     setSel(-1);
     const n = designNotes(d, own);
-    say(n.plus ? t('hh.notePlus', 'one souldew+ item shows as a preview – your launch plays the free parts|{count} souldew+ items show as a preview – your launch plays the free parts', { count: n.plus })
+    say(n.plus ? t('hh.notePlus', 'one twicable+ item shows as a preview – your launch plays the free parts|{count} twicable+ items show as a preview – your launch plays the free parts', { count: n.plus })
       : n.earned ? t('hh.noteEarned', 'one earned sticker you don’t have yet waits in the design – your launch leaves it out|{count} earned stickers you don’t have yet wait in the design – your launch leaves them out', { count: n.earned })
         : n.empty.includes(dk) ? t('hh.noteBare', 'No stickers on your {device} in this design – it plays bare', { device: devName(sys) }) : t('hh.noteOn', '“{name}” is on', { name: d.name }));
   };
@@ -511,20 +511,20 @@ function HandheldEditor({ R }) {
   const exportFile = () => {
     setMenu(false);
     const blob = new Blob([`${JSON.stringify(exportHandheld(doc), null, 1)}\n`], { type: 'application/json' });
-    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'souldew-handheld.json' });
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'twicable-handheld.json' });
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   };
   const importFile = async (file) => {
     if (!file) return;
     const next = importHandheld(await file.text());
-    if (!next) { say(t('hh.importBad', 'That file isn’t a souldew handheld.')); return; }
+    if (!next) { say(t('hh.importBad', 'That file isn’t a twicable handheld.')); return; }
     commit(next);
     setSel(-1);
     say(t('hh.imported', 'Imported – Undo puts back what was here'));
   };
 
-  // ---- the filter row: All · ★ Favourites · Owned · souldew+ · Earned – over the skins and the stickers together ----
+  // ---- the filter row: All · ★ Favourites · Owned · twicable+ · Earned – over the skins and the stickers together ----
   const both = sheetItems(own);
   const isFav = (it) => isFavourite(favs, it.kind, it.id);
   const counts = sheetCounts(both, isFav);
@@ -541,10 +541,10 @@ function HandheldEditor({ R }) {
   const previews = (wrapById(doc.skin)?.tier === 'plus' && !member) || stickers.some((s) => { const m = stickerById(s.id); return m && lockedWhy(m, s.finish) === 'plus'; });
   const curFin = st ? st.finish : finish;
   const finOk = (k) => !st || stickerById(st.id)?.finishes.includes(k);
-  // the sheet's groups: free, the souldew+ ones in their two sets (cosy · funny and cool – 40 in one block would be a wall), earned
-  const groupName = { free: t('hh.groupFree', 'Free'), 'plus-cosy': t('hh.groupPlusCosy', 'souldew+ · cosy'), 'plus-fun': t('hh.groupPlusFun', 'souldew+ · funny and cool'), earned: t('hh.groupEarned', 'Earned with trophies') };
+  // the sheet's groups: free, the twicable+ ones in their two sets (cosy · funny and cool – 40 in one block would be a wall), earned
+  const groupName = { free: t('hh.groupFree', 'Free'), 'plus-cosy': t('hh.groupPlusCosy', 'twicable+ · cosy'), 'plus-fun': t('hh.groupPlusFun', 'twicable+ · funny and cool'), earned: t('hh.groupEarned', 'Earned with trophies') };
   const pickSkin = (w) => {
-    if (w && w.tier === 'plus' && !wrapReady(w.id)) { plusHint(t('hh.plusSkin', '{name} comes with souldew+.', { name: w.name })); return; }
+    if (w && w.tier === 'plus' && !wrapReady(w.id)) { plusHint(t('hh.plusSkin', '{name} comes with twicable+.', { name: w.name })); return; }
     commit({ ...doc, skin: w ? w.id : null });
   };
   const tile = (s) => {
@@ -554,7 +554,7 @@ function HandheldEditor({ R }) {
     const title = [s.name, mm, s.tier === 'earned' ? t('hh.earnedByShort', 'earned by {trophy}', { trophy: trophyName(s.trophy) }) : ''].filter(Boolean).join(' · ');
     return html`<${FavScope} key=${s.id} kind="sticker" id=${s.id} name=${s.name} known=${knownStickers} class=${`hh-cell sz-${s.size}`}>
       <button type="button" class=${`hh-stk t-${s.tier} ${why ? `locked ${why}` : ''}`} title=${`${title} – ${t('hh.dragOrEnter', 'drag it onto the shell, or press Enter')}`}
-        aria-label=${`${s.name}${mm ? `, ${mm}` : ''}${why === 'earned' ? `, ${t('hh.locked', 'locked')}` : why === 'plus' ? `, ${t('cos.plus', 'souldew+')}` : ''}`}
+        aria-label=${`${s.name}${mm ? `, ${mm}` : ''}${why === 'earned' ? `, ${t('hh.locked', 'locked')}` : why === 'plus' ? `, ${t('cos.plus', 'twicable+')}` : ''}`}
         onPointerDown=${(e) => startTray(e, s)} onKeyDown=${(e) => { if (e.key === 'Enter') { e.preventDefault(); placeNew(s); } }} onClick=${() => why === 'plus' && !R && canAdd(s)}>
         ${src ? html`<img src=${src} alt="" draggable="false" style=${R ? `width:${R.w * 1.55}px` : ''} />` : html`<span class="tiny faint">${s.name}</span>`}
         ${why === 'plus' && html`<span class="hh-stk-m"><${PlusMark} /></span>`}
@@ -575,7 +575,7 @@ function HandheldEditor({ R }) {
   };
   const finishRow = html`<div class="hh-fin" role="radiogroup" aria-label=${t('hh.finish', 'Finish')}>${Object.entries(FINISHES).map(([k, f]) => html`<button type="button" role="radio" aria-checked=${curFin === k} disabled=${!finOk(k)}
     class=${`hh-finb ${curFin === k ? 'on' : ''} f-${k}`} onClick=${() => {
-      if (f.plus && !member) return plusHint(t('hh.plusFinish', '{name} comes with souldew+.', { name: finishName(k) }));
+      if (f.plus && !member) return plusHint(t('hh.plusFinish', '{name} comes with twicable+.', { name: finishName(k) }));
       return st ? edit((s) => ({ ...s, finish: k })) : setFinish(k);
     }}>${finishName(k)}${f.plus && !member ? html` <${PlusMark} />` : ''}</button>`)}</div>`;
   const done = () => navigate('settings', settingsLink('launch'));
@@ -605,7 +605,7 @@ function HandheldEditor({ R }) {
             <button type="button" class="btn small ghost" disabled=${!hist.redo.length} onClick=${redo} title=${t('hh.redoKey2', 'Redo ({key})', { key: IS_MAC ? '⇧⌘Z' : 'Ctrl+Shift+Z' })}>${t('hh.redo', 'Redo')}</button>
           </div>
           <div aria-live="polite" class="hh-live">${toast ? html`<div class="hh-hint" role="status" onPointerDown=${(e) => e.stopPropagation()}>${toast.text}<button type="button" class="btn small ghost" onClick=${() => { commit(toast.undo); setToast(null); }}>${t('hh.undo', 'Undo')}</button></div>`
-            : hint && html`<div class="hh-hint" role="status" onPointerDown=${(e) => e.stopPropagation()}>${hint.text}${hint.plus && html`<button type="button" class="btn small ghost" onClick=${() => openPlus({ reason: 'handheld' })}>${t('skin.whatsInPlus', 'What’s in souldew+')}</button>`}</div>`}</div>
+            : hint && html`<div class="hh-hint" role="status" onPointerDown=${(e) => e.stopPropagation()}>${hint.text}${hint.plus && html`<button type="button" class="btn small ghost" onClick=${() => openPlus({ reason: 'handheld' })}>${t('skin.whatsInPlus', 'What’s in twicable+')}</button>`}</div>`}</div>
           ${playing > 0 && html`<div class="hh-playover" onPointerDown=${(e) => e.stopPropagation()}><${LaunchPreview} key=${playing} cfg=${L} system=${sys} onDone=${() => setPlaying(0)} /></div>`}
           ${reduced && html`<div class="hh-rm tiny">${t('hh.reduced', 'Reduced motion: your launch is a short fade, but this is your device as it shows in it.')}</div>`}
         </div>
@@ -632,7 +632,7 @@ function HandheldEditor({ R }) {
 
           <div class="hh-sec"><span class="pe-kicker">${t('hh.designs', 'Your designs')}</span><span class="tiny faint">${designs.length > designMax ? t('hh.designCount', 'one saved design|{count} saved designs', { count: designs.length })
             : t('hh.designsOf', '{n} of {max} · a design dresses all four', { n: designs.length, max: designMax })}</span></div>
-          ${designs.length > designMax && html`<p class="tiny faint hh-note">${t('hh.designsKept', 'Your designs from souldew+ are kept. With Supporter you can save one – delete some to save a new one.')}</p>`}
+          ${designs.length > designMax && html`<p class="tiny faint hh-note">${t('hh.designsKept', 'Your designs from twicable+ are kept. With Supporter you can save one – delete some to save a new one.')}</p>`}
           <div class="hhd-grid">${designs.map(designCard)}
             ${designs.length < designMax && html`<button type="button" class="hhd hhd-new" onClick=${saveNew}><span>+</span><b>${t('hh.saveLook', 'Save this look')}</b><span class="tiny faint">${t('hh.asNew', 'as a new design')}</span></button>`}</div>
           ${active && html`<div class="hhd-tools">
@@ -644,7 +644,7 @@ function HandheldEditor({ R }) {
           ${R.surprise ? html`<label class="check small hhd-surprise"><input type="checkbox" checked=${!!doc.surprise} disabled=${designs.length < 2} onChange=${(e) => commit({ ...doc, surprise: e.target.checked })} />
             <span>${t('hh.surprise', 'Surprise me at start')}<span class="hint">${designs.length < 2 ? t('hh.surpriseHint0', 'Save two designs or more and every launch picks one of them.')
               : (favs.design || []).some((id) => designs.some((d) => d.id === id)) ? t('hh.surpriseHintFav', 'Every launch picks one of your designs at random – only your ★ ones.') : t('hh.surpriseHint', 'Every launch picks one of your designs at random.')}</span></span></label>`
-            : html`<span class="tiny faint hh-note"><${PlusMark} /> ${t('hh.surprisePlus', 'Up to 12 designs and “Surprise me at start” come with souldew+.')}</span>`}
+            : html`<span class="tiny faint hh-note"><${PlusMark} /> ${t('hh.surprisePlus', 'Up to 12 designs and “Surprise me at start” come with twicable+.')}</span>`}
 
           <div class="hh-filters"><${FavFilter} chips=${chips} counts=${counts} value=${filter} onChange=${setFilter} /></div>
           ${filter === 'favs' && !counts.favs && html`<div class="hh-empty"><span class="hh-empty-star">☆</span><${FavEmpty} /></div>`}
@@ -670,7 +670,7 @@ function HandheldEditor({ R }) {
             ${u.kind === 'banner' ? html`<span class="hh-earn-b" style=${`background-image:url(${bannerThumb()})`}></span>` : thumb ? html`<img class="hh-earn-s" src=${thumb} alt="" />` : html`<span></span>`}
             <span class="hh-earn-t"><b>${u.name}${u.kind === 'banner' ? html` <span class="tiny faint">· ${t('hh.aBanner', 'a banner')}</span>` : ''}</b><span class=${`tiny ${ok ? 'faint' : ''}`}>${ok ? t('hh.earnedByT', 'Earned by {trophy}', { trophy: trophyName(u.trophy) }) : `${trophyName(u.trophy)}: ${trophyHow(u.trophy)}`}</span></span>
             <span class=${`hh-earn-k ${ok ? 'ok' : ''}`}>${ok ? t('hh.yours', 'Yours') : t('hh.locked', 'locked')}</span></div>`; })}</div>
-          ${previews && html`<div class="hh-lock"><${PlusMark} /><span class="small">${t('hh.previewNote', 'souldew+ items show here as a preview. Your launch plays only what you own.')}</span></div>`}
+          ${previews && html`<div class="hh-lock"><${PlusMark} /><span class="small">${t('hh.previewNote', 'twicable+ items show here as a preview. Your launch plays only what you own.')}</span></div>`}
         </div>
         <div class="hh-foot"><span class="small muted">${t('hh.footer', 'Only you see your handheld: in your own launch animation. It isn’t on your profile.')}</span>
           <button type="button" class="btn" onClick=${() => setPlaying((n) => n + 1)}>▶ ${t('hh.playMine', 'Play my launch')}</button></div>

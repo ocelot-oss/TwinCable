@@ -74,7 +74,7 @@ function canonical(v) {
 /** What the host signs: the run and the rules with their `rev` (no `sig`). */
 export function rulesPayload(runId, value) {
   const { sig, ...rest } = value || {}; // eslint-disable-line no-unused-vars
-  return `souldew-rules@1\n${runId}\n${canonical(rest)}`;
+  return `twicable-rules@1\n${runId}\n${canonical(rest)}`;
 }
 
 /** Has the stored value the host's signature for doc timestamp `t` (the shape only – verifyHostRules checks it)? */

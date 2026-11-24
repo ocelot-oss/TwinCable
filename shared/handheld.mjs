@@ -6,7 +6,7 @@
 //
 // The catalog below is PUBLIC data (names, tiers, finishes – what a locked card says). The art isn't: the free and earned
 // stickers and the free Plain Dusk wrap ship with the app (web/assets/handheld/, web/lib/handheld/wrap.mjs); the
-// souldew+ stickers and wraps arrive in the souldew+ pack like the banners (web/lib/cosmetics/README.md).
+// twicable+ stickers and wraps arrive in the twicable+ pack like the banners (web/lib/cosmetics/README.md).
 
 /** The four handhelds that keep their own stickers. A GB Color plays with the GB's stickers. */
 export const HH_DEVICES = ['gba', 'nds', '3ds', 'gb'];
@@ -20,7 +20,7 @@ export const NAME_MAX = 28;
 export const HH_BYTES_MAX = 32 * 1024;
 const U_MAX = 120; // mm from a face's centre – no face is that big, the clamp only keeps junk out
 
-/** The launch animation family (design round 4): the free look and the souldew+ ones. Rare start isn't a pick. */
+/** The launch animation family (design round 4): the free look and the twicable+ ones. Rare start isn't a pick. */
 export const LAUNCH_LOOKS = [
   { id: 'your-colours', tier: 'free', look: 'theme' },
   { id: 'clear-shell', tier: 'plus', look: 'clear' },
@@ -34,7 +34,7 @@ export const CLEAR_TINTS = { atomic: '#7a55d6', smoke: '#3b3b46', ice: '#a9d8f2'
 /** One start in this many is a Rare start for members. */
 export const RARE_ODDS = 64;
 
-/** Any stored launchAnimation (the 2.x cartridge, the earlier souldew+ animations, junk) → a family id. */
+/** Any stored launchAnimation (the 2.x cartridge, the earlier twicable+ animations, junk) → a family id. */
 export const cleanLaunchLook = (v) => (LAUNCH_LOOKS.some((l) => l.id === v) ? v : LAUNCH_DEFAULT);
 export const cleanLaunchPace = (v) => (LAUNCH_PACES.includes(v) ? v : 'full');
 export const cleanClearTint = (v) => (CLEAR_TINTS[v] ? v : 'atomic');
@@ -42,24 +42,24 @@ export const launchLook = (id) => LAUNCH_LOOKS.find((l) => l.id === id) || LAUNC
 
 // ---- what each membership gets (owner's decision, 18.11.26) -------------------------------------------------------------
 // free (signed out, or no paid tier): the 2D launch animation (the module slides into the console – views/cartinsert.mjs),
-//   On / Off; no 3D launch, no "Your handheld" in the library. The handheld only shows on the souldew+ page.
+//   On / Off; no 3D launch, no "Your handheld" in the library. The handheld only shows on the twicable+ page.
 // supporter (tier 1): the 3D launch in "Your colours", Full / Quick / Off; "Your handheld" with the free skin (Plain Dusk),
-//   the 11 free stickers, the earned ones once their trophy is there, and ONE saved design. No souldew+ skins, stickers,
+//   the 11 free stickers, the earned ones once their trophy is there, and ONE saved design. No twicable+ skins, stickers,
 //   finishes or shells (Gold / Clear / Holo), no Rare start, no Surprise me.
-// member (souldew+, and the Legend – the same plus a badge): everything. souldew+ ITEMS still need the pack on this
+// member (twicable+, and the Legend – the same plus a badge): everything. twicable+ ITEMS still need the pack on this
 //   computer (its art is in it): `plus` is the pack's word, `tier` the account's.
 // A membership that ends or drops keeps every setting: the launch plays what the tier allows now, the rest waits.
 
 /** The account tier ('none' | 'supporter' | 'plus' | 'patron', verified) → the launch tier: 'free' | 'supporter' | 'member'. */
 export function launchTier({ signedIn = false, tier = 'none', entitled = false } = {}) {
-  if (entitled) return 'member'; // the souldew+ pack is loaded and verified – that is souldew+ whatever else is known
+  if (entitled) return 'member'; // the twicable+ pack is loaded and verified – that is twicable+ whatever else is known
   if (!signedIn) return 'free';
   if (tier === 'plus' || tier === 'patron') return 'member';
   return tier === 'supporter' ? 'supporter' : 'free';
 }
 
 /**
- * What a launch tier may use → { tier, three (the 3D launch and "Your handheld"), plus (souldew+ skins, stickers,
+ * What a launch tier may use → { tier, three (the 3D launch and "Your handheld"), plus (twicable+ skins, stickers,
  * finishes, shells – needs the pack too), rare (the 1-in-64 Rare start – automatic, no setting), surprise (Surprise me at start), designMax,
  * earned (earned stickers play – they are 3D only) }.
  */
@@ -72,23 +72,23 @@ export function launchRights(tier, { entitled = false } = {}) {
   };
 }
 
-/** The look a launch tier plays: a souldew+ look without souldew+ plays "Your colours" (the choice is kept). */
+/** The look a launch tier plays: a twicable+ look without twicable+ plays "Your colours" (the choice is kept). */
 export const playableLookFor = (id, rights) => (launchLook(id).tier === 'plus' && !rights?.plus ? LAUNCH_DEFAULT : launchLook(id).id);
 
 export const FINISHES = { vinyl: { plus: false }, holo: { plus: true }, glitter: { plus: true } };
 
 /**
- * The 54 stickers: 11 free, 40 souldew+, 3 earned. tier: free | plus | earned (free for everyone who has the trophy, never
+ * The 54 stickers: 11 free, 40 twicable+, 3 earned. tier: free | plus | earned (free for everyone who has the trophy, never
  * sold). size: s (clusters) | m | l (a lid or a GBA back; a double cell in the editor). finishes: the ones that suit the
- * design (vinyl for all; holo / glitter are souldew+ – a free sticker in holo is a souldew+ finish). Rounds 1–6 are the
+ * design (vinyl for all; holo / glitter are twicable+ – a free sticker in holo is a twicable+ finish). Rounds 1–6 are the
  * cute and cosy ones; round 7 (RIP … Finish Flag, set: 'fun') the cool and funny ones for the Nuzlocke / SoulLink / stream
- * crowd – the editor shows the souldew+ ones as two groups by set, so 40 stay easy to look through.
+ * crowd – the editor shows the twicable+ ones as two groups by set, so 40 stay easy to look through.
  */
 export const STICKERS = [
   { id: 'heart', name: 'Pixel Heart', tier: 'free', size: 'm', finishes: ['vinyl', 'holo', 'glitter'] },
   { id: 'moon', name: 'Night Moon', tier: 'free', size: 'm', finishes: ['vinyl', 'holo', 'glitter'] },
   { id: 'sparkle', name: 'Sparkle', tier: 'free', size: 'm', finishes: ['vinyl', 'holo', 'glitter'] },
-  { id: 'logo', name: 'souldew', tier: 'free', size: 'm', finishes: ['vinyl', 'holo'] },
+  { id: 'logo', name: 'twicable', tier: 'free', size: 'm', finishes: ['vinyl', 'holo'] },
   { id: 'star', name: 'Tiny Star', tier: 'free', size: 's', finishes: ['vinyl', 'holo', 'glitter'] },
   { id: 'dot', name: 'Dot', tier: 'free', size: 's', finishes: ['vinyl', 'holo', 'glitter'] },
   { id: 'dew', name: 'Dew Drop', tier: 'free', size: 's', finishes: ['vinyl', 'holo', 'glitter'] },
@@ -116,8 +116,8 @@ export const STICKERS = [
   { id: 'compass', name: 'Compass', tier: 'plus', size: 'm', finishes: ['vinyl'] },
   { id: 'ridge', name: 'Night Ridge', tier: 'plus', size: 'l', finishes: ['vinyl'] },
   { id: 'campsite', name: 'Campsite', tier: 'plus', size: 'l', finishes: ['vinyl'] },
-  { id: 'pennant', name: 'souldew Pennant', tier: 'plus', size: 'l', finishes: ['vinyl', 'holo'] },
-  { id: 'pennant-s', name: 'souldew Pennant, short', tier: 'plus', size: 'm', finishes: ['vinyl', 'holo'] },
+  { id: 'pennant', name: 'twicable Pennant', tier: 'plus', size: 'l', finishes: ['vinyl', 'holo'] },
+  { id: 'pennant-s', name: 'twicable Pennant, short', tier: 'plus', size: 'm', finishes: ['vinyl', 'holo'] },
   { id: 'patch', name: 'Dawn Patch', tier: 'plus', size: 'l', finishes: ['vinyl'] },
   { id: 'skill-issue', name: 'Skill Issue', set: 'fun', tier: 'plus', size: 'm', finishes: ['vinyl'] },
   { id: 'rng', name: 'Snake Eyes', set: 'fun', tier: 'plus', size: 'm', finishes: ['vinyl', 'holo'] },
@@ -132,7 +132,7 @@ export const STICKERS = [
   { id: 'arcade', name: 'Arcade Stick', set: 'fun', tier: 'plus', size: 'm', finishes: ['vinyl'] },
   { id: 'floppy', name: 'Floppy', set: 'fun', tier: 'plus', size: 'm', finishes: ['vinyl', 'holo'] },
   { id: 'glitch', name: 'Glitch', set: 'fun', tier: 'plus', size: 'l', finishes: ['vinyl', 'holo'] },
-  { id: 'stripe', name: 'souldew Racing Stripe', set: 'fun', tier: 'plus', size: 'l', finishes: ['vinyl', 'holo'] },
+  { id: 'stripe', name: 'twicable Racing Stripe', set: 'fun', tier: 'plus', size: 'l', finishes: ['vinyl', 'holo'] },
   { id: 'verified', name: 'Verified Nuzlocker', set: 'fun', tier: 'plus', size: 'l', finishes: ['vinyl', 'holo', 'glitter'] },
   { id: 'live', name: 'LIVE', set: 'fun', tier: 'plus', size: 'm', finishes: ['vinyl', 'holo'] },
   { id: 'flag', name: 'Finish Flag', set: 'fun', tier: 'plus', size: 'm', finishes: ['vinyl'] },
@@ -270,8 +270,8 @@ export function ownsSticker(s, { member = false, trophies = null } = {}) {
 export const ownsWrap = (w, { member = false } = {}) => !!w && (w.tier === 'free' || !!member);
 
 // ---- the editor's sheet -------------------------------------------------------------------------------------------------
-// The filter row (All · ★ Favourites · Owned · souldew+ · Earned – shared/favourites.mjs filterChips) runs over the skins and
-// the stickers together; the stickers then show in four groups: free, the souldew+ ones in their two sets, earned.
+// The filter row (All · ★ Favourites · Owned · twicable+ · Earned – shared/favourites.mjs filterChips) runs over the skins and
+// the stickers together; the stickers then show in four groups: free, the twicable+ ones in their two sets, earned.
 
 /** every skin and sticker with what the filter row asks of it: { ...item, kind, owned, plus, earned } */
 export function sheetItems(own = {}) {
@@ -294,7 +294,7 @@ export const groupStickers = (list) => STICKER_GROUPS.map((key) => ({ key, list:
 
 /**
  * What a design (or the current look) holds that this account can't play right now – it stays in the design:
- * { plus: souldew+ skin / stickers / finishes, earned: earned stickers whose trophy is missing, empty: devices without
+ * { plus: twicable+ skin / stickers / finishes, earned: earned stickers whose trophy is missing, empty: devices without
  * stickers (they play bare) }.
  */
 export function designNotes(d, { member = false, trophies = null } = {}) {
@@ -309,8 +309,8 @@ export function designNotes(d, { member = false, trophies = null } = {}) {
 
 /**
  * What the launch plays: the look itself, or – with "Surprise me at start" and two designs or more – one saved design at
- * random (only the ★ ones once any are starred: `favDesigns`). Then only what this account owns: a souldew+ skin falls
- * back to the theme colour, souldew+ stickers drop out, holo / glitter become vinyl, an earned sticker plays once its
+ * random (only the ★ ones once any are starred: `favDesigns`). Then only what this account owns: a twicable+ skin falls
+ * back to the theme colour, twicable+ stickers drop out, holo / glitter become vinyl, an earned sticker plays once its
  * trophy is there. A device without stickers in that design plays bare. The design itself keeps everything.
  * → { skin: id | null, stickers: { dev: [...] }, design: id | null }
  */
@@ -318,7 +318,7 @@ export function lookToPlay(doc, { member = false, trophies = null, favDesigns = 
   const h = cleanHandheld(doc);
   let src = h;
   let design = h.active;
-  // `surprise`: may this account use Surprise me (souldew+)? Without it the look on the device plays – the switch is kept
+  // `surprise`: may this account use Surprise me (twicable+)? Without it the look on the device plays – the switch is kept
   if (surprise && h.surprise && h.designs.length > 1) {
     const fav = h.designs.filter((d) => favDesigns.includes(d.id));
     const pool = fav.length ? fav : h.designs;
@@ -383,7 +383,7 @@ export function applyDesign(h, id) {
 
 // ---- export / import -------------------------------------------------------------------------------------------------
 
-export const HH_FILE_KIND = 'souldew-handheld';
+export const HH_FILE_KIND = 'twicable-handheld';
 /** The look as a small file (skin, stickers, designs, Surprise me) – no favourites, nothing else of the config. */
 export const exportHandheld = (h) => ({ kind: HH_FILE_KIND, v: 1, handheld: cleanHandheld(h) });
 /** A file's text → a clean handheld, or null when it isn't one. Unknown ids are dropped (a newer app's stickers). */

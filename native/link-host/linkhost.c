@@ -1,4 +1,4 @@
-// The souldew engine: ONE native player for the Game Boy / Game Boy Color, Game Boy Advance and Nintendo DS on the
+// The twicable engine: ONE native player for the Game Boy / Game Boy Color, Game Boy Advance and Nintendo DS on the
 // emulators' own APIs (SameBoy, libmgba, melonDS – one backend each, linkbackend.h), and the engine behind trades and
 // battles between players (docs/MULTIPLAYER.md). It runs a player's game alone (solo: the fast player – retrohost's
 // protocol, save states in the fast player's format) and links it in place: when a session starts, the partners'
@@ -181,7 +181,7 @@ static void send_loaded(void) {
   const size_t sn = B->sram(session_local(), &sv);
   free(sv);
   const char *st = state_loaded < 0 ? "null" : state_loaded ? "true" : "false";
-  host_event("{\"event\":\"loaded\",\"engine\":true,\"mode\":\"%s\",\"core\":\"souldew engine (%s)\",\"system\":\"%s\",\"seats\":%d,\"local\":%d,\"net\":%s,\"delay\":%d,"
+  host_event("{\"event\":\"loaded\",\"engine\":true,\"mode\":\"%s\",\"core\":\"twicable engine (%s)\",\"system\":\"%s\",\"seats\":%d,\"local\":%d,\"net\":%s,\"delay\":%d,"
              "\"width\":%u,\"height\":%u,\"fps\":%.4f,\"sampleRate\":%.1f,\"frame\":%u,\"ram\":[%s],\"saveSize\":%zu,\"stateSize\":0,\"state\":%s}",
              linked() ? "link" : "solo", B->name, B->system(), seats_n, session_local(), session_net() ? "true" : "false", session_delay(), w, h, B->fps(),
              B->sample_rate ? B->sample_rate() : 0.0, session_frame(), regions, sn, st);
@@ -270,7 +270,7 @@ static void go_link(uint8_t *p, uint32_t len) {
     return;
   }
   const double t0 = host_now();
-  seats_check_sram(session_local(), true); // (the save as it was before the session: souldew has it)
+  seats_check_sram(session_local(), true); // (the save as it was before the session: twicable has it)
   struct seat_game back = this_game(0);    // (to go on alone with if the session can't start)
   const struct link_backend *was = B;
   const bool ok = seats_open(backend, a.n, g, a.rtc_ms, false);
@@ -302,7 +302,7 @@ static void go_link(uint8_t *p, uint32_t len) {
 
 /**
  * CMD_SOLO: the session is over, this game goes on alone – without arguments from the local console as it is (its
- * battery save goes out first: souldew writes it into the run); with --rom/--sram/--state/--model from those (out of
+ * battery save goes out first: twicable writes it into the run); with --rom/--sram/--state/--model from those (out of
  * step: back to the game as it was before the link).
  */
 static void go_solo(uint8_t *p, uint32_t len) {
@@ -568,7 +568,7 @@ int main(int argc, char **argv) {
   host_start_reader(MAX_CMD_LEN);
   static struct host_cmd cmds[256];
   for (;;) {
-    // ---- souldew's commands, in order, between two frames
+    // ---- twicable's commands, in order, between two frames
     bool quit = false, wrote = false;
     for (int nc; !quit && (nc = host_take_commands(cmds, 256)) > 0;)
       for (int i = 0; i < nc; i++) {

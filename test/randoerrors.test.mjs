@@ -38,7 +38,7 @@ test('a randomizer crash becomes a translated answer naming only the exception\'
   // … while the diagnostics get where it stopped (message and frames), never a path on the player's computer
   assert.deepEqual(e.vars.trace, [AIOOBE, 'Gen5RomHandler.setStarters:1']);
   assert.ok(!body.includes('/Users/someone'));
-  const io = randomizerError(bridgeFailure('java.io.FileNotFoundException: /Users/someone/Library/Caches/souldew/a/0/1/6 (No such file)'));
+  const io = randomizerError(bridgeFailure('java.io.FileNotFoundException: /Users/someone/Library/Caches/twicable/a/0/1/6 (No such file)'));
   assert.equal(io.vars.trace[0], 'java.io.FileNotFoundException: … (No such file)');
   // a wrapped file error (UPR's RandomizerIOException): the file error, not "the game's data" (test/randoio.test.mjs) –
   // and one without an @@ERROR line
@@ -108,7 +108,7 @@ test('inspect: a trial run with the recommended preset; a game UPR can\'t random
 });
 
 test('every bridge run gets its own working folder (two runs on one game don\'t share UPR\'s unpacked files)', () => {
-  assert.deepEqual(javaOptsFor({ workDir: '/tmp/w' }), [...JAVA_OPTS, '-Dsouldew.upr.root=/tmp/w']);
+  assert.deepEqual(javaOptsFor({ workDir: '/tmp/w' }), [...JAVA_OPTS, '-Dtwicable.upr.root=/tmp/w']);
   const src = readFileSync(new URL('../server/lib/toolchain.mjs', import.meta.url), 'utf8');
   assert.match(src, /const workDir = join\(CACHE_DIR, ctr \? 'upr-3ds' : 'upr-work', randomBytes\(6\)\.toString\('hex'\)\);/);
   assert.match(src, /cwd: workDir,/);
@@ -134,11 +134,11 @@ test('a randomizer message names no folder – not even one with spaces in it (W
   const { randomizerTrace } = await import('../server/lib/toolchain.mjs');
   const first = (error) => randomizerTrace({ error })[0];
   const cases = [
-    ['java.io.FileNotFoundException: C:\\Users\\Max Mustermann\\AppData\\Local\\souldew\\Cache\\upr-work\\ab12\\6 (Das System kann die angegebene Datei nicht finden)', 'java.io.FileNotFoundException: … (Das System kann die angegebene Datei nicht finden)'],
+    ['java.io.FileNotFoundException: C:\\Users\\Max Mustermann\\AppData\\Local\\twicable\\Cache\\upr-work\\ab12\\6 (Das System kann die angegebene Datei nicht finden)', 'java.io.FileNotFoundException: … (Das System kann die angegebene Datei nicht finden)'],
     ['java.io.FileNotFoundException: C:/Users/Max Mustermann/Spiele/White.nds (Access is denied)', 'java.io.FileNotFoundException: … (Access is denied)'],
     ['java.io.IOException: \\\\nas\\Spiele von Max\\White.nds', 'java.io.IOException: …'],
     ['java.io.FileNotFoundException: /Users/anna maria/Library/Application Support/SoulLink Studio/cache/a/0/1/6 (No such file or directory)', 'java.io.FileNotFoundException: … (No such file or directory)'],
-    ['java.io.FileNotFoundException: /home/jan de vries/.cache/souldew/a002 (Permission denied)', 'java.io.FileNotFoundException: … (Permission denied)'],
+    ['java.io.FileNotFoundException: /home/jan de vries/.cache/twicable/a002 (Permission denied)', 'java.io.FileNotFoundException: … (Permission denied)'],
     ['java.io.IOException: file:/Users/anna maria/x.nds', 'java.io.IOException: file:…'],
     // the last part of a path is a user's folder too (it was kept as the file's name: "…/Max")
     ['java.io.IOException: x.nds (in C:\\Users\\Max)', 'java.io.IOException: x.nds (in …)'],

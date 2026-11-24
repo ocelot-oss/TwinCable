@@ -36,7 +36,7 @@ export function ncchOffset(readAt) {
     const tmdOff = align(0x2020) + align(u32(h, 0x08)) + align(u32(h, 0x0c));
     const off = tmdOff + align(u32(h, 0x10));
     const tmd = readAt(tmdOff, 0x4 + 0x200);
-    // (content 0 encrypted with the title key: souldew has no keys – its RomFS isn't readable)
+    // (content 0 encrypted with the title key: twicable has no keys – its RomFS isn't readable)
     const sig = tmd && tmd.length >= 4 ? { 0x10000: 0x240, 0x10001: 0x140, 0x10002: 0x80, 0x10003: 0x240, 0x10004: 0x140, 0x10005: 0x80 }[u32be(tmd, 0)] : 0;
     if (!sig) return -1;
     const chunk = readAt(tmdOff + sig + 0xc4 + 0x900, 0x30);

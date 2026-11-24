@@ -1,4 +1,4 @@
-// Nintendo 3DS in souldew's own player: the zone tables read from the game's RomFS (the place sign), the host's
+// Nintendo 3DS in twicable's own player: the zone tables read from the game's RomFS (the place sign), the host's
 // message framing and the commands a page may send, the in-game save fingerprint, the place reader.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -135,7 +135,7 @@ test('a 3 GB game through the library\'s ROM data (the worker): read in pieces, 
   rmSync(file);
 });
 
-test('what souldew reads in a 3DS game: its header finds the memory table entry (team, moves, items, place, battles)', () => {
+test('what twicable reads in a 3DS game: its header finds the memory table entry (team, moves, items, place, battles)', () => {
   const file = join(DATA, 'or2.3ds');
   writeFileSync(file, cciWithRomfs({}, { 'a/0/1/3': garc([table6([0, 170]), new Uint8Array(8)]) }));
   const d = ctrData(file);
@@ -228,21 +228,21 @@ test('a cheat (WRITE): a few bytes inside one page of the game\'s heaps, the byt
   bad(Buffer.alloc(8));
 });
 
-test('a cheat is written by the core itself (souldew_write_memory), into the same heaps the server and the host allow', () => {
+test('a cheat is written by the core itself (twicable_write_memory), into the same heaps the server and the host allow', () => {
   const host = readFileSync(new URL('../native/ctr-host/ctrhost.c', import.meta.url), 'utf8');
-  const patch = readFileSync(new URL('../native/azahar-patch/souldew-memory.patch', import.meta.url), 'utf8');
+  const patch = readFileSync(new URL('../native/azahar-patch/twicable-memory.patch', import.meta.url), 'utf8');
   // the host's ranges are the server's
   const table = host.match(/write_ranges\[\]\[2\] = \{([\s\S]*?)\};/)[1];
   const ranges = [...table.matchAll(/\{(0x[0-9A-F]+), (0x[0-9A-F]+)\}/gi)].map((m) => [Number(m[1]), Number(m[2])]);
   assert.deepEqual(ranges, CTR_WRITE_RANGES);
   // the core exports the write (Windows: RETRO_API, macOS: the .def list) and keeps to Azahar's heap constants
-  assert.match(patch, /^\+RETRO_API bool souldew_write_memory\(uint32_t addr, const void\* data, uint32_t size\)/m);
-  assert.match(patch, /^\+_souldew_write_memory$/m);
+  assert.match(patch, /^\+RETRO_API bool twicable_write_memory\(uint32_t addr, const void\* data, uint32_t size\)/m);
+  assert.match(patch, /^\+_twicable_write_memory$/m);
   for (const k of ['HEAP_VADDR', 'LINEAR_HEAP_VADDR', 'NEW_LINEAR_HEAP_VADDR']) assert.ok(patch.includes(`inside(Memory::${k}, Memory::${k}_END)`), k);
   assert.match(patch, /memory\.WriteBlock\(\*process, addr, data, size\)/);
   // the host takes it when the core has it – the page scan only for an older core
-  assert.match(host, /souldew_write_memory = dlsym\(lib, "souldew_write_memory"\)/);
-  assert.match(host, /if \(!souldew_write_memory\) return scan_write\(/);
+  assert.match(host, /twicable_write_memory = dlsym\(lib, "twicable_write_memory"\)/);
+  assert.match(host, /if \(!twicable_write_memory\) return scan_write\(/);
 });
 
 test('the in-game save fingerprint: only the games\' save data on the SD card, changes when the game saves', () => {
@@ -269,7 +269,7 @@ test('the system\'s Vulkan loader: Windows with the graphics driver, Linux libvu
   assert.equal(systemVulkan({ platform: 'linux', env: {}, exists: has(['/usr/lib/x86_64-linux-gnu/libvulkan.so.1']) }), true);
   assert.equal(systemVulkan({ platform: 'linux', env: { LD_LIBRARY_PATH: '/opt/gl' }, exists: has(['/opt/gl/libvulkan.so.1']) }), true);
   assert.equal(systemVulkan({ platform: 'linux', env: {}, exists: has([]) }), false);
-  assert.equal(systemVulkan({ platform: 'darwin' }), true); // macOS: MoltenVK comes with souldew
+  assert.equal(systemVulkan({ platform: 'darwin' }), true); // macOS: MoltenVK comes with twicable
 });
 
 test('the host\'s output split into whole messages, however the chunks are cut', async () => {

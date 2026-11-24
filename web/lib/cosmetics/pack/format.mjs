@@ -1,4 +1,4 @@
-// souldew+ premium pack: the format and its cryptography – the accounts service's contract (souldew-accounts
+// twicable+ premium pack: the format and its cryptography – the accounts service's contract (souldew-accounts
 // docs/API.md §10), one format end to end. Isomorphic (WebCrypto only), so the renderer, the dev pack builder
 // (scripts/plus-dev-pack.mjs) and the tests share one implementation. Nothing in here touches the DOM, the network or
 // the disk.
@@ -212,7 +212,7 @@ export async function sealFile({ pack, version, path, wm, kid, key, bytes }) {
 /** Envelope framing → { header, headerBytes, body }. Checks the shape only. */
 export function parseEnvelope(bytes) {
   const b = bytesOf(bytes);
-  if (!b || b.length < 6 + 16 || dec.decode(b.subarray(0, 4)) !== ENVELOPE_MAGIC) throw packError('envelope', 'not a souldew+ file envelope');
+  if (!b || b.length < 6 + 16 || dec.decode(b.subarray(0, 4)) !== ENVELOPE_MAGIC) throw packError('envelope', 'not a twicable+ file envelope');
   if (b.length > MAX_FILE_BYTES + MAX_HEADER_BYTES + 1024) throw packError('envelope', 'file too large');
   const hLen = (b[4] << 8) | b[5];
   if (hLen < 2 || hLen > MAX_HEADER_BYTES || 6 + hLen + 16 > b.length) throw packError('envelope', 'bad envelope header length');

@@ -30,7 +30,7 @@ export const reasonText = (code, name) => ({
   declined: t('linkplay.declined', '{name} doesn’t want to right now.', { name }),
   left: t('linkplay.left', 'The link has ended.'),
   closed: t('linkplay.left', 'The link has ended.'),
-  linkMissing: t('linkplay.missing', 'This version of souldew can’t link games yet – update it on both computers.'),
+  linkMissing: t('linkplay.missing', 'This version of twicable can’t link games yet – update it on both computers.'),
   linkSystem: t('linkplay.system', 'Linking isn’t available for this game yet.'),
   linkHack: t('linkplay.hack', 'Trades and battles over the link aren’t available for this ROM hack – it changed its Pokémon and its link too much to be sure they work.'),
   linkOwnMissing: t('linkplay.ownMissing', 'Your own game for this run isn’t built on this computer.'),
@@ -40,7 +40,7 @@ export const reasonText = (code, name) => ({
   linkDesync: t('linkplay.desync2', 'The games fell out of step, so the link was stopped. To keep it fair, both of you are back at your saves from before the link – the session’s last save is kept as a backup in the run folder.'),
   linkStart: t('linkplay.startFailed', 'The linked games didn’t start.'),
   linkRejoinGone: t('linkplay.rejoinGone', 'Nobody answered – the others have left the link.'),
-  linkOlder: t('linkplay.older', '{name} has an older souldew – DS trades and battles need the newest souldew on every computer. Update souldew on both computers and try again.', { name }),
+  linkOlder: t('linkplay.older', '{name} has an older twicable – DS trades and battles need the newest twicable on every computer. Update twicable on both computers and try again.', { name }),
   linkStalled: t('linkplay.stalled', 'The link stood still for a minute – the games stopped hearing each other, so the link was stopped. Your game goes on from where it was.'),
   linkStuck: t('linkplay.stuck', 'One of the linked games stopped running, so the link was stopped. Your game goes on from where it was. If it happens again, please send “Save diagnostics” (in the sound menu) from both computers.'),
   linkRejoinBusy: t('linkplay.rejoinBusy', 'The others’ games are in the middle of a wireless exchange right now, so you can’t rejoin – the link has ended.'),
@@ -131,7 +131,7 @@ export function LinkButtons({ slot }) {
       setBusy(false);
     }
   };
-  const olderText = t('linkplay.olderApp', '{name} is on an older souldew – trading and battling need souldew 3.0 on both computers', { name });
+  const olderText = t('linkplay.olderApp', '{name} is on an older twicable – trading and battling need twicable 3.0 on both computers', { name });
   const why = !online ? t('linkplay.needOnline', '{name} isn’t online', { name }) : older ? olderText : away || (!direct ? t('linkplay.needConnection', 'No connection to {name} yet', { name }) : null);
   // (Play together: the two games must be able to meet – said on the button, not after the invite)
   const tradeWhy = gamesWhy(doc, manifest, me, [slot], 'trade', names);
@@ -151,7 +151,7 @@ export function LinkButtons({ slot }) {
     ${linkAllowed(doc, manifest, 'battle') && html`<button class="btn small" disabled=${busy || !idle || !!why || !!battleWhy} title=${battleWhy || why || (isTogether(manifest) ? t('linkplay.battleHintCasual', 'A link battle – just for fun') : t('linkplay.battleHint2', 'A link battle – by the run’s rules, losing there doesn’t count'))}
       onClick=${() => (challenge ? setSetup(true) : start('battle'))}><${Icon} name="bolt" size=${14} />${t('linkplay.battle', 'Battle')}</button>`}
   </div>
-  ${wagerLang && linkAllowed(doc, manifest, 'battle') && html`<span class="tiny muted">${t('linkplay.wagerEnglish', 'Battles here are without a wager: souldew reads the money only in the English (US) version of this game.')}</span>`}`;
+  ${wagerLang && linkAllowed(doc, manifest, 'battle') && html`<span class="tiny muted">${t('linkplay.wagerEnglish', 'Battles here are without a wager: twicable reads the money only in the English (US) version of this game.')}</span>`}`;
 }
 
 /**
@@ -219,7 +219,7 @@ export function LinkGroupButton() {
   const together = useTogether(link);
   const slots = manifest ? slotsOf(manifest) : [];
   if (!linkSessions || slots.length < 3 || linkUnavailable(manifest?.game) || !linkAllowed(doc, manifest, 'battle')) return null;
-  // (a player linked with others right now waits for the next one; one on an older souldew can't take part)
+  // (a player linked with others right now waits for the next one; one on an older twicable can't take part)
   const ready = slots.filter((s) => s !== me && onlineSlots?.has?.(s) && linkStatus?.partners?.[s]?.p2p && !linkSessions.linkedElsewhere?.(s) && !together?.olderApp(s));
   // (Play together: everybody's game must meet everybody else's – four Gen 3 games, four Gen 4 …)
   const groupWhy = ready.length >= 2 ? gamesWhy(doc, manifest, me, ready, 'battle', getPlayers(doc, manifest)) : null;
@@ -298,7 +298,7 @@ function NeedRoms({ st, names }) {
             ${st.building === m.slot ? t('linkplay.building', 'Building …') : t('linkplay.build', 'Build {name}’s game', { name })}</button></div>`;
       }
       return html`<div class="stack-s" key=${m.slot}>
-        <span>${t('linkplay.needPick', '{name} plays another file of this game. Pick your copy of it – souldew checks it’s exactly the same (SHA-1).', { name })}</span>
+        <span>${t('linkplay.needPick', '{name} plays another file of this game. Pick your copy of it – twicable checks it’s exactly the same (SHA-1).', { name })}</span>
         <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center">
           <select class="input small" style="flex:1 1 240px;min-width:0" aria-label=${t('linkplay.pickLabel', 'Your copy of {name}’s game', { name })} value=${pick[m.slot] || ''}
             onChange=${(e) => setPick({ ...pick, [m.slot]: e.target.value })}>
@@ -315,13 +315,13 @@ function NeedRoms({ st, names }) {
   </div>`;
 }
 
-/** While the link gets ready: what the battle is for – or why it is for nothing (a partner's older souldew). */
+/** While the link gets ready: what the battle is for – or why it is for nothing (a partner's older twicable). */
 function wagerNote(st, names) {
   const w = st.wager;
   if (!w?.offer) return null;
   const lang = currentLang();
   const old = (st.seats || []).filter((s) => w.caps?.[s] === false || (st.accepted?.[s] && s !== st.host && !w.caps?.[s]));
-  if (old.length) return t('linkplay.wagerOld', 'no wager – {name}’s souldew doesn’t know wagers yet', { name: old.map((s) => names[s]?.name || s).join(', ') });
+  if (old.length) return t('linkplay.wagerOld', 'no wager – {name}’s twicable doesn’t know wagers yet', { name: old.map((s) => names[s]?.name || s).join(', ') });
   const agreed = agreedWager({ offer: w.offer, seats: (st.seats || []).filter((s) => s === st.host || st.accepted?.[s]), host: st.host, accepts: w.accepts, caps: w.caps });
   return t('linkplay.forAmount', 'for {amount}', { amount: moneyText(agreed || w.offer, lang) });
 }
@@ -367,7 +367,7 @@ function BattleResult({ st, names }) {
   if (o.state === 'void') {
     if (st.kind !== 'battle') return null;
     const why = { desync: t('linkplay.voidDesync', 'the games fell out of step'), rejoin: t('linkplay.voidRejoin', 'a game dropped out of the link'),
-      unread: t('linkplay.voidUnread', 'souldew can’t read the result in this game'), differs: t('linkplay.voidDiffers', 'your computers read different results') }[o.why] || t('linkplay.voidOther', 'the result isn’t clear');
+      unread: t('linkplay.voidUnread', 'twicable can’t read the result in this game'), differs: t('linkplay.voidDiffers', 'your computers read different results') }[o.why] || t('linkplay.voidOther', 'the result isn’t clear');
     return html`<div class="link-result void"><b>${t('linkplay.noResult', 'No result')}</b><span class="small muted">${st.stake ? t('linkplay.voidWager', '{why} – the wager is off, nobody pays.', { why }) : why}</span></div>`;
   }
   const s = o.summary;

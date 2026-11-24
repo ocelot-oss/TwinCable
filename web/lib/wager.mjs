@@ -11,7 +11,7 @@
 // a crash, a save state) gets it once more – keyed by the session, so never twice into one save.
 //
 // Whose word the money takes: every partner's computer writes into the run document – under any key, its own slot or
-// this player's. A changed souldew could write a matching pair of entries for a battle that never was. So the money
+// this player's. A changed twicable could write a matching pair of entries for a battle that never was. So the money
 // only ever follows this computer's own result: what it read itself, kept apart from the run document (keepOwnResult,
 // in this computer's browser storage). A payment needs every partner's entry to match that – their word alone, under
 // any slot, moves nothing. (The log and the head-to-head record show what the entries say; they move no money.)

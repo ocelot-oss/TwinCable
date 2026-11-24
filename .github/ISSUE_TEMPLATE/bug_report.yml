@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in souldew doesn't work as expected
+description: Something in twicable doesn't work as expected
 labels: [bug]
 body:
   - type: markdown
@@ -10,7 +10,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: souldew version
+      label: twicable version
       description: Settings › About
       placeholder: "2.0.0"
     validations:
@@ -72,4 +72,4 @@ body:
     id: diagnostics
     attributes:
       label: Diagnostics file / screenshots
-      description: Drag the saved diagnostics file (souldew-diagnostics-….json) and screenshots in here.
+      description: Drag the saved diagnostics file (twicable-diagnostics-….json) and screenshots in here.

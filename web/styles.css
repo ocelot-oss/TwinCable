@@ -1,6 +1,6 @@
 @import url('/assets/fonts/fonts.css');
 
-/* souldew – "handheld at night".
+/* twicable – "handheld at night".
    Dark console plastic for the chrome, muted LCD screens for live data,
    PS1-style face-button colors as the only accents, one pixel face for display type. */
 :root {
@@ -45,7 +45,7 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --press: 0 2px 0 #0b0a0d, inset 0 1px 0 #ffffff12;
   color-scheme: dark;
-  /* Light-skin tokens. They are built from --sk-field / --sk-shadow, which only the LIGHT souldew+ skins define –
+  /* Light-skin tokens. They are built from --sk-field / --sk-shadow, which only the LIGHT twicable+ skins define –
      everywhere else (classic, the dark skins) they are invalid, so var(--lt-…, <classic value>) keeps classic's own
      value. Fields, wells, popovers, menus, hints and alerts read these or the skin's --sk-field / --sk-well / --sk-line
      with classic's colour as the fallback: nothing in a light skin may stay a hard-coded dark surface
@@ -1005,7 +1005,7 @@ html[data-theme='contrast'] { --bg-top: #0a0a0d; --bg-mid: #050507; --bg-bottom:
 /* Scroll areas keep room for the scroll bar, so content never jumps sideways when it appears. */
 .main, .modal-body, .rules-drawer-body, .dock.right, .run-menu { scrollbar-gutter: stable; }
 
-/* brand: the app icon + the wordmark "souldew" (always lowercase) */
+/* brand: the app icon + the wordmark "twicable" (always lowercase) */
 .brand { gap: 10px; padding: 0 6px 8px; }
 .brand .app-mark { flex: none; filter: drop-shadow(0 3px 6px #0009); transition: transform .3s cubic-bezier(.2,1.4,.4,1); }
 .brand:hover .app-mark { transform: rotate(-6deg) scale(1.06); }
@@ -1182,7 +1182,7 @@ tr.pad-lit .kbd { border-color: var(--tri); color: var(--ink); }
 .onb-choice.primary { border-color: color-mix(in srgb, var(--focus) 60%, var(--edge)); background: linear-gradient(160deg, color-mix(in srgb, var(--focus) 16%, var(--shell-3)), var(--shell-3)); }
 .onb-choice-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: #0006; color: var(--ink); margin-bottom: 4px; }
 .onb-ok { color: var(--tri); font-weight: 600; }
-/* the welcome tour's look step: what souldew sends by itself, set apart from the look settings above */
+/* the welcome tour's look step: what twicable sends by itself, set apart from the look settings above */
 .onb-online { padding-top: 12px; border-top: 1px solid var(--edge); }
 @media (max-width: 760px) { .onb-choices, .onb-panel .explain, .onb-keys { grid-template-columns: 1fr; } .onb-progress span { display: none; } .lang-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 /* short windows: tighter, so the longest step still fits with its buttons */
@@ -1316,7 +1316,7 @@ html.platform-darwin .app-native .rail-open { left: max(82px, calc(30px + 52px /
 /* The rail's groups (app.mjs NAV_GROUPS): the three you play every day · friends and trophies · connection and stream,
    a quiet line between them – in the skins' own edge colour */
 .nav-rule { flex: none; height: 1px; margin: 7px 12px; border: 0; background: color-mix(in srgb, var(--edge) 70%, transparent); }
-/* the foot row: souldew+ (where "Buy me a coffee" was) and Settings / Help as icon buttons. It is a .nav too, so the
+/* the foot row: twicable+ (where "Buy me a coffee" was) and Settings / Help as icon buttons. It is a .nav too, so the
    items get the rail's hover light, its active pill and every skin's styling of them */
 .nav.rail-tools { flex-direction: row; align-items: stretch; gap: 4px; }
 .rail-tools a { min-height: 38px; }
@@ -1330,7 +1330,7 @@ html.platform-darwin .app-native .rail-open { left: max(82px, calc(30px + 52px /
 .rail-plus-text b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* in the link's own colour: every skin keeps its rail text readable (a light skin's gold ink is made for paper) */
 .rail-plus-thanks { font-size: 11.5px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* folded rail: the souldew+ mark in the window's bottom left corner instead */
+/* folded rail: the twicable+ mark in the window's bottom left corner instead */
 .rail-plus-float { position: fixed; left: 12px; bottom: 12px; z-index: 58; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border-radius: 10px;
   border: 1px solid var(--edge, #2c2b33); background: color-mix(in srgb, var(--sk-field, #1e1d24) 90%, transparent); box-shadow: var(--lt-pop-shadow, 0 4px 14px #0006); opacity: .85; }
 .rail-plus-float .rail-plus-mark { width: 20px; height: 20px; }
@@ -1380,7 +1380,7 @@ html.platform-linux .app-native .session.full { padding-top: 16px; }
 html.platform-linux .app-native .rail-open { top: 12px; left: 12px; width: 34px; height: 34px; }
 html.platform-linux .app-native .rules-drawer-wrap { padding-top: 14px; }
 
-/* The coffee moments (views/coffee.mjs) – they stayed with souldew+ when it replaced "Buy me a coffee": a stage just
+/* The coffee moments (views/coffee.mjs) – they stayed with twicable+ when it replaced "Buy me a coffee": a stage just
    above the gold mark – its bottom edge is the mark's top, so a Pokémon rising from below peeks out of it. Real gen 3
    sprites at 1×, pixel-crisp; never takes clicks. */
 .rail-plus.cfx-live { color: var(--ink, #fff); }

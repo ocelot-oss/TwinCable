@@ -1,4 +1,4 @@
-// Shared World, souldew 3.0's additions (docs/MULTIPLAYER.md › 9): the Pokémon following each player (trail, party
+// Shared World, twicable 3.0's additions (docs/MULTIPLAYER.md › 9): the Pokémon following each player (trail, party
 // icons from the ROM, the wire field), emotes and their limits, rock-paper-scissors with commit–reveal, partners on a
 // connected map, and that the messages stay readable for 3.0 builds from before.
 import { test } from 'node:test';
@@ -152,8 +152,8 @@ test('icons: National Dex → internal index (Hoenn), Unown letters, the lead of
   assert.equal(I.leadOf(null), null);
 });
 
-test('icons: the real ROM layouts (when the ROMs are in SOULDEW_TEST_ROMS)', { skip: !process.env.SOULDEW_TEST_ROMS }, () => {
-  const dir = process.env.SOULDEW_TEST_ROMS;
+test('icons: the real ROM layouts (when the ROMs are in TWICABLE_TEST_ROMS)', { skip: !process.env.TWICABLE_TEST_ROMS }, () => {
+  const dir = process.env.TWICABLE_TEST_ROMS;
   for (const f of ['emerald.gba', 'fr-us.gba', 'lg-de.gba', 'fr-de.gba', 'ruby-us.gba', 'sapphire.gba']) {
     let rom;
     try {

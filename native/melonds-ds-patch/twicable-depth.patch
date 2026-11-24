@@ -7,17 +7,17 @@ index b56f23a..b2901e4 100644
      return ret;
  }
 +
-+// souldew (Shared World, docs/MULTIPLAYER.md › 9): the depth of the DS's 3D frame on screen, so partners drawn over the
++// twicable (Shared World, docs/MULTIPLAYER.md › 9): the depth of the DS's 3D frame on screen, so partners drawn over the
 +// picture hide where the map is nearer. `on` 0 stops keeping it. Copies a rectangle of the top screen's 3D layer, row
 +// by row (24-bit depth, Z or W as the frame used) and returns 1 (| 2: W-buffered), 0 when nothing is kept yet, -1 when
 +// the renderer isn't the software one.
 +#include "GPU3D_Soft.h"
-+extern "C" PUBLIC_SYMBOL int souldew_depth(int on, int x, int y, int w, int h, uint32_t *out) {
++extern "C" PUBLIC_SYMBOL int twicable_depth(int on, int x, int y, int w, int h, uint32_t *out) {
 +    auto *nds = const_cast<melonDS::NDS*>(MelonDsDs::Core.GetConsole());
 +    if (!nds) return -1;
-+    auto *soft = dynamic_cast<melonDS::SoftRenderer3D*>(nds->GPU.GetRenderer().Souldew3D());
++    auto *soft = dynamic_cast<melonDS::SoftRenderer3D*>(nds->GPU.GetRenderer().Twicable3D());
 +    if (!soft) return -1;
-+    soft->SouldewKeepDepth(on != 0);
++    soft->TwicableKeepDepth(on != 0);
 +    if (!on || !out) return 0;
-+    return soft->SouldewDepth(x, y, w, h, out);
++    return soft->TwicableDepth(x, y, w, h, out);
 +}

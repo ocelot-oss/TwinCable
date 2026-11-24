@@ -84,7 +84,7 @@ export function cspFor(html, { connect = syncSources() } = {}) {
 }
 
 /**
- * The sandboxed iframe that runs souldew+ pack code (web/cosmetics-sandbox.html, web/lib/cosmetics/sandbox.mjs): its
+ * The sandboxed iframe that runs twicable+ pack code (web/cosmetics-sandbox.html, web/lib/cosmetics/sandbox.mjs): its
  * one script, a data: module worker importing the public engine modules – and nothing else. No network
  * (connect-src 'none'), no images, styles, fonts, frames or forms.
  */
