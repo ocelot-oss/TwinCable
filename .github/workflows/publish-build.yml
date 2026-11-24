@@ -1,0 +1,59 @@
+name: Attach a tested build to a release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag
+        required: true
+        type: string
+      run_id:
+        description: Successful Windows or Linux build run ID
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Verify the build and attach its installers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          BUILD_RUN: ${{ inputs.run_id }}
+        shell: bash
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ && "$BUILD_RUN" =~ ^[0-9]+$ ]]
+          commit=$(gh api "repos/$GH_REPO/commits/$RELEASE_TAG" --jq .sha)
+          build=$(gh api "repos/$GH_REPO/actions/runs/$BUILD_RUN")
+          jq -e --arg sha "$commit" --arg tag "$RELEASE_TAG" --arg repo "$GH_REPO" '
+            .head_sha == $sha and .head_branch == $tag and .head_repository.full_name == $repo
+            and .status == "completed" and .conclusion == "success"
+          ' <<< "$build"
+          version=${RELEASE_TAG#v}
+          case "$(jq -r .path <<< "$build")" in
+            .github/workflows/windows.yml*)
+              artifact=twicable-windows-installer
+              files=("twicable-$version-win-x64-setup.exe")
+              ;;
+            .github/workflows/linux.yml*)
+              artifact=twicable-linux
+              files=("twicable-$version-linux-x86_64.AppImage" "twicable-$version-linux-amd64.deb")
+              ;;
+            *) echo "Unexpected build workflow"; exit 1 ;;
+          esac
+          gh run download "$BUILD_RUN" --name "$artifact" --dir "$RUNNER_TEMP/installers"
+          existing=$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name')
+          for file in "${files[@]}"; do
+            test -s "$RUNNER_TEMP/installers/$file"
+            if ! grep -Fxq "$file" <<< "$existing"; then
+              gh release upload "$RELEASE_TAG" "$RUNNER_TEMP/installers/$file"
+            fi
+          done
