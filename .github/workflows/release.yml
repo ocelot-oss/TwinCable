@@ -10,7 +10,8 @@ name: Release
 #
 # - DMG built here and SLS_RELEASE_KEY set: the release is published right away with the DMG, the Windows installer,
 #   the AppImage, the .deb and one signed latest.json for all of them. Installed apps find it within a few hours.
-# - Otherwise: a DRAFT release with the Windows installer and the Linux packages is created (installed apps don't see
+# - With no configured update repository: publish the available packages without an update feed.
+# - For an update-enabled repository without a signed feed: a DRAFT release with the Windows installer and the Linux packages is created (installed apps don't see
 #   drafts). Finish it on a Mac – see docs/DEVELOPMENT.md › "Releasing": build the DMG, download the installer and the
 #   AppImage from the draft, run `npm run release` (signs one latest.json for all), upload DMG + latest.json to the
 #   draft and publish it.
@@ -184,7 +185,7 @@ jobs:
         with:
           path: dist
           merge-multiple: true
-      - name: Publish (DMG + installer + Linux packages + signed feed) or create a draft (without the DMG)
+      - name: Publish the installers and the update feed when configured
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.windows.outputs.version }}
@@ -195,7 +196,22 @@ jobs:
           exe="dist/twicable-$VERSION-win-x64-setup.exe"
           appimage="dist/twicable-$VERSION-linux-x86_64.AppImage"
           deb="dist/twicable-$VERSION-linux-amd64.deb"
-          if [ -f "$dmg" ] && [ -n "$RELEASE_KEY" ]; then
+          update_repo=$(node -p "require('./package.json').updates?.repo || ''")
+          if [ -z "$update_repo" ]; then
+            assets=("$exe" "$appimage" "$deb")
+            if [ -f "$dmg" ]; then assets+=("$dmg"); fi
+            if gh release view "v$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              gh release upload "v$VERSION" "${assets[@]}" --repo "$GITHUB_REPOSITORY"
+            else
+              node --input-type=module -e "
+                import { readFileSync, writeFileSync } from 'node:fs';
+                const { changelogSection } = await import('./scripts/release.mjs');
+                const notes = changelogSection(readFileSync('CHANGELOG.md', 'utf8'), process.env.VERSION);
+                if (notes == null) { console.error('CHANGELOG.md has no ## ' + process.env.VERSION + ' section'); process.exit(1); }
+                writeFileSync('notes.md', notes + '\n');"
+              gh release create "v$VERSION" "${assets[@]}" --repo "$GITHUB_REPOSITORY" --title "TwinCable $VERSION" --notes-file notes.md --verify-tag --latest
+            fi
+          elif [ -f "$dmg" ] && [ -n "$RELEASE_KEY" ]; then
             key="$RUNNER_TEMP/release-key.pem"
             (umask 077 && printf '%s\n' "$RELEASE_KEY" > "$key")
             node scripts/release.mjs --key "$key" --dmg "$dmg" --win-exe "$exe" --appimage "$appimage" --deb "$deb"

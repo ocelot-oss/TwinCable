@@ -2,6 +2,17 @@
 
 `npm run release` takes the release notes from the section of the version being released.
 
+## 1.0.0
+
+First TwinCable release.
+
+- Live SoulLink tracking from each player's local melonDS session, with in-game saves as a fallback.
+- Local melonDS window preview with live team information and an integrated native player.
+- Share a single battle with SoulLink partners and stop the stream automatically when the battle ends.
+- In-game battle XP caps in the integrated native player for compatible US HeartGold and SoulSilver ROMs.
+
+The Windows and Linux installers are built by GitHub Actions. See the release assets for available packages.
+
 ## 3.0.1
 
 - **DS trades and battles: no more black screen for one of you.** When two players linked their running DS games

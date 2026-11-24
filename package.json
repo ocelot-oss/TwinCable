@@ -1,6 +1,6 @@
 {
   "name": "twicable",
-  "version": "3.0.1",
+  "version": "1.0.0",
   "private": true,
   "description": "twicable – Pokémon SoulLinks (2–4 players) and Nuzlockes with a built-in emulator, live sync and a game library",
   "license": "GPL-3.0-or-later",

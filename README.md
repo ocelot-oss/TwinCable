@@ -1,9 +1,9 @@
 <p align="center">
-  <a href="https://github.com/souldewapp/souldew/releases/latest"><img src="docs/media/banner.webp" alt="twicable – Catch together. Lose together. Pokémon SoulLinks for 2–4 players and solo Nuzlockes, live tracked, in one app." width="100%"></a>
+  <a href="https://github.com/ocelot-oss/TwinCable/releases/latest"><img src="docs/media/banner.webp" alt="twicable – Catch together. Lose together. Pokémon SoulLinks for 2–4 players and solo Nuzlockes, live tracked, in one app." width="100%"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/souldewapp/souldew/releases/latest"><img src="https://img.shields.io/github/v/release/souldewapp/souldew?label=download&color=3f6b55&style=flat-square" alt="Latest release"></a>
+  <a href="https://github.com/ocelot-oss/TwinCable/releases/latest"><img src="https://img.shields.io/github/v/release/ocelot-oss/TwinCable?label=download&color=3f6b55&style=flat-square" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/macOS-Apple%20silicon-1b1a1f?style=flat-square&logo=apple" alt="macOS on Apple silicon">
   <img src="https://img.shields.io/badge/Windows-10%20%7C%2011%20(x64)-1b1a1f?style=flat-square&logo=windows" alt="Windows 10 and 11 (x64)">
   <img src="https://img.shields.io/badge/Linux-AppImage%20%7C%20.deb%20(x64)-1b1a1f?style=flat-square&logo=linux&logoColor=white" alt="Linux: AppImage and .deb (x64), Steam Deck">
@@ -162,18 +162,18 @@ twicable runs on **macOS with Apple silicon (arm64)**, on **Windows 10 and 11 (x
 
 **macOS**
 
-1. Open `twicable-<version>-arm64.dmg` (from the [releases page](https://github.com/souldewapp/souldew/releases/latest), or `dist/` after building) and drag **twicable** into Applications.
+1. Open `twicable-<version>-arm64.dmg` (from the [releases page](https://github.com/ocelot-oss/TwinCable/releases/latest), or `dist/` after building) and drag **twicable** into Applications.
 2. Start it like any other app: twicable is signed with a Developer ID and notarized by Apple (since 3.0.1).
 
 **Windows**
 
-1. Download `twicable-<version>-win-x64-setup.exe` from the [releases page](https://github.com/souldewapp/souldew/releases/latest) and run it. It installs twicable for your user account only (no admin rights needed), adds a Start menu and a desktop shortcut and starts the app.
+1. Download `twicable-<version>-win-x64-setup.exe` from the [releases page](https://github.com/ocelot-oss/TwinCable/releases/latest) and run it. It installs twicable for your user account only (no admin rights needed), adds a Start menu and a desktop shortcut and starts the app.
 2. First start: the installer isn't signed with a paid code-signing certificate, so **Microsoft Defender SmartScreen** may say "Windows protected your PC". Click **More info › Run anyway**. That is only needed for the downloaded installer – updates installed by the app itself don't ask again.
 3. Uninstall it like any other app (Settings › Apps); your runs and saves are kept.
 
 **Linux**
 
-Two packages, both 64-bit (x86_64), from the [releases page](https://github.com/souldewapp/souldew/releases/latest):
+Two packages, both 64-bit (x86_64), from the [releases page](https://github.com/ocelot-oss/TwinCable/releases/latest):
 
 - **AppImage** (`twicable-<version>-linux-x86_64.AppImage`) – one file that runs on almost every distribution and **updates itself**. Put it where you keep apps (e.g. `~/Applications`), make it executable (file manager: Properties › Permissions › *Allow executing as program*, or `chmod +x twicable-*.AppImage`) and double-click it. AppImages need FUSE 2: on Ubuntu 22.04 and newer install it once with `sudo apt install libfuse2t64` (22.04: `libfuse2`). Tools like Gear Lever or AppImageLauncher add it to your app menu.
 - **.deb** (`twicable-<version>-linux-amd64.deb`) for Debian, Ubuntu, Linux Mint, Pop!_OS …: `sudo apt install ./twicable-<version>-linux-amd64.deb`. It adds twicable to the app menu. A package installed this way can't replace itself – when an update is out, the app links to the download page.
