@@ -8,7 +8,7 @@
   const reduced = reducedQ.matches;
   if (!reduced) root.classList.add('motion');
   const DE = root.lang === 'de';
-  const REPO = 'souldewapp/souldew';
+  const REPO = 'ocelot-oss/TwinCable';
   const RELEASES = `https://github.com/${REPO}/releases/latest`;
   const THANKS = 'https://accounts.souldew.app/v1/thanks';
   const script = $('script[src*="site30.js"]');

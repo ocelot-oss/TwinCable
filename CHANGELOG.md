@@ -2,6 +2,15 @@
 
 `npm run release` takes the release notes from the section of the version being released.
 
+## 1.0.2
+
+- Rename the app to TwinCable and add the new pixel-art logo.
+- Read Black and White gym level caps from the played ROM, including randomized trainer levels.
+- Add battle XP enforcement for compatible English Black and White ROMs in the integrated melonDS and DeSmuME players.
+- Add badge-based cap displays for X/Y and Omega Ruby/Alpha Sapphire, and extend native Platinum layout detection.
+
+The new DS XP guards were tested with simulated ARM9 memory.
+
 ## 1.0.0
 
 First TwinCable release.

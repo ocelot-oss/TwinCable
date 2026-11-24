@@ -5,7 +5,7 @@
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const DE = document.documentElement.lang === 'de';
-  const REPO = 'souldewapp/souldew';
+  const REPO = 'ocelot-oss/TwinCable';
   const RELEASES = `https://github.com/${REPO}/releases/latest`;
   const T = DE ? {
     free: 'Kostenlos · Open Source (GPL-3.0)',
