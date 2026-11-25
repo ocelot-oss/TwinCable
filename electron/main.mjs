@@ -656,7 +656,7 @@ function setupPermissions() {
       || !request.userGesture || !request.videoRequested || request.audioRequested) return reply({});
     try {
       const sources = await desktopCapturer.getSources({ types: ['window'], thumbnailSize: { width: 0, height: 0 } });
-      const windows = sources.filter((source) => /\bmelonDS\b/i.test(source.name));
+      const windows = sources.filter((source) => source.name.toLowerCase().includes('melonds'));
       if (!windows.length || win !== owner || owner.isDestroyed()) return reply({});
       if (windows.length === 1) return reply({ video: windows[0] });
       const cancelId = windows.length;

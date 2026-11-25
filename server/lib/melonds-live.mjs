@@ -1,7 +1,7 @@
 import { createConnection } from 'node:net';
 import { closeSync, openSync, readSync } from 'node:fs';
 import { setTimeout as delay } from 'node:timers/promises';
-import { findEntry } from '../../shared/live/parse.mjs';
+import { bwBattleRegions, findEntry } from '../../shared/live/parse.mjs';
 import { BW_EXP_START, BW_EXP_END, findBwExpGuard, isBwExpGuard } from '../../web/lib/bw-exp-cap.mjs';
 
 const HEADER_ADDR = 0x027ffe00;
@@ -143,9 +143,10 @@ async function snapshot(client, { entry }) {
     await read(core + (/^(black2|white2)_/.test(entry.id) ? 0x8300 : 0x8400), 5);
   }
   const party = await read(core, 8 + 6 * (entry.gen === 4 ? 236 : 220));
-  return party?.readUInt32LE(0) === 6 && party.readUInt32LE(4) >= 1 && party.readUInt32LE(4) <= 6
-    ? { status: 'live', regions, inBattle }
-    : { status: 'party' };
+  if (party?.readUInt32LE(0) !== 6 || party.readUInt32LE(4) < 1 || party.readUInt32LE(4) > 6) return { status: 'party' };
+  const battle = inBattle && bwBattleRegions(entry);
+  if (battle) for (const { addr, len } of Object.values(battle)) await read(addr, len);
+  return { status: 'live', regions, inBattle };
 }
 
 export function watchMelonDs({ port, runId, slot, rom, emit, getCap = () => 100 }) {

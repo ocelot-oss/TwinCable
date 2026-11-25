@@ -2304,7 +2304,7 @@ function activeRunCap(doc, manifest, slot) {
 }
 
 export function ExternalFeed() {
-  const { liveInfo: otherLive, melonLive, applySnap, revealDeaths, doc, manifest, externalRun, me } = useApp();
+  const { liveInfo: otherLive, melonLive, setMelonBattle, applySnap, revealDeaths, doc, manifest, externalRun, me } = useApp();
   const liveInfo = externalRun?.emu === 'melonds' ? melonLive : otherLive;
   const cap = activeRunCap(doc, manifest, me);
   const melonRun = externalRun?.emu === 'melonds' && externalRun.runId === manifest?.id &&
@@ -2328,13 +2328,14 @@ export function ExternalFeed() {
     };
   }, []);
   useEffect(() => {
+    if (!liveInfo?.inBattle || liveInfo.runId !== manifest?.id || liveInfo.slot !== me) setMelonBattle(null);
     if (!liveInfo?.regions?.length || Date.now() - liveInfo.at >= 5000 || !manifest || externalRun?.runId !== manifest.id) return;
     if (externalRun.emu === 'melonds' && (liveInfo.emulator !== 'melonds' || liveInfo.runId !== manifest.id || liveInfo.slot !== me)) return;
     if (liveInfo.emulator === 'melonds' && externalRun.emu !== 'melonds') return;
     let cancelled = false;
     (async () => {
       const { T, addresses } = await liveTables();
-      const { regionReader, confirmFaints } = await import('/shared/live/parse.mjs');
+      const { regionReader, readBwBattle } = await import('/shared/live/parse.mjs');
       const entry = findEntry(addresses, liveInfo.game);
       // the emulator runs another game than this run's (another generation): nothing to file
       const runGen = gameById(manifest.game?.id)?.generation;
@@ -2355,17 +2356,21 @@ export function ExternalFeed() {
       }
       // (the ROM's types too: the Gen 3 Pokémon's abilities come with them – romtypes.mjs gbaAbilities)
       const own = (entry.gen === 3 || bw) && externalRun.rom ? romOwnNow() : null;
-      const tables = (sp ? T.withSpecies(sp) : T).withRom(bw ? own : own?.types ? { types: own.types } : null);
-      const res = readLiveParty(entry, regionReader(liveInfo.regions), tables.withShinyOdds(shinyThreshold(manifest.shiny)), readState.current);
+      const tables = (sp ? T.withSpecies(sp) : T).withRom(bw ? own : own?.types ? { types: own.types } : null)
+        .withShinyOdds(shinyThreshold(manifest.shiny));
+      const read = regionReader(liveInfo.regions);
+      const res = readLiveParty(entry, read, tables, readState.current);
       if (!res?.party) return;
-      const party = confirmFaints(res.party, readState.current);
-      const shown = reveal.current.see(party, { speed: 1, gen: entry.gen });
+      const fight = bw ? readBwBattle(entry, read, tables, readState.current, res.party, liveInfo.inBattle) : null;
+      const party = confirmFaints(withBattleHp(res.party, fight, readState.current), readState.current, fight);
+      const shown = reveal.current.see(party, { speed: 1, gen: entry.gen, battle: fight });
+      if (bw) setMelonBattle(shown.battle ? { runId: manifest.id, slot: me, game: entry.id, battle: shown.battle, party: shown.party } : null);
       const romCaps = bw && own?.caps ? { caps: own.caps.caps, leaders: own.caps.leaders, final: own.caps.final } : undefined;
       applySnap({ source: 'live', party, game: entry.id, ...(res.badges !== undefined ? { badges: res.badges } : {}),
-        ...(romCaps !== undefined ? { romCaps } : {}) }, { held: shown.held });
+        ...(romCaps !== undefined ? { romCaps } : {}) }, { battle: fight, held: shown.held });
     })().catch((err) => console.warn('live frame', err));
     return () => { cancelled = true; };
-  }, [liveInfo?.regions, manifest?.id, externalRun, me]);
+  }, [liveInfo?.regions, manifest?.id, externalRun, me, setMelonBattle]);
   return null;
 }
 
@@ -2397,7 +2402,7 @@ function SaveWatchLine({ runId, emu, slot }) {
 }
 
 function ExternalPlay({ target, emu, canEmbed = false }) {
-  const { status, toast, liveInfo: otherLive, melonLive, manifest, me, route, setExternalRun, reloadManifest, startSession, doc, link } = useApp();
+  const { status, toast, liveInfo: otherLive, melonLive, melonBattle, manifest, me, route, setExternalRun, reloadManifest, startSession, doc, link } = useApp();
   const liveInfo = emu === 'melonds' ? melonLive : otherLive;
   const e = status.emulators[emu];
   const isRun = target.kind === 'run';
@@ -2405,6 +2410,10 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
   const cap = melon && /^IR[AB]O$/.test(target.code || '') ? activeRunCap(doc, manifest, me) : 100;
   const fresh = !!(liveInfo?.at && Date.now() - liveInfo.at < 5000
     && (melon ? liveInfo.regions?.length && liveInfo.emulator === 'melonds' && liveInfo.runId === manifest?.id && liveInfo.slot === me : liveInfo.emulator !== 'melonds'));
+  const inBattle = melon && fresh && liveInfo.inBattle === true;
+  const fight = inBattle && melonBattle?.runId === manifest?.id && melonBattle?.slot === me ? melonBattle : null;
+  const [panel, setPanel] = useBattlePanelPrefs();
+  const partnerLayout = usePartnerLayout();
   // Re-render once the last frame gets stale, so the "live" LED goes off when frames stop.
   const [, setTick] = useState(0);
   useEffect(() => {
@@ -2491,9 +2500,15 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
             ${!fresh && manifest?.id && html`<${SaveWatchLine} runId=${manifest.id} emu=${e.name} slot=${me} />`}`}
       ${target.system !== '3ds' && html`<p class="tiny faint">${t('ext.switch', 'You can switch back to the built-in emulator in the settings.')}</p>`}
     </section>
+    ${fight && html`<${BattlePanel} battle=${fight.battle} mine=${fight.party} gen=${5} game=${fight.game} isRun
+      collapsed=${panel.collapsed} hitsOpen=${panel.hitsOpen} onPrefs=${setPanel} />`}
     ${melon && doc && manifest && html`<${MelonTeams} key=${target.key} />`}
     ${emu === 'melonds' && html`<${MelonWindow} key=${target.key}
-      link=${isRun ? link : null} inBattle=${melon && fresh && liveInfo.inBattle === true} />`}
+      link=${isRun ? link : null} inBattle=${inBattle} />`}
+    ${melon && link && partnerLayout.others.length > 0 && html`<div class="session-body">
+      <${PartnerTiles} link=${link} system="nds" side="bottom" pl=${partnerLayout} />
+      <${PartnerScreens} link=${link} system="nds" pl=${partnerLayout} />
+    </div>`}
   </div>`;
 }
 
@@ -2528,7 +2543,7 @@ function MelonWindow({ link, inBattle }) {
     source.current = null;
   };
   useEffect(() => release, []);
-  const open = async () => {
+  const open = async (share = false) => {
     const id = ++generation.current;
     setError(false);
     setPending(true);
@@ -2548,6 +2563,7 @@ function MelonWindow({ link, inBattle }) {
         setPending(false);
       }, { once: true });
       setPreview(true);
+      if (share) setSharing(true);
     } catch (err) {
       if (id === generation.current && err.name !== 'AbortError') setError(true);
     } finally {
@@ -2555,7 +2571,16 @@ function MelonWindow({ link, inBattle }) {
     }
   };
   useEffect(() => {
-    if (preview && video.current) video.current.srcObject = source.current;
+    const item = video.current;
+    const stream = source.current;
+    if (!preview || !item || !stream) return;
+    item.srcObject = stream;
+    item.play().catch(() => {
+      if (source.current !== stream) return;
+      release();
+      setPreview(false);
+      setError(true);
+    });
   }, [preview]);
   useEffect(() => {
     if (!preview || !link || !inBattle) setSharing(false);
@@ -2575,10 +2600,10 @@ function MelonWindow({ link, inBattle }) {
   }), { system: 'nds', enabled: preview && inBattle && sharing });
   if (!navigator.mediaDevices?.getDisplayMedia) return null;
   return html`<section class="panel stack">
-    <div><button class="btn" disabled=${pending} onClick=${preview ? () => { release(); setPreview(false); } : open}>
+    <div><button class="btn" disabled=${pending} onClick=${preview ? () => { release(); setPreview(false); } : () => open()}>
       ${preview ? t('ext.hideMelonWindow', 'Hide melonDS window') : t('ext.showMelonWindow', 'Show the local melonDS window')}
     </button>
-    ${preview && link && inBattle && html`<button class="btn small" aria-pressed=${sharing} onClick=${() => setSharing(!sharing)}>
+    ${link && inBattle && html`<button class="btn small" disabled=${pending} aria-pressed=${sharing} onClick=${() => preview ? setSharing(!sharing) : open(true)}>
       ${sharing ? t('play.stopBattleShare', 'Stop sharing this battle') : t('play.shareBattle', 'Share this battle')}
     </button>`}</div>
     ${error && html`<p class="small muted" role="status">${t('ext.melonWindowError', 'Select an open melonDS window to show it here.')}</p>`}

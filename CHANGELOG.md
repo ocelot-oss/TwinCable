@@ -2,6 +2,12 @@
 
 `npm run release` takes the release notes from the section of the version being released.
 
+## 1.0.4
+
+- Display live HP and wild Pokémon details in standalone melonDS for English Pokémon Black and White.
+- Accept capture window titles containing melonDS, regardless of case.
+- Let SoulLink partners start sharing the melonDS window directly during a battle and stop automatically when the battle ends.
+
 ## 1.0.3
 
 - Fix battle XP enforcement in compatible US Black and White ROMs.

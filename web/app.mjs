@@ -318,6 +318,7 @@ function App() {
   const [inbox, setInboxState] = useState(NO_INBOX);
   const [liveInfo, setLiveInfo] = useState(null);
   const [melonLive, setMelonLive] = useState(null);
+  const [melonBattle, setMelonBattle] = useState(null);
   // the run an external emulator (mGBA, Azahar) was started for from its play view: its frames go there (ExternalFeed)
   const [externalRun, setExternalRun] = useState(null);
   const [toasts, setToasts] = useState([]);
@@ -1079,7 +1080,7 @@ function App() {
   const ctx = {
     status, reloadStatus, library, reloadLibrary, runId, setRunId, manifest, missingRun, reloadManifest, doc: runDoc, docVersion, runData, me, setMe,
     navigate, route, link: linkRef.current, linkStatus, linkPlay, linkSessions: linkPlayRef.current, partnerOnline, onlineSlots, connect, disconnect, inbox, setInbox, applySnap, revealDeaths, ballsSeen, toast, liveInfo, melonLive,
-    externalRun, setExternalRun,
+    externalRun, setExternalRun, melonBattle, setMelonBattle,
     session, startSession, endSession, closeSession, offerRestart, wagerRef, lastMoment: lastRef.current,
   };
 

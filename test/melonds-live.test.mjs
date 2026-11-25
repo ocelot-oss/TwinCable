@@ -5,7 +5,7 @@ import { once } from 'node:events';
 import { test } from 'node:test';
 import { watchMelonDs } from '../server/lib/melonds-live.mjs';
 import { encryptPK4 } from '../shared/gen4save.mjs';
-import { findEntry, LiveTables, readLiveParty, regionReader } from '../shared/live/parse.mjs';
+import { bwBattleRegions, findEntry, LiveTables, readBwBattle, readLiveParty, regionReader, withBattleHp } from '../shared/live/parse.mjs';
 import { BW_EXP_START, BW_EXP_END } from '../web/lib/bw-exp-cap.mjs';
 
 const data = (file) => JSON.parse(readFileSync(new URL(`../shared/data/${file}.json`, import.meta.url)));
@@ -41,16 +41,34 @@ async function stub(t, slot, hp, { legacy = false } = {}) {
   overlay.writeUInt32LE(0x02018585, fn + 456);
   party.writeUInt32LE(6, 0);
   party.writeUInt32LE(1, 4);
-  const setHP = (value) => {
+  const pk = (pid, species, value) => {
     const mon = Buffer.alloc(220);
-    mon.writeUInt32LE(0xabcdef01, 0);
-    mon.writeUInt16LE(495, 0x08);
+    mon.writeUInt32LE(pid, 0);
+    mon.writeUInt16LE(species, 0x08);
     mon[0x8c] = 9;
     mon.writeUInt16LE(value, 0x8e);
     mon.writeUInt16LE(40, 0x90);
-    party.set(encryptPK4(new Uint8Array(mon)), 8);
+    return encryptPK4(new Uint8Array(mon));
   };
+  const setHP = (value) => party.set(pk(0xabcdef01, 495, value), 8);
   setHP(hp);
+  const ranges = bwBattleRegions(entry);
+  const foe = Buffer.from(party);
+  foe.set(pk(0x12345678, 504, 40), 8);
+  const stats = Buffer.alloc(ranges.stats.len);
+  const stat = (offset, pointer, species, value) => {
+    stats.writeUInt32LE(pointer, offset - 0x0c);
+    stats.writeUInt16LE(species, offset);
+    stats.writeUInt16LE(40, offset + 2);
+    stats.writeUInt16LE(value, offset + 4);
+    stats[offset + 12] = 9;
+  };
+  const setBattleHP = (mine, theirs) => {
+    stat(0xb0, ranges.player.addr + 8, 495, mine);
+    stat(0x2d4, ranges.enemy.addr + 8, 504, theirs);
+  };
+  setBattleHP(hp, 40);
+  const battleMemory = [[ranges.player, Buffer.from(party)], [ranges.enemy, foe], [ranges.stats, stats]];
   const server = createServer((socket) => {
     let buffer = '';
     let attached = false;
@@ -92,6 +110,10 @@ async function stub(t, slot, hp, { legacy = false } = {}) {
           else if (start === battleFlagAddr) bytes = battle;
           else if (start >= core && start < core + party.length) bytes = party.subarray(start - core, start - core + size);
           else if (start >= overlayAddr && start < overlayAddr + overlay.length) bytes = overlay.subarray(start - overlayAddr, start - overlayAddr + size);
+          else {
+            const region = battleMemory.find(([r]) => start >= r.addr && start + size <= r.addr + r.len);
+            if (region) bytes = region[1].subarray(start - region[0].addr, start - region[0].addr + size);
+          }
           response = packet(bytes.toString('hex'));
         }
         if (response) {
@@ -105,7 +127,7 @@ async function stub(t, slot, hp, { legacy = false } = {}) {
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   t.after(() => { server.close(); });
-  return { header, port: server.address().port, setHP, setBattle: (on) => battle.writeUInt16LE(on ? 0x2100 : 0), cap: () => overlay[fn + 12] };
+  return { header, port: server.address().port, setHP, setBattleHP, setBattle: (on) => battle.writeUInt16LE(on ? 0x2100 : 0), cap: () => overlay[fn + 12] };
 }
 
 test('two melonDS feeds stay assigned to their slots and report HP changes without a save', { timeout: 5000 }, async (t) => {
@@ -113,8 +135,10 @@ test('two melonDS feeds stay assigned to their slots and report HP changes witho
   const values = {};
   const stops = [];
   let battleSeen = false;
+  let started = false;
   const seen = new Promise((resolve, reject) => {
     for (const [slot, source] of [['p1', one], ['p2', two]]) {
+      const readState = {};
       const stop = watchMelonDs({
         port: source.port, runId: 'aaaaaaaa', slot, rom: { header: source.header, game, entry },
         getCap: () => slot === 'p1' ? 14 : 100,
@@ -124,18 +148,27 @@ test('two melonDS feeds stay assigned to their slots and report HP changes witho
             assert.equal(frame.runId, 'aaaaaaaa');
             assert.equal(frame.slot, slot);
             if (!frame.regions.length) return;
-            const result = readLiveParty(entry, regionReader(frame.regions), gen4);
+            const read = regionReader(frame.regions);
+            const result = readLiveParty(entry, read, gen4);
             assert.ok(result?.party);
-            values[slot] = result.party[0].hp;
+            const fight = readBwBattle(entry, read, gen4, readState, result.party, frame.inBattle);
+            values[slot] = withBattleHp(result.party, fight)[0].hp;
             if (slot === 'p2') assert.equal(frame.inBattle, false);
-            if (values.p1 === 34 && values.p2 === 21) {
-              one.setHP(12);
+            if (!started && values.p1 === 34 && values.p2 === 21) {
+              started = true;
+              one.setBattleHP(12, 18);
               one.setBattle(true);
             }
             if (slot === 'p1' && frame.inBattle) {
               assert.equal(frame.capActive, true);
               assert.equal(one.cap(), 14);
+              assert.equal(result.party[0].hp, 34, 'saved party HP stays frozen during the fight');
+              assert.equal(values.p1, 12, 'player HP comes from the battle struct');
+              assert.equal(fight?.kind, 'wild');
+              assert.equal(fight.enemy.species, 504);
+              assert.equal(fight.enemy.hp, 18);
               battleSeen = true;
+              one.setHP(12);
               one.setBattle(false);
             } else if (slot === 'p1' && battleSeen && values.p1 === 12 && values.p2 === 21) {
               resolve();

@@ -2242,7 +2242,7 @@ function gen5Struct(read, a, m, copies) {
   const pid = read(pp, 4);
   return pid && u32le(pid, 0) === m.pid ? { hp, maxHp, status: gen5Sick(b, o) } : null;
 }
-function gen5Structs(read, state, mons, copies) {
+function gen5Structs(read, state, mons, copies, range = { addr: 0x02200000, len: 0x200000 }) {
   const cache = state.g5mons || (state.g5mons = new Map()); // pid → [struct addresses]
   const want = mons.filter(Boolean);
   const out = new Map();
@@ -2258,13 +2258,12 @@ function gen5Structs(read, state, mons, copies) {
     const bySpecies = new Map();
     for (const m of missing) bySpecies.set(m.species, [...(bySpecies.get(m.species) || []), m]);
     const found = new Map(missing.map((m) => [m.pid, []]));
-    const BASE = 0x02200000;
-    const ram = read(BASE, 0x200000); // the battle's heap (the Snivy above: 0x0226D8D4)
+    const ram = read(range.addr, range.len);
     if (ram) {
       for (let o = 0x0c; o + 14 <= ram.length; o += 2) {
         const ms = bySpecies.get(ram[o] | (ram[o + 1] << 8));
         if (!ms || u16le(ram, o + G5MON.hp) > u16le(ram, o + G5MON.maxHp) || u16le(ram, o + G5MON.maxHp) > 999) continue;
-        for (const m of ms) if (gen5Struct(read, BASE + o, m, copies)) found.get(m.pid).push(BASE + o);
+        for (const m of ms) if (gen5Struct(read, range.addr + o, m, copies)) found.get(m.pid).push(range.addr + o);
       }
     }
     for (const m of missing) {
@@ -2274,6 +2273,62 @@ function gen5Structs(read, state, mons, copies) {
     while (cache.size > 32) cache.delete(cache.keys().next().value);
   }
   return out;
+}
+
+// English Black/White's live battlers point to the first set of party copies,
+// 0x560 before the player/enemy bases listed in NDS-Ironmon-Tracker. The later
+// set can already reflect the next animation. White's globals are 0x20 higher.
+export function bwBattleRegions(entry) {
+  if (entry.id !== 'black_us' && entry.id !== 'white_us') return null;
+  const shift = entry.id === 'white_us' ? 0x20 : 0;
+  return {
+    player: { addr: 0x0226a22c + shift, len: 8 + 6 * G5_PK },
+    enemy: { addr: 0x0226acec + shift, len: 8 + 6 * G5_PK },
+    stats: { addr: 0x0226d600 + shift, len: 0x1a00 },
+  };
+}
+
+/** Read a battle from the small RAM regions that the standalone melonDS bridge streams. */
+export function readBwBattle(entry, read, T, state, party, inBattle) {
+  const regions = bwBattleRegions(entry);
+  if (!regions || !inBattle || !party.length) {
+    state.g5mons = null;
+    state.g5scan = 0;
+    state.bwOpponent = null;
+    return null;
+  }
+  const player = readPartyCore(read, regions.player.addr, G5_PK, 5, T);
+  const enemy = readPartyCore(read, regions.enemy.addr, G5_PK, 5, T);
+  const ours = (m) => party.some((p) => p.pid === m.pid && p.key === m.key);
+  if (!player?.every(ours) || !enemy?.length || enemy.some((m) => party.some((p) => p.pid === m.pid))) return null;
+  const opponent = enemy.map((m) => m.key).join();
+  if (state.bwOpponent !== opponent) {
+    state.bwOpponent = opponent;
+    state.g5mons = null;
+    state.g5scan = 0;
+  }
+  const copies = new Map([[regions.player.addr, player.length], [regions.enemy.addr, enemy.length]]);
+  const stats = gen5Structs(read, state, [...player, ...enemy], copies, regions.stats);
+  const hpOf = (mon) => stats.get(mon.pid)?.hp ?? mon.hp;
+  const foe = enemy.find((m) => hpOf(m) > 0) || enemy[0];
+  const foeStats = stats.get(foe.pid);
+  // The copied parties are populated before the battle's live stats. Wait for a confirmed foe.
+  if (!foeStats) return null;
+  const team = player.flatMap((m) => {
+    const live = stats.get(m.pid);
+    return live && player.filter((p) => p.pid === m.pid).length === 1
+      ? [{ pid: m.pid, hp: live.hp, maxHp: live.maxHp, status: live.status }]
+      : [];
+  });
+  const index = party.findIndex((m) => team.some((b) => b.pid === m.pid && b.hp !== m.hp));
+  const wild = enemy.length === 1 && foe.key.split('-')[1] === party[0].key.split('-')[1];
+  return withCatchRates({
+    kind: wild ? 'wild' : 'trainer',
+    enemy: { species: foe.species, form: foe.form, level: foe.level, shiny: foe.shiny, moves: foe.moves,
+      hp: foeStats.hp, maxHp: foeStats.maxHp, ...foeStatus5(foeStats) },
+    active: index < 0 ? null : { index },
+    party: team,
+  }, entry, T);
 }
 
 /**
