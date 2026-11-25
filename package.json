@@ -1,6 +1,6 @@
 {
   "name": "twincable",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "twincable – Pokémon SoulLinks (2–4 players) and Nuzlockes with a built-in emulator, live sync and a game library",
   "license": "GPL-3.0-or-later",
@@ -33,7 +33,7 @@
     "matrix": "node scripts/rom-matrix.mjs --live"
   },
   "updates": {
-    "repo": "",
+    "repo": "ocelot-oss/TwinCable",
     "feed": "https://github.com/{repo}/releases/latest/download/latest.json",
     "publicKey": "MCowBQYDK2VwAyEANG4Ng/ROJT1UWYJ0XQ0k3ZfY3mYKKmiiF0tunuAzlBA="
   },

@@ -1,6 +1,8 @@
 import { createConnection } from 'node:net';
 import { closeSync, openSync, readSync } from 'node:fs';
+import { setTimeout as delay } from 'node:timers/promises';
 import { findEntry } from '../../shared/live/parse.mjs';
+import { BW_EXP_START, BW_EXP_END, findBwExpGuard, isBwExpGuard } from '../../web/lib/bw-exp-cap.mjs';
 
 const HEADER_ADDR = 0x027ffe00;
 const HEADER_SIZE = 0x160;
@@ -19,11 +21,11 @@ export function melonGame(path, table) {
   }
   const game = { platform: 'nds', title: header.toString('ascii', 0, 12).replace(/\0/g, ''), code: header.toString('ascii', 12, 16) };
   const entry = findEntry(table, game);
-  if (entry?.platform !== 'nds' || (entry.gen !== 4 && !entry.partyAddr && !entry.partyPtrAddr)) return null;
+  if (entry?.platform !== 'nds' || (!entry.saveDataPtrAddr && !entry.partyAddr && !entry.partyPtrAddr)) return null;
   return { game, entry, header };
 }
 
-// The ARM9 stub stops on attach. Resume after the handshake, then use only memory reads.
+// Resume the ARM9 stub after the handshake so polling can run alongside the game.
 class Arm9Client {
   constructor(port) {
     this.socket = createConnection({ host: '127.0.0.1', port });
@@ -45,7 +47,8 @@ class Arm9Client {
       if (checksum(body) !== this.buffer.slice(end + 1, end + 3).toLowerCase()) return this.close();
       this.buffer = this.buffer.slice(end + 3).replace(/^\++/, '');
       if (!this.noAck) this.socket.write('+');
-      this.pending?.resolve(body);
+      // Stop notifications can arrive independently of the request in flight.
+      if (!/^[ST][0-9a-f]{2}/i.test(body)) this.pending?.resolve(body);
     }
   }
 
@@ -54,6 +57,7 @@ class Arm9Client {
   }
 
   request(body) {
+    if (this.socket.destroyed) return Promise.reject(new Error('melonDS ARM9 disconnected'));
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => this.close(), 1500);
       this.pending = {
@@ -69,8 +73,11 @@ class Arm9Client {
     const caps = await this.request('qSupported:');
     if (!caps.split(';').includes('QStartNoAckMode+')) throw new Error('Incompatible melonDS ARM9 stub');
     this.noAck = true;
-    if (await this.request('QStartNoAckMode') !== 'OK' || await this.request('vCont;c') !== 'OK') {
-      throw new Error('Could not resume melonDS');
+    if (await this.request('QStartNoAckMode') !== 'OK') throw new Error('Could not negotiate melonDS ARM9 mode');
+    // melonDS 1.0 advertises vCont but rejects vCont;c. Plain c resumes without replying.
+    if (await this.request('vCont;c') !== 'OK') {
+      this.send('c');
+      await delay(30); // Let the stub leave its stop loop before the first memory request.
     }
   }
 
@@ -88,6 +95,12 @@ class Arm9Client {
     return Buffer.concat(chunks);
   }
 
+  async writeExpGuard(addr, cap) {
+    if (await this.request(`M${addr.toString(16)},1:${cap.toString(16).padStart(2, '0')}`) !== 'OK') {
+      throw new Error('Could not update the Black/White XP cap');
+    }
+  }
+
   close(error = new Error('melonDS ARM9 disconnected')) {
     this.pending?.reject(error);
     this.socket.destroy();
@@ -95,8 +108,7 @@ class Arm9Client {
 }
 
 /** Collect the small regions consumed by the shared party and badge parser. */
-async function snapshot(client, { entry, header }) {
-  if (!(await client.read(HEADER_ADDR, HEADER_SIZE)).equals(header)) return null;
+async function snapshot(client, { entry }) {
   const regions = [];
   const read = async (addr, len) => {
     if (!inRam(addr, len)) return null;
@@ -116,7 +128,7 @@ async function snapshot(client, { entry, header }) {
     const fixed = Number(entry.saveDataPtrAddr);
     const dynamic = inRam(module, 4) && (!fixed || Math.abs(module + 0x20 - fixed) < 0x40000);
     const base = (await read(dynamic ? module + 0x20 : fixed, 4))?.readUInt32LE();
-    if (!inRam(base, 4)) return null;
+    if (!inRam(base, 4)) return { status: 'party' };
     core = base + Number(entry.partyMonsOffset) - 8;
     if (entry.badges?.trainerOffset) {
       await read(base + Number(entry.badges.generalOffsetFromSaveBase) + Number(entry.badges.trainerOffset), 0x20);
@@ -131,18 +143,57 @@ async function snapshot(client, { entry, header }) {
     await read(core + (/^(black2|white2)_/.test(entry.id) ? 0x8300 : 0x8400), 5);
   }
   const party = await read(core, 8 + 6 * (entry.gen === 4 ? 236 : 220));
-  return party?.readUInt32LE(4) >= 1 && party.readUInt32LE(4) <= 6 ? { regions, inBattle: !!inBattle } : null;
+  return party?.readUInt32LE(0) === 6 && party.readUInt32LE(4) >= 1 && party.readUInt32LE(4) <= 6
+    ? { status: 'live', regions, inBattle }
+    : { status: 'party' };
 }
 
-export function watchMelonDs({ port, runId, slot, rom, emit }) {
+export function watchMelonDs({ port, runId, slot, rom, emit, getCap = () => 100 }) {
   let stopped = false;
-  let streaming = false;
+  let status;
   let client;
   let timer;
+  let pending;
+  let guard;
+  let previous = 100;
+  const supportsCap = /^IR[AB]O$/.test(rom.game.code);
+  const matchesRom = (connection) => connection.read(HEADER_ADDR, HEADER_SIZE).then((header) => header.equals(rom.header));
+  const locateExpGuard = async (connection, offset, length) => {
+    const start = RAM_START + offset;
+    const bytes = await connection.read(start, length);
+    const site = findBwExpGuard(bytes, offset);
+    return site ? { addr: start + site, stock: bytes.subarray(site, site + 6) } : null;
+  };
+  const applyCap = async (connection, cap, inBattle) => {
+    if (guard) {
+      const code = await connection.read(guard.addr, 6);
+      if (isBwExpGuard(code, previous) && code.subarray(1).equals(guard.stock.subarray(1))) {
+        if (code[0] !== cap) await connection.writeExpGuard(guard.addr, cap);
+        previous = cap;
+        return cap < 100;
+      }
+      guard = null;
+    }
+    if (cap === 100 || !inBattle || stopped) return false;
+    // The retail routine starts around 0x021d69b8; try its block first to avoid delaying a battle snapshot.
+    const found = await locateExpGuard(connection, 0x1d6900, 0x400) ??
+      await locateExpGuard(connection, BW_EXP_START, BW_EXP_END - BW_EXP_START);
+    if (!found || stopped) return false;
+    const { addr, stock } = found;
+    const code = await connection.read(addr, 6);
+    if (!isBwExpGuard(code, 100) || !code.equals(stock) || !await matchesRom(connection) || stopped) return false;
+    guard = found;
+    previous = cap;
+    await connection.writeExpGuard(addr, cap);
+    return true;
+  };
   const announce = (frame) => {
-    if (!frame && !streaming) return;
-    streaming = !!frame;
-    emit('live', { emulator: 'melonds', runId, slot, game: rom.game, ...(frame || { regions: [], inBattle: false }) });
+    if (!frame.regions && frame.status === status) return;
+    status = frame.status;
+    emit('live', { emulator: 'melonds', runId, slot, game: rom.game, regions: [], inBattle: false, ...frame });
+  };
+  const schedule = (delay) => {
+    timer = setTimeout(() => { pending = poll(); }, delay).unref();
   };
   const poll = async () => {
     let delay = 250;
@@ -151,22 +202,37 @@ export function watchMelonDs({ port, runId, slot, rom, emit }) {
         client = new Arm9Client(port);
         await client.start();
       }
-      const frame = await snapshot(client, rom);
+      const frame = await matchesRom(client) ? await snapshot(client, rom) : { status: 'rom' };
+      if (!stopped && supportsCap && frame.status !== 'rom') {
+        try {
+          frame.capActive = await applyCap(client, getCap(), frame.inBattle);
+        } catch {
+          frame.capActive = false;
+        }
+      }
       if (!stopped) announce(frame);
     } catch {
       client?.close();
       client = null;
-      if (!stopped) announce(null);
+      if (!stopped) announce({ status: 'connection' });
       delay = 1500;
     } finally {
-      if (!stopped) timer = setTimeout(poll, delay).unref();
+      if (!stopped) schedule(delay);
     }
   };
-  timer = setTimeout(poll, 0).unref();
-  return () => {
+  schedule(0);
+  return async () => {
     stopped = true;
     clearTimeout(timer);
-    client?.close();
-    announce(null);
+    if (!guard) client?.close();
+    await pending;
+    try {
+      if (client && guard && previous < 100 && await matchesRom(client)) await applyCap(client, 100, false);
+    } catch {
+      // The game may already have closed or unloaded the overlay.
+    } finally {
+      client?.close();
+      announce({ status: 'off' });
+    }
   };
 }

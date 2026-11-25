@@ -317,6 +317,7 @@ function App() {
   const [linkStatus, setLinkStatus] = useState(null);
   const [inbox, setInboxState] = useState(NO_INBOX);
   const [liveInfo, setLiveInfo] = useState(null);
+  const [melonLive, setMelonLive] = useState(null);
   // the run an external emulator (mGBA, Azahar) was started for from its play view: its frames go there (ExternalFeed)
   const [externalRun, setExternalRun] = useState(null);
   const [toasts, setToasts] = useState([]);
@@ -833,7 +834,10 @@ function App() {
   useEffect(() => events({
     save: (p) => p.runId === runId && (!p.slot || p.slot === me) && applySnapRef.current(snapshotFromSave(p.save)),
     live: (frame) => {
-      if (frame.emulator === 'melonds' && (frame.runId !== runId || frame.slot !== me)) return;
+      if (frame.emulator === 'melonds') {
+        if (frame.runId === runId && frame.slot === me) setMelonLive({ ...frame, at: Date.now() });
+        return;
+      }
       setLiveInfo({ ...frame, at: Date.now() });
     },
     'live-status': (s) => setLiveInfo((x) => ({ ...(x || {}), status: s })),
@@ -1074,7 +1078,7 @@ function App() {
   const social = useSocial({ ready, route, session, manifest, doc: runDoc, me, linkStatus, toast, navigate });
   const ctx = {
     status, reloadStatus, library, reloadLibrary, runId, setRunId, manifest, missingRun, reloadManifest, doc: runDoc, docVersion, runData, me, setMe,
-    navigate, route, link: linkRef.current, linkStatus, linkPlay, linkSessions: linkPlayRef.current, partnerOnline, onlineSlots, connect, disconnect, inbox, setInbox, applySnap, revealDeaths, ballsSeen, toast, liveInfo,
+    navigate, route, link: linkRef.current, linkStatus, linkPlay, linkSessions: linkPlayRef.current, partnerOnline, onlineSlots, connect, disconnect, inbox, setInbox, applySnap, revealDeaths, ballsSeen, toast, liveInfo, melonLive,
     externalRun, setExternalRun,
     session, startSession, endSession, closeSession, offerRestart, wagerRef, lastMoment: lastRef.current,
   };

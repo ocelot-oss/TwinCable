@@ -1,6 +1,6 @@
 // Builds build/icon.ico (Windows: app, installer and uninstaller icon) from build/icon.png (1024×1024).
-// The macOS icon leaves a margin around the handheld (Apple's icon grid); Windows icons fill their square, so the
-// margin is cropped first. Sizes 16–256 px: BMP entries with alpha up to 128 px (what every Windows tool reads),
+// Keep the transparent margins around the rounded tile.
+// Sizes 16–256 px: BMP entries with alpha up to 128 px (what every Windows tool reads),
 // PNG for 256 px. Needs macOS (`sips` resizes); run it after changing the icon and commit build/icon.ico.
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
@@ -11,7 +11,6 @@ import { inflateSync } from 'node:zlib';
 
 const build = fileURLToPath(new URL('../build/', import.meta.url));
 const SIZES = [16, 20, 24, 32, 40, 48, 64, 128, 256];
-const CROP = 860; // of 1024: the handheld's body (824 px) plus a little air
 
 /** Minimal PNG decoder for what sips writes: 8-bit RGBA (or RGB), not interlaced. → { width, height, rgba } */
 function decodePng(buf) {
@@ -85,11 +84,9 @@ function bmpEntry({ width, height, rgba }) {
 
 const tmp = mkdtempSync(join(tmpdir(), 'twincable-ico-'));
 try {
-  const cropped = join(tmp, 'cropped.png');
-  execFileSync('sips', ['-c', String(CROP), String(CROP), join(build, 'icon.png'), '--out', cropped], { stdio: 'ignore' });
   const images = SIZES.map((size) => {
     const file = join(tmp, `${size}.png`);
-    execFileSync('sips', ['-z', String(size), String(size), cropped, '--out', file], { stdio: 'ignore' });
+    execFileSync('sips', ['-z', String(size), String(size), join(build, 'icon.png'), '--out', file], { stdio: 'ignore' });
     const png = readFileSync(file);
     return { size, data: size >= 256 ? png : bmpEntry(decodePng(png)) };
   });

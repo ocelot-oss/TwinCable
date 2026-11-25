@@ -44,6 +44,16 @@ static bool nds_bw_exp_cap(const char code[4]) {
   return !memcmp(code, "IRBO", 4) || !memcmp(code, "IRAO", 4);
 }
 
+static uint32_t nds_bw_ceiling_call(const uint8_t *p, uint32_t at) {
+  const uint16_t load = nds_half(p);
+  // GetMaxLevelExp tail-calls the growth function through a Thumb pointer.
+  if ((load & 0xff00u) == 0x4b00u && nds_half(p + 2) == 0x2264u && nds_half(p + 4) == 0x4718u) {
+    const unsigned literal = ((at + 4) & ~3u) - at + (load & 0xffu) * 4;
+    if (literal <= 20) return ((uint32_t)nds_half(p + literal) | ((uint32_t)nds_half(p + literal + 2) << 16)) & ~1u;
+  }
+  return nds_call_target(p, at);
+}
+
 // Aletheia ov093: BTL_POKEPARAM_AddExp (IRBO 0x021D69B8) awards at most one
 // level per call. The battle server and client both call it again for leftover
 // XP. Replacing its level-100 guard stops that loop at the selected level.
@@ -73,7 +83,7 @@ static uint32_t nds_find_bw_exp_guard(const uint8_t *ram) {
         if (growth < 0x02017000 || growth >= 0x0201a000) continue;
         bool same_growth = false;
         for (unsigned k = 440; k < 462; k += 2) {
-          if (nds_calls(fn + k, at + k, growth)) same_growth = true;
+          if (nds_bw_ceiling_call(fn + k, at + k) == growth) same_growth = true;
         }
         if (!same_growth) continue;
         if (guard && guard != at + i) return 0;
@@ -86,12 +96,15 @@ static uint32_t nds_find_bw_exp_guard(const uint8_t *ram) {
 
 static bool nds_apply_bw_cap(uint8_t *ram, unsigned cap, uint32_t *guard, unsigned *previous) {
   if (!ram || cap < 1 || cap > 100) return false;
+  if (*guard) {
+    const uint8_t *cmp = ram + *guard - NDS_RAM;
+    const uint16_t branch = nds_half(cmp + 2);
+    if ((cmp[1] & 0xf8u) != 0x28u || (cmp[0] != 100 && cmp[0] != *previous) ||
+        (branch != 0xd300u && branch != 0xdb00u) || (nds_half(cmp + 4) & 0xf800u) != 0xe000u) *guard = 0;
+  }
   if (!*guard && cap != 100) *guard = nds_find_bw_exp_guard(ram);
   if (!*guard) return false;
   uint8_t *const cmp = ram + *guard - NDS_RAM;
-  const uint16_t branch = nds_half(cmp + 2);
-  if ((cmp[1] & 0xf8u) != 0x28u || (cmp[0] != 100 && cmp[0] != *previous) ||
-      (branch != 0xd300u && branch != 0xdb00u) || (nds_half(cmp + 4) & 0xf800u) != 0xe000u) return false;
   cmp[0] = (uint8_t)cap;
   *previous = cap;
   return true;

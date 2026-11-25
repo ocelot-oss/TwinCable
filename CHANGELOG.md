@@ -2,6 +2,12 @@
 
 `npm run release` takes the release notes from the section of the version being released.
 
+## 1.0.3
+
+- Fix battle XP enforcement in compatible US Black and White ROMs.
+- Show both players’ teams and Pokémon details while using standalone melonDS.
+- Refresh the desktop icon and configure the GitHub update channel.
+
 ## 1.0.2
 
 - Rename the app to TwinCable and add the new pixel-art logo.

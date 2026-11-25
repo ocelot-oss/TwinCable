@@ -567,9 +567,12 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   /** The save watch of a run as the page gets it – with whether twincable can read and edit (the graveyard) its saves. */
   const watchStatus = (runId, manifest) => ({ ...watcher.status(runId), readable: !!parserOfRun(manifest), graveyard: isHgssRun(manifest) });
   const watchedSlot = (runId, slot) => ALL_SLOTS.includes(slot) && watcher.paths(watchKey(runId, slot)) ? watchKey(runId, slot) : runId;
-  const stopMelon = (key) => {
-    melonSessions.get(key)?.stop();
-    melonSessions.delete(key);
+  const stopMelon = async (key) => {
+    const session = melonSessions.get(key);
+    if (!session) return;
+    session.stopping ??= session.stop();
+    await session.stopping;
+    if (melonSessions.get(key) === session) melonSessions.delete(key);
   };
   // the anonymous "playing now" heartbeat – it reads the setting on every call, so "off" applies at once
   const playingNow = presenceCounter({ enabled: () => loadConfig().presence !== false });
@@ -1441,14 +1444,12 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   });
 
   // Delete = move the run folder to runs/.trash (recoverable by hand), forget watches / lastRun.
-  route('DELETE', /^\/api\/runs\/([a-f0-9]{8})$/, (req, m) => {
+  route('DELETE', /^\/api\/runs\/([a-f0-9]{8})$/, async (req, m) => {
     if (!readManifest(m[1])) throw httpError(404, 'Run not found', 'runNotFound');
     if (building.has(m[1])) throw httpError(409, 'This run is being built right now', 'runBuilding');
     watcher.unwatch(m[1]);
-    for (const slot of ALL_SLOTS) {
-      stopMelon(watchKey(m[1], slot));
-      watcher.unwatch(watchKey(m[1], slot));
-    }
+    await Promise.all(ALL_SLOTS.map((slot) => stopMelon(watchKey(m[1], slot))));
+    for (const slot of ALL_SLOTS) watcher.unwatch(watchKey(m[1], slot));
     const trash = trashRun(m[1]);
     const cfg = loadConfig();
     const watches = { ...(cfg.watches || {}) };
@@ -1785,8 +1786,8 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
   route('POST', /^\/api\/emulators\/([a-z0-9]+)\/install$/, async (req, m) => installEmulator(m[1]));
   route('GET', /^\/api\/emulators\/running$/, () => ({ running: emulatorRunning() }));
   route('POST', /^\/api\/emulators\/([a-z0-9]+)\/launch$/, async (req, m) => {
-    const { runId, slot, romId, patchId, arm9Port, attach } = await readBody(req);
-    if (attach && (m[1] !== 'melonds' || !runId || arm9Port == null)) throw httpError(400, 'Choose a run and a melonDS ARM9 port');
+    const { runId, slot, romId, patchId, arm9Port, attach, levelCap } = await readBody(req);
+    if (attach && (m[1] !== 'melonds' || !runId || arm9Port == null)) throw httpError(400, 'Choose a run and a melonDS ARM9 port', 'badRequest');
     let romPath;
     let melon;
     let melonSave;
@@ -1808,10 +1809,11 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
       const more = m[1] === 'melonds' && sav ? melonSaveDirs(melonConfigFiles({ exePath: detectEmulator('melonds', loadConfig().emulatorPaths?.melonds).path || null })).map((d) => join(d, basename(sav))) : [];
       if (m[1] === 'melonds') {
         if (arm9Port != null) {
-          if (!Number.isInteger(arm9Port) || arm9Port < 1024 || arm9Port > 65535) throw httpError(400, 'Invalid melonDS ARM9 port');
+          if (!Number.isInteger(arm9Port) || arm9Port < 1024 || arm9Port > 65535) throw httpError(400, 'Invalid melonDS ARM9 port', 'melonPort');
+          if (levelCap != null && (!Number.isInteger(levelCap) || levelCap < 1 || levelCap > 100)) throw httpError(400, 'Invalid level cap', 'badCommand');
           const rom = melonGame(romPath, addresses());
-          if (!rom) throw httpError(409, 'This ROM has no supported melonDS live layout');
-          melon = { port: arm9Port, runId, slot, rom, emit };
+          if (!rom && attach) throw httpError(409, 'This ROM has no supported melonDS live layout', 'melonLayout');
+          if (rom) melon = { port: arm9Port, runId, slot, rom, emit };
         }
         melonSave = { manifest, sav, more };
       } else {
@@ -1835,20 +1837,29 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     const script = m[1] === 'mgba' ? live.luaScriptPath() : null;
     if (m[1] === 'azahar') azaharBridge();
     const key = watchKey(runId, slot);
-    if (runId && emulatorLaunches.has(key)) throw httpError(409, 'An emulator is already starting for this player');
+    if (runId && emulatorLaunches.has(key)) throw httpError(409, 'An emulator is already starting for this player', 'nativeBusy');
     if (melon && [...melonSessions, ...emulatorLaunches].some(([other, session]) => other !== key && session.port === melon.port)) {
-      throw httpError(409, 'This melonDS ARM9 port is already assigned to another player');
+      throw httpError(409, 'This melonDS ARM9 port is already assigned to another player', 'melonPortUsed');
+    }
+    const current = melonSessions.get(key);
+    if (attach && melon && current?.port === melon.port && !current.stopping && current.header.equals(melon.rom.header)) {
+      current.cap = levelCap ?? 100;
+      return { attached: true, live: true };
     }
     // Reserve the port before awaiting the process spawn so two simultaneous launches cannot claim it.
     if (runId) emulatorLaunches.set(key, { port: melon?.port });
     let result;
     try {
       result = attach ? { attached: true } : await launchRom(m[1], romPath, { customPath: loadConfig().emulatorPaths?.[m[1]], script });
+      if (runId) await stopMelon(key);
+      if (melon) {
+        const session = { port: melon.port, header: melon.rom.header, cap: levelCap ?? 100 };
+        session.stop = watchMelonDs({ ...melon, getCap: () => session.cap });
+        melonSessions.set(key, session);
+      }
     } finally {
       emulatorLaunches.delete(key);
     }
-    if (runId) stopMelon(key);
-    if (melon) melonSessions.set(key, { port: melon.port, stop: watchMelonDs(melon) });
     if (melonSave) {
       const { manifest, sav, more } = melonSave;
       if (sav && watcher.paths(runId)?.some((p) => sameFile(p, sav))) watcher.unwatch(runId);
@@ -1856,10 +1867,17 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
     } else if (runId) {
       watcher.unwatch(key);
     }
-    return result;
+    return m[1] === 'melonds' ? { ...result, live: !!melon } : result;
   });
-  route('DELETE', /^\/api\/live\/melonds\/([a-f0-9]{8})\/(p[1-4])$/, (req, m) => {
-    stopMelon(watchKey(m[1], m[2]));
+  route('PUT', /^\/api\/live\/melonds\/([a-f0-9]{8})\/(p[1-4])$/, async (req, m) => {
+    const { levelCap } = await readBody(req);
+    if (!Number.isInteger(levelCap) || levelCap < 1 || levelCap > 100) throw httpError(400, 'Invalid level cap', 'badCommand');
+    const session = melonSessions.get(watchKey(m[1], m[2]));
+    if (session && !session.stopping) session.cap = levelCap;
+    return { ok: true };
+  });
+  route('DELETE', /^\/api\/live\/melonds\/([a-f0-9]{8})\/(p[1-4])$/, async (req, m) => {
+    await stopMelon(watchKey(m[1], m[2]));
     return { ok: true };
   });
 
@@ -2501,7 +2519,8 @@ export function startServer({ port = 7373, host = '127.0.0.1', background = true
       }
       if (!deferAccount) setTimeout(() => accounts.loadSession(), 0).unref?.();
       // goOffline: the desktop app awaits it (bounded) before it quits – friends see the player go offline at once
-      resolvePromise({ server, port: actual, url: `http://localhost:${actual}`, goOffline: () => accounts.goOffline(), loadAccount: () => accounts.loadSession() });
+      const goOffline = () => Promise.all([accounts.goOffline(), ...[...melonSessions.keys()].map(stopMelon)]);
+      resolvePromise({ server, port: actual, url: `http://localhost:${actual}`, goOffline, loadAccount: () => accounts.loadSession() });
     });
   });
 }

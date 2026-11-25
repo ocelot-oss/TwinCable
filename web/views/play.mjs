@@ -16,7 +16,8 @@ import { DeathReveal, effectiveSpeed } from '../lib/reveal.mjs';
 import { MusicKeyTracker } from '/shared/live/location.mjs';
 import { probeGen67, runningVersion, locateCtrParty } from '/shared/live/gen67.mjs';
 import { PlayHome } from './playhome.mjs';
-import { PartyGrid } from './party.mjs';
+import { PartyGrid, TeamColumns } from './party.mjs';
+import { MonDetail } from './mondetail.mjs';
 import { PartnerScreens, PartnerTiles, usePartnerLayout, useScreenShare } from './partnerscreen.mjs';
 import { StatePanel, SaveAge, useSaveGuard, describeState, stateInfo, slotName, SHOT, MANUAL_SLOTS, AUTO_SLOT, otherCoreText } from './savestates.mjs';
 import { RunStrip, LinkedPairs, GroupTrack, BattlePanel, RulesDrawer, useBattlePanelPrefs } from './session-info.mjs';
@@ -1866,7 +1867,7 @@ export function GameSession({ session, mode }) {
     const top = Math.max(0, ...myParty.filter((m) => m && !m.isEgg).map((m) => m.level || 0));
     return cap && top ? { cap, boss, top, state: top > cap ? 'over' : top >= cap ? 'at' : top >= cap - 2 ? 'near' : 'ok' } : null;
   })();
-  const capValue = capNow?.cap || 100;
+  const capValue = isRun ? activeRunCap(doc, manifest, me) : 100;
   useEffect(() => {
     if (phase === 'running') emu()?.setLevelCap?.(capValue);
   }, [capValue, phase, nativeOn, target.link]);
@@ -2297,8 +2298,21 @@ function AzaharBridge({ fresh, isRun }) {
  * lives across frames like in the built-in loop: Gen 3 tells a Bad Egg from a torn read, Gen 1/2 a finished party
  * rewrite from one in progress, Gen 6/7 a deposited Pokémon from a slot being rewritten – only by comparing reads.
  */
+function activeRunCap(doc, manifest, slot) {
+  if (!doc || !manifest || doc.get('run:status', null) || !getRules(doc, manifest).levelCaps) return 100;
+  return levelCap(doc, manifest, slot).cap || 100;
+}
+
 export function ExternalFeed() {
-  const { liveInfo, applySnap, revealDeaths, manifest, externalRun, me } = useApp();
+  const { liveInfo: otherLive, melonLive, applySnap, revealDeaths, doc, manifest, externalRun, me } = useApp();
+  const liveInfo = externalRun?.emu === 'melonds' ? melonLive : otherLive;
+  const cap = activeRunCap(doc, manifest, me);
+  const melonRun = externalRun?.emu === 'melonds' && externalRun.runId === manifest?.id &&
+    melonLive?.runId === manifest.id && melonLive.slot === me && /^IR[AB]O$/.test(melonLive.game?.code) &&
+    melonLive.status !== 'off' ? manifest.id : null;
+  useEffect(() => {
+    if (melonRun) api.put(`/api/live/melonds/${melonRun}/${me}`, { levelCap: cap }).catch((error) => console.warn('melonDS XP cap', error));
+  }, [melonRun, me, cap]);
   const readState = useRef({});
   // (deaths shown when the game shows them, lib/reveal.mjs – the emulator's speed isn't known here: timed at 1×)
   const reveal = useRef(null);
@@ -2332,19 +2346,23 @@ export function ExternalFeed() {
       }
       // GBA: the ROM's own species table – a hack's other Pokémon; an expanded engine isn't read at all (see the loop above)
       let sp = null;
-      if (entry.gen === 3 && externalRun.rom) {
+      const bw = externalRun.emu === 'melonds' && /^IR[AB]O$/.test(liveInfo.game?.code);
+      if ((entry.gen === 3 || bw) && externalRun.rom) {
         await loadRomLocations(externalRun.rom);
         if (cancelled) return;
         sp = romSpeciesNow();
         if (sp?.engine === 'expanded' || romMaps3Now()?.moved) return;
       }
       // (the ROM's types too: the Gen 3 Pokémon's abilities come with them – romtypes.mjs gbaAbilities)
-      const types = entry.gen === 3 && externalRun.rom ? romOwnNow()?.types || null : null;
-      const res = readLiveParty(entry, regionReader(liveInfo.regions), (sp ? T.withSpecies(sp) : T).withRom(types ? { types } : null).withShinyOdds(shinyThreshold(manifest.shiny)), readState.current);
+      const own = (entry.gen === 3 || bw) && externalRun.rom ? romOwnNow() : null;
+      const tables = (sp ? T.withSpecies(sp) : T).withRom(bw ? own : own?.types ? { types: own.types } : null);
+      const res = readLiveParty(entry, regionReader(liveInfo.regions), tables.withShinyOdds(shinyThreshold(manifest.shiny)), readState.current);
       if (!res?.party) return;
       const party = confirmFaints(res.party, readState.current);
       const shown = reveal.current.see(party, { speed: 1, gen: entry.gen });
-      applySnap({ source: 'live', party, game: entry.id, ...(res.badges !== undefined ? { badges: res.badges } : {}) }, { held: shown.held });
+      const romCaps = bw && own?.caps ? { caps: own.caps.caps, leaders: own.caps.leaders, final: own.caps.final } : undefined;
+      applySnap({ source: 'live', party, game: entry.id, ...(res.badges !== undefined ? { badges: res.badges } : {}),
+        ...(romCaps !== undefined ? { romCaps } : {}) }, { held: shown.held });
     })().catch((err) => console.warn('live frame', err));
     return () => { cancelled = true; };
   }, [liveInfo?.regions, manifest?.id, externalRun, me]);
@@ -2379,10 +2397,12 @@ function SaveWatchLine({ runId, emu, slot }) {
 }
 
 function ExternalPlay({ target, emu, canEmbed = false }) {
-  const { status, toast, liveInfo, manifest, me, route, setExternalRun, reloadManifest, startSession, doc, link } = useApp();
+  const { status, toast, liveInfo: otherLive, melonLive, manifest, me, route, setExternalRun, reloadManifest, startSession, doc, link } = useApp();
+  const liveInfo = emu === 'melonds' ? melonLive : otherLive;
   const e = status.emulators[emu];
   const isRun = target.kind === 'run';
   const melon = emu === 'melonds' && isRun;
+  const cap = melon && /^IR[AB]O$/.test(target.code || '') ? activeRunCap(doc, manifest, me) : 100;
   const fresh = !!(liveInfo?.at && Date.now() - liveInfo.at < 5000
     && (melon ? liveInfo.regions?.length && liveInfo.emulator === 'melonds' && liveInfo.runId === manifest?.id && liveInfo.slot === me : liveInfo.emulator !== 'melonds'));
   // Re-render once the last frame gets stale, so the "live" LED goes off when frames stop.
@@ -2393,17 +2413,17 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
     return () => clearTimeout(id);
   }, [liveInfo?.at, fresh]);
   const [launching, setLaunching] = useState(false); // a double click must not start the emulator twice
-  const [arm9Port, setArm9Port] = useState('');
+  const [arm9Port, setArm9Port] = useState('3333');
   const validPort = Number.isInteger(Number(arm9Port)) && Number(arm9Port) >= 1024 && Number(arm9Port) <= 65535;
   const [attached, setAttached] = useState(false);
   const launch = async (attach = false) => {
     setLaunching(true);
     try {
       // ROM hacks: the server launches the patched copy (patchId), not the vanilla base ROM
-      await api.post(`/api/emulators/${emu}/launch`, isRun
-        ? { runId: manifest.id, slot: me, ...(melon && validPort ? { arm9Port: Number(arm9Port), attach } : {}) }
+      const result = await api.post(`/api/emulators/${emu}/launch`, isRun
+        ? { runId: manifest.id, slot: me, ...(melon && validPort ? { arm9Port: Number(arm9Port), attach, levelCap: cap } : {}) }
         : { romId: route.params.rom, patchId: route.params.patch || undefined });
-      setAttached(melon && validPort);
+      setAttached(result.live === true);
       if (isRun) reloadManifest(manifest.id).catch(() => {});
       if (!attach) toast({ kind: 'ok', title: e.name, text: t('lib.launched', 'Starting …') });
     } catch (err) {
@@ -2416,8 +2436,10 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
     try {
       await api.del(`/api/live/melonds/${manifest.id}/${me}`);
       setAttached(false);
+      return true;
     } catch (err) {
       toast({ kind: 'death', title: e.name, text: err.message });
+      return false;
     }
   };
   // Frames of this run from now on go into it – also while another section is open (ExternalFeed in the app shell)
@@ -2425,9 +2447,15 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
     if (isRun && manifest?.id) setExternalRun({ runId: manifest.id, rom: target.rom || null, emu });
   }, [isRun, manifest?.id, target.rom, emu, me]);
   useEffect(() => {
-    setArm9Port('');
+    setArm9Port('3333');
     setAttached(false);
   }, [manifest?.id, me]);
+  const melonStatus = melonLive?.runId === manifest?.id && melonLive?.slot === me ? melonLive.status : null;
+  const melonMessage = fresh ? t('ext.melonLive', 'Live team sync is active.')
+    : melonStatus === 'connection' ? t('ext.melonConnection', 'No ARM9 connection. Check the port and restart the ROM after changing melonDS settings.')
+    : melonStatus === 'rom' ? t('ext.melonRom', 'Open the ROM generated for your slot in this run.')
+    : melonStatus === 'party' ? t('ext.melonParty', 'Connected to melonDS. Waiting for a Pokémon in your party.')
+    : t('ext.melonWaiting', 'Waiting for live team data. In-game saves are read as a fallback.');
   if (!e) return null;
   if (!e.installed) return html`<${InstallEmulator} target=${target} emu=${emu} />`;
   const cia = /\.z?cia(?:$|&)/i.test(decodeURIComponent(target.rom || '')); // installed in Azahar, not started from the file
@@ -2436,7 +2464,8 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
     <section class="panel stack">
       <h2>${t('ext.title', 'Playing with {emu}', { emu: e.name })}</h2>
       ${canEmbed && html`<div>
-        <button class="btn primary big" onClick=${() => {
+        <button class="btn primary big" disabled=${launching} onClick=${async () => {
+          if (melon && !(await disconnect())) return;
           setExternalRun(null);
           startSession({ ...target, embeddedMelon: true });
         }}><${Icon} name="play" size=${16} />${t('ext.embedMelon', 'Play melonDS inside twincable')}</button>
@@ -2448,25 +2477,44 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
       <div class="row">
         <button class="btn primary big" disabled=${launching || (melon && arm9Port !== '' && !validPort)} onClick=${() => launch()}><${Icon} name="play" size=${16} />${t('ext.launch', 'Launch {emu}', { emu: e.name })}</button>
         ${melon && html`<button class="btn" disabled=${launching || !validPort} onClick=${() => launch(true)}>${t('ext.melonAttach', 'Connect to a running ROM')}</button>
-          ${(attached || fresh) && html`<button class="btn" disabled=${launching} onClick=${disconnect}>${t('ext.melonDisconnect', 'Stop live sync')}</button>`}`}
+          ${(attached || (melonStatus && melonStatus !== 'off')) && html`<button class="btn" disabled=${launching} onClick=${disconnect}>${t('ext.melonDisconnect', 'Stop live sync')}</button>`}`}
       </div>
       ${cia && html`<p class="small muted">${t('ext.ciaText', 'A .cia file is installed, not started: in Azahar choose File › Install CIA… and pick it, then start the game from Azahar’s list. Live data works the same.')}</p>`}
       ${e.live === 'script'
         ? html`<${ScriptBridge} fresh=${fresh} />`
         : e.live === 'rpc'
           ? html`<${AzaharBridge} fresh=${fresh} isRun=${isRun} />`
-          : melon && html`<p class="small" role="status">${fresh
-            ? t('ext.melonLive', 'Live team sync is active.')
-            : t('ext.melonWaiting', 'Waiting for live team data. In-game saves are read as a fallback.')}</p>
+          : melon && html`<p class="small" role="status">${melonMessage}</p>
+            ${cap < 100 && fresh && liveInfo.inBattle && html`<p class="tiny muted" role="status">${liveInfo.capActive
+              ? t('play.hardCapOn', 'Battle XP is capped at Lv {cap}.', { cap })
+              : t('play.hardCapUnavailable', 'The game’s XP cap is unavailable in this session.')}</p>`}
             ${!fresh && manifest?.id && html`<${SaveWatchLine} runId=${manifest.id} emu=${e.name} slot=${me} />`}`}
       ${target.system !== '3ds' && html`<p class="tiny faint">${t('ext.switch', 'You can switch back to the built-in emulator in the settings.')}</p>`}
     </section>
-    ${emu === 'melonds' && html`<${MelonWindow} key=${target.key} party=${isRun && doc ? live(doc, me)?.party : null}
+    ${melon && doc && manifest && html`<${MelonTeams} key=${target.key} />`}
+    ${emu === 'melonds' && html`<${MelonWindow} key=${target.key}
       link=${isRun ? link : null} inBattle=${melon && fresh && liveInfo.inBattle === true} />`}
   </div>`;
 }
 
-function MelonWindow({ party, link, inBattle }) {
+function MelonTeams() {
+  const { doc, manifest, runData, me } = useApp();
+  const [detail, setDetail] = useState(null);
+  const slots = slotsOf(manifest);
+  const teams = Object.fromEntries(slots.map((slot) => [slot, live(doc, slot)?.party || []]));
+  const names = Object.fromEntries(Object.entries(getPlayers(doc, manifest)).map(([slot, player]) => [slot, player.name]));
+  const gen = gameById(manifest.game?.id)?.generation || genOfRun(manifest, runData);
+  const shown = detail && teams[detail.slot]?.find((mon) => (mon.key || mon.pid) === detail.id);
+  return html`<section class="panel stack">
+    <h2>${t('board.viewTeams', 'Teams')}</h2>
+    <${TeamColumns} slots=${slots} teams=${teams} names=${names} gen=${gen} me=${me}
+      onPick=${(mon, slot) => setDetail({ slot, id: mon.key || mon.pid })} />
+    ${shown && html`<${MonDetail} mon=${shown} gen=${gen} slot=${detail.slot} owner=${names[detail.slot]}
+      onClose=${() => setDetail(null)} />`}
+  </section>`;
+}
+
+function MelonWindow({ link, inBattle }) {
   const video = useRef(null);
   const source = useRef(null);
   const generation = useRef(0);
@@ -2535,6 +2583,5 @@ function MelonWindow({ party, link, inBattle }) {
     </button>`}</div>
     ${error && html`<p class="small muted" role="status">${t('ext.melonWindowError', 'Select an open melonDS window to show it here.')}</p>`}
     ${preview && html`<video ref=${video} autoplay muted playsinline style="width:100%;max-height:65vh;object-fit:contain"></video>`}
-    ${preview && party?.length > 0 && html`<${PartyGrid} party=${party} compact layout="row" emptySlots=${false} />`}
   </section>`;
 }

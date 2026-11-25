@@ -66,20 +66,24 @@ static void check_bw(uint8_t *ram) {
   unsigned previous = 0;
   assert(nds_bw_exp_cap("IRBO") && nds_bw_exp_cap("IRAO") && !nds_bw_exp_cap("IREO"));
   half(fn, 0xb5f8);
-  half(fn + 8, 0x7e25);
-  half(fn + 10, 0x2d64);
-  half(fn + 12, 0xd300);
-  half(fn + 14, 0xe0c7);
-  call(fn + 40, at + 40, growth);
+  half(fn + 8, 0x7e2a);
+  half(fn + 12, 0x2a64);
+  half(fn + 14, 0xd300);
+  half(fn + 16, 0xe0c4);
+  call(fn + 38, at + 38, growth);
   assert(!nds_apply_bw_cap(ram, 20, &guard, &previous));
-  assert(nds_half(fn + 10) == 0x2d64);
-  call(fn + 444, at + 444, growth);
+  assert(nds_half(fn + 12) == 0x2a64);
+  half(fn + 444, 0x4b02);
+  half(fn + 446, 0x2264);
+  half(fn + 448, 0x4718);
+  half(fn + 456, (uint16_t)(growth | 1));
+  half(fn + 458, (uint16_t)(growth >> 16));
   assert(nds_apply_bw_cap(ram, 20, &guard, &previous));
-  assert(guard == at + 10 && nds_half(fn + 10) == 0x2d14);
+  assert(guard == at + 12 && nds_half(fn + 12) == 0x2a14);
   assert(nds_apply_bw_cap(ram, 23, &guard, &previous));
-  assert(nds_half(fn + 10) == 0x2d17);
+  assert(nds_half(fn + 12) == 0x2a17);
   assert(nds_apply_bw_cap(ram, 100, &guard, &previous));
-  assert(nds_half(fn + 10) == 0x2d64);
+  assert(nds_half(fn + 12) == 0x2a64);
 }
 
 int main(void) {
