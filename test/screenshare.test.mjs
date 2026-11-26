@@ -301,8 +301,15 @@ test('direct link: the game goes out as a video stream; paused → track kept on
     playing = false;
     await until(() => views.at(-1).known && !views.at(-1).active);
     assert.equal(stream.track.enabled, false);
+    const startedAt = a.share.startedAt;
     a.stopScreenShare();
     assert.equal(stream.track.readyState, 'ended');
+    await until(() => views.at(-1).ended);
+    b._peerStreamIn(stream, null, { kind: 'screen', from: 'p1', startedAt });
+    b._screenIn({ ...screenFrame('p1', jpeg(5000), 'image/jpeg', 'nds'), startedAt });
+    assert.equal(views.at(-1).active, false);
+    assert.equal(views.at(-1).stream, null);
+    assert.equal(views.at(-1).url, null);
   } finally {
     a.stop();
     b.stop();

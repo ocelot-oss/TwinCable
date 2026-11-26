@@ -652,23 +652,26 @@ function setupPermissions() {
     || (permission === 'display-capture' && canCapture(wc, origin)));
   ses.setDisplayMediaRequestHandler(async (request, reply) => {
     const owner = win;
-    if (!owner || request.frame !== owner.webContents.mainFrame || !canCapture(owner.webContents, request.securityOrigin)
-      || !request.userGesture || !request.videoRequested || request.audioRequested) return reply({});
+    const frame = request.frame;
+    const valid = () => !!owner && win === owner && !owner.isDestroyed() && frame === owner.webContents.mainFrame
+      && canCapture(owner.webContents, frame?.url);
+    if (!valid() || !canCapture(owner.webContents, request.securityOrigin)
+      || !request.userGesture || !request.videoRequested || request.audioRequested) return reply(null);
     try {
       const sources = await desktopCapturer.getSources({ types: ['window'], thumbnailSize: { width: 0, height: 0 } });
       const windows = sources.filter((source) => source.name.toLowerCase().includes('melonds'));
-      if (!windows.length || win !== owner || owner.isDestroyed()) return reply({});
+      if (!windows.length || !valid()) return reply(null);
       if (windows.length === 1) return reply({ video: windows[0] });
       const cancelId = windows.length;
       const { response } = await dialog.showMessageBox(owner, {
         message: 'melonDS', buttons: [...windows.map((source) => source.name), readConfig().lang === 'fr' ? 'Annuler' : 'Cancel'],
         cancelId, defaultId: cancelId, noLink: true,
       });
-      if (win === owner && !owner.isDestroyed() && windows[response]) return reply({ video: windows[response] });
+      if (valid() && windows[response]) return reply({ video: windows[response] });
     } catch {
       // The compositor can deny window capture.
     }
-    reply({});
+    reply(null);
   });
   ses.setDevicePermissionHandler(() => false);
 }

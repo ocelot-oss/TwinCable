@@ -177,6 +177,13 @@ function grab(src, hold, probe) {
  * stays (lib/pshold.mjs) until the next one has drawn, and under the message when the picture stopped.
  */
 export function Picture({ info, name, onMeasure }) {
+  if (info.view?.ended) {
+    return html`<span class="ps-msg" role="status">${message(info.view, name)}</span>`;
+  }
+  return html`<${ActivePicture} info=${info} name=${name} onMeasure=${onMeasure} />`;
+}
+
+function ActivePicture({ info, name, onMeasure }) {
   const { stream, imageMode, live, view } = info;
   const video = useRef(null);
   const img = useRef(null);

@@ -3174,6 +3174,8 @@
   "ext.showMelonWindow": "Afficher la fenêtre locale de melonDS",
   "ext.hideMelonWindow": "Masquer la fenêtre de melonDS",
   "ext.melonWindowError": "Sélectionne une fenêtre melonDS ouverte pour l’afficher ici.",
+  "ext.melonOpponent": "Affronte {species} · Niv. {level}",
+  "ext.melonInBattle": "En combat",
   "play.shareBattle": "Partager ce combat",
   "play.stopBattleShare": "Arrêter le partage de ce combat",
   "play.hardCapOn": "L’XP de combat est plafonnée au niveau {cap}.",

@@ -21,7 +21,7 @@ import { MonDetail } from './mondetail.mjs';
 import { PartnerScreens, PartnerTiles, usePartnerLayout, useScreenShare } from './partnerscreen.mjs';
 import { StatePanel, SaveAge, useSaveGuard, describeState, stateInfo, slotName, SHOT, MANUAL_SLOTS, AUTO_SLOT, otherCoreText } from './savestates.mjs';
 import { RunStrip, LinkedPairs, GroupTrack, BattlePanel, RulesDrawer, useBattlePanelPrefs } from './session-info.mjs';
-import { LocationSign, readHere, nextHere, areaOfHere, musicInfo, loadRomLocations, romSpeciesNow, romDataReady, romWramNow, romMaps3Now, romOwnNow, romDataNow, resetRomData } from './location.mjs';
+import { LocationSign, readHere, nextHere, areaOfHere, chipFor, musicInfo, loadRomLocations, romSpeciesNow, romDataReady, romWramNow, romMaps3Now, romOwnNow, romDataNow, resetRomData } from './location.mjs';
 import { FeatureCheck, romFeatures } from '/shared/live/features.mjs';
 import { gymCapsFamily } from '/shared/routes.mjs';
 import { shiftEntry } from '/shared/live/romwram.mjs';
@@ -2314,6 +2314,11 @@ export function ExternalFeed() {
     if (melonRun) api.put(`/api/live/melonds/${melonRun}/${me}`, { levelCap: cap }).catch((error) => console.warn('melonDS XP cap', error));
   }, [melonRun, me, cap]);
   const readState = useRef({});
+  const melonKey = externalRun?.emu === 'melonds' && externalRun.runId === manifest?.id && me ? `melon:${me}` : null;
+  useEffect(() => {
+    if (!doc || !melonKey) return;
+    return () => { if (doc.get(melonKey)) doc.set(melonKey, null); };
+  }, [doc, melonKey]);
   // (deaths shown when the game shows them, lib/reveal.mjs – the emulator's speed isn't known here: timed at 1×)
   const reveal = useRef(null);
   if (!reveal.current) reveal.current = new DeathReveal();
@@ -2329,6 +2334,7 @@ export function ExternalFeed() {
   }, []);
   useEffect(() => {
     if (!liveInfo?.inBattle || liveInfo.runId !== manifest?.id || liveInfo.slot !== me) setMelonBattle(null);
+    if (melonKey && doc?.get(melonKey) && !liveInfo?.regions?.length) doc.set(melonKey, null);
     if (!liveInfo?.regions?.length || Date.now() - liveInfo.at >= 5000 || !manifest || externalRun?.runId !== manifest.id) return;
     if (externalRun.emu === 'melonds' && (liveInfo.emulator !== 'melonds' || liveInfo.runId !== manifest.id || liveInfo.slot !== me)) return;
     if (liveInfo.emulator === 'melonds' && externalRun.emu !== 'melonds') return;
@@ -2362,15 +2368,25 @@ export function ExternalFeed() {
       const res = readLiveParty(entry, read, tables, readState.current);
       if (!res?.party) return;
       const fight = bw ? readBwBattle(entry, read, tables, readState.current, res.party, liveInfo.inBattle) : null;
+      const here = bw ? readHere(entry, read, readState.current) : null;
       const party = confirmFaints(withBattleHp(res.party, fight, readState.current), readState.current, fight);
       const shown = reveal.current.see(party, { speed: 1, gen: entry.gen, battle: fight });
       if (bw) setMelonBattle(shown.battle ? { runId: manifest.id, slot: me, game: entry.id, battle: shown.battle, party: shown.party } : null);
+      if (melonKey && doc) {
+        const enemy = shown.battle?.enemy;
+        const opponent = enemy?.species ? { species: enemy.species, level: enemy.level ?? null } : null;
+        const next = { here, opponent, inBattle: liveInfo.inBattle === true };
+        const { at, ...previous } = doc.get(melonKey) || {};
+        if (!at || Date.now() - at > 4000 || JSON.stringify(previous) !== JSON.stringify(next)) {
+          doc.set(melonKey, { ...next, at: Date.now() });
+        }
+      }
       const romCaps = bw && own?.caps ? { caps: own.caps.caps, leaders: own.caps.leaders, final: own.caps.final } : undefined;
-      applySnap({ source: 'live', party, game: entry.id, ...(res.badges !== undefined ? { badges: res.badges } : {}),
+      applySnap({ source: 'live', party, game: entry.id, here, ...(res.badges !== undefined ? { badges: res.badges } : {}),
         ...(romCaps !== undefined ? { romCaps } : {}) }, { battle: fight, held: shown.held });
     })().catch((err) => console.warn('live frame', err));
     return () => { cancelled = true; };
-  }, [liveInfo?.regions, manifest?.id, externalRun, me, setMelonBattle]);
+  }, [liveInfo, manifest?.id, externalRun, me, setMelonBattle, melonKey, doc]);
   return null;
 }
 
@@ -2407,8 +2423,9 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
   const e = status.emulators[emu];
   const isRun = target.kind === 'run';
   const melon = emu === 'melonds' && isRun;
+  const now = useMelonClock(melon);
   const cap = melon && /^IR[AB]O$/.test(target.code || '') ? activeRunCap(doc, manifest, me) : 100;
-  const fresh = !!(liveInfo?.at && Date.now() - liveInfo.at < 5000
+  const fresh = !!(liveInfo?.at && (melon ? now : Date.now()) - liveInfo.at < 5000
     && (melon ? liveInfo.regions?.length && liveInfo.emulator === 'melonds' && liveInfo.runId === manifest?.id && liveInfo.slot === me : liveInfo.emulator !== 'melonds'));
   const inBattle = melon && fresh && liveInfo.inBattle === true;
   const fight = inBattle && melonBattle?.runId === manifest?.id && melonBattle?.slot === me ? melonBattle : null;
@@ -2512,6 +2529,16 @@ function ExternalPlay({ target, emu, canEmbed = false }) {
   </div>`;
 }
 
+function useMelonClock(enabled = true) {
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    if (!enabled) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [enabled]);
+  return now;
+}
+
 function MelonTeams() {
   const { doc, manifest, runData, me } = useApp();
   const [detail, setDetail] = useState(null);
@@ -2519,11 +2546,28 @@ function MelonTeams() {
   const teams = Object.fromEntries(slots.map((slot) => [slot, live(doc, slot)?.party || []]));
   const names = Object.fromEntries(Object.entries(getPlayers(doc, manifest)).map(([slot, player]) => [slot, player.name]));
   const gen = gameById(manifest.game?.id)?.generation || genOfRun(manifest, runData);
+  const now = useMelonClock();
   const shown = detail && teams[detail.slot]?.find((mon) => (mon.key || mon.pid) === detail.id);
   return html`<section class="panel stack">
     <h2>${t('board.viewTeams', 'Teams')}</h2>
     <${TeamColumns} slots=${slots} teams=${teams} names=${names} gen=${gen} me=${me}
       onPick=${(mon, slot) => setDetail({ slot, id: mon.key || mon.pid })} />
+    ${slots.map((slot) => {
+      const state = doc.get(`melon:${slot}`);
+      if (!state?.at || now - state.at >= 12000 || (!state.here && !state.inBattle)) return null;
+      const area = !state.here?.link && !isTogether(manifest) ? areaForPlace(doc, manifest, gen, state.here) : null;
+      const capture = area ? chipFor(pairState(doc, area, slots).state, encounter(doc, area, slot)) : null;
+      const enemy = state.opponent;
+      return html`<div class="row" key=${slot}>
+        <b class=${`who-${slot}`}>${names[slot] || slot.toUpperCase()}</b>
+        ${state.inBattle && html`<span>${enemy
+          ? t('ext.melonOpponent', 'Battling {species} · Lv {level}', { species: speciesName(enemy.species), level: enemy.level ?? '—' })
+          : t('ext.melonInBattle', 'In battle')}</span>`}
+        ${state.here && html`<span>${state.here.name}</span>`}
+        ${capture && html`<span class="small muted">${capture.text}</span>`}
+      </div>`;
+    })}
+    ${slots.length > 1 && !isTogether(manifest) && html`<${LinkedPairs} mine=${teams[me]} gen=${gen} />`}
     ${shown && html`<${MonDetail} mon=${shown} gen=${gen} slot=${detail.slot} owner=${names[detail.slot]}
       onClose=${() => setDetail(null)} />`}
   </section>`;
@@ -2539,6 +2583,7 @@ function MelonWindow({ link, inBattle }) {
   const [sharing, setSharing] = useState(false);
   const release = () => {
     generation.current++;
+    if (video.current) video.current.srcObject = null;
     for (const track of source.current?.getTracks() || []) track.stop();
     source.current = null;
   };
@@ -2548,9 +2593,11 @@ function MelonWindow({ link, inBattle }) {
     setError(false);
     setPending(true);
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: { displaySurface: 'window' }, audio: false });
+      // The desktop app supplies a window chosen by the main process. Browser users select one in the browser picker.
+      const desktop = globalThis.sls?.native === true;
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: desktop ? true : { displaySurface: 'window' }, audio: false });
       const track = stream.getVideoTracks()[0];
-      if (id !== generation.current || !track || (track.getSettings().displaySurface && track.getSettings().displaySurface !== 'window')) {
+      if (id !== generation.current || !track || (!desktop && track.getSettings().displaySurface !== 'window')) {
         stream.getTracks().forEach((item) => item.stop());
         if (id === generation.current) setError(true);
         return;
@@ -2560,12 +2607,13 @@ function MelonWindow({ link, inBattle }) {
         if (source.current !== stream) return;
         release();
         setPreview(false);
+        setSharing(false);
         setPending(false);
       }, { once: true });
       setPreview(true);
       if (share) setSharing(true);
-    } catch (err) {
-      if (id === generation.current && err.name !== 'AbortError') setError(true);
+    } catch {
+      if (id === generation.current) setError(true);
     } finally {
       if (id === generation.current) setPending(false);
     }

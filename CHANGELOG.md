@@ -2,6 +2,13 @@
 
 `npm run release` takes the release notes from the section of the version being released.
 
+## 1.0.5
+
+- Standalone melonDS reconnects after brief ARM9 interruptions without clearing the last live state.
+- Pokémon Black and White (US) share the current opponent, its level and the encounter status of the current area.
+- The standalone play screen shows SoulLink pairs alongside both teams.
+- The partner's picture clears when a battle share ends. The desktop preview captures the selected melonDS window.
+
 ## 1.0.4
 
 - Display live HP and wild Pokémon details in standalone melonDS for English Pokémon Black and White.

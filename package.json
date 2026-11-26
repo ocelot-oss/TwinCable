@@ -1,6 +1,6 @@
 {
   "name": "twincable",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "description": "twincable – Pokémon SoulLinks (2–4 players) and Nuzlockes with a built-in emulator, live sync and a game library",
   "license": "GPL-3.0-or-later",

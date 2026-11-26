@@ -2,6 +2,7 @@ import { createConnection } from 'node:net';
 import { closeSync, openSync, readSync } from 'node:fs';
 import { setTimeout as delay } from 'node:timers/promises';
 import { bwBattleRegions, findEntry } from '../../shared/live/parse.mjs';
+import { bwLocationRegions } from '../../shared/live/location.mjs';
 import { BW_EXP_START, BW_EXP_END, findBwExpGuard, isBwExpGuard } from '../../web/lib/bw-exp-cap.mjs';
 
 const HEADER_ADDR = 0x027ffe00;
@@ -146,6 +147,9 @@ async function snapshot(client, { entry }) {
   if (party?.readUInt32LE(0) !== 6 || party.readUInt32LE(4) < 1 || party.readUInt32LE(4) > 6) return { status: 'party' };
   const battle = inBattle && bwBattleRegions(entry);
   if (battle) for (const { addr, len } of Object.values(battle)) await read(addr, len);
+  if (/^IR[AB]O$/.test(entry.code || '') || /^(black|white)_us$/.test(entry.id)) {
+    for (const { addr, len } of bwLocationRegions) await read(addr, len);
+  }
   return { status: 'live', regions, inBattle };
 }
 
@@ -157,6 +161,8 @@ export function watchMelonDs({ port, runId, slot, rom, emit, getCap = () => 100 
   let pending;
   let guard;
   let previous = 100;
+  let scanAfter = 0;
+  let lastLive = 0;
   const supportsCap = /^IR[AB]O$/.test(rom.game.code);
   const matchesRom = (connection) => connection.read(HEADER_ADDR, HEADER_SIZE).then((header) => header.equals(rom.header));
   const locateExpGuard = async (connection, offset, length) => {
@@ -175,7 +181,8 @@ export function watchMelonDs({ port, runId, slot, rom, emit, getCap = () => 100 
       }
       guard = null;
     }
-    if (cap === 100 || !inBattle || stopped) return false;
+    if (cap === 100 || !inBattle || stopped || Date.now() < scanAfter) return false;
+    scanAfter = Date.now() + 3000;
     // The retail routine starts around 0x021d69b8; try its block first to avoid delaying a battle snapshot.
     const found = await locateExpGuard(connection, 0x1d6900, 0x400) ??
       await locateExpGuard(connection, BW_EXP_START, BW_EXP_END - BW_EXP_START);
@@ -204,6 +211,9 @@ export function watchMelonDs({ port, runId, slot, rom, emit, getCap = () => 100 
         await client.start();
       }
       const frame = await matchesRom(client) ? await snapshot(client, rom) : { status: 'rom' };
+      if (frame.status === 'party' && Date.now() - lastLive < 4500) return;
+      if (frame.regions) lastLive = Date.now();
+      if (!frame.inBattle) scanAfter = 0;
       if (!stopped && supportsCap && frame.status !== 'rom') {
         try {
           frame.capActive = await applyCap(client, getCap(), frame.inBattle);
@@ -215,8 +225,8 @@ export function watchMelonDs({ port, runId, slot, rom, emit, getCap = () => 100 
     } catch {
       client?.close();
       client = null;
-      if (!stopped) announce({ status: 'connection' });
-      delay = 1500;
+      if (!stopped && Date.now() - lastLive >= 4500) announce({ status: 'connection' });
+      delay = 500;
     } finally {
       if (!stopped) schedule(delay);
     }

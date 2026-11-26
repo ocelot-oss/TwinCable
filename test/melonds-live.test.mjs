@@ -6,6 +6,7 @@ import { test } from 'node:test';
 import { watchMelonDs } from '../server/lib/melonds-live.mjs';
 import { encryptPK4 } from '../shared/gen4save.mjs';
 import { bwBattleRegions, findEntry, LiveTables, readBwBattle, readLiveParty, regionReader, withBattleHp } from '../shared/live/parse.mjs';
+import { bwLocationRegions } from '../shared/live/location.mjs';
 import { BW_EXP_START, BW_EXP_END } from '../web/lib/bw-exp-cap.mjs';
 
 const data = (file) => JSON.parse(readFileSync(new URL(`../shared/data/${file}.json`, import.meta.url)));
@@ -69,7 +70,9 @@ async function stub(t, slot, hp, { legacy = false } = {}) {
   };
   setBattleHP(hp, 40);
   const battleMemory = [[ranges.player, Buffer.from(party)], [ranges.enemy, foe], [ranges.stats, stats]];
+  let connection;
   const server = createServer((socket) => {
+    connection = socket;
     let buffer = '';
     let attached = false;
     let running = false;
@@ -127,7 +130,8 @@ async function stub(t, slot, hp, { legacy = false } = {}) {
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   t.after(() => { server.close(); });
-  return { header, port: server.address().port, setHP, setBattleHP, setBattle: (on) => battle.writeUInt16LE(on ? 0x2100 : 0), cap: () => overlay[fn + 12] };
+  return { header, port: server.address().port, setHP, setBattleHP, setBattle: (on) => battle.writeUInt16LE(on ? 0x2100 : 0),
+    interrupt: () => connection.destroy(), cap: () => overlay[fn + 12] };
 }
 
 test('two melonDS feeds stay assigned to their slots and report HP changes without a save', { timeout: 5000 }, async (t) => {
@@ -147,8 +151,12 @@ test('two melonDS feeds stay assigned to their slots and report HP changes witho
             assert.equal(event, 'live');
             assert.equal(frame.runId, 'aaaaaaaa');
             assert.equal(frame.slot, slot);
-            if (!frame.regions.length) return;
+            if (!frame.regions.length) {
+              assert.ok(!started || frame.status === 'off', 'a brief disconnect should preserve the last live state');
+              return;
+            }
             const read = regionReader(frame.regions);
+            for (const { addr, len } of bwLocationRegions) assert.equal(read(addr, len)?.length, len);
             const result = readLiveParty(entry, read, gen4);
             assert.ok(result?.party);
             const fight = readBwBattle(entry, read, gen4, readState, result.party, frame.inBattle);
@@ -158,6 +166,7 @@ test('two melonDS feeds stay assigned to their slots and report HP changes witho
               started = true;
               one.setBattleHP(12, 18);
               one.setBattle(true);
+              one.interrupt();
             }
             if (slot === 'p1' && frame.inBattle) {
               assert.equal(frame.capActive, true);

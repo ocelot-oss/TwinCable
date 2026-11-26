@@ -363,6 +363,8 @@ const BW_SCAN_SLOW_AFTER = 4;
 const BW_KEEP = 3;
 const BW_READ = 0x32; // the header and the zone id after it
 
+export const bwLocationRegions = BW_HEADER_AT.map((addr) => ({ addr, len: BW_READ }));
+
 /** 'bw' | 'b2w2' when the ROM's data lets the place be read (Black/White: with its zone headers), else null. */
 const gen5Family = (rom) => {
   const c = String(rom?.code || '').slice(0, 3).toUpperCase();

@@ -132,7 +132,7 @@ function relayGroup(clients) {
     },
   };
 }
-const NO_SCREEN = { known: false, active: false, held: false, mode: null, url: null, blob: null, at: 0, since: 0, system: null };
+const NO_SCREEN = { known: false, active: false, held: false, ended: false, startedAt: 0, mode: null, url: null, blob: null, at: 0, since: 0, system: null };
 
 /** Message carrying one still picture of the sender's game. */
 export function screenFrame(from, bytes, mime, system, at = Date.now()) {
@@ -946,6 +946,7 @@ export class SyncLink {
     this.stopScreenShare(true);
     const s = {
       src: source, mode: null, stream: null, streamPeers: new Set(), limited: new Set(), noStream: false,
+      startedAt: Date.now(),
       busy: false, lastState: 0, lastFrame: 0, lastHash: 0, q: { maxW: 192, quality: 0.5, type: 'image/jpeg' },
     };
     this.share = s;
@@ -962,7 +963,7 @@ export class SyncLink {
     clearInterval(s.timer);
     if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', s.onVis);
     this._dropStream(s);
-    if (!silent && s.mode) this._screenSend({ kind: 'screen-state', from: this.slot, active: false, mode: null }).catch(() => {});
+    if (!silent) this._screenSend({ kind: 'screen-state', from: this.slot, active: false, mode: null, ended: true, startedAt: s.startedAt }).catch(() => {});
   }
 
   _dropStream(s) {
@@ -1027,7 +1028,7 @@ export class SyncLink {
       s.mode = mode;
       s.held = held;
       s.lastState = now;
-      await this._screenSend({ kind: 'screen-state', from: this.slot, active: !!mode, mode, system: s.src.system || null, ...(backgrounded ? { paused: true } : {}), ...(held ? { held: true } : {}) });
+      await this._screenSend({ kind: 'screen-state', from: this.slot, active: !!mode, mode, startedAt: s.startedAt, system: s.src.system || null, ...(backgrounded ? { paused: true } : {}), ...(held ? { held: true } : {}) });
     }
     if (mode === 'image') await this._sendFrame(s);
   }
@@ -1076,7 +1077,7 @@ export class SyncLink {
     if (!add.length) return true;
     for (const peer of add) s.streamPeers.add(peer);
     try {
-      const meta = { kind: 'screen', from: this.slot, system: s.src.system || null };
+      const meta = { kind: 'screen', from: this.slot, startedAt: s.startedAt, system: s.src.system || null };
       const sent = add.flatMap((target) => [].concat(this.trysteroRoom.addStream(s.stream, { target, metadata: meta }) || []));
       await timeout(Promise.all(sent), 10000);
     } catch (e) {
@@ -1142,7 +1143,7 @@ export class SyncLink {
     if (h === s.lastHash && now - s.lastFrame < SCREEN.resendSame) return;
     s.lastHash = h;
     s.lastFrame = now;
-    await this._screenSend(screenFrame(this.slot, bytes, blob.type, s.src.system, now), true);
+    await this._screenSend({ ...screenFrame(this.slot, bytes, blob.type, s.src.system, now), startedAt: s.startedAt }, true);
   }
 
   /**
@@ -1256,21 +1257,29 @@ export class SyncLink {
     const slot = msg.from;
     if (!this.others.includes(slot)) return;
     const ps = this.screens[slot] || NO_SCREEN;
+    const hasSession = Number.isFinite(msg.startedAt);
+    if (hasSession && (msg.startedAt < ps.startedAt
+      || (ps.ended && msg.startedAt === ps.startedAt))) return;
     if (msg.kind === 'screen-state') {
       const mode = msg.active ? (msg.mode === 'stream' ? 'stream' : 'image') : null;
       // held: the partner's game is paused – their picture stands still but is still theirs (older apps never say so)
       const patch = { known: true, active: !!msg.active, paused: !msg.active && !!msg.paused, held: !!msg.active && !!msg.held, mode, system: typeof msg.system === 'string' ? msg.system : ps.system };
       if (mode === 'stream' && ps.mode !== 'stream') patch.since = Date.now();
       if (mode !== 'image') Object.assign(patch, { url: null, blob: null });
+      if (hasSession) patch.startedAt = msg.startedAt;
+      patch.ended = msg.ended === true || (!hasSession && !patch.active && !patch.paused);
+      if (patch.ended) delete this.peerStreams[slot];
       this._emitScreen(slot, patch);
       return;
     }
     if (msg.kind === 'screen-frame') {
+      if (ps.ended && !hasSession) return;
       if (!this._watched(slot) && !this.onPartnerScreen) return;
       const frame = readScreenFrame(msg);
       if (!frame) return;
       const url = typeof URL !== 'undefined' && URL.createObjectURL ? URL.createObjectURL(frame.blob) : null;
-      this._emitScreen(slot, { known: true, active: true, mode: 'image', url, blob: frame.blob, at: Date.now(), system: frame.system || ps.system });
+      this._emitScreen(slot, { known: true, active: true, ended: false, mode: 'image', url, blob: frame.blob, at: Date.now(), system: frame.system || ps.system,
+        ...(hasSession ? { startedAt: msg.startedAt } : {}) });
     }
   }
 
@@ -1278,6 +1287,9 @@ export class SyncLink {
     if (this.stopped || (meta && meta.kind && meta.kind !== 'screen')) return;
     const slot = typeof meta?.from === 'string' && this.others.includes(meta.from) ? meta.from : this.peers.get(peerId);
     if (!slot || slot === this.slot) return;
+    const ps = this.screens[slot];
+    if (Number.isFinite(meta?.startedAt) && (meta.startedAt < (ps?.startedAt || 0)
+      || (ps?.ended && meta.startedAt === ps.startedAt))) return;
     this.peerStreams[slot] = stream;
     const gone = () => {
       if (this.peerStreams[slot] !== stream || stream.getVideoTracks().some((tr) => tr.readyState === 'live')) return;
@@ -1286,7 +1298,8 @@ export class SyncLink {
     };
     stream.getVideoTracks().forEach((tr) => tr.addEventListener?.('ended', gone));
     stream.addEventListener?.('removetrack', gone);
-    this._emitScreen(slot, { known: true, active: true, mode: 'stream', system: meta?.system || this.screens[slot]?.system || null, url: null, blob: null, at: Date.now() });
+    this._emitScreen(slot, { known: true, active: true, mode: 'stream', system: meta?.system || ps?.system || null, url: null, blob: null, at: Date.now(),
+      ...(Number.isFinite(meta?.startedAt) ? { startedAt: meta.startedAt, ended: false } : {}) });
   }
 
   _screenView(slot) {
